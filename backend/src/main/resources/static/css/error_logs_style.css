@@ -1,8 +1,0 @@
-.stack-trace {
-    text-align: left;
-    max-height: 400px;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    font-family: monospace;
-    font-size: 0.9em;
-}

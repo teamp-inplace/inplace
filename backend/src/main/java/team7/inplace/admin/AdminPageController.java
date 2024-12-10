@@ -9,13 +9,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import team7.inplace.admin.banner.persistence.BannerRepository;
-import team7.inplace.admin.error.ErrorLog;
-import team7.inplace.admin.error.ErrorLogRepository;
 import team7.inplace.global.kakao.config.KakaoApiProperties;
 import team7.inplace.video.domain.Video;
 import team7.inplace.video.persistence.VideoRepository;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,7 +19,6 @@ import java.util.List;
 public class AdminPageController {
     private final KakaoApiProperties kakaoApiProperties;
     private final VideoRepository videoRepository;
-    private final ErrorLogRepository errorLogRepository;
     private final BannerRepository bannerRepository;
 
     @GetMapping("/video")
@@ -36,13 +31,6 @@ public class AdminPageController {
         model.addAttribute("isLast", videoPage.isLast());
         model.addAttribute("kakaoApiKey", kakaoApiProperties.jsKey());
         return "admin/video.html";
-    }
-
-    @GetMapping("/error-logs")
-    public String getErrorLogs(Model model) {
-        List<ErrorLog> errorLogs = errorLogRepository.findByIsResolvedFalse();
-        model.addAttribute("errorLogs", errorLogs);
-        return "admin/error-logs.html";
     }
 
     @GetMapping("/banner")
