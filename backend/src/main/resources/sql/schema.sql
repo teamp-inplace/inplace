@@ -118,16 +118,6 @@ create table youtube_channel
     channel_type   enum ('FOOD') null
 );
 
-create table error_log
-(
-    id            bigint auto_increment
-        primary key,
-    error_message varchar(255) null,
-    error_url     varchar(255) null,
-    stack_trace   text         null,
-    is_resolved   bit          not null
-);
-
 create table review
 (
     id           bigint auto_increment
