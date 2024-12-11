@@ -1,0 +1,35 @@
+name: Branch Name Validation
+
+on:
+  create:
+    branches:
+      - '**'
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate-branch-name:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check branch name
+        run: |
+          BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          
+          # 메인 브랜치 제외
+          if [[ "$BRANCH_NAME" =~ ^(main|develop)$ ]]; then
+            echo "메인 브랜치는 검증을 건너뜁니다."
+            exit 0
+          fi
+          
+          # 브랜치 이름 패턴 검사
+          if ! [[ "$BRANCH_NAME" =~ ^(feat|fix|hotfix|refactor)/[A-Z]+-[0-9]+(-[a-z0-9]+)*$ ]]; then
+            echo "Error: 브랜치 이름이 형식에 맞지 않습니다: $BRANCH_NAME"
+            echo "올바른 형식: <type>/<JIRA-ID>-<description>"
+            echo "예시: feat/INPLACE-1-login-page"
+            echo "허용되는 타입: feat, fix, hotfix, refactor"
+            exit 1
+          fi
+          
+          echo "브랜치 이름이 올바른 형식입니다: $BRANCH_NAME"
