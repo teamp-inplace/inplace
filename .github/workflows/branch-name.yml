@@ -1,9 +1,6 @@
 name: Branch Name Validation
 
 on:
-  create:
-    branches:
-      - '**'
   pull_request:
     types: [opened, synchronize, reopened]
 
