@@ -1,0 +1,29 @@
+#!/bin/bash
+
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+SHA1=$3
+
+# 현재 브랜치 이름 가져오기
+BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+
+# 지라 티켓 ID 패턴 (예: PROJ-123)
+JIRA_ID_PATTERN="[A-Z]+-[0-9]+"
+
+# 브랜치 이름에서 지라 ID 추출
+if [[ $BRANCH_NAME =~ $JIRA_ID_PATTERN ]]; then
+    JIRA_ID=${BASH_REMATCH[0]}
+
+    # 커밋 메시지 읽기
+    commit_message=$(cat "$COMMIT_MSG_FILE")
+
+    # 지라 ID가 커밋 메시지에 없는지 확인
+    if ! echo "$commit_message" | grep -qE "$JIRA_ID"; then
+        # merge 커밋이 아닌 경우에만 에러
+        if [ "$COMMIT_SOURCE" != "merge" ]; then
+            echo "에러: 커밋 메시지에 지라 ID($JIRA_ID)가 포함되어 있지 않습니다."
+            echo "커밋 메시지 예시: '$JIRA_ID 작업 내용'"
+            exit 1  # 에러 코드 1을 반환하여 커밋을 취소
+        fi
+    fi
+fi
