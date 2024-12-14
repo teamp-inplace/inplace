@@ -14,7 +14,7 @@ export default function VisitModal({ id, placeName, onClose }: { id: number; pla
   const isAuthenticated = useAuth();
   const location = useLocation();
   const [isSend, setIsSend] = useState(false);
-  const { refetch } = useGetSendInfo(String(id), false);
+  const { refetch } = useGetSendInfo(String(id), isSend);
   const [message, setMessage] = useState<string>('');
   const [showLoginModal, setShowLoginModal] = useState(false);
 
