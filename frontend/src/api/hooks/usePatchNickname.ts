@@ -7,7 +7,7 @@ const patchNickname = async (nickname: string) => {
   const params = new URLSearchParams({
     nickname: nickname.toString(),
   });
-  const response = await fetchInstance.patch(`${patchNicknamePath()}?${params}`, { withCredentials: true });
+  const response = await fetchInstance.patch(`${patchNicknamePath()}?${params}`, {}, { withCredentials: true });
   return response.data;
 };
 
