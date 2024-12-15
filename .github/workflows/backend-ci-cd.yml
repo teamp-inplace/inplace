@@ -1,0 +1,149 @@
+name: Java CI with Gradle
+
+# main 브랜치에 push가 발생할 경우 동작한다.
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'backend/**'
+      - '.github/**'
+
+permissions:
+  contents: read
+
+jobs:
+  # Spring Boot 애플리케이션을 빌드하여 도커허브에 푸시하는 과정
+  build-docker-image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      # Java 17 세팅
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Gradle Wrapper 파일 실행 권한 주기
+      - name: Run chmod to make gradlew executable
+        working-directory: ./backend
+        run: chmod +x ./gradlew
+
+      # Spring Boot 애플리케이션 빌드
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        with:
+          arguments: clean bootJar
+          build-root-directory: ./backend
+
+      # 테스트 실행
+      #    - name: Run tests
+      #      run: ./gradlew test
+
+      # Docker 이미지 빌드
+      - name: docker image build
+        working-directory: ./backend
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/inplace .
+
+      # DockerHub 로그인
+      - name: docker login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      # Docker Hub 이미지 푸시
+      - name: docker Hub push
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/inplace
+
+  run-docker-image-on-ec2:
+      needs: build-docker-image
+      runs-on: ubuntu-latest
+      if: startsWith(github.ref, 'refs/heads/main')
+      steps:
+        - name: Configure SSH
+          run: |
+            mkdir -p ~/.ssh/
+            echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+            ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+        - name: Docker Pull
+          run: |
+            ssh ubuntu@${{ secrets.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
+
+        - name: Check Current Container
+          id: check_version
+          run: |
+            CURRENT_VERSION=$(ssh ubuntu@${{ secrets.EC2_HOST }} "sudo docker ps --format '{{.Names}}' | grep -oE 'inplace-(blue|green)' || echo ''")
+            if [[ -z "$CURRENT_VERSION" ]]; then
+              echo "No active container found"
+              echo "current_version=none" >> $GITHUB_ENV
+            else
+              CURRENT_VERSION=$(echo "$CURRENT_VERSION" | grep -oE "(blue|green)")
+              echo "Current running version is $CURRENT_VERSION"
+              echo "current_version=${CURRENT_VERSION}" >> $GITHUB_ENV
+            fi
+
+        - name: Set Next Version
+          run: |
+            if [[ "${{ env.current_version }}" == "blue" ]]; then
+              echo "next_version=green" >> $GITHUB_ENV
+              echo "port=8081" >> $GITHUB_ENV
+            else
+              echo "next_version=blue" >> $GITHUB_ENV
+              echo "port=8080" >> $GITHUB_ENV
+            fi
+
+        - name: Create and Copy .env file
+          run: |
+            echo "${{ secrets.ENV }}" > .env
+            scp .env ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/.env
+
+        - name: Run New Container
+          run: |
+            ssh ubuntu@${{ secrets.EC2_HOST }} "sudo docker run --name inplace-${{ env.next_version }} --rm -d -p ${{ env.port }}:8080 --env-file /home/ubuntu/.env ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
+
+        - name: Health Check
+          run: |
+            for i in {1..40}; do
+              if ssh ubuntu@${{ secrets.EC2_HOST }} "curl -s http://localhost:${{ env.port }}/actuator/health" | grep '"status":"UP"' > /dev/null; then
+                echo "Application is healthy"
+                break
+              fi
+              echo "Waiting for new application to start...($i)"
+              sleep 5
+            done
+            
+            if [ $i -eq 40 ]; then
+              echo "Application failed to start after 40 attempts."
+              exit 1
+            fi
+
+        - name: Update Load Balancer
+          if: success()
+          run: |
+            ssh ubuntu@${{ secrets.EC2_HOST }} "
+              TARGET_GROUP_ARN_BLUE='${{ secrets.TARGET_GROUP_ARN_8080 }}'
+              TARGET_GROUP_ARN_GREEN='${{ secrets.TARGET_GROUP_ARN_8081 }}'
+              if [[ '${{ env.next_version }}' == 'blue' ]]; then
+                aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN_443 }} --default-actions Type=forward,TargetGroupArn=\$TARGET_GROUP_ARN_BLUE
+              else
+                aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN_443 }} --default-actions Type=forward,TargetGroupArn=\$TARGET_GROUP_ARN_GREEN
+              fi"
+
+        - name: Wait for Draining
+          if: env.current_version != 'none'
+          run: sleep 30
+
+        - name: Cleanup Old Container
+          run: |
+            if [[ "${{ env.current_version }}" != "none" ]]; then 
+              ssh ubuntu@${{ secrets.EC2_HOST }} "
+                sudo docker stop inplace-${{ env.current_version }} || true 
+                sudo docker rm inplace-${{ env.current_version }} || true"
+            fi
+
+        - name: Cleanup Docker System
+          run: ssh ubuntu@${{ secrets.EC2_HOST }} "sudo docker system prune -f"
