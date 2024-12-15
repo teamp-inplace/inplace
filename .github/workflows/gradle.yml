@@ -4,6 +4,8 @@ name: Java CI with Gradle
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'backend/**'
 
 permissions:
   contents: read
@@ -24,6 +26,7 @@ jobs:
 
       # Gradle Wrapper 파일 실행 권한 주기
       - name: Run chmod to make gradlew executable
+        working-directory: ./backend
         run: chmod +x ./gradlew
 
       # Spring Boot 애플리케이션 빌드
@@ -31,6 +34,7 @@ jobs:
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
           arguments: clean bootJar
+          build-root-directory: ./backend
 
       # 테스트 실행
       #    - name: Run tests
@@ -38,6 +42,7 @@ jobs:
 
       # Docker 이미지 빌드
       - name: docker image build
+        working-directory: ./backend
         run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/inplace .
 
       # DockerHub 로그인
