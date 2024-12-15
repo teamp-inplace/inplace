@@ -57,26 +57,26 @@ jobs:
       - name: docker Hub push
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/inplace
 
-
-  # 위 과정에서 푸시한 이미지를 ec2에서 풀받아서 실행시키는 과정
-  run-docker-image-on-ec2:
-    # build-docker-image 과정이 완료되어야 실행된다.
+run-docker-image-on-ec2:
     needs: build-docker-image
-    runs-on: self-hosted
-
-    # main 브랜치에서는 실행되도록 조건 추가
+    runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/heads/main')
-
     steps:
-      # 최신 이미지를 pull
-      - name: docker pull
-        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/inplace
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-      # 현재 실행 중인 버전을 확인
-      - name: Check current active container
+      - name: Docker Pull
+        run: |
+          ssh ubuntu@${{ secrets.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
+
+      - name: Check Current Container
         id: check_version
         run: |
-          CURRENT_VERSION=$(sudo docker ps --format "{{.Names}}" | grep -oE "inplace-(blue|green)" || echo "")
+          CURRENT_VERSION=$(ssh ubuntu@${{ secrets.EC2_HOST }} "sudo docker ps --format '{{.Names}}' | grep -oE 'inplace-(blue|green)' || echo ''")
           if [[ -z "$CURRENT_VERSION" ]]; then
             echo "No active container found"
             echo "current_version=none" >> $GITHUB_ENV
@@ -86,38 +86,29 @@ jobs:
             echo "current_version=${CURRENT_VERSION}" >> $GITHUB_ENV
           fi
 
-      # 다음 배포 버전을 결정
-      - name: Set next version
+      - name: Set Next Version
         run: |
           if [[ "${{ env.current_version }}" == "blue" ]]; then
-            NEXT_VERSION="green"
-            PORT=8081
+            echo "next_version=green" >> $GITHUB_ENV
+            echo "port=8081" >> $GITHUB_ENV
           else
-            NEXT_VERSION="blue"
-            PORT=8080
+            echo "next_version=blue" >> $GITHUB_ENV
+            echo "port=8080" >> $GITHUB_ENV
           fi
-          echo "Next version to deploy is inplace-${NEXT_VERSION}"
-          echo "next_version=${NEXT_VERSION}" >> $GITHUB_ENV
-          echo "port=${PORT}" >> $GITHUB_ENV
 
-      # .env 파일 생성
-      - name: Create .env file
+      - name: Create and Copy .env file
         run: |
-          rm -f .env
-          echo "${{ secrets.ENV }}" >> .env
+          echo "${{ secrets.ENV }}" > .env
+          scp .env ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/.env
 
-      # 다음 버전으로 새 컨테이너를 실행
-      - name: Run New Container on Next Version
+      - name: Run New Container
         run: |
-          echo "Running new container inplace-${{ env.next_version }}"
-          sudo docker run --name "inplace-${{ env.next_version }}" --rm -d -p ${{ env.port }}:8080 --env-file .env ${{ secrets.DOCKERHUB_USERNAME }}/inplace
+          ssh ubuntu@${{ secrets.EC2_HOST }} "sudo docker run --name inplace-${{ env.next_version }} --rm -d -p ${{ env.port }}:8080 --env-file /home/ubuntu/.env ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
 
-      # 스프링부트 시작을 기다리기 위해 헬스 체크로 대기
-      - name: Wait for Spring Boot Application to Start
+      - name: Health Check
         run: |
-          echo "Waiting for the application to be healthy on PORT: ${{ env.port }}..."
           for i in {1..40}; do
-            if curl -s http://localhost:${{ env.port }}/actuator/health | grep '"status":"UP"' > /dev/null; then
+            if ssh ubuntu@${{ secrets.EC2_HOST }} "curl -s http://localhost:${{ env.port }}/actuator/health" | grep '"status":"UP"' > /dev/null; then
               echo "Application is healthy"
               break
             fi
@@ -130,37 +121,29 @@ jobs:
             exit 1
           fi
 
-      # 로드 밸런서 타겟 그룹을 업데이트하여 트래픽을 새 컨테이너로 전환
-      - name: Update Load Balancer Target Group
+      - name: Update Load Balancer
         if: success()
         run: |
-          TARGET_GROUP_ARN_BLUE="${{ secrets.TARGET_GROUP_ARN_8080 }}"
-          TARGET_GROUP_ARN_GREEN="${{ secrets.TARGET_GROUP_ARN_8081 }}"
-          if [[ "${{ env.next_version }}" == "blue" ]]; then
-            aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN_443 }} --default-actions Type=forward,TargetGroupArn=$TARGET_GROUP_ARN_BLUE
-          else
-            aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN_443 }} --default-actions Type=forward,TargetGroupArn=$TARGET_GROUP_ARN_GREEN
-          fi
+          ssh ubuntu@${{ secrets.EC2_HOST }} "
+            TARGET_GROUP_ARN_BLUE='${{ secrets.TARGET_GROUP_ARN_8080 }}'
+            TARGET_GROUP_ARN_GREEN='${{ secrets.TARGET_GROUP_ARN_8081 }}'
+            if [[ '${{ env.next_version }}' == 'blue' ]]; then
+              aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN_443 }} --default-actions Type=forward,TargetGroupArn=\$TARGET_GROUP_ARN_BLUE
+            else
+              aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN_443 }} --default-actions Type=forward,TargetGroupArn=\$TARGET_GROUP_ARN_GREEN
+            fi"
 
-      # 이전 컨테이너 정리 전 드레이닝 시간 부여
-      - name: Wait for connection draining
-        run: |
-          if [[ "${{ env.current_version }}" != "none" ]]; then
-            echo "Waiting 30 seconds for connection draining..."
-            sleep 30
-          fi
+      - name: Wait for Draining
+        if: env.current_version != 'none'
+        run: sleep 30
 
-      # 이전 컨테이너 정리
-      - name: Remove previous docker container
+      - name: Cleanup Old Container
         run: |
           if [[ "${{ env.current_version }}" != "none" ]]; then 
-            echo "Removing previous container inplace-${{ env.current_version }}" 
-            sudo docker stop inplace-${{ env.current_version }} || true 
-            sudo docker rm inplace-${{ env.current_version }} || true 
-          else 
-            echo "No active container to remove" 
+            ssh ubuntu@${{ secrets.EC2_HOST }} "
+              sudo docker stop inplace-${{ env.current_version }} || true 
+              sudo docker rm inplace-${{ env.current_version }} || true"
           fi
 
-      # 미사용 이미지를 정리
-      - name: delete old docker image
-        run: sudo docker system prune -f
+      - name: Cleanup Docker System
+        run: ssh ubuntu@${{ secrets.EC2_HOST }} "sudo docker system prune -f"
