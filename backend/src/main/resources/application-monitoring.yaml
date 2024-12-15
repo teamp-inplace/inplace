@@ -4,7 +4,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus
+        include: prometheus, health
       base-path: ${MONITORING_PATH}
   endpoint:
     prometheus:
