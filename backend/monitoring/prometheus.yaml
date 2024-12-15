@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'inplace-monitoring'
+    metrics_path: /monitoring/inplace/prometheus
+    static_configs:
+      - targets: [ 172.31.2.76:9158 ]
