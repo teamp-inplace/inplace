@@ -100,10 +100,10 @@ jobs:
           run: |
             echo "${{ secrets.ENV }}" > .env
             scp .env ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/.env
-
+            
         - name: Run New Container
           run: |
-            ssh ubuntu@${{ secrets.EC2_HOST }} "sudo docker run --name inplace-${{ env.next_version }} --rm -d -p ${{ env.port }}:8080 --env-file /home/ubuntu/.env ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
+            ssh ubuntu@${{ secrets.EC2_HOST }} "sudo docker run --name inplace-${{ env.next_version }} --rm -d -p ${{ env.port }}:8080 -p ${{ secrets.MONITORING_PORT }}:${{ secrets.MONITORING_PORT }} --env-file /home/ubuntu/.env ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
 
         - name: Health Check
           run: |
