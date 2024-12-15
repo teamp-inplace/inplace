@@ -7,9 +7,12 @@ spring:
       - classpath:application-db.yaml
       - classpath:application-redis.yaml
       - classpath:application-s3.yaml
+      - classpath:application-monitoring.yaml
       - optional:file:.env[.properties]
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
       enabled: true
+  application:
+    name: ${APP_NAME}
