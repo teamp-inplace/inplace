@@ -2,16 +2,16 @@ import styled from 'styled-components';
 
 import { BannerData } from '@/types';
 
-export default function BannerItem({ id, imageUrl }: BannerData) {
+export default function BannerItem({ id, imageUrl, isFirst }: BannerData & { isFirst: boolean }) {
   return (
-    <Wrapper>
+    <Wrapper $isFirst={isFirst}>
       <Image src={imageUrl} alt={`배너-${id}번`} />
     </Wrapper>
   );
 }
-const Wrapper = styled.div`
-  width: 100%;
-  flex: 0 0 100%;
+const Wrapper = styled.div<{ $isFirst: boolean }>`
+  width: ${({ $isFirst }) => ($isFirst ? '100%' : '50%')};
+  flex: 0 0 ${({ $isFirst }) => ($isFirst ? '100%' : '50%')};
   height: 400px;
   display: flex;
   flex-direction: column;

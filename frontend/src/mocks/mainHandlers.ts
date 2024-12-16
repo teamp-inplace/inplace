@@ -5,6 +5,8 @@ import { getMyInfluencerVideoPath } from '@/api/hooks/useGetMyInfluencerVideo';
 import { getAroundVideoPath } from '@/api/hooks/useGetAroundVideo';
 import { getCoolVideoPath, getNewVideoPath } from '@/api/hooks/useGetLogoutVideo';
 import BannerImg from '@/assets/images/bannerImg.png';
+import Back from '@/assets/images/back-card.png';
+import Basic from '@/assets/images/basic-image.png';
 
 export const mainHandlers = [
   rest.get(`${BASE_URL}${getBannerPath()}`, (_, res, ctx) => {
@@ -17,11 +19,15 @@ export const mainHandlers = [
         },
         {
           id: 2,
-          imageUrl: BannerImg,
+          imageUrl: Basic,
         },
         {
           id: 3,
-          imageUrl: BannerImg,
+          imageUrl: Back,
+        },
+        {
+          id: 4,
+          imageUrl: Basic,
         },
       ]),
     );
