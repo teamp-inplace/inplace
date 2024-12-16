@@ -14,7 +14,7 @@ interface CommentStepProps {
     address: AddressInfo;
     influencerName: string;
     menuInfos: {
-      menuImgUrls: string[];
+      menuImgUrls?: string[];
     };
   };
 }
@@ -48,7 +48,7 @@ export default function CommentStep({ isLiked, onBack, onSubmit, placeInfo }: Co
 
       <PlaceSection>
         <ImageWrapper>
-          <FallbackImage src={placeInfo.menuInfos.menuImgUrls[0]} alt="Restaurant Menu" />
+          <FallbackImage src={placeInfo.menuInfos.menuImgUrls?.[0]} alt="Restaurant Menu" />
         </ImageWrapper>
         <PlaceInfo>
           <TextWrapper className="name">

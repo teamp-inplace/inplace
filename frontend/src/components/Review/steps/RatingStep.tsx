@@ -12,7 +12,7 @@ interface RatingStepProps {
     address: AddressInfo;
     influencerName: string;
     menuInfos: {
-      menuImgUrls: string[];
+      menuImgUrls?: string[];
     };
   };
 }
@@ -39,7 +39,7 @@ export default function RatingStep({ onSubmit, placeInfo }: RatingStepProps) {
       <PlaceSection>
         <ImageFrame>
           <ImageWrapper>
-            <FallbackImage src={placeInfo.menuInfos.menuImgUrls[0]} alt="Restaurant Menu" />
+            <FallbackImage src={placeInfo.menuInfos.menuImgUrls?.[0]} alt="Restaurant Menu" />
           </ImageWrapper>
         </ImageFrame>
         <PlaceInfo>
