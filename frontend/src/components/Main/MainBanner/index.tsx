@@ -10,8 +10,6 @@ import NoItem from '@/components/common/layouts/NoItem';
 
 export default function MainBanner({ items = [] }: { items: BannerData[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  console.log(currentIndex);
-  console.log(items.length);
 
   useEffect(() => {
     const interval = setInterval(() => {
