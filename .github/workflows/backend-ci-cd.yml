@@ -109,11 +109,10 @@ jobs:
           run: |
             for i in {1..40}; do
               if ssh ubuntu@${{ secrets.EC2_HOST }} "curl -s http://localhost:${{ secrets.HEALTH_CECK_PATH }} | grep '"status":"UP"' > /dev/null; then
-
                 echo "Application is healthy"
                 break
               fi
-              echo "Waiting for new application to start...($i)"
+              echo "Waiting for new application to start... $i"
               sleep 5
             done
             
