@@ -27,10 +27,10 @@ export default function VisitModal({ id, placeName, onClose }: { id: number; pla
       setMessage('로그인이 필요합니다.');
       return;
     }
-    setIsSend(true);
     try {
+      setIsSend(true);
       const { status } = await refetch();
-      if (status === 'success' && isSend) {
+      if (status === 'success') {
         setMessage('카카오톡을 확인해주세요!');
       } else {
         setMessage('에러가 발생했습니다. 다시 시도해주세요.');
