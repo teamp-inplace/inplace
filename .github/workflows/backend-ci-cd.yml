@@ -137,7 +137,7 @@ jobs:
       - name: Cleanup Old Container
         run: |
           ssh ubuntu@${{ env.EC2_HOST }} "
-              sudo docker stop inplace || true 
+              sudo docker stop inplace || true && \
               sudo docker rm inplace || true
           "
 
