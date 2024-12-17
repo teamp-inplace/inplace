@@ -84,23 +84,23 @@ jobs:
           run: |
             ssh ubuntu@${{ secrets.EC2_HOST_TEST_SERVER }} "
               if [ \$(docker ps -q --filter name=inplace-test) ]; then
-                docker stop inplace-test
-                docker rm inplace-test
+                sudo docker stop inplace-test
+                sudo docker rm inplace-test
               fi
             "
 
         - name: Docker Pull
           run: |
-            ssh ubuntu@${{ secrets.EC2_HOST_TEST_SERVER }} "docker pull ${{ secrets.DOCKERHUB_USERNAME }}/inplace:test"
+            ssh ubuntu@${{ secrets.EC2_HOST_TEST_SERVER }} "sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/inplace:test"
 
         - name: Cleanup Docker System
           run: |
-            ssh ubuntu@${{ secrets.EC2_HOST_TEST_SERVER }} "docker system prune -f"
+            ssh ubuntu@${{ secrets.EC2_HOST_TEST_SERVER }} "sudo docker system prune -f"
 
         - name: Run new container
           run: |
             ssh ubuntu@${{ secrets.EC2_HOST_TEST_SERVER }} "
-              docker run -d \
+              sudo docker run -d \
                 --name inplace-test \
                 -p 8080:8080 \
                 --restart unless-stopped \
