@@ -72,7 +72,7 @@ jobs:
       # 현재 active 인스턴스 확인 & 타겟 인스턴스 결정
       - name: Determine Target Instance
         run: |
-          ACTIVE_INSTANCE=$(ssh ubuntu@${{ env.EC2_HOST }} "aws ec2 describe-instances \
+          ACTIVE_INSTANCE=$(ssh ubuntu@${{ secrets.EC2_HOST }} "aws ec2 describe-instances \
             --filters 'Name=tag:DeploymentStatus,Values=active' \
             --query 'Reservations[0].Instances[0].InstanceId' \
             --output text")
