@@ -62,53 +62,54 @@ jobs:
       runs-on: ubuntu-latest
       if: startsWith(github.ref, 'refs/heads/main')
       steps:
+        # 현재 active 인스턴스 확인 & 타겟 인스턴스 결정
+        - name: Determine Target Instance
+          run: |
+            ACTIVE_INSTANCE=$(aws ec2 describe-instances \
+              --filters "Name=tag:DeploymentStatus,Values=active" \
+              --query "Reservations[0].Instances[0].InstanceId" \
+              --output text)
+
+            if [[ "$ACTIVE_INSTANCE" == "${{ secrets.BLUE_INSTANCE_ID }}" ]]; then
+              echo "TARGET_INSTANCE=${{ secrets.GREEN_INSTANCE_ID }}" >> $GITHUB_ENV
+              echo "INACTIVE_INSTANCE=${{ secrets.BLUE_INSTANCE_ID }}" >> $GITHUB_ENV
+              echo "TARGET_GROUP_ARN=${{ secrets.TARGET_GROUP_ARN_GREEN }}" >> $GITHUB_ENV
+            else
+              echo "TARGET_INSTANCE=${{ secrets.BLUE_INSTANCE_ID }}" >> $GITHUB_ENV
+              echo "INACTIVE_INSTANCE=${{ secrets.GREEN_INSTANCE_ID }}" >> $GITHUB_ENV
+              echo "TARGET_GROUP_ARN=${{ secrets.TARGET_GROUP_ARN_8080 }}" >> $GITHUB_ENV
+            fi
+
+            EC2_HOST=$(aws ec2 describe-instances \
+              --instance-ids ${{ env.TARGET_INSTANCE }} \
+              --query "Reservations[0].Instances[0].PublicIpAddress" \
+              --output text)
+            echo "EC2_HOST=${EC2_HOST}" >> $GITHUB_ENV
+
         - name: Configure SSH
           run: |
             mkdir -p ~/.ssh/
             echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
-            ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+            ssh-keyscan -H ${{ env.EC2_HOST }} >> ~/.ssh/known_hosts
 
         - name: Docker Pull
           run: |
-            ssh ubuntu@${{ secrets.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
-
-        - name: Check Current Container
-          id: check_version
-          run: |
-            CURRENT_VERSION=$(ssh ubuntu@${{ secrets.EC2_HOST }} "sudo docker ps --format '{{.Names}}' | grep -oE 'inplace-(blue|green)' || echo ''")
-            if [[ -z "$CURRENT_VERSION" ]]; then
-              echo "No active container found"
-              echo "current_version=none" >> $GITHUB_ENV
-            else
-              CURRENT_VERSION=$(echo "$CURRENT_VERSION" | grep -oE "(blue|green)")
-              echo "Current running version is $CURRENT_VERSION"
-              echo "current_version=${CURRENT_VERSION}" >> $GITHUB_ENV
-            fi
-
-        - name: Set Next Version
-          run: |
-            if [[ "${{ env.current_version }}" == "blue" ]]; then
-              echo "next_version=green" >> $GITHUB_ENV
-              echo "port=8081" >> $GITHUB_ENV
-            else
-              echo "next_version=blue" >> $GITHUB_ENV
-              echo "port=8080" >> $GITHUB_ENV
-            fi
+            ssh ubuntu@${{ env.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
 
         - name: Create and Copy .env file
           run: |
             echo "${{ secrets.ENV }}" > .env
-            scp .env ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/.env
+            scp .env ubuntu@${{ env.EC2_HOST }}:/home/ubuntu/.env
             
         - name: Run New Container
           run: |
-            ssh ubuntu@${{ secrets.EC2_HOST }} "sudo docker run --name inplace-${{ env.next_version }} --rm -d -p ${{ env.port }}:8080 -p ${{ secrets.MONITORING_PORT }}:${{ secrets.MONITORING_PORT }} --env-file /home/ubuntu/.env ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
+            ssh ubuntu@${{ env.EC2_HOST }} "sudo docker run --name inplace --rm -d -p 8080:8080 -p ${{ secrets.MONITORING_PORT }}:${{ secrets.MONITORING_PORT }} --env-file /home/ubuntu/.env ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
 
         - name: Health Check
           run: |
             for i in {1..40}; do
-              if ssh ubuntu@${{ secrets.EC2_HOST }} "curl -s http://localhost:${{ secrets.HEALTH_CECK_PATH }} | grep '"status":"UP"' > /dev/null; then
+              if ssh ubuntu@${{ env.EC2_HOST }} "curl -s http://localhost:${{ secrets.HEALTH_CECK_PATH }} | grep '\"status\":\"UP\"' > /dev/null"; then
                 echo "Application is healthy"
                 break
               fi
@@ -124,26 +125,19 @@ jobs:
         - name: Update Load Balancer
           if: success()
           run: |
-            ssh ubuntu@${{ secrets.EC2_HOST }} "
-              TARGET_GROUP_ARN_BLUE='${{ secrets.TARGET_GROUP_ARN_8080 }}'
-              TARGET_GROUP_ARN_GREEN='${{ secrets.TARGET_GROUP_ARN_8081 }}'
-              if [[ '${{ env.next_version }}' == 'blue' ]]; then
-                aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN_443 }} --default-actions Type=forward,TargetGroupArn=\$TARGET_GROUP_ARN_BLUE
-              else
-                aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN_443 }} --default-actions Type=forward,TargetGroupArn=\$TARGET_GROUP_ARN_GREEN
-              fi"
+            ssh ubuntu@${{ env.EC2_HOST }} "
+              aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN_443 }} --default-actions Type=forward,TargetGroupArn=${{ env.TARGET_GROUP_ARN }}
+            "
 
         - name: Wait for Draining
-          if: env.current_version != 'none'
           run: sleep 30
 
         - name: Cleanup Old Container
           run: |
-            if [[ "${{ env.current_version }}" != "none" ]]; then 
-              ssh ubuntu@${{ secrets.EC2_HOST }} "
-                sudo docker stop inplace-${{ env.current_version }} || true 
-                sudo docker rm inplace-${{ env.current_version }} || true"
-            fi
+            ssh ubuntu@${{ env.EC2_HOST }} "
+                sudo docker stop inplace || true 
+                sudo docker rm inplace || true
+            "
 
         - name: Cleanup Docker System
-          run: ssh ubuntu@${{ secrets.EC2_HOST }} "sudo docker system prune -f"
+          run: ssh ubuntu@${{ env.EC2_HOST }} "sudo docker system prune -f"
