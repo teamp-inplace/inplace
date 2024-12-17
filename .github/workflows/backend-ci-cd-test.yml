@@ -2,7 +2,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: 
+      - 'dev'
+      - 'refs/heads/dev'
     paths:
       - 'backend/**'
       - '.github/**'
@@ -11,9 +13,19 @@ permissions:
   contents: read
 
 jobs:
-  build-docker-image:
+  verify-branch:
     runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name
+        run: |
+          if [[ "${{ github.ref }}" != "refs/heads/dev" ]]; then
+            echo "This workflow should only run on dev branch"
+            exit 1
+          fi
 
+  build-docker-image:
+    needs: verify-branch
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       
@@ -49,8 +61,14 @@ jobs:
   deploy-to-test-server:
       needs: build-docker-image
       runs-on: ubuntu-latest
-      if: startsWith(github.ref, 'refs/heads/dev')
       steps:
+        - name: Verify dev branch
+          run: |
+            if [[ "${{ github.ref }}" != "refs/heads/dev" ]]; then
+              echo "Deployment is only allowed from dev branch"
+              exit 1
+            fi
+
         - name: Configure SSH
           run: |
             mkdir -p ~/.ssh/
@@ -80,12 +98,12 @@ jobs:
             ssh ubuntu@${{ secrets.EC2_HOST_TEST_SERVER }} "docker system prune -f"
 
         - name: Run new container
-            run: |
-              ssh ubuntu@${{ secrets.EC2_HOST_TEST_SERVER }} "
-                docker run -d \
-                  --name inplace-test \
-                  -p 8080:8080 \
-                  --restart unless-stopped \
-                  --env-file .env \
-                  ${{ secrets.DOCKERHUB_USERNAME }}/inplace:test
-              "
+          run: |
+            ssh ubuntu@${{ secrets.EC2_HOST_TEST_SERVER }} "
+              docker run -d \
+                --name inplace-test \
+                -p 8080:8080 \
+                --restart unless-stopped \
+                --env-file .env \
+                ${{ secrets.DOCKERHUB_USERNAME }}/inplace:test
+            "
