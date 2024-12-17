@@ -76,6 +76,8 @@ jobs:
             --filters 'Name=tag:DeploymentStatus,Values=active' \
             --query 'Reservations[0].Instances[0].InstanceId' \
             --output text")
+
+          echo "ACTIVE_INSTANCE=${ACTIVE_INSTANCE}"
           
           if [[ "$ACTIVE_INSTANCE" == "${{ secrets.BLUE_INSTANCE_ID }}" ]]; then
             echo "TARGET_INSTANCE=${{ secrets.GREEN_INSTANCE_ID }}" >> $GITHUB_ENV
@@ -86,12 +88,19 @@ jobs:
             echo "INACTIVE_INSTANCE=${{ secrets.GREEN_INSTANCE_ID }}" >> $GITHUB_ENV
             echo "TARGET_GROUP_ARN=${{ secrets.TARGET_GROUP_ARN_8080 }}" >> $GITHUB_ENV
           fi
+
+          echo "TARGET_INSTANCE=${{ env.TARGET_INSTANCE }}"
+          echo "INACTIVE_INSTANCE=${{ env.INACTIVE_INSTANCE }}"
+          echo "TARGET_GROUP_ARN=${{ env.TARGET_GROUP_ARN }}"
           
           EC2_HOST=$(ssh ubuntu@${{ secrets.EC2_HOST }} "aws ec2 describe-instances \
             --instance-ids ${{ env.TARGET_INSTANCE }} \
             --query 'Reservations[0].Instances[0].PublicIpAddress' \
             --output text")
           echo "EC2_HOST=${EC2_HOST}" >> $GITHUB_ENV
+
+          echo "EC2_HOST=${EC2_HOST}"
+          
           ssh-keyscan -H ${{ env.EC2_HOST }} >> ~/.ssh/known_hosts
 
 
