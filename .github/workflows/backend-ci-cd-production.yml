@@ -123,7 +123,6 @@ jobs:
               echo "Waiting for new application to start... $i"
               sleep 5
             done
-            
             if [ $i -eq 40 ]; then
               echo "Application failed to start after 40 attempts."
               exit 1
