@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: Backend CI/CD for Production
 
 # main 브랜치에 push가 발생할 경우 동작한다.
 on:
@@ -58,104 +58,103 @@ jobs:
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/inplace
 
   run-docker-image-on-ec2:
-      needs: build-docker-image
-      runs-on: ubuntu-latest
-      if: startsWith(github.ref, 'refs/heads/main')
-      steps:
-        # AWS 자격증명 설정
-        - name: Configure AWS credentials
-          uses: aws-actions/configure-aws-credentials@v4
-          with:
-            role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-            aws-region: ${{ secrets.AWS_REGION }}
+    needs: build-docker-image
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/heads/main')
+    steps:
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-        # 현재 active 인스턴스 확인 & 타겟 인스턴스 결정
-        - name: Determine Target Instance
-          run: |
-            ACTIVE_INSTANCE=$(aws ec2 describe-instances \
-              --filters "Name=tag:DeploymentStatus,Values=active" \
-              --query "Reservations[0].Instances[0].InstanceId" \
-              --output text)
+      # 현재 active 인스턴스 확인 & 타겟 인스턴스 결정
+      - name: Determine Target Instance
+        run: |
+          ACTIVE_INSTANCE=$(ssh ubuntu@${{ env.EC2_HOST }} "aws ec2 describe-instances \
+            --filters 'Name=tag:DeploymentStatus,Values=active' \
+            --query 'Reservations[0].Instances[0].InstanceId' \
+            --output text")
+          
+          if [[ "$ACTIVE_INSTANCE" == "${{ secrets.BLUE_INSTANCE_ID }}" ]]; then
+            echo "TARGET_INSTANCE=${{ secrets.GREEN_INSTANCE_ID }}" >> $GITHUB_ENV
+            echo "INACTIVE_INSTANCE=${{ secrets.BLUE_INSTANCE_ID }}" >> $GITHUB_ENV
+            echo "TARGET_GROUP_ARN=${{ secrets.TARGET_GROUP_ARN_GREEN }}" >> $GITHUB_ENV
+          else
+            echo "TARGET_INSTANCE=${{ secrets.BLUE_INSTANCE_ID }}" >> $GITHUB_ENV
+            echo "INACTIVE_INSTANCE=${{ secrets.GREEN_INSTANCE_ID }}" >> $GITHUB_ENV
+            echo "TARGET_GROUP_ARN=${{ secrets.TARGET_GROUP_ARN_8080 }}" >> $GITHUB_ENV
+          fi
+          
+          EC2_HOST=$(ssh ubuntu@${{ env.EC2_HOST }} "aws ec2 describe-instances \
+            --instance-ids ${{ env.TARGET_INSTANCE }} \
+            --query 'Reservations[0].Instances[0].PublicIpAddress' \
+            --output text")
+          echo "EC2_HOST=${EC2_HOST}" >> $GITHUB_ENV
+          ssh-keyscan -H ${{ env.EC2_HOST }} >> ~/.ssh/known_hosts
 
-            if [[ "$ACTIVE_INSTANCE" == "${{ secrets.BLUE_INSTANCE_ID }}" ]]; then
-              echo "TARGET_INSTANCE=${{ secrets.GREEN_INSTANCE_ID }}" >> $GITHUB_ENV
-              echo "INACTIVE_INSTANCE=${{ secrets.BLUE_INSTANCE_ID }}" >> $GITHUB_ENV
-              echo "TARGET_GROUP_ARN=${{ secrets.TARGET_GROUP_ARN_GREEN }}" >> $GITHUB_ENV
-            else
-              echo "TARGET_INSTANCE=${{ secrets.BLUE_INSTANCE_ID }}" >> $GITHUB_ENV
-              echo "INACTIVE_INSTANCE=${{ secrets.GREEN_INSTANCE_ID }}" >> $GITHUB_ENV
-              echo "TARGET_GROUP_ARN=${{ secrets.TARGET_GROUP_ARN_8080 }}" >> $GITHUB_ENV
+
+      - name: Docker Pull
+        run: |
+          ssh ubuntu@${{ env.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
+
+      - name: Create and Copy .env file
+        run: |
+          echo "${{ secrets.ENV }}" > .env
+          scp .env ubuntu@${{ env.EC2_HOST }}:/home/ubuntu/.env
+
+      - name: Run New Container
+        run: |
+          ssh ubuntu@${{ env.EC2_HOST }} "sudo docker run --name inplace --rm -d -p 8080:8080 -p ${{ secrets.MONITORING_PORT }}:${{ secrets.MONITORING_PORT }} --env-file /home/ubuntu/.env ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
+
+      - name: Health Check
+        run: |
+          for i in {1..40}; do
+            if ssh ubuntu@${{ env.EC2_HOST }} "curl -s http://localhost:${{ secrets.HEALTH_CECK_PATH }} | grep '\"status\":\"UP\"' > /dev/null"; then
+              echo "Application is healthy"
+              break
             fi
+            echo "Waiting for new application to start... $i"
+            sleep 5
+          done
+          
+          if [ $i -eq 40 ]; then
+            echo "Application failed to start after 40 attempts."
+            exit 1
+          fi
 
-            EC2_HOST=$(aws ec2 describe-instances \
-              --instance-ids ${{ env.TARGET_INSTANCE }} \
-              --query "Reservations[0].Instances[0].PublicIpAddress" \
-              --output text)
-            echo "EC2_HOST=${EC2_HOST}" >> $GITHUB_ENV
+      - name: Update Load Balancer
+        if: success()
+        run: |
+          ssh ubuntu@${{ env.EC2_HOST }} "
+            aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN_443 }} --default-actions Type=forward,TargetGroupArn=${{ env.TARGET_GROUP_ARN }}
+          "
 
-        - name: Configure SSH
-          run: |
-            mkdir -p ~/.ssh/
-            echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-            chmod 600 ~/.ssh/id_rsa
-            ssh-keyscan -H ${{ env.EC2_HOST }} >> ~/.ssh/known_hosts
+      - name: Wait for Draining
+        run: sleep 30
 
-        - name: Docker Pull
-          run: |
-            ssh ubuntu@${{ env.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
+      - name: Cleanup Old Container
+        run: |
+          ssh ubuntu@${{ env.EC2_HOST }} "
+              sudo docker stop inplace || true 
+              sudo docker rm inplace || true
+          "
 
-        - name: Create and Copy .env file
-          run: |
-            echo "${{ secrets.ENV }}" > .env
-            scp .env ubuntu@${{ env.EC2_HOST }}:/home/ubuntu/.env
+      - name: Cleanup Docker System
+        run: ssh ubuntu@${{ env.EC2_HOST }} "sudo docker system prune -f"
 
-        - name: Run New Container
-          run: |
-            ssh ubuntu@${{ env.EC2_HOST }} "sudo docker run --name inplace --rm -d -p 8080:8080 -p ${{ secrets.MONITORING_PORT }}:${{ secrets.MONITORING_PORT }} --env-file /home/ubuntu/.env ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
 
-        - name: Health Check
-          run: |
-            for i in {1..40}; do
-              if ssh ubuntu@${{ env.EC2_HOST }} "curl -s http://localhost:${{ secrets.HEALTH_CECK_PATH }} | grep '\"status\":\"UP\"' > /dev/null"; then
-                echo "Application is healthy"
-                break
-              fi
-              echo "Waiting for new application to start... $i"
-              sleep 5
-            done
-            
-            if [ $i -eq 40 ]; then
-              echo "Application failed to start after 40 attempts."
-              exit 1
-            fi
-
-        - name: Update Load Balancer
-          if: success()
-          run: |
-            ssh ubuntu@${{ env.EC2_HOST }} "
-              aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN_443 }} --default-actions Type=forward,TargetGroupArn=${{ env.TARGET_GROUP_ARN }}
-            "
-
-        - name: Wait for Draining
-          run: sleep 30
-
-        - name: Cleanup Old Container
-          run: |
-            ssh ubuntu@${{ env.EC2_HOST }} "
-                sudo docker stop inplace || true 
-                sudo docker rm inplace || true
-            "
-
-        - name: Cleanup Docker System
-          run: ssh ubuntu@${{ env.EC2_HOST }} "sudo docker system prune -f"
-
-        # 인스턴스 태그 업데이트
-        - name: Update Instance Tags
-          run: |
+      # 인스턴스 태그 업데이트
+      - name: Update Instance Tags
+        run: |
+          ssh ubuntu@${{ env.EC2_HOST }} "
             aws ec2 create-tags \
               --resources ${{ env.TARGET_INSTANCE }} \
               --tags Key=DeploymentStatus,Value=active
-                   
+          "
+          ssh ubuntu@${{ env.EC2_HOST }} "
             aws ec2 create-tags \
               --resources ${{ env.INACTIVE_INSTANCE }} \
               --tags Key=DeploymentStatus,Value=inactive
+          "
