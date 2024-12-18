@@ -77,31 +77,35 @@ jobs:
             --query 'Reservations[0].Instances[0].InstanceId' \
             --output text")
 
-          echo "ACTIVE_INSTANCE=${ACTIVE_INSTANCE}"
+          echo "ACTIVE_INSTANCE: ${ACTIVE_INSTANCE}"
           
-          if [[ "$ACTIVE_INSTANCE" == "${{ secrets.BLUE_INSTANCE_ID }}" ]]; then
-            echo "TARGET_INSTANCE=${{ secrets.GREEN_INSTANCE_ID }}" >> $GITHUB_ENV
-            echo "INACTIVE_INSTANCE=${{ secrets.BLUE_INSTANCE_ID }}" >> $GITHUB_ENV
-            echo "TARGET_GROUP_ARN=${{ secrets.TARGET_GROUP_ARN_GREEN }}" >> $GITHUB_ENV
+          if [[ "${ACTIVE_INSTANCE}" == "${{ secrets.BLUE_INSTANCE_ID }}" ]]; then
+            TARGET_INSTANCE="${{ secrets.GREEN_INSTANCE_ID }}"
+            INACTIVE_INSTANCE="${{ secrets.BLUE_INSTANCE_ID }}"
+            TARGET_GROUP_ARN="${{ secrets.TARGET_GROUP_ARN_GREEN }}"
           else
-            echo "TARGET_INSTANCE=${{ secrets.BLUE_INSTANCE_ID }}" >> $GITHUB_ENV
-            echo "INACTIVE_INSTANCE=${{ secrets.GREEN_INSTANCE_ID }}" >> $GITHUB_ENV
-            echo "TARGET_GROUP_ARN=${{ secrets.TARGET_GROUP_ARN_8080 }}" >> $GITHUB_ENV
+            TARGET_INSTANCE="${{ secrets.BLUE_INSTANCE_ID }}"
+            INACTIVE_INSTANCE="${{ secrets.GREEN_INSTANCE_ID }}"
+            TARGET_GROUP_ARN="${{ secrets.TARGET_GROUP_ARN_8080 }}"
           fi
 
-          echo "TARGET_INSTANCE=${{ env.TARGET_INSTANCE }}"
-          echo "INACTIVE_INSTANCE=${{ env.INACTIVE_INSTANCE }}"
-          echo "TARGET_GROUP_ARN=${{ env.TARGET_GROUP_ARN }}"
+          echo "TARGET_INSTANCE: ${TARGET_INSTANCE}"
+          echo "INACTIVE_INSTANCE: ${INACTIVE_INSTANCE}"
+          echo "TARGET_GROUP_ARN: ${TARGET_GROUP_ARN}"
+
+          echo "TARGET_INSTANCE=${TARGET_INSTANCE}" >> $GITHUB_ENV
+          echo "INACTIVE_INSTANCE=${INACTIVE_INSTANCE}" >> $GITHUB_ENV
+          echo "TARGET_GROUP_ARN=${TARGET_GROUP_ARN}" >> $GITHUB_ENV
           
           EC2_HOST=$(ssh ubuntu@${{ secrets.EC2_HOST }} "aws ec2 describe-instances \
             --instance-ids ${{ env.TARGET_INSTANCE }} \
             --query 'Reservations[0].Instances[0].PublicIpAddress' \
             --output text")
-          echo "EC2_HOST=${EC2_HOST}" >> $GITHUB_ENV
 
-          echo "EC2_HOST=${EC2_HOST}"
+          echo "EC2_HOST: ${EC2_HOST}"
+          echo "EC2_HOST=${EC2_HOST}" >> $GITHUB_ENV
           
-          ssh-keyscan -H ${{ env.EC2_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H "${EC2_HOST}" >> ~/.ssh/known_hosts
 
 
       - name: Docker Pull
