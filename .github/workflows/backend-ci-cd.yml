@@ -156,15 +156,11 @@ jobs:
             aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN_443 }} --default-actions Type=forward,TargetGroupArn=${{ env.TARGET_GROUP_ARN }}
           "
           
-          RULE_ARNs=$(ssh ubuntu@${{ env.EC2_HOST }} <<EOF
-            aws elbv2 describe-rules \
-              --listener-arn ${{ secrets.LISTENER_ARN_443 }} \
-              --query "Rules[?Priority!='default'].RuleArn" \
-              --output text
-          EOF
-          )
+          RULE_ARNs=$(ssh ubuntu@${{ env.EC2_HOST }} "aws elbv2 describe-rules --listener-arn ${{ secrets.LISTENER_ARN_443 }} --query 'Rules[*].RuleArn' --output text")
+          RULE_ARN_ARRAY=($RULE_ARNs)
           
-          for RULE_ARN in ${RULE_ARNs}; do
+          for ((i=0; i<${#RULE_ARN_ARRAY[@]}-1; i++)); do
+            RULE_ARN=${RULE_ARN_ARRAY[$i]}
             echo "Updating rule: ${RULE_ARN}"
             ssh ubuntu@${{ env.EC2_HOST }} "
               aws elbv2 modify-rule --rule-arn $RULE_ARN --actions Type=forward,TargetGroupArn=${{ env.TARGET_GROUP_ARN }}
