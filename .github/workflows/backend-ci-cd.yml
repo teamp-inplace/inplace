@@ -100,7 +100,7 @@ jobs:
           echo "TARGET_GROUP_ARN=${TARGET_GROUP_ARN}" >> $GITHUB_ENV
           
           EC2_HOST=$(ssh ubuntu@${{ secrets.EC2_HOST }} "aws ec2 describe-instances \
-            --instance-ids ${{ env.TARGET_INSTANCE }} \
+            --instance-ids ${TARGET_INSTANCE} \
             --query 'Reservations[0].Instances[0].PublicIpAddress' \
             --output text")
 
