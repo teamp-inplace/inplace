@@ -135,7 +135,7 @@ jobs:
       - name: Health Check
         run: |
           for i in {1..40}; do
-            if ssh ubuntu@${{ env.EC2_HOST }} "curl -s http://localhost:${{ secrets.EC2_HEALTH_CHECK_PATH }} | grep '\"status\":\"UP\"' > /dev/null"; then
+            if ssh ubuntu@${{ env.EC2_HOST }} "curl -s http://localhost:${{ secrets.EC2_MONITORING_PORT }}${{ secrets.EC2_HEALTH_CHECK_PATH}} | grep '\"status\":\"UP\"' > /dev/null"; then
               echo "Application is healthy"
               break
             fi
