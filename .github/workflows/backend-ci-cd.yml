@@ -148,12 +148,16 @@ jobs:
             exit 1
           fi
 
-      # 443 리스너의 모든 규칙의 타겟 그룹을 변경
+      # 443 리스너의 기본규칙 & 모든 규칙의 타겟 그룹을 변경
       - name: Update Load Balancer
         if: success()
         run: |
-          RULE_ARNs=$(ssh ubuntu@${{ env.EC2_HOST }} "aws elbv2 describe-rules --listener-arn ${{ secrets.LISTENER_ARN_443 }} --query 'Rules[*].RuleArn' --output text")
-    
+          ssh ubuntu@${{ env.EC2_HOST }} "
+            aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN_443 }} --default-actions Type=forward,TargetGroupArn=${{ env.TARGET_GROUP_ARN }}
+          "
+          
+          RULE_ARNs=$(ssh ubuntu@${{ env.EC2_HOST }} "aws elbv2 describe-rules --listener-arn ${{ secrets.LISTENER_ARN_443 }} --query 'Rules[?Priority!=`default`].RuleArn' --output text")
+
           for RULE_ARN in ${RULE_ARNs}; do
             echo "Updating rule: ${RULE_ARN}"
             ssh ubuntu@${{ env.EC2_HOST }} "
