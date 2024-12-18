@@ -107,7 +107,16 @@ jobs:
           echo "EC2_HOST: ${EC2_HOST}"
           echo "EC2_HOST=${EC2_HOST}" >> $GITHUB_ENV
           
+          INACTIVE_EC2_HOST=$(ssh ubuntu@${{ secrets.EC2_HOST }} "aws ec2 describe-instances \
+            --instance-ids ${INACTIVE_INSTANCE} \
+            --query 'Reservations[0].Instances[0].PublicIpAddress' \
+            --output text")
+          
+          echo "INACTIVE_EC2_HOST: ${INACTIVE_EC2_HOST}"
+          echo "INACTIVE_EC2_HOST=${INACTIVE_EC2_HOST}" >> $GITHUB_ENV
+          
           ssh-keyscan -H "${EC2_HOST}" >> ~/.ssh/known_hosts
+          ssh-keyscan -H "${INACTIVE_EC2_HOST}" >> ~/.ssh/known_hosts
 
 
       - name: Docker Pull
@@ -121,7 +130,7 @@ jobs:
 
       - name: Run New Container
         run: |
-          ssh ubuntu@${{ env.EC2_HOST }} "sudo docker run --name inplace --rm -d -p 8080:8080 -p ${{ secrets.MONITORING_PORT }}:${{ secrets.MONITORING_PORT }} --env-file /home/ubuntu/.env ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
+          ssh ubuntu@${{ env.EC2_HOST }} "sudo docker run --name inplace -d -p 8080:8080 -p ${{ secrets.MONITORING_PORT }}:${{ secrets.MONITORING_PORT }} --env-file /home/ubuntu/.env ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
 
       - name: Health Check
         run: |
@@ -151,13 +160,13 @@ jobs:
 
       - name: Cleanup Old Container
         run: |
-          ssh ubuntu@${{ env.EC2_HOST }} "
+          ssh ubuntu@${{ env.INACTIVE_EC2_HOST }} "
               sudo docker stop inplace || true && \
               sudo docker rm inplace || true
           "
 
       - name: Cleanup Docker System
-        run: ssh ubuntu@${{ env.EC2_HOST }} "sudo docker system prune -f"
+        run: ssh ubuntu@${{ env.INACTIVE_EC2_HOST }} "sudo docker system prune -f"
 
 
       # 인스턴스 태그 업데이트
