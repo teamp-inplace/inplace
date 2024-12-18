@@ -80,10 +80,12 @@ jobs:
           echo "ACTIVE_INSTANCE: ${ACTIVE_INSTANCE}"
           
           if [[ "${ACTIVE_INSTANCE}" == "${{ secrets.BLUE_INSTANCE_ID }}" ]]; then
+            echo "active instance is blue. target will be green."
             TARGET_INSTANCE="${{ secrets.GREEN_INSTANCE_ID }}"
             INACTIVE_INSTANCE="${{ secrets.BLUE_INSTANCE_ID }}"
             TARGET_GROUP_ARN="${{ secrets.TARGET_GROUP_ARN_GREEN }}"
           else
+            echo "active instance is green. target will be blue."
             TARGET_INSTANCE="${{ secrets.BLUE_INSTANCE_ID }}"
             INACTIVE_INSTANCE="${{ secrets.GREEN_INSTANCE_ID }}"
             TARGET_GROUP_ARN="${{ secrets.TARGET_GROUP_ARN_8080 }}"
