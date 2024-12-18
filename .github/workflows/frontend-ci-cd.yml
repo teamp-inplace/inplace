@@ -58,4 +58,4 @@ jobs:
             aws s3 sync dist/ s3://inplace.my --delete
             aws s3 sync dist/ s3://www.inplace.my --delete
             # CloudFront 캐시 무효화 필수
-            aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_ID }} --paths "/*"
+            aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_ID }} --paths "/*"
