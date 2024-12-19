@@ -23,6 +23,7 @@ jobs:
         run: npm run format -- --check
       - name: Run Tests
         run: npm test
+
   build-and-deploy:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -59,3 +60,23 @@ jobs:
             aws s3 sync dist/ s3://www.inplace.my --delete
             # CloudFront 캐시 무효화 필수
             aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_ID }} --paths "/*"
+
+  sync-fork:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: creates output
+        run: sh ./frontend/build.sh
+      - name: Pushes to fork repository
+        id: push_directory
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.VERCEL_PAT }}
+        with:
+          source-directory: 'output'
+          destination-github-username: 'userjmmm'
+          destination-repository-name: 'inplace'
+          user-email: ${{ secrets.VERCEL_EMAIL }}
+          commit-message: ${{ github.event.commits[0].message }}
+          target-branch: main
