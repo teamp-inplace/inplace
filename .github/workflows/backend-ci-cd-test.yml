@@ -83,7 +83,7 @@ jobs:
         - name: Stop and remove existing container
           run: |
             ssh ubuntu@${{ secrets.EC2_HOST_TEST_SERVER }} "
-              if [ \$(docker ps -q --filter name=inplace-test) ]; then
+              if [ \$(sudo docker ps -q --filter name=inplace-test) ]; then
                 sudo docker stop inplace-test
                 sudo docker rm inplace-test
               fi
