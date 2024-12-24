@@ -13,7 +13,9 @@ const DEFAULT_CONFIGS: Record<Environment, Config> = {
   },
 } as const;
 
-export const getCurrentConfig = (): Config => {
+const getCurrentConfig = (): Config => {
   const currentMode = import.meta.env.MODE as Environment;
   return DEFAULT_CONFIGS[currentMode];
 };
+
+export default getCurrentConfig;
