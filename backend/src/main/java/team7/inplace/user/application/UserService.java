@@ -49,7 +49,10 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<Long> getInfluencerIdsByUsername(Long userId) {
         List<FavoriteInfluencer> likes = favoriteInfluencerRepository.findByUserId(userId);
-        return likes.stream().map(FavoriteInfluencer::getInfluencer).map(Influencer::getId)
+        return likes.stream()
+                .filter(FavoriteInfluencer::isLiked)
+                .map(FavoriteInfluencer::getInfluencer)
+                .map(Influencer::getId)
                 .toList();
     }
 
