@@ -8,11 +8,9 @@ import lombok.NoArgsConstructor;
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
+@Entity(name = "influencers")
 @NoArgsConstructor(access = PROTECTED)
-@AllArgsConstructor
-@Entity
 public class Influencer {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,15 +24,23 @@ public class Influencer {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String imgUrl;
 
-    public Influencer(String name, String imgUrl, String job) {
+    @Embedded
+    private Channel channel;
+
+    public Influencer(String name, String imgUrl, String job, String title, String channelId) {
         this.name = name;
         this.imgUrl = imgUrl;
         this.job = job;
+        this.channel = new Channel(title, channelId);
     }
 
     public void update(String name, String imgUrl, String job) {
         this.name = name;
         this.imgUrl = imgUrl;
         this.job = job;
+    }
+
+    public void updateLastVideo(String lastVideoId) {
+        this.channel.updateLastVideo(lastVideoId);
     }
 }

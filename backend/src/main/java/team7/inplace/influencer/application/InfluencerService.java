@@ -60,8 +60,10 @@ public class InfluencerService {
 
     @Transactional
     public Long createInfluencer(InfluencerCommand command) {
-        Influencer influencer = InfluencerCommand.to(command);
-        return influencerRepository.save(influencer).getId();
+        var influencer = command.toEntity();
+        influencerRepository.save(influencer);
+
+        return influencer.getId();
     }
 
     @Transactional

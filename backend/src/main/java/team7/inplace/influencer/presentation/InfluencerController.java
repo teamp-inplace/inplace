@@ -41,8 +41,8 @@ public class InfluencerController implements InfluencerControllerApiSpec {
 
     @PostMapping()
     public ResponseEntity<Long> createInfluencer(@RequestBody InfluencerRequest request) {
-        InfluencerCommand influencerCommand = InfluencerRequest.to(request);
-        Long savedId = influencerService.createInfluencer(influencerCommand);
+        var command = request.toCommand();
+        Long savedId = influencerService.createInfluencer(command);
 
         return new ResponseEntity<>(savedId, HttpStatus.OK);
     }
@@ -52,11 +52,7 @@ public class InfluencerController implements InfluencerControllerApiSpec {
             @PathVariable Long id,
             @RequestBody InfluencerRequest request
     ) {
-        InfluencerCommand influencerCommand = new InfluencerCommand(
-                request.influencerName(),
-                request.influencerImgUrl(),
-                request.influencerJob()
-        );
+        InfluencerCommand influencerCommand = request.toCommand();
         Long updatedId = influencerService.updateInfluencer(id, influencerCommand);
 
         return new ResponseEntity<>(updatedId, HttpStatus.OK);
