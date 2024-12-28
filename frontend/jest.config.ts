@@ -16,7 +16,22 @@ const config: Config = {
   },
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   transform: {
-    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        diagnostics: {
+          ignoreCodes: [1343],
+        },
+        astTransformers: {
+          before: [
+            {
+              path: 'node_modules/ts-jest-mock-import-meta',
+              options: { metaObjectReplacement: { url: 'https://www.url.com' } },
+            },
+          ],
+        },
+      },
+    ],
     '.+\\.(css|styl|less|sass|scss|png|jpg|svg|ttf|woff|woff2)$': 'jest-transform-stub',
   },
 };

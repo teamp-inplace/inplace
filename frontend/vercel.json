@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "https://api.inplace.my/$1"
+      "destination": "https://43.203.207.183.nip.io/$1"
     }
   ]
 }
