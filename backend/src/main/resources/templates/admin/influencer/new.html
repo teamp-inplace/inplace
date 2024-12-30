@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>인플루언서 등록</title>
+	<link href="/css/style.css" rel="stylesheet">
+	<link href="/css/influencer/new.css" rel="stylesheet">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div class="header">
+	<a class="header-link" href="/admin/main">홈</a>
+</div>
+
+<h1>인플루언서 검색</h1>
+
+<div class="container">
+	<div class="search-container">
+		<input id="searchInput" placeholder="채널명을 입력하세요" type="text">
+		<button id="searchBtn" type="button">검색</button>
+	</div>
+
+	<div class="search-results">
+		<table>
+			<thead>
+			<tr>
+				<th>프로필</th>
+				<th>채널명</th>
+				<th>채널</th>
+				<th>등록</th>
+			</tr>
+			</thead>
+			<tbody id="searchResultsBody"></tbody>
+		</table>
+	</div>
+</div>
+
+<!-- 인플루언서 정보 입력 모달 -->
+<div class="modal" id="registerModal">
+	<div class="modal-content">
+		<span class="close">&times;</span>
+		<h2>인플루언서 정보 입력</h2>
+		<form class="form-inline" id="influencerForm">
+			<div class="form-group">
+				<label for="name">이름</label>
+				<input id="name" name="name" required type="text">
+			</div>
+			<div class="form-group">
+				<label for="job">직업</label>
+				<input id="job" name="job" required type="text">
+			</div>
+			<input id="channelId" type="hidden">
+			<input id="channelTitle" type="hidden">
+			<input id="thumbnailUrl" type="hidden">
+			<button type="submit">등록하기</button>
+		</form>
+	</div>
+</div>
+
+<input id="youtubeApiKey" th:value="${youtubeApiKey}" type="hidden">
+<script src="/js/influencer/new.js"></script>
+</body>
+</html>
