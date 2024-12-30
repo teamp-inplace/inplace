@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
-@Entity(name = "influencers")
+@Entity
+@Table(name = "influencers")
 @NoArgsConstructor(access = PROTECTED)
 public class Influencer {
     @Id
