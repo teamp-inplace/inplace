@@ -2,7 +2,6 @@ package team7.inplace.review.application;
 
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,6 @@ import team7.inplace.security.application.CurrentUserProvider;
 import team7.inplace.security.util.AuthorizationUtil;
 import team7.inplace.user.domain.User;
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ReviewService {
@@ -40,8 +38,6 @@ public class ReviewService {
         Place place = placeRepository.findById(placeId)
             .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
 
-        log.info("user.getNickname: {}", user.getNickname());
-        
         if (reviewRepository.existsByUserIdAndPlaceId(user.getId(), placeId)) {
             throw InplaceException.of(ReviewErrorCode.REVIEW_ALREADY_EXISTS);
         }

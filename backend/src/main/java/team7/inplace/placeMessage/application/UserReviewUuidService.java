@@ -3,7 +3,6 @@ package team7.inplace.placeMessage.application;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team7.inplace.global.exception.InplaceException;
@@ -13,7 +12,6 @@ import team7.inplace.placeMessage.persistence.UserReviewUuidRepository;
 import team7.inplace.user.domain.User;
 import team7.inplace.user.persistence.UserRepository;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserReviewUuidService {
@@ -27,7 +25,6 @@ public class UserReviewUuidService {
             userId, placeId);
 
         if (existingUuid.isPresent()) {
-            log.info("existing uuid");
             return existingUuid.get().getUuid();
         }
 
