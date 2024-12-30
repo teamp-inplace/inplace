@@ -17,7 +17,7 @@ import team7.inplace.user.domain.User;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Entity
-public class UserReviewLink {
+public class UserReviewUuid {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,14 +36,10 @@ public class UserReviewLink {
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
-    @Column(nullable = false)
-    private LocalDateTime expiresDate;
-
-    public UserReviewLink(User user, Long placeId, String uuid, LocalDateTime expiresDate) {
+    public UserReviewUuid(User user, Long placeId, String uuid) {
         this.user = user;
         this.placeId = placeId;
         this.uuid = uuid;
         this.createdDate = LocalDateTime.now();
-        this.expiresDate = expiresDate;
     }
 }
