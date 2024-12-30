@@ -29,11 +29,11 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final PlaceRepository placeRepository;
     private final CurrentUserProvider currentUserProvider;
-    private final UserReviewUuidRepository userReviewLinkRepository;
+    private final UserReviewUuidRepository userReviewUuidRepository;
 
     @Transactional
     public void createReview(Long placeId, ReviewCommand command, String uuid) {
-        User user = userReviewLinkRepository.findUserByUuidAndPlaceId(uuid, placeId)
+        User user = userReviewUuidRepository.findUserByUuidAndPlaceId(uuid, placeId)
             .orElseThrow(() -> InplaceException.of(ReviewErrorCode.INVALID_UUID));
         Place place = placeRepository.findById(placeId)
             .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
