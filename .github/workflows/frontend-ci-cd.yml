@@ -67,7 +67,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: creates output
-        run: sh ./frontend/build.sh
+        working-directory: frontend
+        run: sh build.sh
       - name: Pushes to fork repository
         id: push_directory
         uses: cpina/github-action-push-to-another-repository@main
@@ -79,4 +80,4 @@ jobs:
           destination-repository-name: 'inplace'
           user-email: ${{ secrets.VERCEL_EMAIL }}
           commit-message: ${{ github.event.commits[0].message }}
-          target-branch: main
+          target-branch: dev
