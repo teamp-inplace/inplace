@@ -1,6 +1,6 @@
 package team7.inplace.influencer.domain;
 
-import static lombok.AccessLevel.*;
+import static lombok.AccessLevel.PROTECTED;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -14,7 +14,7 @@ public class Channel {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String channelId;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = true, columnDefinition = "TEXT")
     private String lastVideoId;
 
     public Channel(String channelTitle, String channelId) {
