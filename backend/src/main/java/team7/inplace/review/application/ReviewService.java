@@ -1,6 +1,8 @@
 package team7.inplace.review.application;
 
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import team7.inplace.global.exception.code.PlaceErrorCode;
 import team7.inplace.global.exception.code.ReviewErrorCode;
 import team7.inplace.place.domain.Place;
 import team7.inplace.place.persistence.PlaceRepository;
+import team7.inplace.placeMessage.persistence.UserReviewUuidRepository;
 import team7.inplace.review.application.dto.MyReviewInfo;
 import team7.inplace.review.application.dto.ReviewCommand;
 import team7.inplace.review.application.dto.ReviewInfo;
@@ -20,8 +23,7 @@ import team7.inplace.security.application.CurrentUserProvider;
 import team7.inplace.security.util.AuthorizationUtil;
 import team7.inplace.user.domain.User;
 
-import java.util.Objects;
-
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ReviewService {
@@ -29,17 +31,17 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final PlaceRepository placeRepository;
     private final CurrentUserProvider currentUserProvider;
+    private final UserReviewUuidRepository userReviewLinkRepository;
 
     @Transactional
-    public void createReview(Long placeId, ReviewCommand command) {
-        if (AuthorizationUtil.isNotLoginUser()) {
-            throw InplaceException.of(AuthorizationErrorCode.TOKEN_IS_EMPTY);
-        }
-
-        User user = currentUserProvider.getCurrentUser();
+    public void createReview(Long placeId, ReviewCommand command, String uuid) {
+        User user = userReviewLinkRepository.findUserByUuidAndPlaceId(uuid, placeId)
+            .orElseThrow(() -> InplaceException.of(ReviewErrorCode.INVALID_UUID));
         Place place = placeRepository.findById(placeId)
-                .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
+            .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
 
+        log.info("user.getNickname: {}", user.getNickname());
+        
         if (reviewRepository.existsByUserIdAndPlaceId(user.getId(), placeId)) {
             throw InplaceException.of(ReviewErrorCode.REVIEW_ALREADY_EXISTS);
         }
@@ -71,7 +73,7 @@ public class ReviewService {
 
         Long userId = AuthorizationUtil.getUserId();
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> InplaceException.of(ReviewErrorCode.NOT_FOUND));
+            .orElseThrow(() -> InplaceException.of(ReviewErrorCode.NOT_FOUND));
 
         if (!review.getUser().getId().equals(userId)) {
             throw InplaceException.of(ReviewErrorCode.NOT_OWNER);
