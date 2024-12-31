@@ -178,7 +178,6 @@ public class PlaceService {
     }
 
     private void findOrCreateLikedPlace(Long placeId, boolean likes) {
-
         Long userId = getUserId().orElseThrow(
             () -> InplaceException.of(AuthorizationErrorCode.TOKEN_IS_EMPTY)
         );
@@ -195,7 +194,6 @@ public class PlaceService {
 
         likedPlace.updateLike(likes);
         likedPlaceRepository.save(likedPlace);
-
     }
 
     private Optional<Long> getUserId() {
@@ -204,10 +202,11 @@ public class PlaceService {
     }
 
     private boolean isLikedPlace(Long placeId) {
-        return getUserId()
-            .flatMap(userId -> likedPlaceRepository.findByUserIdAndPlaceId(userId, placeId))
-            .map(LikedPlace::isLiked)
-            .orElse(false);
+        Long userId = getUserId().orElseThrow(
+                () -> InplaceException.of(AuthorizationErrorCode.TOKEN_IS_EMPTY)
+        );
+        Optional<LikedPlace> likedPlace = likedPlaceRepository.findByUserIdAndPlaceId(userId, placeId);
+        return likedPlace.map(LikedPlace::isLiked).orElse(false);
     }
 
     public Long createPlace(Create placeCommand) {
