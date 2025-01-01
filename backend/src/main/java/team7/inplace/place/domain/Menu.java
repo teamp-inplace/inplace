@@ -9,15 +9,11 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Entity
 @Table(name = "menus")
-@Slf4j
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Menu {
     @Id
@@ -37,6 +33,7 @@ public class Menu {
 
     private String description;
 
+    @Column(nullable = false)
     private Long placeId;
 
     private Menu(

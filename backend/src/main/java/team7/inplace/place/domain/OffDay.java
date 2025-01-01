@@ -1,5 +1,6 @@
 package team7.inplace.place.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,6 +24,9 @@ public class OffDay {
     private String weekAndDay;
 
     private String temporaryHolidays;
+
+    @Column(nullable = false)
+    private Long placeId;
 
     private OffDay(String holidayName, String weekAndDay, String temporaryHolidays) {
         this.holidayName = holidayName;

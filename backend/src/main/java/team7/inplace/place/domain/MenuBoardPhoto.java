@@ -2,6 +2,7 @@ package team7.inplace.place.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,6 +22,7 @@ public class MenuBoardPhoto {
 
     private String url;
 
+    @Column(nullable = false)
     private Long placeId;
 
     private MenuBoardPhoto(String url) {

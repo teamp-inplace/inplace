@@ -2,6 +2,7 @@ package team7.inplace.place.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,6 +26,7 @@ public class OpenTime {
 
     private String dayOfWeek;
 
+    @Column(nullable = false)
     private Long placeId;
 
     private OpenTime(String timeName, String timeSE, String dayOfWeek) {
