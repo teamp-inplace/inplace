@@ -1,23 +1,31 @@
 package team7.inplace.place.domain;
 
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Embeddable
-@EqualsAndHashCode
+@Entity
+@Table(name = "off_days")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OffDay {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String holidayName;
+
     private String weekAndDay;
+
     private String temporaryHolidays;
 
-    private OffDay(String holydayName, String weekAndDay, String temporaryHolidays) {
-        this.holidayName = holydayName;
+    private OffDay(String holidayName, String weekAndDay, String temporaryHolidays) {
+        this.holidayName = holidayName;
         this.weekAndDay = weekAndDay;
         this.temporaryHolidays = temporaryHolidays;
     }

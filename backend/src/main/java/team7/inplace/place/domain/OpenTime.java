@@ -1,20 +1,31 @@
 package team7.inplace.place.domain;
 
-import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
+import static lombok.AccessLevel.PROTECTED;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Embeddable
-@EqualsAndHashCode
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
+@Table(name = "open_times")
+@NoArgsConstructor(access = PROTECTED)
 public class OpenTime {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String timeName;
+
     private String timeSE;
+
     private String dayOfWeek;
+
+    private Long placeId;
 
     private OpenTime(String timeName, String timeSE, String dayOfWeek) {
         this.timeName = timeName;
