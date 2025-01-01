@@ -13,7 +13,7 @@ export default function Footer() {
               (주) 쿠키 7개입
             </Text>
             <Text size="xxs" weight="normal" variant="#979797">
-              Copyright 2024. sevenKookie Co.,Ltd. All rights reserved
+              Copyright 2024. sevenKookies Co.,Ltd. All rights reserved
             </Text>
             <Text size="xxs" weight="normal" variant="#979797">
               주소 : 대구광역시 북구 대학로 80
