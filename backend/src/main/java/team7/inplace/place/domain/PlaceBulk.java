@@ -2,16 +2,18 @@ package team7.inplace.place.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 
 @Getter
+@AllArgsConstructor
 public class PlaceBulk {
     private Place place;
     private List<Menu> menus;
     private List<OpenTime> openTimes;
     private List<OffDay> offDays;
-    private List<MenuBoardPhoto> menuboardphotourls;
+    private List<MenuBoardPhoto> menuBoardPhotos;
 
 
     public PlaceBulk(
@@ -34,7 +36,7 @@ public class PlaceBulk {
         this.menus = menus.stream()
                 .map(Menu::of)
                 .toList();
-        this.menuboardphotourls = menuboardphotourlList.stream()
+        this.menuBoardPhotos = menuboardphotourlList.stream()
                 .map(MenuBoardPhoto::of)
                 .toList();
     }
