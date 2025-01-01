@@ -58,8 +58,8 @@ public class PlaceSaveRepositoryImpl implements PlaceSaveRepository {
             ps.setString(5, place.getAddress().getAddress1());
             ps.setString(6, place.getAddress().getAddress2());
             ps.setString(7, place.getAddress().getAddress3());
-            ps.setString(8, place.getCoordinate().getLatitude());
-            ps.setString(9, place.getCoordinate().getLongitude());
+            ps.setDouble(8, place.getCoordinate().getLatitude());
+            ps.setDouble(9, place.getCoordinate().getLongitude());
             ps.setTimestamp(10, Timestamp.valueOf(place.getMenuUpdatedAt()));
             return ps;
         }, keyHolder);
