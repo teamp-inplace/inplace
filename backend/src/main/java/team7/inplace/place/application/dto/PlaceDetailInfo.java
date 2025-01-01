@@ -9,8 +9,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import team7.inplace.influencer.domain.Influencer;
 import team7.inplace.place.domain.Menu;
+import team7.inplace.place.domain.MenuBoardPhoto;
 import team7.inplace.place.domain.OpenTime;
-import team7.inplace.place.domain.Place;
+import team7.inplace.place.domain.PlaceBulk;
 import team7.inplace.video.domain.Video;
 
 public record PlaceDetailInfo(
@@ -22,19 +23,20 @@ public record PlaceDetailInfo(
         String videoUrl
 ) {
 
-    public static PlaceDetailInfo from(Place place, Influencer influencer, Video video,
-                                       boolean isLiked, int numOfLikes, int numOfDislikes) {
+    public static PlaceDetailInfo from(
+            PlaceBulk place, Influencer influencer, Video video,
+            boolean isLiked, int numOfLikes, int numOfDislikes
+    ) {
         String influencerName = (influencer != null) ? influencer.getName() : "";
         String videoUrl = (video != null) ? video.getVideoUrl() : "";
-
         return new PlaceDetailInfo(
                 PlaceInfo.of(place, influencerName, isLiked),
-                facilityTree(place.getFacility()),
+                facilityTree(place.getPlace().getFacility()),
                 MenuInfos.of(
-                        place.getMenuboardphotourlList(),
+                        place.getMenuBoardPhotos().stream().map(MenuBoardPhoto::getUrl).toList(),
                         place.getMenus(),
-                        place.getMenuUpdatedAt()),
-                OpenHour.of(place.getOpenPeriods(), place.getOffDays()),
+                        place.getPlace().getMenuUpdatedAt()),
+                OpenHour.of(place.getOpenTimes().stream().toList(), place.getOffDays().stream().toList()),
                 PlaceLikes.of(numOfLikes, numOfDislikes),
                 videoUrl
         );
@@ -66,7 +68,8 @@ public record PlaceDetailInfo(
         public static MenuInfos of(
                 List<String> menuImgUrls,
                 List<Menu> menus,
-                LocalDateTime menuUpdatedAt) {
+                LocalDateTime menuUpdatedAt
+        ) {
             menuImgUrls = menuImgUrls.stream()
                     .filter(url -> url != null && url.isBlank())
                     .toList()
@@ -95,8 +98,9 @@ public record PlaceDetailInfo(
             List<OffDay> offdayList
     ) {
 
-        public static OpenHour of(List<OpenTime> openTimes,
-                                  List<team7.inplace.place.domain.OffDay> closeTimes
+        public static OpenHour of(
+                List<OpenTime> openTimes,
+                List<team7.inplace.place.domain.OffDay> closeTimes
         ) {
             List<Period> periods = openTimes.stream()
                     .map(time -> new Period(time.getTimeName(), time.getTimeSE(), time.getDayOfWeek()))
