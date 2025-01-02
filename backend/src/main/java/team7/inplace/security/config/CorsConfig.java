@@ -14,55 +14,51 @@ public class CorsConfig {
     @Bean
     @Profile("prod")
     public CorsFilter corsFilterProd() {
-        var source = new UrlBasedCorsConfigurationSource();
-        var config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOriginPattern("https://www.inplace.my");
-        config.addAllowedOriginPattern("https://inplace.my");
-        config.addAllowedHeader("Origin");
-        config.addAllowedHeader("Accept");
-        config.addAllowedHeader("X-Requested-With");
-        config.addAllowedHeader("Content-Type");
-        config.addAllowedHeader("Access-Control-Request-Method");
-        config.addAllowedHeader("Access-Control-Request-Headers");
-        config.addAllowedHeader("Authorization");
-        config.addAllowedMethod("GET");
-        config.addAllowedMethod("POST");
-        config.addAllowedMethod("PUT");
-        config.addAllowedMethod("DELETE");
-        config.addAllowedMethod("OPTIONS");
-        config.addAllowedMethod("PATCH");
-        config.addAllowedMethod("HEAD");
-        config.setMaxAge(3600L);
-        config.setExposedHeaders(Arrays.asList("Location", "Set-Cookie"));
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
+        return createCorsFilter(
+                "https://www.inplace.my",
+                "https://inplace.my"
+        );
     }
 
     @Bean
     @Profile("dev")
     public CorsFilter corsFilterDev() {
+        return createCorsFilter("https://inplace-dev.vercel.app/");
+    }
+
+    @Bean
+    @Profile("local")
+    public CorsFilter corsFilterLocal() {
+        return createCorsFilter("http://localhost:3000");
+    }
+
+    private CorsFilter createCorsFilter(String... allowedOriginPatterns) {
         var source = new UrlBasedCorsConfigurationSource();
-        var config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOriginPattern("https://inplace-dev.vercel.app/");
-        config.addAllowedHeader("Origin");
-        config.addAllowedHeader("Accept");
-        config.addAllowedHeader("X-Requested-With");
-        config.addAllowedHeader("Content-Type");
-        config.addAllowedHeader("Access-Control-Request-Method");
-        config.addAllowedHeader("Access-Control-Request-Headers");
-        config.addAllowedHeader("Authorization");
-        config.addAllowedMethod("GET");
-        config.addAllowedMethod("POST");
-        config.addAllowedMethod("PUT");
-        config.addAllowedMethod("DELETE");
-        config.addAllowedMethod("OPTIONS");
-        config.addAllowedMethod("PATCH");
-        config.addAllowedMethod("HEAD");
-        config.setMaxAge(3600L);
-        config.setExposedHeaders(Arrays.asList("Location", "Set-Cookie"));
+        var config = createCorsConfiguration(allowedOriginPatterns);
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
+    }
+
+    private CorsConfiguration createCorsConfiguration(String... allowedOriginPatterns) {
+        var config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        Arrays.stream(allowedOriginPatterns).forEach(config::addAllowedOriginPattern);
+
+        // 공통 헤더 설정
+        Arrays.asList(
+                "Origin", "Accept", "X-Requested-With", "Content-Type",
+                "Access-Control-Request-Method", "Access-Control-Request-Headers",
+                "Authorization"
+        ).forEach(config::addAllowedHeader);
+
+        // 공통 메소드 설정
+        Arrays.asList(
+                "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"
+        ).forEach(config::addAllowedMethod);
+
+        config.setMaxAge(3600L);
+        config.setExposedHeaders(Arrays.asList("Location", "Set-Cookie"));
+
+        return config;
     }
 }
