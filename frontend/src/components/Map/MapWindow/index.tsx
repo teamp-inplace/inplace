@@ -25,6 +25,19 @@ export default function MapWindow({
   const mapRef = useRef<kakao.maps.Map | null>(null);
   const [mapCenter, setMapCenter] = useState(center);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const accumulatedPlacesRef = useRef<Set<string>>(new Set());
+  const [accumulatedPlaces, setAccumulatedPlaces] = useState<PlaceData[]>([]);
+
+  useEffect(() => {
+    const newPlaces = places.filter((place) => !accumulatedPlacesRef.current.has(place.placeId.toString()));
+
+    if (newPlaces.length > 0) {
+      newPlaces.forEach((place) => {
+        accumulatedPlacesRef.current.add(place.placeId.toString());
+      });
+      setAccumulatedPlaces((prev) => [...prev, ...newPlaces]);
+    }
+  }, [places]);
 
   const updateBounds = useCallback(() => {
     if (!mapRef.current) return;
@@ -112,7 +125,7 @@ export default function MapWindow({
         center={mapCenter}
         style={{ width: '100%', height: '100%' }}
         level={4}
-        onCreate={(map: kakao.maps.Map | null) => {
+        onCreate={(map) => {
           mapRef.current = map;
         }}
         onCenterChanged={handleCenterChanged}
@@ -128,8 +141,14 @@ export default function MapWindow({
             }}
           />
         )}
-        {places.map((place) => (
-          <MapMarker key={place.placeId} position={{ lat: Number(place.latitude), lng: Number(place.longitude) }} />
+        {accumulatedPlaces.map((place) => (
+          <MapMarker
+            key={place.placeId}
+            position={{
+              lat: Number(place.latitude),
+              lng: Number(place.longitude),
+            }}
+          />
         ))}
       </Map>
       <ResetButtonContainer>
