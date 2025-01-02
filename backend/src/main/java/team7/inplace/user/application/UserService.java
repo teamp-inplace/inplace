@@ -18,6 +18,7 @@ import team7.inplace.user.persistence.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -47,13 +48,9 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<Long> getInfluencerIdsByUsername(Long userId) {
-        List<FavoriteInfluencer> likes = favoriteInfluencerRepository.findByUserId(userId);
-        return likes.stream()
-                .filter(FavoriteInfluencer::isLiked)
-                .map(FavoriteInfluencer::getInfluencer)
-                .map(Influencer::getId)
-                .toList();
+    public List<Long> getInfluencerIdsByUserId(Long userId) {
+        Set<Long> likes = favoriteInfluencerRepository.findLikedInfluencerIdsByUserId(userId);
+        return likes.stream().toList();
     }
 
     @Transactional
