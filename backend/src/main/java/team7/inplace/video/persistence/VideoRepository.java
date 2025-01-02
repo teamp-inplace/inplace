@@ -12,7 +12,7 @@ import team7.inplace.video.domain.Video;
 
 public interface VideoRepository extends JpaRepository<Video, Long> {
 
-    @Query("SELECT v FROM Video v JOIN FETCH v.place JOIN FETCH v.influencer ORDER BY v.viewCountIncrease DESC")
+    @Query("SELECT v FROM Video v JOIN FETCH v.place JOIN FETCH v.influencer ORDER BY v.view.viewCountIncrease DESC")
     List<Video> findTop10ByOrderByViewCountIncreaseDesc(Pageable pageable);
 
     @Query("SELECT v FROM Video v JOIN FETCH v.place JOIN FETCH v.influencer WHERE v.influencer.id IN :influencerIds ORDER BY v.id DESC")
@@ -24,8 +24,8 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
     Optional<Video> findTopByPlaceOrderByIdDesc(Place place);
 
     @Query(
-        value = "SELECT v FROM Video v JOIN FETCH v.influencer WHERE v.place IS NULL",
-        countQuery = "SELECT COUNT(v) FROM Video v"
+            value = "SELECT v FROM Video v JOIN FETCH v.influencer WHERE v.place IS NULL",
+            countQuery = "SELECT COUNT(v) FROM Video v"
     )
     Page<Video> findAllByPlaceIsNull(Pageable pageable);
 
