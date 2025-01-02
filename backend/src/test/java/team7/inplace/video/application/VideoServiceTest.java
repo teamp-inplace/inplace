@@ -1,5 +1,12 @@
 package team7.inplace.video.application;
 
+import static org.mockito.BDDMockito.given;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,14 +33,6 @@ import team7.inplace.video.application.dto.VideoInfo;
 import team7.inplace.video.domain.Video;
 import team7.inplace.video.persistence.VideoRepository;
 import team7.inplace.video.presentation.dto.VideoSearchParams;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class VideoServiceTest {
@@ -71,30 +70,14 @@ public class VideoServiceTest {
                 "menuImg.url", "카페",
                 "Address 1|Address 2|Address 3",
                 "10.0", "10.0",
-                Arrays.asList("한글날|수|N", "크리스마스|수|Y"),
-                Arrays.asList("오픈 시간|9:00 AM|월", "닫는 시간|6:00 PM|월"),
-                Arrays.asList("삼겹살|5000|false|menu.url|description",
-                        "돼지찌개|7000|true|menu.url|description"),
-                LocalDateTime.of(2024, 3, 28, 5, 30),
-                Arrays.asList(
-                        "menuBoard1.url",
-                        "menuBoard2.url"
-                )
+                LocalDateTime.of(2024, 3, 28, 5, 30)
         );
         Place place2 = new Place("Place 2",
                 "\"wifi\": true, \"pet\": false, \"parking\": false, \"forDisabled\": true, \"nursery\": false, \"smokingRoom\": false}",
                 "menuImg.url", "일식",
                 "Address 1|Address 2|Address 3",
                 "10.0", "50.0",
-                Arrays.asList("한글날|수|N", "크리스마스|수|Y"),
-                Arrays.asList("오픈 시간|9:00 AM|월", "닫는 시간|6:00 PM|월"),
-                Arrays.asList("삼겹살|5000|false|menu.url|description",
-                        "돼지찌개|7000|true|menu.url|description"),
-                LocalDateTime.of(2024, 3, 28, 5, 30),
-                Arrays.asList(
-                        "menuBoard1.url",
-                        "menuBoard2.url"
-                )
+                LocalDateTime.of(2024, 3, 28, 5, 30)
         );
         // method 1 실행 결과 값 설정
         List<Place> placeList = List.of(place1, place2);
@@ -119,8 +102,9 @@ public class VideoServiceTest {
         ArgumentCaptor<Place> captor_pla = ArgumentCaptor.forClass(Place.class);
         given(videoRepository.findTopByPlaceOrderByIdDesc(captor_pla.capture())).willAnswer(
                 invocation -> {
-                    if (captor_pla.getValue() == place1)
+                    if (captor_pla.getValue() == place1) {
                         return Optional.of(video1);
+                    }
                     return Optional.of(video2);
                 }
         );
@@ -140,15 +124,7 @@ public class VideoServiceTest {
                 "menuImg.url", "카페",
                 "Address 1|Address 2|Address 3",
                 "10.0", "10.0",
-                Arrays.asList("한글날|수|N", "크리스마스|수|Y"),
-                Arrays.asList("오픈 시간|9:00 AM|월", "닫는 시간|6:00 PM|월"),
-                Arrays.asList("삼겹살|5000|false|menu.url|description",
-                        "돼지찌개|7000|true|menu.url|description"),
-                LocalDateTime.of(2024, 3, 28, 5, 30),
-                Arrays.asList(
-                        "menuBoard1.url",
-                        "menuBoard2.url"
-                )
+                LocalDateTime.of(2024, 3, 28, 5, 30)
         );
 
         // Video 객체
@@ -182,15 +158,7 @@ public class VideoServiceTest {
                 "menuImg.url", "카페",
                 "Address 1|Address 2|Address 3",
                 "10.0", "10.0",
-                Arrays.asList("한글날|수|N", "크리스마스|수|Y"),
-                Arrays.asList("오픈 시간|9:00 AM|월", "닫는 시간|6:00 PM|월"),
-                Arrays.asList("삼겹살|5000|false|menu.url|description",
-                        "돼지찌개|7000|true|menu.url|description"),
-                LocalDateTime.of(2024, 3, 28, 5, 30),
-                Arrays.asList(
-                        "menuBoard1.url",
-                        "menuBoard2.url"
-                )
+                LocalDateTime.of(2024, 3, 28, 5, 30)
         );
 
         // method 1 실행 결과 값 설정
@@ -230,15 +198,7 @@ public class VideoServiceTest {
                 "menuImg.url", "카페",
                 "Address 1|Address 2|Address 3",
                 "10.0", "10.0",
-                Arrays.asList("한글날|수|N", "크리스마스|수|Y"),
-                Arrays.asList("오픈 시간|9:00 AM|월", "닫는 시간|6:00 PM|월"),
-                Arrays.asList("삼겹살|5000|false|menu.url|description",
-                        "돼지찌개|7000|true|menu.url|description"),
-                LocalDateTime.of(2024, 3, 28, 5, 30),
-                Arrays.asList(
-                        "menuBoard1.url",
-                        "menuBoard2.url"
-                )
+                LocalDateTime.of(2024, 3, 28, 5, 30)
         );
 
         // Influencer 객체
@@ -275,15 +235,7 @@ public class VideoServiceTest {
                 "menuImg.url", "카페",
                 "Address 1|Address 2|Address 3",
                 "10.0", "10.0",
-                Arrays.asList("한글날|수|N", "크리스마스|수|Y"),
-                Arrays.asList("오픈 시간|9:00 AM|월", "닫는 시간|6:00 PM|월"),
-                Arrays.asList("삼겹살|5000|false|menu.url|description",
-                        "돼지찌개|7000|true|menu.url|description"),
-                LocalDateTime.of(2024, 3, 28, 5, 30),
-                Arrays.asList(
-                        "menuBoard1.url",
-                        "menuBoard2.url"
-                )
+                LocalDateTime.of(2024, 3, 28, 5, 30)
         );
 
         // Video 객체

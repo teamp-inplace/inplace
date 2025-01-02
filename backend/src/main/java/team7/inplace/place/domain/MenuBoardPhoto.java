@@ -11,32 +11,25 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
-@Table(name = "open_times")
+@Getter
+@Table(name = "menu_board_photos")
 @NoArgsConstructor(access = PROTECTED)
-public class OpenTime {
+public class MenuBoardPhoto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String timeName;
-
-    private String timeSE;
-
-    private String dayOfWeek;
+    private String url;
 
     @Column(nullable = false)
     private Long placeId;
 
-    private OpenTime(String timeName, String timeSE, String dayOfWeek) {
-        this.timeName = timeName;
-        this.timeSE = timeSE;
-        this.dayOfWeek = dayOfWeek;
+    private MenuBoardPhoto(String url) {
+        this.url = url;
     }
 
-    public static OpenTime of(String openTime) {
-        String[] time = openTime.split("\\|");
-        return new OpenTime(time[0], time[1], time[2]);
+    public static MenuBoardPhoto of(String url) {
+        return new MenuBoardPhoto(url);
     }
 }

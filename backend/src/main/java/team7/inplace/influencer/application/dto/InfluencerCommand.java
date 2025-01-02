@@ -5,14 +5,18 @@ import team7.inplace.influencer.domain.Influencer;
 public record InfluencerCommand(
         String influencerName,
         String influencerImgUrl,
-        String influencerJob
+        String influencerJob,
+        String channelTitle,
+        String channelId
 ) {
 
-    public static Influencer to(InfluencerCommand influencerCommand) {
+    public Influencer toEntity() {
         return new Influencer(
-                influencerCommand.influencerName,
-                influencerCommand.influencerImgUrl,
-                influencerCommand.influencerJob
+                influencerName(),
+                influencerImgUrl(),
+                influencerJob(),
+                channelTitle(),
+                channelId()
         );
     }
 }

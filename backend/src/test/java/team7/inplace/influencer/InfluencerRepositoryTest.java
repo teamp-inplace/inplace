@@ -1,16 +1,20 @@
 package team7.inplace.influencer;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import team7.inplace.config.annotation.CustomRepositoryTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import team7.inplace.global.queryDsl.QueryDslConfig;
 import team7.inplace.influencer.domain.Influencer;
 import team7.inplace.influencer.persistence.InfluencerRepository;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@CustomRepositoryTest
+@DataJpaTest
+@Import(QueryDslConfig.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class InfluencerRepositoryTest {
 
     @Autowired
