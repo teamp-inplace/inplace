@@ -1,4 +1,4 @@
-package team7.inplace.likedInfluencer.application.dto;
+package team7.inplace.liked.likedInfluencer.application.dto;
 
 public record FavoriteInfluencerCommand(
         Long influencerId,

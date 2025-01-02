@@ -1,10 +1,10 @@
-package team7.inplace.likedInfluencer.presentation;
+package team7.inplace.liked.likedInfluencer.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
-import team7.inplace.likedInfluencer.presentation.dto.InfluencerLikeRequest;
-import team7.inplace.likedInfluencer.presentation.dto.InfluencerListLikeRequest;
+import team7.inplace.liked.likedInfluencer.presentation.dto.InfluencerLikeRequest;
+import team7.inplace.liked.likedInfluencer.presentation.dto.InfluencerListLikeRequest;
 
 public interface FavoriteInfluencerControllerApiSpec {
 

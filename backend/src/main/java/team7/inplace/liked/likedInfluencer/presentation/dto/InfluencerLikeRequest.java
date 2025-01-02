@@ -1,6 +1,6 @@
-package team7.inplace.likedInfluencer.presentation.dto;
+package team7.inplace.liked.likedInfluencer.presentation.dto;
 
-import team7.inplace.likedInfluencer.application.dto.FavoriteInfluencerCommand;
+import team7.inplace.liked.likedInfluencer.application.dto.FavoriteInfluencerCommand;
 
 public record InfluencerLikeRequest(
         Long influencerId,

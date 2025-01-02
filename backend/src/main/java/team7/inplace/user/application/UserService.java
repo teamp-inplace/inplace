@@ -3,7 +3,7 @@ package team7.inplace.user.application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team7.inplace.likedInfluencer.persistent.FavoriteInfluencerRepository;
+import team7.inplace.liked.likedInfluencer.persistent.FavoriteInfluencerRepository;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.UserErrorCode;
 import team7.inplace.security.application.CurrentUserProvider;
