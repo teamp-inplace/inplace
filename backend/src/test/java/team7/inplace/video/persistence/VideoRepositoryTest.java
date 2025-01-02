@@ -2,18 +2,21 @@ package team7.inplace.video.persistence;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.transaction.annotation.Transactional;
-import team7.inplace.config.annotation.CustomRepositoryTest;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.PlaceErrorCode;
 import team7.inplace.global.exception.code.VideoErrorCode;
@@ -23,24 +26,18 @@ import team7.inplace.place.domain.Place;
 import team7.inplace.place.persistence.PlaceRepository;
 import team7.inplace.video.domain.Video;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-@CustomRepositoryTest
-@Transactional
+@DataJpaTest
 @Import(QueryDslConfig.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD) // 각 메서드 실행마다 이전 결과 초기화
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class VideoRepositoryTest {
 
+    private final Pageable pageable = PageRequest.of(0, 10);
     @PersistenceContext
     EntityManager entityManager;
     @Autowired
     private VideoRepository videoRepository;
     @Autowired
     private PlaceRepository placeRepository;
-    private final Pageable pageable = PageRequest.of(0, 10);
 
     @BeforeEach
     void init() {
@@ -49,30 +46,14 @@ public class VideoRepositoryTest {
                 "menuImg.url", "카페",
                 "Address 1|Address 2|Address 3",
                 "10.0", "10.0",
-                Arrays.asList("한글날|수|N", "크리스마스|수|Y"),
-                Arrays.asList("오픈 시간|9:00 AM|월", "닫는 시간|6:00 PM|월"),
-                Arrays.asList("삼겹살|5000|false|menu.url|description",
-                        "돼지찌개|7000|true|menu.url|description"),
-                LocalDateTime.of(2024, 3, 28, 5, 30),
-                Arrays.asList(
-                        "menuBoard1.url",
-                        "menuBoard2.url"
-                )
+                LocalDateTime.of(2024, 3, 28, 5, 30)
         );
         Place place2 = new Place("Place 2",
                 "\"wifi\": true, \"pet\": false, \"parking\": false, \"forDisabled\": true, \"nursery\": false, \"smokingRoom\": false}",
                 "menuImg.url", "일식",
                 "Address 1|Address 2|Address 3",
                 "10.0", "50.0",
-                Arrays.asList("한글날|수|N", "크리스마스|수|Y"),
-                Arrays.asList("오픈 시간|9:00 AM|월", "닫는 시간|6:00 PM|월"),
-                Arrays.asList("삼겹살|5000|false|menu.url|description",
-                        "돼지찌개|7000|true|menu.url|description"),
-                LocalDateTime.of(2024, 3, 28, 5, 30),
-                Arrays.asList(
-                        "menuBoard1.url",
-                        "menuBoard2.url"
-                )
+                LocalDateTime.of(2024, 3, 28, 5, 30)
         );
         entityManager.persist(place1);
         entityManager.persist(place2);

@@ -1,18 +1,22 @@
 package team7.inplace.influencer.domain;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import static lombok.AccessLevel.PROTECTED;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static lombok.AccessLevel.PROTECTED;
-
 @Getter
-@NoArgsConstructor(access = PROTECTED)
-@AllArgsConstructor
 @Entity
+@Table(name = "influencers")
+@NoArgsConstructor(access = PROTECTED)
 public class Influencer {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,10 +30,17 @@ public class Influencer {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String imgUrl;
 
-    public Influencer(String name, String imgUrl, String job) {
+    @Embedded
+    private Channel channel;
+
+    private Boolean hidden;
+
+    public Influencer(String name, String imgUrl, String job, String title, String channelId) {
         this.name = name;
         this.imgUrl = imgUrl;
         this.job = job;
+        this.channel = new Channel(title, channelId);
+        this.hidden = false;
     }
 
     public void update(String name, String imgUrl, String job) {
@@ -37,4 +48,25 @@ public class Influencer {
         this.imgUrl = imgUrl;
         this.job = job;
     }
+
+    public String getChannelTitle() {
+        return this.channel.getChannelTitle();
+    }
+
+    public String getChannelId() {
+        return this.channel.getChannelId();
+    }
+
+    public String getLastVideo() {
+        return this.channel.getLastVideoId();
+    }
+
+    public void changeVisibility() {
+        this.hidden = !this.hidden;
+    }
+
+    public void updateLastVideo(String lastVideoId) {
+        this.channel.updateLastVideo(lastVideoId);
+    }
+
 }

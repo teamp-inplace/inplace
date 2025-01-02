@@ -1,0 +1,61 @@
+/* 컨테이너 너비 통일 */
+.container {
+    width: 80%;
+    max-width: 1000px;
+    margin: 20px auto;
+}
+
+/* 검색 영역 */
+.search-container {
+    width: 100%;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.search-container input[type="text"] {
+    flex: 1;
+    min-width: 0; /* flex-basis 오버플로우 방지 */
+}
+
+/* 테이블 너비 */
+.search-results {
+    width: 100%;
+}
+
+.search-results table {
+    width: 100%;
+}
+
+/* 테이블 컬럼 너비 고정 */
+.search-results th:nth-child(1),
+.search-results td:nth-child(1) {
+    width: 80px;
+}
+
+.search-results th:nth-child(2),
+.search-results td:nth-child(2) {
+    width: 40%;
+}
+
+.search-results th:nth-child(3),
+.search-results td:nth-child(3),
+.search-results th:nth-child(4),
+.search-results td:nth-child(4) {
+    width: 120px;
+}
+
+/* 모달 폼 너비 */
+.modal-content {
+    width: 80%;
+    max-width: 500px;
+}
+
+.modal .form-group {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.modal .form-group input[type="text"] {
+    width: 100%;
+}
