@@ -10,7 +10,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team7.inplace.favoriteInfluencer.persistent.FavoriteInfluencerRepository;
+import team7.inplace.likedInfluencer.persistent.FavoriteInfluencerRepository;
 import team7.inplace.influencer.application.dto.InfluencerInfo;
 import team7.inplace.influencer.domain.Influencer;
 import team7.inplace.likedPlace.persistence.LikedPlaceRepository;

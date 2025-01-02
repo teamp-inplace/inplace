@@ -1,4 +1,4 @@
-package team7.inplace.favoriteInfluencer.domain;
+package team7.inplace.likedInfluencer.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
