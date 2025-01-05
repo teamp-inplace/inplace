@@ -1,7 +1,7 @@
 package team7.inplace.placeMessage.util;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import team7.inplace.placeMessage.application.command.PlaceMessageCommand;
+import team7.inplace.place.application.command.PlaceMessageCommand;
 
 import java.util.List;
 

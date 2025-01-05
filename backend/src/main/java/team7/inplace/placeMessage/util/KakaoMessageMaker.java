@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import team7.inplace.placeMessage.application.command.PlaceMessageCommand;
+import team7.inplace.place.application.command.PlaceMessageCommand;
 
 @Component
 @RequiredArgsConstructor

@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import team7.inplace.placeMessage.application.PlaceMessageFacade;
+import team7.inplace.place.application.PlaceMessageFacade;
 
 @RestController
 @RequiredArgsConstructor

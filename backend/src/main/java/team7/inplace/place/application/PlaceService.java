@@ -28,7 +28,7 @@ import team7.inplace.place.application.dto.PlaceInfo;
 import team7.inplace.place.domain.Category;
 import team7.inplace.place.domain.Place;
 import team7.inplace.place.persistence.PlaceRepository;
-import team7.inplace.placeMessage.application.command.PlaceMessageCommand;
+import team7.inplace.place.application.command.PlaceMessageCommand;
 import team7.inplace.review.persistence.ReviewRepository;
 import team7.inplace.security.util.AuthorizationUtil;
 import team7.inplace.user.domain.User;
