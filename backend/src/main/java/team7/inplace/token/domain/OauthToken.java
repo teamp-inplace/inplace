@@ -1,4 +1,4 @@
-package team7.inplace.oauthToken.domain;
+package team7.inplace.token.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

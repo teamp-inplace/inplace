@@ -15,7 +15,7 @@ import team7.inplace.security.filter.TokenType;
 import team7.inplace.security.util.CookieUtil;
 import team7.inplace.security.util.JwtUtil;
 import team7.inplace.token.application.RefreshTokenFacade;
-import team7.inplace.token.application.dto.TokenCommand.ReIssued;
+import team7.inplace.token.application.command.TokenCommand.ReIssued;
 
 @RestController
 @RequiredArgsConstructor
