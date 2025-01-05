@@ -1,4 +1,4 @@
-package team7.inplace.placeMessage.util;
+package team7.inplace.place.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
