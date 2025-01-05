@@ -14,6 +14,11 @@ interface MapWindowProps {
   places: PlaceData[];
 }
 
+interface LastResponseState {
+  empty: boolean;
+  places: PlaceData[];
+}
+
 export default function MapWindow({
   onBoundsChange,
   onCenterChange,
@@ -27,15 +32,29 @@ export default function MapWindow({
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const accumulatedPlacesRef = useRef<Set<string>>(new Set());
   const [accumulatedPlaces, setAccumulatedPlaces] = useState<PlaceData[]>([]);
+  const previousPlacesRef = useRef<PlaceData[]>([]);
+  const lastResponseRef = useRef<LastResponseState>({
+    empty: false,
+    places,
+  });
 
   useEffect(() => {
-    const newPlaces = places.filter((place) => !accumulatedPlacesRef.current.has(place.placeId.toString()));
+    // 이전 응답이 빈 배열이고 현재도 빈 배열이면 빈 배열 상태 유지
+    if (lastResponseRef.current.empty && places.length === 0) {
+      setAccumulatedPlaces([]);
+      return;
+    }
 
-    if (newPlaces.length > 0) {
-      newPlaces.forEach((place) => {
-        accumulatedPlacesRef.current.add(place.placeId.toString());
-      });
-      setAccumulatedPlaces((prev) => [...prev, ...newPlaces]);
+    // places가 이전과 다른 경우에만 업데이트
+    if (JSON.stringify(places) !== JSON.stringify(previousPlacesRef.current)) {
+      lastResponseRef.current = {
+        empty: places.length === 0,
+        places,
+      };
+
+      accumulatedPlacesRef.current = new Set(places.map((place) => place.placeId.toString()));
+      setAccumulatedPlaces(places);
+      previousPlacesRef.current = places;
     }
   }, [places]);
 
