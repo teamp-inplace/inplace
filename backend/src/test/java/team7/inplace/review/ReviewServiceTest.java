@@ -29,6 +29,7 @@ import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.ReviewErrorCode;
 import team7.inplace.place.domain.Place;
 import team7.inplace.place.persistence.PlaceRepository;
+import team7.inplace.placeMessage.domain.UserReviewUuid;
 import team7.inplace.placeMessage.persistence.UserReviewUuidRepository;
 import team7.inplace.review.application.ReviewService;
 import team7.inplace.review.application.dto.MyReviewInfo;
@@ -96,11 +97,14 @@ public class ReviewServiceTest {
     @Test
     void createReviewTest() {
         String uuid = "test-uuid";
+        UserReviewUuid userReviewUuidMock = mock(UserReviewUuid.class);
         User userMock = mock(User.class);
         given(userMock.getId()).willReturn(1L);
 
-        given(userReviewUuidRepository.findUserByUuidAndPlaceId(uuid, placeId)).willReturn(
-            Optional.of(userMock));
+        given(userReviewUuidRepository.findById(uuid)).willReturn(Optional.of(userReviewUuidMock));
+        given(userReviewUuidMock.getUserId()).willReturn(userId);
+        given(userReviewUuidMock.getPlaceId()).willReturn(placeId);
+        given(userRepository.findById(userId)).willReturn(Optional.of(userMock));
         given(placeRepository.findById(placeId)).willReturn(Optional.of(place));
         given(reviewRepository.existsByUserIdAndPlaceId(userId, placeId)).willReturn(false);
 
@@ -113,11 +117,14 @@ public class ReviewServiceTest {
     @DisplayName("장소에 대해 사용자의 리뷰가 이미 존재하면 예외 발생")
     void createReviewTest_ReviewAlreadyExists() {
         String uuid = "test-uuid";
+        UserReviewUuid userReviewUuidMock = mock(UserReviewUuid.class);
         User userMock = mock(User.class);
         given(userMock.getId()).willReturn(1L);
 
-        given(userReviewUuidRepository.findUserByUuidAndPlaceId(uuid, placeId)).willReturn(
-            Optional.of(userMock));
+        given(userReviewUuidRepository.findById(uuid)).willReturn(Optional.of(userReviewUuidMock));
+        given(userReviewUuidMock.getUserId()).willReturn(userId);
+        given(userReviewUuidMock.getPlaceId()).willReturn(placeId);
+        given(userRepository.findById(userId)).willReturn(Optional.of(userMock));
         given(placeRepository.findById(placeId)).willReturn(Optional.of(place));
         given(reviewRepository.existsByUserIdAndPlaceId(userId, placeId)).willReturn(true);
 
