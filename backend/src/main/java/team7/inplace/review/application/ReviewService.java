@@ -10,17 +10,19 @@ import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.AuthorizationErrorCode;
 import team7.inplace.global.exception.code.PlaceErrorCode;
 import team7.inplace.global.exception.code.ReviewErrorCode;
+import team7.inplace.global.exception.code.UserErrorCode;
 import team7.inplace.place.domain.Place;
 import team7.inplace.place.persistence.PlaceRepository;
+import team7.inplace.placeMessage.domain.UserReviewUuid;
 import team7.inplace.placeMessage.persistence.UserReviewUuidRepository;
 import team7.inplace.review.application.dto.MyReviewInfo;
 import team7.inplace.review.application.dto.ReviewCommand;
 import team7.inplace.review.application.dto.ReviewInfo;
 import team7.inplace.review.domain.Review;
 import team7.inplace.review.persistence.ReviewRepository;
-import team7.inplace.security.application.CurrentUserProvider;
 import team7.inplace.security.util.AuthorizationUtil;
 import team7.inplace.user.domain.User;
+import team7.inplace.user.persistence.UserRepository;
 
 @RequiredArgsConstructor
 @Service
@@ -28,13 +30,20 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final PlaceRepository placeRepository;
-    private final CurrentUserProvider currentUserProvider;
+    private final UserRepository userRepository;
     private final UserReviewUuidRepository userReviewUuidRepository;
 
     @Transactional
     public void createReview(Long placeId, ReviewCommand command, String uuid) {
-        User user = userReviewUuidRepository.findUserByUuidAndPlaceId(uuid, placeId)
+        UserReviewUuid userReviewUuid = userReviewUuidRepository.findById(uuid)
             .orElseThrow(() -> InplaceException.of(ReviewErrorCode.INVALID_UUID));
+
+        if (!placeId.equals(userReviewUuid.getPlaceId())) {
+            throw InplaceException.of(ReviewErrorCode.UUID_PLACE_MISMATCH);
+        }
+
+        User user = userRepository.findById(userReviewUuid.getUserId())
+            .orElseThrow(() -> InplaceException.of(UserErrorCode.NOT_FOUND));
         Place place = placeRepository.findById(placeId)
             .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
 
