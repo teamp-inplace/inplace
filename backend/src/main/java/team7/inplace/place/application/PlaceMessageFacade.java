@@ -20,7 +20,6 @@ public class PlaceMessageFacade {
     private final ScheduledExecutorService scheduledExecutorService;
     private final UserReviewUuidService userReviewLinkService;
 
-    // 여기서 로그인된 사용자 id가져오고 uuid로 리뷰 요청 링크 만들어야 하는듯?
     public void sendPlaceMessage(Long placeId) throws InplaceException {
         if (AuthorizationUtil.isNotLoginUser()) {
             throw InplaceException.of(UserErrorCode.NOT_FOUND);
