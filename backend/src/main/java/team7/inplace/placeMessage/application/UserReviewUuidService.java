@@ -3,39 +3,38 @@ package team7.inplace.placeMessage.application;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team7.inplace.global.exception.InplaceException;
-import team7.inplace.global.exception.code.UserErrorCode;
 import team7.inplace.placeMessage.domain.UserReviewUuid;
 import team7.inplace.placeMessage.persistence.UserReviewUuidRepository;
-import team7.inplace.user.domain.User;
-import team7.inplace.user.persistence.UserRepository;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserReviewUuidService {
 
     private final UserReviewUuidRepository userReviewUuidRepository;
-    private final UserRepository userRepository;
 
     @Transactional
     public String generateReviewUuid(Long userId, Long placeId) {
         Optional<UserReviewUuid> existingUuid = userReviewUuidRepository.findByUserIdAndPlaceId(
             userId, placeId);
 
+        log.info("Searching for userId: {}, placeId: {}", userId, placeId);
+        log.info("Existing UUID found: {}", existingUuid.isPresent());
+
         if (existingUuid.isPresent()) {
+            log.info("found from repo userId: {}, placeId: {}", existingUuid.get().getUserId(),
+                existingUuid.get().getPlaceId());
             return existingUuid.get().getUuid();
         }
 
         // uuid 새로 생성
         String uuid = UUID.randomUUID().toString();
 
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> InplaceException.of(UserErrorCode.NOT_FOUND));
-
-        UserReviewUuid reviewLink = new UserReviewUuid(user, placeId, uuid);
-        userReviewUuidRepository.save(reviewLink);
+        UserReviewUuid reviewUuid = new UserReviewUuid(uuid, userId, placeId);
+        userReviewUuidRepository.save(reviewUuid);
 
         return uuid;
 
