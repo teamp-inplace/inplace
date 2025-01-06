@@ -5,6 +5,7 @@ on:
       - '**'
     paths:
       - 'frontend/**'
+      - '.github/**'
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
@@ -22,7 +23,9 @@ jobs:
         run: npm run format -- --check
       - name: Run Tests
         run: npm test
+
   build-and-deploy:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -56,4 +59,45 @@ jobs:
             aws s3 sync dist/ s3://inplace.my --delete
             aws s3 sync dist/ s3://www.inplace.my --delete
             # CloudFront 캐시 무효화 필수
-            aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_ID }} --paths "/*"
+            aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_ID }} --paths "/*"
+
+  sync-fork:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - name: creates output
+        working-directory: frontend
+        run: sh build.sh
+
+      # 디버깅을 위한 경로와 구조 확인
+      - name: Debug directory structure
+        run: |
+          echo "Before move - directory structure:"
+          ls -la
+          ls -la output/
+      
+      # output의 내용을 루트로 이동
+      - name: Move output contents
+        run: |
+          cp -rf output/* .
+          rm -rf output
+          
+          echo "After move - final structure:"
+          ls -la
+      
+      - name: Pushes to fork repository
+        id: push_directory
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.VERCEL_PAT }}
+        with:
+          source-directory: '.'
+          destination-github-username: 'userjmmm'
+          destination-repository-name: 'inplace'
+          user-email: ${{ secrets.VERCEL_EMAIL }}
+          commit-message: ${{ github.event.commits[0].message }}
+          target-branch: dev

@@ -1,39 +1,40 @@
 package team7.inplace.place.persistence;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
-import team7.inplace.config.annotation.CustomRepositoryTest;
+import team7.inplace.global.queryDsl.QueryDslConfig;
 import team7.inplace.influencer.domain.Influencer;
 import team7.inplace.place.domain.Category;
 import team7.inplace.place.domain.Place;
+import team7.inplace.place.domain.PlaceBulk;
 import team7.inplace.video.domain.Video;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-
-@CustomRepositoryTest
-@Transactional
+@DataJpaTest
+@Import(QueryDslConfig.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class PlaceRepositoryTest {
 
     @PersistenceContext
     EntityManager entityManager;
+    String topLeftLongitude = "10.0";
 
-    @Autowired
-    private PlaceRepository placeRepository;
-
-//     * 테스트 Place 좌표 (longitude, latitude)
+    //     * 테스트 Place 좌표 (longitude, latitude)
 //     * (10.0, 10.0) -> video1 -> 성시경
 //     * (10.0, 50.0)
 //     * (10.0, 100.0)
@@ -45,14 +46,14 @@ class PlaceRepositoryTest {
 //     * boundary 좌표
 //     * 좌상단: (10.0, 60.0)
 //     * 우하단: (50.0, 10.0)
-
-    String topLeftLongitude = "10.0";
     String topLeftLatitude = "60.0";
     String bottomRightLongitude = "50.0";
     String bottomRightLatitude = "10.0";
     String longitude = "10.0";
     String latitude = "51.0";
     Pageable pageable = PageRequest.of(0, 10);
+    @Autowired
+    private PlaceRepository placeRepository;
 
     @BeforeEach
     public void init() {
@@ -61,15 +62,7 @@ class PlaceRepositoryTest {
                 "menuImg.url", "카페",
                 "Address 1|Address 2|Address 3",
                 "10.0", "10.0",
-                Arrays.asList("한글날|수|N", "크리스마스|수|Y"),
-                Arrays.asList("오픈 시간|9:00 AM|월", "닫는 시간|6:00 PM|월"),
-                Arrays.asList("삼겹살|5000|false|menu.url|description",
-                        "돼지찌개|7000|true|menu.url|description"),
-                LocalDateTime.of(2024, 3, 28, 5, 30),
-                Arrays.asList(
-                        "menuBoard1.url",
-                        "menuBoard2.url"
-                )
+                LocalDateTime.of(2024, 3, 28, 5, 30)
         );
 
         Place place2 = new Place("Place 2",
@@ -77,15 +70,7 @@ class PlaceRepositoryTest {
                 "menuImg.url", "일식",
                 "Address 1|Address 2|Address 3",
                 "10.0", "50.0",
-                Arrays.asList("한글날|수|N", "크리스마스|수|Y"),
-                Arrays.asList("오픈 시간|9:00 AM|월", "닫는 시간|6:00 PM|월"),
-                Arrays.asList("삼겹살|5000|false|menu.url|description",
-                        "돼지찌개|7000|true|menu.url|description"),
-                LocalDateTime.of(2024, 3, 28, 5, 30),
-                Arrays.asList(
-                        "menuBoard1.url",
-                        "menuBoard2.url"
-                )
+                LocalDateTime.of(2024, 3, 28, 5, 30)
         );
 
         Place place3 = new Place("Place 3",
@@ -93,15 +78,7 @@ class PlaceRepositoryTest {
                 "menuImg.url", "카페",
                 "Address 1|Address 2|Address 3",
                 "10.0", "100.0",
-                Arrays.asList("한글날|수|N", "크리스마스|수|Y"),
-                Arrays.asList("오픈 시간|9:00 AM|월", "닫는 시간|6:00 PM|월"),
-                Arrays.asList("삼겹살|5000|false|menu.url|description",
-                        "돼지찌개|7000|true|menu.url|description"),
-                LocalDateTime.of(2024, 3, 28, 5, 30),
-                Arrays.asList(
-                        "menuBoard1.url",
-                        "menuBoard2.url"
-                )
+                LocalDateTime.of(2024, 3, 28, 5, 30)
         );
 
         Place place4 = new Place("Place 4",
@@ -109,15 +86,7 @@ class PlaceRepositoryTest {
                 "menuImg.url", "일식",
                 "Address 1|Address 2|Address 3",
                 "50.0", "50.0",
-                Arrays.asList("한글날|수|N", "크리스마스|수|Y"),
-                Arrays.asList("오픈 시간|9:00 AM|월", "닫는 시간|6:00 PM|월"),
-                Arrays.asList("삼겹살|5000|false|menu.url|description",
-                        "돼지찌개|7000|true|menu.url|description"),
-                LocalDateTime.of(2024, 3, 28, 5, 30),
-                Arrays.asList(
-                        "menuBoard1.url",
-                        "menuBoard2.url"
-                )
+                LocalDateTime.of(2024, 3, 28, 5, 30)
         );
 
         entityManager.persist(place1);
@@ -145,7 +114,7 @@ class PlaceRepositoryTest {
         // given
 
         // when
-        Page<Place> foundPlaces = placeRepository.findPlacesByDistance(
+        Page<PlaceBulk> foundPlaces = placeRepository.findPlacesByDistance(
                 longitude,
                 latitude,
                 pageable
@@ -154,10 +123,10 @@ class PlaceRepositoryTest {
 
         // Then
         assertThat(foundPlaces).hasSize(4);
-        assertThat(foundPlaces.getContent().get(0).getName()).isEqualTo("Place 2");
-        assertThat(foundPlaces.getContent().get(1).getName()).isEqualTo("Place 4");
-        assertThat(foundPlaces.getContent().get(2).getName()).isEqualTo("Place 1");
-        assertThat(foundPlaces.getContent().get(3).getName()).isEqualTo("Place 3");
+        assertThat(foundPlaces.getContent().get(0).getPlace().getName()).isEqualTo("Place 2");
+        assertThat(foundPlaces.getContent().get(1).getPlace().getName()).isEqualTo("Place 4");
+        assertThat(foundPlaces.getContent().get(2).getPlace().getName()).isEqualTo("Place 1");
+        assertThat(foundPlaces.getContent().get(3).getPlace().getName()).isEqualTo("Place 3");
     }
 
     @Test
@@ -170,7 +139,7 @@ class PlaceRepositoryTest {
         List<String> influencers = null;
 
         // when
-        Page<Place> foundPlaces = placeRepository.findPlacesByDistanceAndFilters(
+        Page<PlaceBulk> foundPlaces = placeRepository.findPlacesByDistanceAndFilters(
                 topLeftLongitude,
                 topLeftLatitude,
                 bottomRightLongitude,
@@ -184,9 +153,9 @@ class PlaceRepositoryTest {
         assertThat(foundPlaces.getTotalElements()).isEqualTo(3);
         // Then
         assertThat(foundPlaces).hasSize(3);
-        assertThat(foundPlaces.getContent().get(0).getName()).isEqualTo("Place 2");
-        assertThat(foundPlaces.getContent().get(1).getName()).isEqualTo("Place 4");
-        assertThat(foundPlaces.getContent().get(2).getName()).isEqualTo("Place 1");
+        assertThat(foundPlaces.getContent().get(0).getPlace().getName()).isEqualTo("Place 2");
+        assertThat(foundPlaces.getContent().get(1).getPlace().getName()).isEqualTo("Place 4");
+        assertThat(foundPlaces.getContent().get(2).getPlace().getName()).isEqualTo("Place 1");
 
     }
 
@@ -199,7 +168,7 @@ class PlaceRepositoryTest {
 
         List<String> influencers = null;
         // when
-        Page<Place> foundPlaces = placeRepository.findPlacesByDistanceAndFilters(
+        var foundPlaces = placeRepository.findPlacesByDistanceAndFilters(
                 topLeftLongitude,
                 topLeftLatitude,
                 bottomRightLongitude,
@@ -212,12 +181,12 @@ class PlaceRepositoryTest {
         );
         // Then
         assertThat(foundPlaces).hasSize(3);
-        assertThat(foundPlaces.getContent().get(0).getName()).isEqualTo("Place 2");
-        assertThat(foundPlaces.getContent().get(0).getCategory()).isEqualTo(Category.JAPANESE);
-        assertThat(foundPlaces.getContent().get(1).getName()).isEqualTo("Place 4");
-        assertThat(foundPlaces.getContent().get(1).getCategory()).isEqualTo(Category.JAPANESE);
-        assertThat(foundPlaces.getContent().get(2).getName()).isEqualTo("Place 1");
-        assertThat(foundPlaces.getContent().get(2).getCategory()).isEqualTo(Category.CAFE);
+        assertThat(foundPlaces.getContent().get(0).getPlace().getName()).isEqualTo("Place 2");
+        assertThat(foundPlaces.getContent().get(0).getPlace().getCategory()).isEqualTo(Category.JAPANESE);
+        assertThat(foundPlaces.getContent().get(1).getPlace().getName()).isEqualTo("Place 4");
+        assertThat(foundPlaces.getContent().get(1).getPlace().getCategory()).isEqualTo(Category.JAPANESE);
+        assertThat(foundPlaces.getContent().get(2).getPlace().getName()).isEqualTo("Place 1");
+        assertThat(foundPlaces.getContent().get(2).getPlace().getCategory()).isEqualTo(Category.CAFE);
     }
 
     @Test
@@ -227,7 +196,7 @@ class PlaceRepositoryTest {
         List<String> categories = Arrays.asList(Category.JAPANESE.getName());
         List<String> influencers = null;
         // when
-        Page<Place> foundPlaces = placeRepository.findPlacesByDistanceAndFilters(
+        var foundPlaces = placeRepository.findPlacesByDistanceAndFilters(
                 topLeftLongitude,
                 topLeftLatitude,
                 bottomRightLongitude,
@@ -240,10 +209,10 @@ class PlaceRepositoryTest {
         );
         // Then
         assertThat(foundPlaces).hasSize(2);
-        assertThat(foundPlaces.getContent().get(0).getName()).isEqualTo("Place 2");
-        assertThat(foundPlaces.getContent().get(0).getCategory()).isEqualTo(Category.JAPANESE);
-        assertThat(foundPlaces.getContent().get(1).getName()).isEqualTo("Place 4");
-        assertThat(foundPlaces.getContent().get(1).getCategory()).isEqualTo(Category.JAPANESE);
+        assertThat(foundPlaces.getContent().get(0).getPlace().getName()).isEqualTo("Place 2");
+        assertThat(foundPlaces.getContent().get(0).getPlace().getCategory()).isEqualTo(Category.JAPANESE);
+        assertThat(foundPlaces.getContent().get(1).getPlace().getName()).isEqualTo("Place 4");
+        assertThat(foundPlaces.getContent().get(1).getPlace().getCategory()).isEqualTo(Category.JAPANESE);
     }
 
     @Test
@@ -254,7 +223,7 @@ class PlaceRepositoryTest {
         List<String> influencers = List.of("성시경", "아이유");
 
         //when
-        Page<Place> foundPlaces = placeRepository.findPlacesByDistanceAndFilters(
+        var foundPlaces = placeRepository.findPlacesByDistanceAndFilters(
                 topLeftLongitude,
                 topLeftLatitude,
                 bottomRightLongitude,
@@ -268,8 +237,8 @@ class PlaceRepositoryTest {
 
         //then
         assertThat(foundPlaces).hasSize(2);
-        assertThat(foundPlaces.getContent().get(0).getName()).isEqualTo("Place 4");
-        assertThat(foundPlaces.getContent().get(1).getName()).isEqualTo("Place 1");
+        assertThat(foundPlaces.getContent().get(0).getPlace().getName()).isEqualTo("Place 4");
+        assertThat(foundPlaces.getContent().get(1).getPlace().getName()).isEqualTo("Place 1");
     }
 
     @Test
@@ -280,7 +249,7 @@ class PlaceRepositoryTest {
         List<String> influencers = List.of("성시경");
 
         //when
-        Page<Place> foundPlaces = placeRepository.findPlacesByDistanceAndFilters(
+        var foundPlaces = placeRepository.findPlacesByDistanceAndFilters(
                 topLeftLongitude,
                 topLeftLatitude,
                 bottomRightLongitude,
@@ -294,7 +263,7 @@ class PlaceRepositoryTest {
 
         //then
         assertThat(foundPlaces).hasSize(1);
-        assertThat(foundPlaces.getContent().get(0).getName()).isEqualTo("Place 1");
+        assertThat(foundPlaces.getContent().get(0).getPlace().getName()).isEqualTo("Place 1");
     }
 
     @Test
@@ -305,7 +274,7 @@ class PlaceRepositoryTest {
         List<String> influencers = List.of("아이유");
 
         //when
-        Page<Place> foundPlaces = placeRepository.findPlacesByDistanceAndFilters(
+        var foundPlaces = placeRepository.findPlacesByDistanceAndFilters(
                 topLeftLongitude,
                 topLeftLatitude,
                 bottomRightLongitude,
@@ -319,7 +288,7 @@ class PlaceRepositoryTest {
 
         //then
         assertThat(foundPlaces).hasSize(1);
-        assertThat(foundPlaces.getContent().get(0).getName()).isEqualTo("Place 4");
+        assertThat(foundPlaces.getContent().get(0).getPlace().getName()).isEqualTo("Place 4");
     }
 
     // Pagenation
@@ -335,7 +304,7 @@ class PlaceRepositoryTest {
         pageable = PageRequest.of(1, 2);
 
         // when
-        Page<Place> foundPlaces = placeRepository.findPlacesByDistanceAndFilters(
+        var foundPlaces = placeRepository.findPlacesByDistanceAndFilters(
                 topLeftLongitude,
                 topLeftLatitude,
                 bottomRightLongitude,
@@ -352,7 +321,7 @@ class PlaceRepositoryTest {
         assertThat(foundPlaces.getTotalPages()).isEqualTo(2);
         assertThat(foundPlaces).hasSize(1);
 //        places
-        assertThat(foundPlaces.getContent().get(0).getName()).isEqualTo("Place 1");
+        assertThat(foundPlaces.getContent().get(0).getPlace().getName()).isEqualTo("Place 1");
 
     }
 }

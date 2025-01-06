@@ -10,7 +10,6 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -82,13 +81,9 @@ public class ReviewServiceTest {
 
         user = new User("name", "password", "nickname", UserType.KAKAO, Role.USER);
         place = new Place("name", "facility", "menuImgUrl", "category",
-            "Address 1|Address 2|Address 3", "x", "y",
-            Arrays.asList("한글날|수|N", "크리스마스|수|Y"),
-            Arrays.asList("오픈 시간|9:00 AM|월", "닫는 시간|6:00 PM|월"),
-            Arrays.asList("삼겹살|5000|false|menu.url|description",
-                "돼지찌개|7000|true|menu.url|description"),
-            LocalDateTime.of(2024, 3, 28, 5, 30),
-            Arrays.asList("menuBoard1.url", "menuBoard2.url")
+            "Address 1|Address 2|Address 3",
+            "10.0", "10.0",
+            LocalDateTime.of(2024, 3, 28, 5, 30)
         );
         command = new ReviewCommand(isLiked, comment);
 

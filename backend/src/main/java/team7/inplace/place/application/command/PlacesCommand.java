@@ -2,14 +2,13 @@ package team7.inplace.place.application.command;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.micrometer.common.util.StringUtils;
-import org.springframework.data.domain.Pageable;
-import team7.inplace.place.domain.Place;
-import team7.inplace.video.presentation.dto.VideoSearchParams;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.data.domain.Pageable;
+import team7.inplace.place.domain.PlaceBulk;
+import team7.inplace.video.presentation.dto.VideoSearchParams;
 
 public class PlacesCommand {
 
@@ -23,8 +22,10 @@ public class PlacesCommand {
             Pageable pageable
     ) {
 
-        public static PlacesCoordinateCommand from(VideoSearchParams videoSearchParams,
-                                                   Pageable pageable) {
+        public static PlacesCoordinateCommand from(
+                VideoSearchParams videoSearchParams,
+                Pageable pageable
+        ) {
             return new PlacesCoordinateCommand(
                     videoSearchParams.topLeftLongitude(),
                     videoSearchParams.topLeftLatitude(),
@@ -65,22 +66,6 @@ public class PlacesCommand {
             LocalDateTime menuUpdatedAt,
             List<String> menuboardphotourlList
     ) {
-
-        public Place toEntity() {
-            var offDaysParam = offDays.stream()
-                    .map(OffDay::toEntityParams)
-                    .toList();
-            var openPeriodsParam = openPeriods.stream()
-                    .map(OpenTime::toEntityParams)
-                    .toList();
-            var menusParam = menus.stream()
-                    .map(Menu::toEntityParams)
-                    .toList();
-
-            return new Place(placeName, facility, menuImgUrl, category, address, x, y, offDaysParam,
-                    openPeriodsParam,
-                    menusParam, menuUpdatedAt, menuboardphotourlList);
-        }
 
         public static Create from(JsonNode locationNode, JsonNode placeNode) {
             if (Objects.isNull(locationNode) || Objects.isNull(placeNode)) {
@@ -173,6 +158,33 @@ public class PlacesCommand {
                 menus.add(Menu.from(menuNode));
             }
             return menus;
+        }
+
+        public PlaceBulk toEntity() {
+            var offDaysParam = offDays.stream()
+                    .map(OffDay::toEntityParams)
+                    .toList();
+            var openPeriodsParam = openPeriods.stream()
+                    .map(OpenTime::toEntityParams)
+                    .toList();
+            var menusParam = menus.stream()
+                    .map(Menu::toEntityParams)
+                    .toList();
+
+            return new PlaceBulk(
+                    placeName,
+                    facility,
+                    menuImgUrl,
+                    category,
+                    address,
+                    x,
+                    y,
+                    offDaysParam,
+                    openPeriodsParam,
+                    menusParam,
+                    menuUpdatedAt,
+                    menuboardphotourlList
+            );
         }
     }
 

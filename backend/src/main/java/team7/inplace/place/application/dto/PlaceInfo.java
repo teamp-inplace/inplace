@@ -2,7 +2,7 @@ package team7.inplace.place.application.dto;
 
 
 import team7.inplace.place.domain.Address;
-import team7.inplace.place.domain.Place;
+import team7.inplace.place.domain.PlaceBulk;
 
 public record PlaceInfo(
         Long placeId,
@@ -16,6 +16,20 @@ public record PlaceInfo(
         Boolean likes
 ) {
 
+
+    public static PlaceInfo of(PlaceBulk place, String influencerName, boolean likes) {
+        return new PlaceInfo(
+                place.getPlace().getId(),
+                place.getPlace().getName(),
+                AddressInfo.of(place.getPlace().getAddress()),
+                place.getPlace().getCategory().toString(),
+                influencerName,
+                place.getPlace().getMenuImgUrl(),
+                place.getPlace().getCoordinate().getLongitude().toString(),
+                place.getPlace().getCoordinate().getLatitude().toString(),
+                likes
+        );
+    }
 
     // influencer, likes 추가 예정
     public record AddressInfo(
@@ -31,19 +45,5 @@ public record PlaceInfo(
                     address.getAddress3()
             );
         }
-    }
-
-    public static PlaceInfo of(Place place, String influencerName, boolean likes) {
-        return new PlaceInfo(
-                place.getId(),
-                place.getName(),
-                AddressInfo.of(place.getAddress()),
-                place.getCategory().toString(),
-                influencerName,
-                place.getMenuImgUrl(),
-                place.getCoordinate().getLongitude(),
-                place.getCoordinate().getLatitude(),
-                likes
-        );
     }
 }

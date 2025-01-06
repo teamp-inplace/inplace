@@ -5,14 +5,18 @@ import team7.inplace.influencer.application.dto.InfluencerCommand;
 public record InfluencerRequest(
         String influencerName,
         String influencerImgUrl,
-        String influencerJob
+        String influencerJob,
+        String channelTitle,
+        String channelId
 ) {
 
-    public static InfluencerCommand to(InfluencerRequest request) {
+    public InfluencerCommand toCommand() {
         return new InfluencerCommand(
-                request.influencerName(),
-                request.influencerImgUrl(),
-                request.influencerJob()
+                influencerName(),
+                influencerImgUrl(),
+                influencerJob(),
+                channelTitle(),
+                channelId()
         );
     }
 }
