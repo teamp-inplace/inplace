@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,7 @@ public class UserController implements UserControllerApiSepc {
     public final UserService userService;
     public final UserFacade userFacade;
 
+    @PreAuthorize("isAuthenticated()")
     @PatchMapping("/user/nickname")
     public ResponseEntity<Void> updateNickname(
         @PathVariable("nickname") String nickname
@@ -32,6 +34,7 @@ public class UserController implements UserControllerApiSepc {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/users/influencers")
     public ResponseEntity<Page<LikedInfluencerResponse>> getMyFavoriteInfluencers(
         @PageableDefault(page = 0, size = 10) Pageable pageable
@@ -41,6 +44,7 @@ public class UserController implements UserControllerApiSepc {
         return new ResponseEntity<>(influencers, HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/users/places")
     public ResponseEntity<Page<LikedPlaceResponse>> getMyFavoritePlaces(
         @PageableDefault(page = 0, size = 10) Pageable pageable
@@ -50,6 +54,7 @@ public class UserController implements UserControllerApiSepc {
         return new ResponseEntity<>(places, HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/users/reviews")
     public ResponseEntity<Page<MyReviewResponse>> getMyReviews(
         @PageableDefault(page = 0, size = 10) Pageable pageable
@@ -59,6 +64,7 @@ public class UserController implements UserControllerApiSepc {
         return new ResponseEntity<>(reviews, HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/users/info")
     public ResponseEntity<UserInfoResponse> getUserInfo() {
         UserInfoResponse response = UserInfoResponse.from(userService.getUserInfo());

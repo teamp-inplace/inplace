@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
     private final JwtUtil jwtUtil;
     private final RefreshTokenFacade refreshTokenFacade;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/refresh-token")
     public ResponseEntity<Void> refreshToken(@CookieValue(value = "refresh_token") Cookie cookie,
                                              HttpServletResponse response) {
@@ -48,6 +50,7 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
         response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
     }
 
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/refresh-token")
     public ResponseEntity<Void> deleteRefreshToken(@CookieValue(value = "refresh_token") Cookie cookie,
                                                    HttpServletResponse response
