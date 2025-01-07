@@ -3,6 +3,7 @@ package team7.inplace.token.presentation;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -25,6 +26,9 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
     private final JwtUtil jwtUtil;
     private final RefreshTokenFacade refreshTokenFacade;
 
+    @Value("${spring.redirect.front-end-url}")
+    private String frontEndUrl;
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/refresh-token")
     public ResponseEntity<Void> refreshToken(@CookieValue(value = "refresh_token") Cookie cookie,
@@ -41,10 +45,12 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
     private void addTokenToCookie(HttpServletResponse response, ReIssued reIssuedToken) {
         ResponseCookie accessTokenCookie = CookieUtil.createCookie(
                 TokenType.ACCESS_TOKEN.getValue(),
-                reIssuedToken.accessToken());
+                reIssuedToken.accessToken(),
+                frontEndUrl);
         ResponseCookie refreshTokenCookie = CookieUtil.createCookie(
                 TokenType.REFRESH_TOKEN.getValue(),
-                reIssuedToken.refreshToken());
+                reIssuedToken.refreshToken(),
+                frontEndUrl);
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
@@ -60,10 +66,12 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
         
         ResponseCookie accessTokenCookie = CookieUtil.createCookie(
                 TokenType.ACCESS_TOKEN.getValue(),
-                "");
+                "",
+                frontEndUrl);
         ResponseCookie refreshTokenCookie = CookieUtil.createCookie(
                 TokenType.REFRESH_TOKEN.getValue(),
-                "");
+                "",
+                frontEndUrl);
         response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 
