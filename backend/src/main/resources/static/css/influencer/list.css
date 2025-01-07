@@ -1,0 +1,115 @@
+/* 테이블 레이아웃 */
+table {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* 테이블 셀 스타일 */
+.profile-cell {
+    width: 120px;
+    text-align: center;
+}
+
+.profile-cell img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.channel-cell {
+    width: 30%;
+}
+
+.channel-cell a {
+    color: #3cb371;
+    text-decoration: none;
+}
+
+.channel-cell a:hover {
+    text-decoration: underline;
+}
+
+/* 상태 표시 스타일 */
+.status-visible, .status-hidden {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.status-visible {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.status-hidden {
+    background-color: #ffebee;
+    color: #d32f2f;
+}
+
+/* 버튼 공통 스타일 */
+.btn-edit, #editForm button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-edit {
+    padding: 8px 16px;
+}
+
+.btn-edit:hover, #editForm button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* 모달 & 폼 스타일 */
+.modal-content {
+    max-width: 600px;
+    padding: 30px;
+}
+
+.form-inline .form-group {
+    margin-bottom: 15px;
+}
+
+.form-inline label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-inline input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#editForm button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.button-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-add {
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-add:hover {
+    background-color: #45a049;
+}

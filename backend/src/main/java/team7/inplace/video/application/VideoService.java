@@ -1,5 +1,8 @@
 package team7.inplace.video.application;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +16,7 @@ import team7.inplace.global.exception.code.VideoErrorCode;
 import team7.inplace.influencer.persistence.InfluencerRepository;
 import team7.inplace.place.application.dto.PlaceForVideo;
 import team7.inplace.place.domain.Place;
+import team7.inplace.place.domain.PlaceBulk;
 import team7.inplace.place.persistence.PlaceRepository;
 import team7.inplace.security.util.AuthorizationUtil;
 import team7.inplace.video.application.command.VideoCommand;
@@ -21,10 +25,6 @@ import team7.inplace.video.application.dto.VideoInfo;
 import team7.inplace.video.domain.Video;
 import team7.inplace.video.persistence.VideoRepository;
 import team7.inplace.video.presentation.dto.VideoSearchParams;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +42,7 @@ public class VideoService {
             throw InplaceException.of(AuthorizationErrorCode.TOKEN_IS_EMPTY);
         }
         // Place 엔티티 조회
-        Page<Place> places = placeRepository.findPlacesByDistanceAndFilters(
+        Page<PlaceBulk> places = placeRepository.findPlacesByDistanceAndFilters(
                 videoSearchParams.topLeftLongitude(),
                 videoSearchParams.topLeftLatitude(),
                 videoSearchParams.bottomRightLongitude(),
@@ -59,8 +59,8 @@ public class VideoService {
         }
         // 장소를 기준으로 비디오 엔티티 조회 ( 장소 별로 가장 최근 비디오 하나 씩 )
         List<Video> videos = new ArrayList<>();
-        for (Place place : places.getContent()) {
-            videos.add(videoRepository.findTopByPlaceOrderByIdDesc(place)
+        for (PlaceBulk place : places.getContent()) {
+            videos.add(videoRepository.findTopByPlaceOrderByIdDesc(place.getPlace())
                     .orElseThrow(() -> InplaceException.of(VideoErrorCode.NOT_FOUND)));
         }
         return videos.stream().map(this::videoToInfo).toList();

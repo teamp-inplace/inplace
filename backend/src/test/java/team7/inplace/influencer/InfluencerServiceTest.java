@@ -1,6 +1,17 @@
 package team7.inplace.influencer;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,8 +22,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import team7.inplace.favoriteInfluencer.domain.FavoriteInfluencer;
-import team7.inplace.favoriteInfluencer.persistent.FavoriteInfluencerRepository;
+import team7.inplace.liked.likedInfluencer.domain.FavoriteInfluencer;
+import team7.inplace.liked.likedInfluencer.persistent.FavoriteInfluencerRepository;
 import team7.inplace.influencer.application.InfluencerService;
 import team7.inplace.influencer.application.dto.InfluencerCommand;
 import team7.inplace.influencer.application.dto.InfluencerInfo;
@@ -22,15 +33,6 @@ import team7.inplace.security.util.AuthorizationUtil;
 import team7.inplace.user.domain.Role;
 import team7.inplace.user.domain.User;
 import team7.inplace.user.domain.UserType;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class InfluencerServiceTest {
@@ -70,13 +72,15 @@ public class InfluencerServiceTest {
     }
 
     @Test
+    @Deprecated
+    @DisplayName("로그인한 사용자의 인플루언서 목록 조회 테스트, 매핑 관계 변경 후 수정 예정")
     public void getAllInfluencersTest_LoggedIn() {
         Pageable pageable = PageRequest.of(0, 10);
         MockedStatic<AuthorizationUtil> authorizationUtil = mockStatic(AuthorizationUtil.class);
 
-        Influencer influencer1 = new Influencer(1L, "influencer1", "imgUrl1", "job1");
-        Influencer influencer2 = new Influencer(2L, "influencer2", "imgUrl2", "job2");
-        Influencer influencer3 = new Influencer(3L, "influencer3", "imgUrl3", "job3");
+        Influencer influencer1 = new Influencer("influencer1", "imgUrl1", "job1");
+        Influencer influencer2 = new Influencer("influencer2", "imgUrl2", "job2");
+        Influencer influencer3 = new Influencer("influencer3", "imgUrl3", "job3");
         Page<Influencer> influencersPage = new PageImpl<>(
                 List.of(influencer1, influencer2, influencer3));
 
@@ -113,8 +117,9 @@ public class InfluencerServiceTest {
 
     @Test
     public void createInfluencerTest() {
-        InfluencerCommand command = new InfluencerCommand("name", "imgUrl", "job");
-        Influencer influencer = new Influencer(1L, "name", "imgUrl", "job");
+        InfluencerCommand command = new InfluencerCommand("name", "imgUrl", "job", "title",
+                "channelId");
+        Influencer influencer = new Influencer("name", "imgUrl", "job");
         given(influencerRepository.save(any(Influencer.class))).willReturn(influencer);
 
         Long savedId = influencerService.createInfluencer(command);
@@ -125,8 +130,8 @@ public class InfluencerServiceTest {
     @Test
     public void updateInfluencerTest() {
         InfluencerCommand command = new InfluencerCommand("updatedName", "updatedImgUrl",
-                "updatedJob");
-        Influencer influencer = new Influencer(1L, "name", "imgUrl", "job");
+                "updatedJob", "title", "channelId");
+        Influencer influencer = new Influencer("name", "imgUrl", "job");
         given(influencerRepository.findById(any(Long.class))).willReturn(Optional.of(influencer));
 
         Long updatedId = influencerService.updateInfluencer(1L, command);
@@ -139,7 +144,7 @@ public class InfluencerServiceTest {
 
     @Test
     public void deleteInfluencerTest() {
-        Influencer influencer = new Influencer(1L, "name", "imgUrl", "job");
+        Influencer influencer = new Influencer("name", "imgUrl", "job");
         given(influencerRepository.findById(any(Long.class))).willReturn(Optional.of(influencer));
 
         influencerService.deleteInfluencer(1L);
