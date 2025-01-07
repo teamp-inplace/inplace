@@ -1,4 +1,4 @@
-package team7.inplace.placeMessage.application.command;
+package team7.inplace.place.application.command;
 
 import team7.inplace.influencer.domain.Influencer;
 import team7.inplace.place.domain.Place;

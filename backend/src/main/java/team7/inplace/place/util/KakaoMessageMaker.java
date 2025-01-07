@@ -1,4 +1,4 @@
-package team7.inplace.placeMessage.util;
+package team7.inplace.place.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import team7.inplace.placeMessage.application.command.PlaceMessageCommand;
+import team7.inplace.place.application.command.PlaceMessageCommand;
 
 @Component
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package team7.inplace.placeMessage.application;
+package team7.inplace.place.application;
 
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import team7.inplace.global.kakao.config.KakaoApiProperties;
-import team7.inplace.placeMessage.application.command.PlaceMessageCommand;
-import team7.inplace.placeMessage.util.KakaoMessageMaker;
+import team7.inplace.place.application.command.PlaceMessageCommand;
+import team7.inplace.place.util.KakaoMessageMaker;
 
 @Service
 @RequiredArgsConstructor

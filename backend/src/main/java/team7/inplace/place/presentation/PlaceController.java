@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import team7.inplace.place.application.CategoryService;
+import team7.inplace.place.application.PlaceMessageFacade;
 import team7.inplace.place.application.PlaceService;
 import team7.inplace.place.application.command.PlaceLikeCommand;
 import team7.inplace.place.application.command.PlacesCommand.PlacesCoordinateCommand;
@@ -38,6 +39,7 @@ public class PlaceController implements PlaceControllerApiSpec {
     private final PlaceService placeService;
     private final CategoryService categoryService;
     private final ReviewService reviewService;
+    private final PlaceMessageFacade placeMessageFacade;
 
     @GetMapping
     public ResponseEntity<PlacesResponse> getPlaces(
@@ -114,5 +116,11 @@ public class PlaceController implements PlaceControllerApiSpec {
         Page<ReviewResponse> reviews = reviewService.getReviews(placeId, pageable)
             .map(ReviewResponse::from);
         return new ResponseEntity<>(reviews, HttpStatus.OK);
+    }
+
+    @GetMapping("/place-message/{place-id}")
+    public ResponseEntity<Void> sendPlaceMessage(@PathVariable("place-id") Long placeId) {
+        placeMessageFacade.sendPlaceMessage(placeId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

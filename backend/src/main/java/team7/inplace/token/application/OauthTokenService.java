@@ -1,4 +1,4 @@
-package team7.inplace.oauthToken.application;
+package team7.inplace.token.application;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.UserErrorCode;
-import team7.inplace.oauthToken.application.command.OauthTokenCommand;
-import team7.inplace.oauthToken.domain.OauthToken;
-import team7.inplace.oauthToken.persistence.OauthTokenRepository;
+import team7.inplace.token.application.command.OauthTokenCommand;
+import team7.inplace.token.domain.OauthToken;
+import team7.inplace.token.persistence.OauthTokenRepository;
 import team7.inplace.security.util.TokenEncryptionUtil;
 import team7.inplace.user.domain.User;
 
