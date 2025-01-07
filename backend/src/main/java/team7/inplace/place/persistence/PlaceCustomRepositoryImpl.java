@@ -5,69 +5,127 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.AllArgsConstructor;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import team7.inplace.influencer.domain.QInfluencer;
 import team7.inplace.place.domain.Category;
+import team7.inplace.place.domain.Menu;
+import team7.inplace.place.domain.MenuBoardPhoto;
+import team7.inplace.place.domain.OffDay;
+import team7.inplace.place.domain.OpenTime;
 import team7.inplace.place.domain.Place;
+import team7.inplace.place.domain.PlaceBulk;
+import team7.inplace.place.domain.QMenu;
+import team7.inplace.place.domain.QMenuBoardPhoto;
+import team7.inplace.place.domain.QOffDay;
+import team7.inplace.place.domain.QOpenTime;
 import team7.inplace.place.domain.QPlace;
 import team7.inplace.video.domain.QVideo;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Repository
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PlaceCustomRepositoryImpl implements PlaceCustomRepository {
-
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<Place> findPlacesByDistance(String longitude, String latitude, Pageable pageable) {
+    public Optional<PlaceBulk> findPlaceById(Long id) {
+        QPlace qplace = QPlace.place;
+        QMenu qmenu = QMenu.menu;
+        QOpenTime qopenTime = QOpenTime.openTime;
+        QOffDay qoffDay = QOffDay.offDay;
+        QMenuBoardPhoto qmenuBoardPhoto = QMenuBoardPhoto.menuBoardPhoto;
+
+        Place place = jpaQueryFactory.selectFrom(qplace)
+                .where(qplace.id.eq(id))
+                .fetchOne();
+        if (place == null) {
+            return Optional.empty();
+        }
+
+        List<Menu> menus = jpaQueryFactory.selectFrom(qmenu)
+                .where(qmenu.placeId.eq(id))
+                .fetch();
+
+        List<OpenTime> openTimes = jpaQueryFactory.selectFrom(qopenTime)
+                .where(qopenTime.placeId.eq(id))
+                .fetch();
+
+        List<OffDay> offDays = jpaQueryFactory.selectFrom(qoffDay)
+                .where(qoffDay.placeId.eq(id))
+                .fetch();
+
+        List<MenuBoardPhoto> menuBoardPhotos = jpaQueryFactory.selectFrom(qmenuBoardPhoto)
+                .where(qmenuBoardPhoto.placeId.eq(id))
+                .fetch();
+
+        return Optional.of(new PlaceBulk(place, menus, openTimes, offDays, menuBoardPhotos));
+    }
+
+    @Override
+    public Page<PlaceBulk> findPlacesByDistance(String longitude, String latitude, Pageable pageable) {
+        List<Place> places = getPlaceEntity(longitude, latitude, pageable);
+
+        QPlace qplace = QPlace.place;
+        JPAQuery<Long> countQuery = jpaQueryFactory.select(qplace.id.count()) // 중복 제거
+                .from(qplace);
+
+        return getPlaceBulks(places, countQuery, pageable);
+    }
+
+    @Override
+    public Page<PlaceBulk> findPlacesByDistanceAndFilters(
+            String topLeftLongitude, String topLeftLatitude,
+            String bottomRightLongitude, String bottomRightLatitude,
+            String longitude, String latitude,
+            List<String> categories, List<String> influencers,
+            Pageable pageable
+    ) {
+        // Place 엔티티 조회
+        var places = getPlaceEntity(topLeftLongitude, topLeftLatitude, bottomRightLongitude,
+                bottomRightLatitude,
+                categories, influencers,
+                pageable);
+        // Place 개수 조회
+        var placeCount = getPlaceCount(topLeftLongitude, topLeftLatitude, bottomRightLongitude,
+                bottomRightLatitude, categories, influencers);
+
+        // Place ID 목록 추출
+        return getPlaceBulks(places, placeCount, pageable);
+    }
+
+    private List<Place> getPlaceEntity(String longitude, String latitude, Pageable pageable) {
         QPlace place = QPlace.place;
+        NumberTemplate<Double> distanceExpression = getDistanceExpression(longitude, latitude, place);
 
-        NumberTemplate<Double> distanceExpression = Expressions.numberTemplate(Double.class,
-                "6371 * acos(cos(radians({0})) * cos(radians(CAST({1} AS DOUBLE))) * cos(radians(CAST({2} AS DOUBLE)) - radians({3})) + sin(radians({0})) * sin(radians(CAST({1} AS DOUBLE))))",
-                Double.parseDouble(latitude), place.coordinate.latitude, place.coordinate.longitude,
-                Double.parseDouble(longitude));
-
-        List<Place> places = jpaQueryFactory.selectFrom(place)
+        return jpaQueryFactory.selectFrom(place)
                 .orderBy(distanceExpression.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
-        JPAQuery<Long> countQuery = jpaQueryFactory.select(place.id.count()) // 중복 제거
-            .from(place);
-
-        return PageableExecutionUtils.getPage(places, pageable, countQuery::fetchOne);
     }
 
-    @Override
-    public Page<Place> findPlacesByDistanceAndFilters(String topLeftLongitude,
-                                                      String topLeftLatitude, String bottomRightLongitude, String bottomRightLatitude,
-                                                      String longitude, String latitude, List<String> categories, List<String> influencers,
-                                                      Pageable pageable) {
-
-        QPlace place = QPlace.place;
-        QVideo video = QVideo.video;
-        QInfluencer influencer = QInfluencer.influencer;
-
-        NumberTemplate<Double> distanceExpression = Expressions.numberTemplate(Double.class,
-                "6371 * acos(cos(radians({0})) * cos(radians(CAST({1} AS DOUBLE))) * cos(radians(CAST({2} AS DOUBLE)) - radians({3})) + sin(radians({0})) * sin(radians(CAST({1} AS DOUBLE))))",
-                Double.parseDouble(latitude), place.coordinate.latitude, place.coordinate.longitude,
-                Double.parseDouble(longitude));
-
-        // 1. content를 가져오는 fetch() 쿼리
-        List<Place> content = jpaQueryFactory.selectFrom(place)
-                .leftJoin(video).on(video.place.eq(place))
-                .leftJoin(influencer).on(video.influencer.eq(influencer))
+    private List<Place> getPlaceEntity(
+            String topLeftLongitude, String topLeftLatitude, String bottomRightLongitude, String bottomRightLatitude,
+            List<String> categories, List<String> influencers, Pageable pageable
+    ) {
+        QVideo qVideo = QVideo.video;
+        QInfluencer qInfluencer = QInfluencer.influencer;
+        QPlace plqPlace = QPlace.place;
+        NumberTemplate<Double> distanceExpression = getDistanceExpression(topLeftLongitude, topLeftLatitude, plqPlace);
+        return jpaQueryFactory.selectFrom(plqPlace)
+                .leftJoin(qVideo).on(qVideo.place.eq(plqPlace))
+                .leftJoin(qInfluencer).on(qVideo.influencer.eq(qInfluencer))
                 .where(
                         withinBoundary(
-                                place,
+                                plqPlace,
                                 Double.parseDouble(topLeftLongitude),
                                 Double.parseDouble(topLeftLatitude),
                                 Double.parseDouble(bottomRightLongitude),
@@ -80,15 +138,38 @@ public class PlaceCustomRepositoryImpl implements PlaceCustomRepository {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+    }
 
-        // 2. countQuery를 따로 선언하여 필요할 때만 실행
-        JPAQuery<Long> countQuery = jpaQueryFactory.select(place.id.count()) // 중복 제거
-                .from(place)
-                .leftJoin(video).on(video.place.eq(place))
-                .leftJoin(influencer).on(video.influencer.eq(influencer))
+    private Page<PlaceBulk> getPlaceBulks(List<Place> places, JPAQuery<Long> countQuery, Pageable pageable) {
+        List<Long> placeIds = places.stream()
+                .map(Place::getId)
+                .toList();
+        var menus = getMenus(placeIds);
+        var openTimes = getOpenTimes(placeIds);
+        var offDays = getOffDays(placeIds);
+        var menuBoards = getMenuBoards(placeIds);
+
+        var placeBulks = generatePlaceBulks(places, menus, openTimes, offDays, menuBoards);
+
+        return PageableExecutionUtils.getPage(placeBulks, pageable, countQuery::fetchOne);
+    }
+
+    private JPAQuery<Long> getPlaceCount(
+            String topLeftLongitude, String topLeftLatitude, String bottomRightLongitude, String bottomRightLatitude,
+            List<String> categories, List<String> influencers
+    ) {
+        QVideo qVideo = QVideo.video;
+        QInfluencer qInfluencer = QInfluencer.influencer;
+        QPlace qPlace = QPlace.place;
+
+        return jpaQueryFactory
+                .select(qPlace.id.count())
+                .from(qPlace)
+                .leftJoin(qVideo).on(qVideo.place.eq(qPlace))
+                .leftJoin(qInfluencer).on(qVideo.influencer.eq(qInfluencer))
                 .where(
                         withinBoundary(
-                                place,
+                                qPlace,
                                 Double.parseDouble(topLeftLongitude),
                                 Double.parseDouble(topLeftLatitude),
                                 Double.parseDouble(bottomRightLongitude),
@@ -97,14 +178,21 @@ public class PlaceCustomRepositoryImpl implements PlaceCustomRepository {
                         placeCategoryIn(categories),
                         placeInfluencerIn(influencers)
                 );
-
-        // 3. PageableExecutionUtils를 사용하여 필요할 때 countQuery 실행
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
-    private BooleanExpression withinBoundary(QPlace place, double topLeftLongitude,
-                                             double topLeftLatitude,
-                                             double bottomRightLongitude, double bottomRightLatitude) {
+    private NumberTemplate<Double> getDistanceExpression(String longitude, String latitude, QPlace plqPlace) {
+        return Expressions.numberTemplate(Double.class,
+                "6371 * acos(cos(radians({0})) * cos(radians(CAST({1} AS DOUBLE))) * " +
+                        "cos(radians(CAST({2} AS DOUBLE)) - radians({3})) + sin(radians({0})) * sin(radians(CAST({1} AS DOUBLE))))",
+                Double.parseDouble(latitude), plqPlace.coordinate.latitude, plqPlace.coordinate.longitude,
+                Double.parseDouble(longitude));
+    }
+
+    private BooleanExpression withinBoundary(
+            QPlace place, double topLeftLongitude,
+            double topLeftLatitude,
+            double bottomRightLongitude, double bottomRightLatitude
+    ) {
         NumberTemplate<Double> longitude = Expressions.numberTemplate(Double.class,
                 "CAST({0} AS DOUBLE)", place.coordinate.longitude);
         NumberTemplate<Double> latitude = Expressions.numberTemplate(Double.class,
@@ -115,22 +203,74 @@ public class PlaceCustomRepositoryImpl implements PlaceCustomRepository {
     }
 
     private BooleanExpression placeCategoryIn(List<String> categories) {
-        if (categories == null) {
+        if (categories == null || categories.isEmpty()) {
             return null;
         }
-
-        List<Category> enumCategories = categories.stream()
-                .map(Category::of) // Category.of() 메서드로 직접 매핑
-                .collect(Collectors.toList());
-
-        return QPlace.place.category.in(enumCategories);
+        return QPlace.place.category.in(
+                categories.stream()
+                        .map(Category::of)
+                        .collect(Collectors.toList())
+        );
     }
 
     private BooleanExpression placeInfluencerIn(List<String> influencers) {
-        if (influencers == null) {
+        if (influencers == null || influencers.isEmpty()) {
             return null;
         }
-
         return QInfluencer.influencer.name.in(influencers);
+    }
+
+    private Map<Long, List<MenuBoardPhoto>> getMenuBoards(List<Long> placeIds) {
+        return jpaQueryFactory
+                .selectFrom(QMenuBoardPhoto.menuBoardPhoto)
+                .where(QMenuBoardPhoto.menuBoardPhoto.placeId.in(placeIds))
+                .fetch()
+                .stream()
+                .collect(Collectors.groupingBy(MenuBoardPhoto::getPlaceId));
+    }
+
+    private Map<Long, List<OffDay>> getOffDays(List<Long> placeIds) {
+        return jpaQueryFactory
+                .selectFrom(QOffDay.offDay)
+                .where(QOffDay.offDay.placeId.in(placeIds))
+                .fetch()
+                .stream()
+                .collect(Collectors.groupingBy(OffDay::getPlaceId));
+    }
+
+    private Map<Long, List<OpenTime>> getOpenTimes(List<Long> placeIds) {
+        return jpaQueryFactory
+                .selectFrom(QOpenTime.openTime)
+                .where(QOpenTime.openTime.placeId.in(placeIds))
+                .fetch()
+                .stream()
+                .collect(Collectors.groupingBy(OpenTime::getPlaceId));
+    }
+
+    private Map<Long, List<Menu>> getMenus(List<Long> placeIds) {
+        return jpaQueryFactory
+                .selectFrom(QMenu.menu)
+                .where(QMenu.menu.placeId.in(placeIds))
+                .fetch()
+                .stream()
+                .collect(Collectors.groupingBy(Menu::getPlaceId));
+    }
+
+    private List<PlaceBulk> generatePlaceBulks(
+            List<Place> places,
+            Map<Long, List<Menu>> menus,
+            Map<Long, List<OpenTime>> openTimes,
+            Map<Long, List<OffDay>> offDays,
+            Map<Long, List<MenuBoardPhoto>> menuBoards
+    ) {
+        return places.stream()
+                .map(place -> new PlaceBulk(
+                        place,
+                        menus.getOrDefault(place.getId(), Collections.emptyList()),
+                        openTimes.getOrDefault(place.getId(), Collections.emptyList()),
+                        offDays.getOrDefault(place.getId(), Collections.emptyList()),
+                        menuBoards.getOrDefault(place.getId(), Collections.emptyList())
+                ))
+                .toList();
     }
 }

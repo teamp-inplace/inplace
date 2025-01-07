@@ -66,17 +66,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
       - name: creates output
-        run: sh ./frontend/build.sh
+        working-directory: frontend
+        run: sh build.sh
+
+      # 디버깅을 위한 경로와 구조 확인
+      - name: Debug directory structure
+        run: |
+          echo "Before move - directory structure:"
+          ls -la
+          ls -la output/
+      
+      # output의 내용을 루트로 이동
+      - name: Move output contents
+        run: |
+          cp -rf output/* .
+          rm -rf output
+          
+          echo "After move - final structure:"
+          ls -la
+      
       - name: Pushes to fork repository
         id: push_directory
         uses: cpina/github-action-push-to-another-repository@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.VERCEL_PAT }}
         with:
-          source-directory: 'output'
+          source-directory: '.'
           destination-github-username: 'userjmmm'
           destination-repository-name: 'inplace'
           user-email: ${{ secrets.VERCEL_EMAIL }}
           commit-message: ${{ github.event.commits[0].message }}
-          target-branch: main
+          target-branch: dev

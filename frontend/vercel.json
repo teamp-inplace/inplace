@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "https://api.inplace.my/$1"
+      "destination": "/index.html"
     }
   ]
 }
