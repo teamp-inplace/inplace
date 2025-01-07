@@ -1,4 +1,4 @@
-package team7.inplace.placeMessage.application;
+package team7.inplace.place.application;
 
 import java.util.Optional;
 import java.util.UUID;
