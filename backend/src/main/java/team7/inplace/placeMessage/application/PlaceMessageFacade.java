@@ -19,6 +19,7 @@ public class PlaceMessageFacade {
     private final OauthTokenService oauthTokenService;
     private final KakaoMessageService kakaoMessageService;
     private final ScheduledExecutorService scheduledExecutorService;
+    private final UserReviewUuidService userReviewLinkService;
 
     public void sendPlaceMessage(Long placeId) throws InplaceException {
         if (AuthorizationUtil.isNotLoginUser()) {
@@ -28,8 +29,11 @@ public class PlaceMessageFacade {
         String oauthToken = oauthTokenService.findOAuthTokenByUserId(AuthorizationUtil.getUserId());
         PlaceMessageCommand placeMessageCommand = placeService.getPlaceMessageCommand(placeId);
         kakaoMessageService.sendLocationMessageToMe(oauthToken, placeMessageCommand);
+
+        String uuid = userReviewLinkService.generateReviewUuid(AuthorizationUtil.getUserId(),
+            placeId);
         scheduledExecutorService.schedule(
-            () -> kakaoMessageService.sendFeedMessageToMe(oauthToken, placeMessageCommand), 1,
+            () -> kakaoMessageService.sendFeedMessageToMe(oauthToken, placeMessageCommand, uuid), 1,
             TimeUnit.MINUTES);
     }
 }
