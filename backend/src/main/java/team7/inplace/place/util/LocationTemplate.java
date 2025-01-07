@@ -1,9 +1,9 @@
-package team7.inplace.placeMessage.util;
+package team7.inplace.place.util;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import team7.inplace.placeMessage.application.command.PlaceMessageCommand;
+import team7.inplace.place.application.command.PlaceMessageCommand;
 
 import java.util.List;
 

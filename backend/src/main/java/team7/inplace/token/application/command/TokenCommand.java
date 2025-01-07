@@ -1,4 +1,4 @@
-package team7.inplace.token.application.dto;
+package team7.inplace.token.application.command;
 
 public class TokenCommand {
 

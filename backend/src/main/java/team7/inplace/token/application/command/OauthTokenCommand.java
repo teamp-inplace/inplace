@@ -1,4 +1,4 @@
-package team7.inplace.oauthToken.application.command;
+package team7.inplace.token.application.command;
 
 import java.time.Instant;
 

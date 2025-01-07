@@ -1,4 +1,4 @@
-package team7.inplace.placeMessage.util;
+package team7.inplace.place.util;
 
 public record Button(
         String title,
