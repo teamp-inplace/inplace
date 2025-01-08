@@ -3,6 +3,7 @@ package team7.inplace.liked.likedInfluencer.presentation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ public class FavoriteInfluencerController implements FavoriteInfluencerControlle
 
     private final FavoriteInfluencerService favoriteInfluencerService;
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/likes")
     public ResponseEntity<Void> likeToInfluencer(@RequestBody InfluencerLikeRequest request) {
         FavoriteInfluencerCommand command = request.toCommand();
@@ -27,6 +29,7 @@ public class FavoriteInfluencerController implements FavoriteInfluencerControlle
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/multiple/likes")
     public ResponseEntity<Void> likeToManyInfluencer(
             @RequestBody InfluencerListLikeRequest request) {
