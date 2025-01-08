@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.AuthorizationErrorCode;
 import team7.inplace.security.util.JwtUtil;
-import team7.inplace.token.application.dto.TokenCommand;
-import team7.inplace.token.application.dto.TokenCommand.ReIssued;
+import team7.inplace.token.application.command.TokenCommand;
+import team7.inplace.token.application.command.TokenCommand.ReIssued;
 import team7.inplace.user.application.UserService;
 import team7.inplace.user.application.dto.UserCommand;
 
