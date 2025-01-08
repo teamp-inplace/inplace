@@ -34,5 +34,5 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
     List<Video> findByPlaceId(Long placeId);
 
     @Query("SELECT v FROM Video v JOIN FETCH v.influencer WHERE v.place.id IN :placeIds")
-    List<Video> findByPlaceIdInWithInfluencer(List<Long> placeIds);
+    List<Video> findByPlaceIdInWithInfluencer(@Param("placeIds") List<Long> placeIds);
 }

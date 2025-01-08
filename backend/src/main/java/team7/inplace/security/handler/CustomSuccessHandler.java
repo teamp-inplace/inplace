@@ -53,10 +53,12 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
     ) {
         ResponseCookie accessTokenCookie = CookieUtil.createCookie(
                 TokenType.ACCESS_TOKEN.getValue(),
-                accessToken);
+                accessToken,
+                frontEndUrl);
         ResponseCookie refreshTokenCookie = CookieUtil.createCookie(
                 TokenType.REFRESH_TOKEN.getValue(),
-                refreshToken);
+                refreshToken,
+                frontEndUrl);
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());

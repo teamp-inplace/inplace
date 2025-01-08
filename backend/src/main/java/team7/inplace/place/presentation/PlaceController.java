@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 import team7.inplace.place.application.CategoryService;
 import team7.inplace.place.application.PlaceMessageFacade;
 import team7.inplace.place.application.PlaceService;
@@ -90,6 +91,7 @@ public class PlaceController implements PlaceControllerApiSpec {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/likes")
     public ResponseEntity<Void> likeToPlace(@RequestBody PlaceLikeRequest param) {
         placeService.likeToPlace(new PlaceLikeCommand(param.placeId(), param.likes()));
