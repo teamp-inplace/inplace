@@ -20,13 +20,13 @@ import team7.inplace.user.domain.UserType;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class ReviewRepositoryTest {
+class ReviewJPARepositoryTest {
 
     @PersistenceContext
     EntityManager entityManager;
 
     @Autowired
-    private ReviewRepository reviewRepository;
+    private ReviewJPARepository reviewJPARepository;
 
     @BeforeEach
     void init() {
@@ -69,10 +69,10 @@ class ReviewRepositoryTest {
     public void checkLikedDisliked() {
         //given
         //when
-        int likes = reviewRepository.countByPlaceIdAndIsLikedTrue(
+        int likes = reviewJPARepository.countByPlaceIdAndIsLikedTrue(
                 1L);
 
-        int dislikes = reviewRepository.countByPlaceIdAndIsLikedFalse(
+        int dislikes = reviewJPARepository.countByPlaceIdAndIsLikedFalse(
                 1L);
 
         //then

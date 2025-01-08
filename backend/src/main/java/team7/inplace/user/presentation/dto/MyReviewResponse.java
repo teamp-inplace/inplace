@@ -1,15 +1,12 @@
 package team7.inplace.user.presentation.dto;
 
-import team7.inplace.review.application.dto.MyReviewInfo;
-import team7.inplace.review.application.dto.MyReviewInfo.ReviewPlaceInfo;
-
-import java.util.Date;
+import java.time.LocalDate;
 
 public record MyReviewResponse(
         Long reviewId,
         boolean likes,
         String comment,
-        Date createdDate,
+        LocalDate createdDate,
         ReviewPlaceInfo place
 ) {
 

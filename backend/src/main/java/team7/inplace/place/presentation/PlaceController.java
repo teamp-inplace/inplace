@@ -1,6 +1,5 @@
 package team7.inplace.place.presentation;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,23 +13,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.access.prepost.PreAuthorize;
 import team7.inplace.place.application.CategoryService;
-import team7.inplace.place.application.PlaceMessageFacade;
 import team7.inplace.place.application.PlaceService;
 import team7.inplace.place.application.command.PlaceLikeCommand;
-import team7.inplace.place.application.command.PlacesCommand.PlacesCoordinateCommand;
-import team7.inplace.place.application.command.PlacesCommand.PlacesFilterParamsCommand;
+import team7.inplace.place.application.command.PlacesCommand;
 import team7.inplace.place.application.dto.CategoryInfo;
-import team7.inplace.place.application.dto.PlaceInfo;
 import team7.inplace.place.presentation.dto.CategoriesResponse;
-import team7.inplace.place.presentation.dto.PlaceDetailResponse;
 import team7.inplace.place.presentation.dto.PlaceLikeRequest;
 import team7.inplace.place.presentation.dto.PlacesResponse;
 import team7.inplace.place.presentation.dto.ReviewRequest;
 import team7.inplace.place.presentation.dto.ReviewResponse;
 import team7.inplace.review.application.ReviewService;
 import team7.inplace.review.application.dto.ReviewCommand;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,37 +36,44 @@ public class PlaceController implements PlaceControllerApiSpec {
     private final PlaceService placeService;
     private final CategoryService categoryService;
     private final ReviewService reviewService;
-    private final PlaceMessageFacade placeMessageFacade;
 
     @GetMapping
-    public ResponseEntity<PlacesResponse> getPlaces(
-        @RequestParam String longitude,
-        @RequestParam String latitude,
-        @RequestParam String topLeftLongitude,
-        @RequestParam String topLeftLatitude,
-        @RequestParam String bottomRightLongitude,
-        @RequestParam String bottomRightLatitude,
-        @RequestParam(required = false) String categories,
-        @RequestParam(required = false) String influencers,
-        @PageableDefault(page = 0, size = 10) Pageable pageable
+    public ResponseEntity<Page<PlacesResponse.Simple>> getPlaces(
+            @RequestParam Double longitude,
+            @RequestParam Double latitude,
+            @RequestParam Double topLeftLongitude,
+            @RequestParam Double topLeftLatitude,
+            @RequestParam Double bottomRightLongitude,
+            @RequestParam Double bottomRightLatitude,
+            @RequestParam(required = false) String categories,
+            @RequestParam(required = false) String influencers,
+            @PageableDefault(page = 0, size = 10) Pageable pageable
     ) {
-        // 위치기반 조회
-        Page<PlaceInfo> placeInfos = placeService.getPlacesWithinRadius(
-            new PlacesCoordinateCommand(
-                topLeftLongitude,
-                topLeftLatitude,
-                bottomRightLongitude,
-                bottomRightLatitude,
-                longitude,
-                latitude,
+        var placeSimpleInfos = placeService.getPlacesInMapRange(
+                new PlacesCommand.Coordinate(
+                        topLeftLongitude, topLeftLatitude,
+                        bottomRightLongitude, bottomRightLatitude,
+                        longitude, latitude
+                ),
+                new PlacesCommand.FilterParams(categories, influencers),
                 pageable
-            ),
-            new PlacesFilterParamsCommand(
-                categories,
-                influencers
-            )
         );
-        return new ResponseEntity<>(PlacesResponse.of(placeInfos), HttpStatus.OK);
+
+        var responses = PlacesResponse.Simple.from(placeSimpleInfos.getContent());
+        return new ResponseEntity<>(
+                new PageImpl<>(responses, pageable, placeSimpleInfos.getTotalElements()),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PlacesResponse.Detail> getPlaceDetail(
+            @PathVariable("id") Long placeId
+    ) {
+        var placeDetail = placeService.getPlaceDetailInfo(placeId);
+
+        var response = PlacesResponse.Detail.from(placeDetail);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/categories")
@@ -83,46 +86,39 @@ public class PlaceController implements PlaceControllerApiSpec {
 
     @GetMapping("/{id}")
     public ResponseEntity<PlaceDetailResponse> getPlaceDetail(
-        @PathVariable("id") Long placeId
+            @PathVariable("id") Long placeId
     ) {
         PlaceDetailResponse response = PlaceDetailResponse.from(
-            placeService.getPlaceDetailInfo(placeId));
+                placeService.getPlaceDetailInfo(placeId));
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PreAuthorize("isAuthenticated()")
     @PostMapping("/likes")
     public ResponseEntity<Void> likeToPlace(@RequestBody PlaceLikeRequest param) {
-        placeService.likeToPlace(new PlaceLikeCommand(param.placeId(), param.likes()));
+        placeService.updateLikedPlace(new PlaceLikeCommand(param.placeId(), param.likes()));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/reviews/{uuid}")
+    @PostMapping("/{id}/reviews")
     public ResponseEntity<Void> createReview(
-        @PathVariable("id") Long placeId,
-        @PathVariable("uuid") String uuid,
-        @RequestBody ReviewRequest request
+            @PathVariable("id") Long placeId,
+            @RequestBody ReviewRequest request
     ) {
         ReviewCommand reviewCommand = request.toCommand();
 
-        reviewService.createReview(placeId, reviewCommand, uuid);
+        reviewService.createReview(placeId, reviewCommand);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}/reviews")
-    public ResponseEntity<Page<ReviewResponse>> getReviews(
-        @PathVariable("id") Long placeId,
-        @PageableDefault(page = 0, size = 10) Pageable pageable
+    public ResponseEntity<Page<ReviewResponse.Simple>> getReviews(
+            @PathVariable("id") Long placeId,
+            @PageableDefault(page = 0, size = 10) Pageable pageable
     ) {
-        Page<ReviewResponse> reviews = reviewService.getReviews(placeId, pageable)
-            .map(ReviewResponse::from);
-        return new ResponseEntity<>(reviews, HttpStatus.OK);
-    }
+        var responses = reviewService.getPlaceReviews(placeId, pageable)
+                .map(ReviewResponse.Simple::from);
 
-    @GetMapping("/place-message/{place-id}")
-    public ResponseEntity<Void> sendPlaceMessage(@PathVariable("place-id") Long placeId) {
-        placeMessageFacade.sendPlaceMessage(placeId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 }

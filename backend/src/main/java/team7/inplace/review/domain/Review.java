@@ -1,48 +1,56 @@
 package team7.inplace.review.domain;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import team7.inplace.place.domain.Place;
-import team7.inplace.user.domain.User;
-
-import java.util.Date;
-
 import static lombok.AccessLevel.PROTECTED;
 
-@Getter
-@NoArgsConstructor(access = PROTECTED)
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import java.time.LocalDate;
+import lombok.NoArgsConstructor;
+
 @Entity
-@Table(name = "review", uniqueConstraints = {
+@NoArgsConstructor(access = PROTECTED)
+@Table(name = "reviews", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"user_id", "place_id"})
 })
 public class Review {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "place_id", nullable = false)
-    private Place place;
-
     @Column(nullable = false)
-    private boolean isLiked;
+    private Boolean isLiked;
 
     @Column(length = 100)
     private String comment;
 
-    private Date createdDate;
+    private LocalDate createdDate;
 
-    public Review(User user, Place place, boolean isLiked, String comment) {
-        this.user = user;
-        this.place = place;
+    private Long userId;
+
+    private Long placeId;
+
+    public Review(Long userId, Long placeId, boolean isLiked, String comment) {
+        this.userId = userId;
+        this.placeId = placeId;
         this.isLiked = isLiked;
         this.comment = comment;
-        this.createdDate = new Date();
+        this.createdDate = LocalDate.now();
+    }
+
+    public Boolean isLiked() {
+        return isLiked;
+    }
+
+    public Boolean isOwner(Long userId) {
+        return this.userId.equals(userId);
+    }
+
+    public Boolean isNotOwner(Long userId) {
+        return !isOwner(userId);
     }
 }

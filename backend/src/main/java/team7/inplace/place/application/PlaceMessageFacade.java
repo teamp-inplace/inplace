@@ -1,4 +1,4 @@
-package team7.inplace.place.application;
+package team7.inplace.placeMessage.application;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -6,8 +6,9 @@ import lombok.RequiredArgsConstructor;
 import team7.inplace.global.annotation.Facade;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.UserErrorCode;
-import team7.inplace.token.application.OauthTokenService;
-import team7.inplace.place.application.command.PlaceMessageCommand;
+import team7.inplace.oauthToken.application.OauthTokenService;
+import team7.inplace.place.application.PlaceService;
+import team7.inplace.placeMessage.application.command.PlaceMessageCommand;
 import team7.inplace.security.util.AuthorizationUtil;
 
 @Facade
@@ -32,7 +33,7 @@ public class PlaceMessageFacade {
         String uuid = userReviewLinkService.generateReviewUuid(AuthorizationUtil.getUserId(),
             placeId);
         scheduledExecutorService.schedule(
-            () -> kakaoMessageService.sendFeedMessageToMe(oauthToken, placeMessageCommand, uuid), 1,
-            TimeUnit.MINUTES);
+                () -> kakaoMessageService.sendFeedMessageToMe(oauthToken, placeMessageCommand), 1,
+                TimeUnit.MINUTES);
     }
 }

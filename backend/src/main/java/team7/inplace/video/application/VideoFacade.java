@@ -25,13 +25,11 @@ public class VideoFacade {
     private final UserService userService;
 
     @Transactional
-    public void createVideos(List<VideoCommand.Create> videoCommands, List<PlacesCommand.Create> placeCommands,
-                             String chanelUUID) {
-        var placeIds = placeService.createPlaces(placeCommands);
-        log.info("placeIds: {}", placeIds);
-        log.info("videoCommands: {}", videoCommands);
-        youtubeCrawlingService.updateLastVideoUUID(chanelUUID, videoCommands.get(0).videoId());
-        videoService.createVideos(videoCommands, placeIds);
+    public void createVideos(
+            List<VideoCommand.Create> videoCommands,
+            Long influencerId
+    ) {
+        videoService.createVideos(videoCommands, influencerId);
     }
 
     @Transactional
@@ -46,16 +44,14 @@ public class VideoFacade {
     }
 
     @Transactional(readOnly = true)
-    public List<VideoInfo> getVideosByMyInfluencer() {
+    public List<VideoInfo> getMyInfluencerVideos() {
         // 토큰 정보에 대한 검증
         if (AuthorizationUtil.isNotLoginUser()) {
             throw InplaceException.of(AuthorizationErrorCode.TOKEN_IS_EMPTY);
         }
         // User 정보를 쿠키에서 추출
         Long userId = AuthorizationUtil.getUserId();
-        // 유저 정보를 이용하여 유저가 좋아요를 누른 인플루언서 id 리스트를 조회
-        List<Long> influencerIds = userService.getInfluencerIdsByUserId(userId);
         // 인플루언서 id를 사용하여 영상을 조회
-        return videoService.getVideosByMyInfluencer(influencerIds);
+        return videoService.getMyInfluencerVideos(userId);
     }
 }

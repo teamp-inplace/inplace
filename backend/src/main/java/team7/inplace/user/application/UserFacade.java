@@ -7,12 +7,12 @@ import team7.inplace.liked.likedInfluencer.application.FavoriteInfluencerService
 import team7.inplace.global.annotation.Facade;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.AuthorizationErrorCode;
-import team7.inplace.influencer.application.dto.InfluencerInfo;
 import team7.inplace.place.application.PlaceService;
 import team7.inplace.place.application.dto.LikedPlaceInfo;
 import team7.inplace.review.application.ReviewService;
-import team7.inplace.review.application.dto.MyReviewInfo;
+import team7.inplace.review.persistence.dto.ReviewQueryResult;
 import team7.inplace.security.util.AuthorizationUtil;
+import team7.inplace.user.presentation.dto.UserResponse.LikedInfluencer;
 
 @Facade
 @RequiredArgsConstructor
@@ -22,7 +22,7 @@ public class UserFacade {
     private final PlaceService placeService;
     private final ReviewService reviewService;
 
-    public Page<InfluencerInfo> getMyFavoriteInfluencers(Pageable pageable) {
+    public Page<LikedInfluencer> getMyFavoriteInfluencers(Pageable pageable) {
         if (AuthorizationUtil.isNotLoginUser()) {
             throw InplaceException.of(AuthorizationErrorCode.TOKEN_IS_EMPTY);
         }
@@ -38,11 +38,11 @@ public class UserFacade {
         return placeService.getLikedPlaceInfo(userId, pageable);
     }
 
-    public Page<MyReviewInfo> getMyReviews(Pageable pageable) {
+    public Page<ReviewQueryResult.Detail> getMyReviews(Pageable pageable) {
         if (AuthorizationUtil.isNotLoginUser()) {
             throw InplaceException.of(AuthorizationErrorCode.TOKEN_IS_EMPTY);
         }
         Long userId = AuthorizationUtil.getUserId();
-        return reviewService.getMyReviews(userId, pageable);
+        return reviewService.getUserReviews(userId, pageable);
     }
 }

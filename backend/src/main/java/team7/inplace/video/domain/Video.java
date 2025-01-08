@@ -8,16 +8,14 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import java.time.Instant;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import team7.inplace.influencer.domain.Influencer;
-import team7.inplace.place.domain.Place;
 
-@Entity
 @Getter
+@Entity
+@Table(name = "videos")
 @NoArgsConstructor(access = PROTECTED)
 public class Video {
     @Id
@@ -30,34 +28,21 @@ public class Video {
     @Embedded
     private View view;
 
-    private Instant publishTime;
+    private LocalDateTime publishTime;
 
-    @ManyToOne
-    @JoinColumn(name = "influencer_id", nullable = false)
-    private Influencer influencer;
+    private Long influencerId;
 
-    @ManyToOne
-    @JoinColumn(name = "place_id")
-    private Place place;
+    private Long placeId;
 
-    private Video(Influencer influencer, Place place, String videoUrl) {
-        this.influencer = influencer;
-        this.publishTime = Instant.now();
-        this.place = place;
+    public Video(String videoUrl, LocalDateTime publishTime, Long influencerId) {
         this.videoUrl = videoUrl;
         this.view = new View();
+        this.publishTime = publishTime;
+        this.influencerId = influencerId;
     }
 
-    public Video(Influencer influencer, Place place, String videoUrl, String publishTime) {
-        this.influencer = influencer;
-        this.publishTime = Instant.parse(publishTime);
-        this.place = place;
-        this.videoUrl = videoUrl;
-        this.view = new View();
-    }
-
-    public static Video from(Influencer influencer, Place place, String videoUrl) {
-        return new Video(influencer, place, videoUrl);
+    public static Video from(String videoUrl, LocalDateTime publishTime, Long influencerId) {
+        return new Video(videoUrl, publishTime, influencerId);
     }
 
     public String getVideoUrl() {
@@ -80,7 +65,7 @@ public class Video {
         view.updateViewCount(viewCount);
     }
 
-    public void addPlace(Place place) {
-        this.place = place;
+    public void addPlace(Long placeId) {
+        this.placeId = placeId;
     }
 }

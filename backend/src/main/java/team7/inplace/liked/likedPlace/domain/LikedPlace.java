@@ -1,42 +1,45 @@
 package team7.inplace.liked.likedPlace.domain;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import team7.inplace.place.domain.Place;
-import team7.inplace.user.domain.User;
-
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 @Getter
-@RequiredArgsConstructor
-@NoArgsConstructor(access = PROTECTED)
 @Entity
 @Table(name = "liked_places")
+@NoArgsConstructor(access = PROTECTED)
 public class LikedPlace {
-
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @NonNull
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(nullable = false)
+    private Long userId;
 
-    @ManyToOne
-    @NonNull
-    @JoinColumn(name = "place_id")
-    private Place place;
+    @Column(nullable = false)
+    private Long placeId;
 
-    @Column
-    private boolean isLiked = false;
+    @Column(nullable = false)
+    private Boolean isLiked;
+
+    private LikedPlace(Long userId, Long placeId) {
+        this.userId = userId;
+        this.placeId = placeId;
+        this.isLiked = false;
+    }
+
+    public static LikedPlace from(Long userId, Long placeId) {
+        return new LikedPlace(userId, placeId);
+    }
 
     public void updateLike(boolean like) {
         this.isLiked = like;
     }
-
 }

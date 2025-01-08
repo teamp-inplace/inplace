@@ -56,12 +56,12 @@ public class SearchService {
 
     public List<VideoInfo> searchVideo(String keyword) {
         var videoInfos = videoSearchRepository.searchEntityByKeywords(keyword);
-
-        return videoInfos.stream()
-                .map(videoInfo -> {
-                    return VideoInfo.from(videoInfo.searchResult());
-                })
-                .toList();
+//        return videoInfos.stream()
+//                .map(videoInfo -> {
+//                    return VideoInfo.from(videoInfo.searchResult());
+//                })
+//                .toList();
+        return null;
     }
 
     public List<InfluencerInfo> searchInfluencer(String keyword) {
