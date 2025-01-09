@@ -10,9 +10,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team7.inplace.liked.likedInfluencer.persistent.FavoriteInfluencerRepository;
 import team7.inplace.influencer.application.dto.InfluencerInfo;
 import team7.inplace.influencer.domain.Influencer;
+import team7.inplace.liked.likedInfluencer.persistent.LikedInfluencerRepository;
 import team7.inplace.liked.likedPlace.persistence.LikedPlaceRepository;
 import team7.inplace.search.application.dto.AutoCompletionInfo;
 import team7.inplace.search.application.dto.PlaceSearchInfo;
@@ -34,7 +34,7 @@ public class SearchService {
     private final VideoSearchRepository videoSearchRepository;
     private final InfluencerSearchRepository influencerSearchRepository;
     private final PlaceSearchRepository placeSearchRepository;
-    private final FavoriteInfluencerRepository favoriteInfluencerRepository;
+    private final LikedInfluencerRepository likedInfluencerRepository;
     private final LikedPlaceRepository likedPlaceRepository;
 
     public List<AutoCompletionInfo> searchAutoCompletions(String keyword) {
@@ -74,7 +74,7 @@ public class SearchService {
                     .toList();
         }
 
-        var likedInfluencerIds = favoriteInfluencerRepository.findLikedInfluencerIdsByUserId(userId);
+        var likedInfluencerIds = likedInfluencerRepository.findLikedInfluencerIdsByUserId(userId);
 
         return influencerInfos.stream()
                 .map(influencerInfo -> {
@@ -100,7 +100,7 @@ public class SearchService {
             );
         }
 
-        var likedInfluencerIds = favoriteInfluencerRepository.findLikedInfluencerIdsByUserId(userId);
+        var likedInfluencerIds = likedInfluencerRepository.findLikedInfluencerIdsByUserId(userId);
 
         List<InfluencerInfo> sortedContent = influencerInfos.getContent().stream()
                 .map(influencerInfo -> {

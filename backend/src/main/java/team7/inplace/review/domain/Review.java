@@ -4,24 +4,20 @@ import static lombok.AccessLevel.PROTECTED;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDate;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import team7.inplace.global.baseEntity.BaseEntity;
 
+@Getter
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Table(name = "reviews", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"user_id", "place_id"})
 })
-public class Review {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Review extends BaseEntity {
     @Column(nullable = false)
     private Boolean isLiked;
 

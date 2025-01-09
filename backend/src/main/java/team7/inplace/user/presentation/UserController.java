@@ -61,7 +61,8 @@ public class UserController implements UserControllerApiSepc {
     @GetMapping("/users/info")
     public ResponseEntity<UserResponse.Info> getUserInfo() {
         var userInfo = userService.getUserInfo();
-        UserResponse.Info response = UserResponse.Info.from(userInfo);
+
+        var response = UserResponse.Info.from(userInfo);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

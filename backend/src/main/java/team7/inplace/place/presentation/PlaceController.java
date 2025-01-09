@@ -1,7 +1,9 @@
 package team7.inplace.place.presentation;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import team7.inplace.place.application.CategoryService;
+import team7.inplace.place.application.PlaceMessageFacade;
 import team7.inplace.place.application.PlaceService;
 import team7.inplace.place.application.command.PlaceLikeCommand;
 import team7.inplace.place.application.command.PlacesCommand;
@@ -26,13 +29,11 @@ import team7.inplace.place.presentation.dto.ReviewResponse;
 import team7.inplace.review.application.ReviewService;
 import team7.inplace.review.application.dto.ReviewCommand;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/places")
 public class PlaceController implements PlaceControllerApiSpec {
-
+    private final PlaceMessageFacade placeMessageFacade;
     private final PlaceService placeService;
     private final CategoryService categoryService;
     private final ReviewService reviewService;
@@ -84,16 +85,6 @@ public class PlaceController implements PlaceControllerApiSpec {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PlaceDetailResponse> getPlaceDetail(
-            @PathVariable("id") Long placeId
-    ) {
-        PlaceDetailResponse response = PlaceDetailResponse.from(
-                placeService.getPlaceDetailInfo(placeId));
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
     @PostMapping("/likes")
     public ResponseEntity<Void> likeToPlace(@RequestBody PlaceLikeRequest param) {
         placeService.updateLikedPlace(new PlaceLikeCommand(param.placeId(), param.likes()));
@@ -120,5 +111,12 @@ public class PlaceController implements PlaceControllerApiSpec {
                 .map(ReviewResponse.Simple::from);
 
         return new ResponseEntity<>(responses, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> sendPlaceMessage(Long placeId) {
+        placeMessageFacade.sendPlaceMessage(placeId);
+        
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

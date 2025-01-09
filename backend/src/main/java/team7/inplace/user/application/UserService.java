@@ -4,10 +4,8 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team7.inplace.favoriteInfluencer.persistent.FavoriteInfluencerRepository;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.UserErrorCode;
-import team7.inplace.influencer.domain.Influencer;
 import team7.inplace.security.application.CurrentUserProvider;
 import team7.inplace.security.util.AuthorizationUtil;
 import team7.inplace.user.application.dto.UserCommand;
@@ -19,9 +17,7 @@ import team7.inplace.user.persistence.UserRepository;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
     private final UserRepository userRepository;
-    private final FavoriteInfluencerRepository favoriteInfluencerRepository;
     private final CurrentUserProvider currentUserProvider;
 
     @Transactional

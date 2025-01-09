@@ -22,13 +22,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import team7.inplace.liked.likedInfluencer.domain.FavoriteInfluencer;
-import team7.inplace.liked.likedInfluencer.persistent.FavoriteInfluencerRepository;
 import team7.inplace.influencer.application.InfluencerService;
 import team7.inplace.influencer.application.dto.InfluencerCommand;
 import team7.inplace.influencer.application.dto.InfluencerInfo;
 import team7.inplace.influencer.domain.Influencer;
 import team7.inplace.influencer.persistence.InfluencerRepository;
+import team7.inplace.liked.likedInfluencer.domain.LikedInfluencer;
+import team7.inplace.liked.likedInfluencer.persistent.LikedInfluencerRepository;
 import team7.inplace.security.util.AuthorizationUtil;
 import team7.inplace.user.domain.Role;
 import team7.inplace.user.domain.User;
@@ -41,7 +41,7 @@ public class InfluencerServiceTest {
     private InfluencerRepository influencerRepository;
 
     @Mock
-    private FavoriteInfluencerRepository favoriteInfluencerRepository;
+    private LikedInfluencerRepository likedInfluencerRepository;
 
     @InjectMocks
     private InfluencerService influencerService;
@@ -91,11 +91,11 @@ public class InfluencerServiceTest {
         given(AuthorizationUtil.getUserId()).willReturn(userId);
 
         // 2, 3번째 인플루언서 좋아요로 설정
-        FavoriteInfluencer favoriteInfluencer1 = new FavoriteInfluencer(user, influencer2);
-        favoriteInfluencer1.updateLike(true);
-        FavoriteInfluencer favoriteInfluencer2 = new FavoriteInfluencer(user, influencer3);
-        favoriteInfluencer2.updateLike(true);
-        given(favoriteInfluencerRepository.findLikedInfluencerIdsByUserId(userId)).willReturn(
+        LikedInfluencer likedInfluencer1 = new LikedInfluencer(user, influencer2);
+        likedInfluencer1.updateLike(true);
+        LikedInfluencer likedInfluencer2 = new LikedInfluencer(user, influencer3);
+        likedInfluencer2.updateLike(true);
+        given(likedInfluencerRepository.findLikedInfluencerIdsByUserId(userId)).willReturn(
                 Set.of(2L, 3L));
 
         Page<InfluencerInfo> influencerInfoPage = influencerService.getAllInfluencers(pageable);

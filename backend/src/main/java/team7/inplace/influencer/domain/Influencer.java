@@ -5,21 +5,16 @@ import static lombok.AccessLevel.PROTECTED;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import team7.inplace.global.baseEntity.BaseEntity;
 
 @Getter
 @Entity
 @Table(name = "influencers")
 @NoArgsConstructor(access = PROTECTED)
-public class Influencer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Influencer extends BaseEntity {
 
     @Column(nullable = false, length = 30)
     private String name;

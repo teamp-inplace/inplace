@@ -1,14 +1,16 @@
 package team7.inplace.user.presentation.dto;
 
 import java.time.LocalDate;
+import team7.inplace.influencer.application.dto.InfluencerInfo;
 import team7.inplace.place.application.dto.LikedPlaceInfo;
 import team7.inplace.review.persistence.dto.ReviewQueryResult;
+import team7.inplace.user.application.dto.UserInfo;
 
 public class UserResponse {
     public record Info(
             String nickname
     ) {
-        public static Info from(UserInfoResponse userInfo) {
+        public static Info from(UserInfo userInfo) {
             return new Info(userInfo.nickname());
         }
     }
@@ -83,12 +85,12 @@ public class UserResponse {
             String imageUrl,
             boolean likes
     ) {
-        public static LikedInfluencer from(LikedInfluencer likedInfluencerInfo) {
+        public static LikedInfluencer from(InfluencerInfo influencerInfo) {
             return new LikedInfluencer(
-                    likedInfluencerInfo.influencerId(),
-                    likedInfluencerInfo.influencerName(),
-                    likedInfluencerInfo.imageUrl(),
-                    likedInfluencerInfo.likes()
+                    influencerInfo.influencerId(),
+                    influencerInfo.influencerName(),
+                    influencerInfo.influencerImgUrl(),
+                    influencerInfo.likes()
             );
         }
     }

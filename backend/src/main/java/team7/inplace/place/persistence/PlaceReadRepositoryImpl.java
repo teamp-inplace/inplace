@@ -15,7 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import team7.inplace.influencer.domain.QInfluencer;
-import team7.inplace.likedPlace.domain.QLikedPlace;
+import team7.inplace.liked.likedPlace.domain.QLikedPlace;
 import team7.inplace.place.domain.Category;
 import team7.inplace.place.domain.QMenu;
 import team7.inplace.place.domain.QMenuBoardPhoto;

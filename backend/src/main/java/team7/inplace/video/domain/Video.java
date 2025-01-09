@@ -1,27 +1,21 @@
 package team7.inplace.video.domain;
 
-import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import team7.inplace.global.baseEntity.BaseEntity;
 
 @Getter
 @Entity
 @Table(name = "videos")
 @NoArgsConstructor(access = PROTECTED)
-public class Video {
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
-
+public class Video extends BaseEntity {
     @Column(name = "video_url", nullable = false, columnDefinition = "TEXT")
     private String videoUrl;
 

@@ -1,23 +1,19 @@
 package team7.inplace.liked.likedInfluencer.domain;
 
-import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import team7.inplace.global.baseEntity.BaseEntity;
 
 @Getter
 @Entity
+@Table(name = "liked_influencers")
 @NoArgsConstructor(access = PROTECTED)
-public class FavoriteInfluencer {
-
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+public class LikedInfluencer extends BaseEntity {
 
     @Column(nullable = false)
     private Long userId;
@@ -28,13 +24,17 @@ public class FavoriteInfluencer {
     @Column(nullable = false)
     private boolean isLiked = false;
 
-    public FavoriteInfluencer(Long userId, Long influencerId, boolean isLiked) {
+    public LikedInfluencer(Long userId, Long influencerId, boolean isLiked) {
         this.userId = userId;
         this.influencerId = influencerId;
         this.isLiked = isLiked;
     }
 
-    public void updateLike(boolean like) {
-        this.isLiked = like;
+    public void like() {
+        this.isLiked = true;
+    }
+
+    public void unlike() {
+        this.isLiked = false;
     }
 }

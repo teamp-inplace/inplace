@@ -3,17 +3,17 @@ package team7.inplace.video.application;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
-import team7.inplace.admin.crawling.application.YoutubeCrawlingService;
 import team7.inplace.global.annotation.Facade;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.AuthorizationErrorCode;
 import team7.inplace.place.application.PlaceService;
 import team7.inplace.place.application.command.PlacesCommand;
 import team7.inplace.security.util.AuthorizationUtil;
-import team7.inplace.user.application.UserService;
 import team7.inplace.video.application.command.VideoCommand;
-import team7.inplace.video.application.dto.VideoInfo;
+import team7.inplace.video.persistence.dto.VideoQueryResult;
 
 @Facade
 @Slf4j
@@ -21,8 +21,6 @@ import team7.inplace.video.application.dto.VideoInfo;
 public class VideoFacade {
     private final VideoService videoService;
     private final PlaceService placeService;
-    private final YoutubeCrawlingService youtubeCrawlingService;
-    private final UserService userService;
 
     @Transactional
     public void createVideos(
@@ -44,7 +42,7 @@ public class VideoFacade {
     }
 
     @Transactional(readOnly = true)
-    public List<VideoInfo> getMyInfluencerVideos() {
+    public List<VideoQueryResult.SimpleVideo> getMyInfluencerVideos() {
         // 토큰 정보에 대한 검증
         if (AuthorizationUtil.isNotLoginUser()) {
             throw InplaceException.of(AuthorizationErrorCode.TOKEN_IS_EMPTY);
@@ -53,5 +51,10 @@ public class VideoFacade {
         Long userId = AuthorizationUtil.getUserId();
         // 인플루언서 id를 사용하여 영상을 조회
         return videoService.getMyInfluencerVideos(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<VideoQueryResult.SimpleVideo> getVideoWithNoPlace(Pageable pageable) {
+        return videoService.getVideoWithNoPlace(pageable);
     }
 }

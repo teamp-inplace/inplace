@@ -16,7 +16,7 @@ public interface ReviewJPARepository extends JpaRepository<Review, Long> {
 
     Page<Review> findByUserId(Long userId, Pageable pageable);
 
-    @Query("SELECT new team7.inplace.review.persistence.dto.ReviewQueryResult.LikeRate( " +  // $ 사용
+    @Query("SELECT new team7.inplace.review.persistence.dto.ReviewQueryResult$LikeRate( " +  // $ 사용
             "count(CASE WHEN r.isLiked = true THEN 1 END), " +
             "count(CASE WHEN r.isLiked = false THEN 1 END)) " +
             "FROM Review r " +

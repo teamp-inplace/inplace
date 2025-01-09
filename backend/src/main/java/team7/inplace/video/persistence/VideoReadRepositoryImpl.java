@@ -12,8 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import team7.inplace.favoriteInfluencer.domain.QFavoriteInfluencer;
 import team7.inplace.influencer.domain.QInfluencer;
+import team7.inplace.liked.likedInfluencer.domain.QLikedInfluencer;
 import team7.inplace.place.domain.QPlace;
 import team7.inplace.video.domain.QVideo;
 import team7.inplace.video.persistence.dto.QVideoQueryResult_SimpleVideo;
@@ -113,7 +113,7 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
                 .orderBy(QVideo.video.view.viewCountIncrease.desc())
                 .limit(10)
                 .fetch();
-        
+
         return top10Videos;
     }
 
@@ -154,10 +154,10 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
                 .leftJoin(QInfluencer.influencer).on(QVideo.video.influencerId.eq(QInfluencer.influencer.id))
                 .where(QVideo.video.influencerId.in(
                         JPAExpressions
-                                .select(QFavoriteInfluencer.favoriteInfluencer.influencerId)
-                                .from(QFavoriteInfluencer.favoriteInfluencer)
-                                .where(QFavoriteInfluencer.favoriteInfluencer.userId.eq(userId)
-                                        .and(QFavoriteInfluencer.favoriteInfluencer.isLiked.isTrue()))
+                                .select(QLikedInfluencer.likedInfluencer.influencerId)
+                                .from(QLikedInfluencer.likedInfluencer)
+                                .where(QLikedInfluencer.likedInfluencer.userId.eq(userId)
+                                        .and(QLikedInfluencer.likedInfluencer.isLiked.isTrue()))
                 ))
                 .orderBy(QVideo.video.publishTime.desc())
                 .limit(10)
@@ -207,5 +207,32 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
                 .fetch()
                 .stream()
                 .collect(Collectors.groupingBy(SimpleVideo::placeId));
+    }
+
+    @Override
+    public Page<SimpleVideo> findVideoWithNoPlace(Pageable pageable) {
+        var videos = queryFactory
+                .select(new QVideoQueryResult_SimpleVideo(
+                        QVideo.video.id,
+                        QVideo.video.videoUrl,
+                        QInfluencer.influencer.name,
+                        QPlace.place.id,
+                        QPlace.place.name,
+                        QPlace.place.category
+                ))
+                .from(QVideo.video)
+                .leftJoin(QPlace.place).on(QVideo.video.placeId.eq(QPlace.place.id))
+                .join(QInfluencer.influencer).on(QVideo.video.influencerId.eq(QInfluencer.influencer.id))
+                .where(QVideo.video.placeId.isNull())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        var total = queryFactory
+                .select(QVideo.video.count())
+                .from(QVideo.video)
+                .where(QVideo.video.placeId.isNull())
+                .fetchOne();
+
+        return new PageImpl<>(videos, pageable, total);
     }
 }

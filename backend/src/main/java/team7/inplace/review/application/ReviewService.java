@@ -7,20 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.AuthorizationErrorCode;
-import team7.inplace.global.exception.code.PlaceErrorCode;
 import team7.inplace.global.exception.code.ReviewErrorCode;
-import team7.inplace.place.domain.Place;
-import team7.inplace.place.persistence.PlaceRepository;
-import team7.inplace.review.application.dto.MyReviewInfo;
 import team7.inplace.review.application.dto.ReviewCommand;
-import team7.inplace.review.application.dto.ReviewInfo;
 import team7.inplace.review.domain.Review;
-import team7.inplace.review.persistence.ReviewRepository;
-import team7.inplace.security.application.CurrentUserProvider;
+import team7.inplace.review.persistence.ReviewJPARepository;
+import team7.inplace.review.persistence.ReviewReadRepository;
+import team7.inplace.review.persistence.dto.ReviewQueryResult;
 import team7.inplace.security.util.AuthorizationUtil;
-import team7.inplace.user.domain.User;
-
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service

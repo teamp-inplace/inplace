@@ -17,5 +17,9 @@ public class VideoQueryResult {
         @QueryProjection
         public SimpleVideo {
         }
+
+        public String videoUrl() {
+            return "https://www.youtube.com/watch?v=" + videoUUID;
+        }
     }
 }
