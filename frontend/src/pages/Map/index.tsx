@@ -5,20 +5,26 @@ import DropdownMenu from '@/components/Map/DropdownMenu';
 import MapWindow from '@/components/Map/MapWindow';
 import PlaceSection from '@/components/Map/PlaceSection';
 import ToggleButton from '@/components/Map/ToggleButton';
+import Chip from '@/components/common/Chip';
 import { Text } from '@/components/common/typography/Text';
 import locationOptions from '@/utils/constants/LocationOptions';
 import { LocationData, PlaceData } from '@/types';
 import useGetDropdownName from '@/api/hooks/useGetDropdownName';
+
+type SelectedOption = {
+  main: string;
+  sub?: string;
+  lat?: number;
+  lng?: number;
+};
 
 export default function MapPage() {
   const [searchParams] = useSearchParams();
   const influencerParam = searchParams.get('influencer');
   const { data: influencerOptions } = useGetDropdownName();
 
-  const [selectedInfluencer, setSelectedInfluencer] = useState<string>(influencerParam || '');
-  const [selectedLocation, setSelectedLocation] = useState<{ main: string; sub?: string; lat?: number; lng?: number }>({
-    main: '',
-  });
+  const [selectedInfluencers, setSelectedInfluencers] = useState<string[]>(influencerParam ? [influencerParam] : []);
+  const [selectedLocations, setSelectedLocations] = useState<SelectedOption[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [filteredPlaces, setFilteredPlaces] = useState<PlaceData[]>([]);
   const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
@@ -38,19 +44,44 @@ export default function MapPage() {
   const filters = useMemo(
     () => ({
       categories: selectedCategories,
-      influencers: selectedInfluencer ? [selectedInfluencer] : [],
-      location: selectedLocation,
+      influencers: selectedInfluencers,
+      location: selectedLocations,
     }),
-    [selectedCategories, selectedInfluencer, selectedLocation],
+    [selectedCategories, selectedInfluencers, selectedLocations],
   );
 
-  const handleInfluencerChange = useCallback((value: { main: string; sub?: string; lat?: number; lng?: number }) => {
-    setSelectedInfluencer(value.main);
+  const handleInfluencerChange = useCallback((value: { main: string }) => {
+    setSelectedInfluencers((prev) => {
+      // 이미 선택된 인플루언서인 경우 추가하지 않음
+      if (prev.includes(value.main)) return prev;
+      return [...prev, value.main];
+    });
     setShouldFetchPlaces(true);
   }, []);
 
-  const handleLocationChange = useCallback((value: { main: string; sub?: string; lat?: number; lng?: number }) => {
-    setSelectedLocation(value);
+  const handleLocationChange = useCallback((value: SelectedOption) => {
+    setSelectedLocations((prev) => {
+      // 중복 생성 방지
+      const isDuplicate = prev.some((loc) => loc.main === value.main && loc.sub === value.sub);
+      if (isDuplicate) return prev;
+
+      // 해당 main을 가진 모든 항목 제거 후 새로운 main만 추가
+      if (!value.sub) {
+        return [...prev.filter((loc) => loc.main !== value.main), value];
+      }
+
+      if (value.sub) {
+        const hasMainOnly = prev.some((loc) => loc.main === value.main && !loc.sub);
+        if (hasMainOnly) {
+          // main만 있던 항목을 제거하고 sub 옵션 추가
+          return [...prev.filter((loc) => loc.main !== value.main || loc.sub), value];
+        }
+        return [...prev, value];
+      }
+
+      return prev;
+    });
+
     if (value.lat && value.lng) {
       setCenter({ lat: value.lat, lng: value.lng });
     }
@@ -89,6 +120,18 @@ export default function MapPage() {
     setShouldFetchPlaces(false);
   }, []);
 
+  const handleClearLocation = useCallback((locationToRemove: SelectedOption) => {
+    setSelectedLocations((prev) =>
+      prev.filter((location) => !(location.main === locationToRemove.main && location.sub === locationToRemove.sub)),
+    );
+    setShouldFetchPlaces(true);
+  }, []);
+
+  const handleClearInfluencer = useCallback((influencerToRemove: string) => {
+    setSelectedInfluencers((prev) => prev.filter((influencer) => influencer !== influencerToRemove));
+    setShouldFetchPlaces(true);
+  }, []);
+
   return (
     <PageContainer>
       <Text size="l" weight="bold" variant="white">
@@ -111,6 +154,12 @@ export default function MapPage() {
         />
       </DropdownContainer>
       <ToggleButton options={['CAFE', 'JAPANESE', 'KOREAN', 'RESTAURANT', 'WESTERN']} onSelect={handleCategorySelect} />
+      <Chip
+        selectedLocations={selectedLocations}
+        selectedInfluencers={selectedInfluencers}
+        onClearLocation={handleClearLocation}
+        onClearInfluencer={handleClearInfluencer}
+      />
       <MapWindow
         onBoundsChange={handleBoundsChange}
         onCenterChange={handleCenterChange}
@@ -139,6 +188,5 @@ const PageContainer = styled.div`
 const DropdownContainer = styled.div`
   display: flex;
   gap: 20px;
-  margin: 20px 0;
   padding-top: 16px;
 `;

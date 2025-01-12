@@ -50,12 +50,12 @@ export default function ToggleButton({ options, onSelect }: ToggleButtonProps) {
 const ToggleButtonContainer = styled.div`
   display: flex;
   gap: 20px;
-  height: 40px;
+  margin: 20px 0;
 `;
 
 const Button = styled.button<{ $isActive: boolean }>`
   position: relative;
-  padding: 0 49px;
+  padding: 0 48px;
   height: 40px;
   border: none;
   background: ${(props) => (props.$isActive ? '#DBFBFF' : '#F9F9F9')};

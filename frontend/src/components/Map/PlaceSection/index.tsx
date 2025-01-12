@@ -13,7 +13,7 @@ interface PlaceSectionProps {
   filters: {
     categories: string[];
     influencers: string[];
-    location: { main: string; sub?: string; lat?: number; lng?: number };
+    location: { main: string; sub?: string; lat?: number; lng?: number }[];
   };
   onPlacesUpdate: (places: PlaceData[]) => void;
   center: { lat: number; lng: number };
@@ -86,15 +86,19 @@ export default function PlaceSection({
         const categoryMatch = filters.categories.length === 0 || filters.categories.includes(place.category);
         const influencerMatch = filters.influencers.length === 0 || filters.influencers.includes(place.influencerName);
         const locationMatch = (() => {
-          if (!filters.location.main) return true;
-          const mainMatch =
-            place.address.address1.includes(filters.location.main) ||
-            place.address.address2.includes(filters.location.main);
-          const subMatch = filters.location.sub
-            ? place.address.address2.includes(filters.location.sub) ||
-              (place.address.address3 && place.address.address3.includes(filters.location.sub))
-            : true;
-          return mainMatch && subMatch;
+          if (filters.location.length === 0) return true;
+
+          return filters.location.some((loc) => {
+            // loc = 사용자가 선택한 위치 객체
+            const mainMatch = place.address.address1.includes(loc.main) || place.address.address2.includes(loc.main);
+
+            const subMatch = loc.sub
+              ? place.address.address2.includes(loc.sub) ||
+                (place.address.address3 && place.address.address3.includes(loc.sub))
+              : true;
+
+            return mainMatch && subMatch;
+          });
         })();
         return categoryMatch && influencerMatch && locationMatch;
       });
