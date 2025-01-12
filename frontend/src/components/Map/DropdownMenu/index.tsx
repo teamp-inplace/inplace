@@ -75,17 +75,11 @@ export default function DropdownMenu({
   }, [options, searchTerm]);
 
   const handleMainOptionClick = (option: Option) => {
-    if (option.label === '없음') {
-      setSelectedMainOption(null);
-      setSelectedSubOption(null);
-      onChange({ main: '', sub: undefined, lat: undefined, lng: undefined });
-    } else {
-      setSelectedMainOption(option);
-      setSelectedSubOption(null);
-      onChange({ main: option.label, lat: option.lat, lng: option.lng });
-      if (!multiLevel || !option.subOptions) {
-        setIsOpen(false);
-      }
+    setSelectedMainOption(option);
+    setSelectedSubOption(null);
+    onChange({ main: option.label, lat: option.lat, lng: option.lng });
+    if (!multiLevel || !option.subOptions) {
+      setIsOpen(false);
     }
   };
 
@@ -105,7 +99,7 @@ export default function DropdownMenu({
   };
 
   const renderMainOptions = () => {
-    return [{ label: '없음', lat: undefined, lng: undefined }, ...filteredOptions].map((option) => (
+    return filteredOptions.map((option) => (
       <DropdownItem
         key={option.label}
         label={option.label}
@@ -124,16 +118,12 @@ export default function DropdownMenu({
         label={subOption.label}
         onClick={() => handleSubOptionClick(subOption)}
         type={type}
+        isSelected={selectedSubOption === subOption}
       />
     ));
   };
 
-  const displayValue = useMemo(() => {
-    if (selectedSubOption && selectedMainOption) {
-      return `${selectedMainOption.label} ${selectedSubOption.label}`;
-    }
-    return selectedMainOption?.label || placeholder;
-  }, [selectedMainOption, selectedSubOption, placeholder]);
+  const displayValue = placeholder;
 
   return (
     <DropdownContainer ref={ref} type={type}>
