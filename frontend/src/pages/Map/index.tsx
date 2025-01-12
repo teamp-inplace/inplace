@@ -65,20 +65,15 @@ export default function MapPage() {
       const isDuplicate = prev.some((loc) => loc.main === value.main && loc.sub === value.sub);
       if (isDuplicate) return prev;
 
-      // 해당 main을 가진 모든 항목 제거 후 새로운 main만 추가
-      if (!value.sub) {
-        return [...prev.filter((loc) => loc.main !== value.main), value];
-      }
-
-      if (value.sub) {
-        const hasMainOnly = prev.some((loc) => loc.main === value.main && !loc.sub);
-        if (hasMainOnly) {
-          // main만 있던 항목을 제거하고 sub 옵션 추가
-          return [...prev.filter((loc) => loc.main !== value.main || loc.sub), value];
-        }
+      if (value.sub === '전체' || !value.sub) {
+        const hasAll = prev.some((loc) => loc.main === value.main && loc.sub === '전체');
+        if (hasAll) return prev;
         return [...prev, value];
       }
 
+      if (value.sub) {
+        return [...prev, value];
+      }
       return prev;
     });
 

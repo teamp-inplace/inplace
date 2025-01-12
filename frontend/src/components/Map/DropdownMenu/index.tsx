@@ -77,7 +77,6 @@ export default function DropdownMenu({
   const handleMainOptionClick = (option: Option) => {
     setSelectedMainOption(option);
     setSelectedSubOption(null);
-    onChange({ main: option.label, lat: option.lat, lng: option.lng });
     if (!multiLevel || !option.subOptions) {
       setIsOpen(false);
     }
@@ -87,11 +86,13 @@ export default function DropdownMenu({
     setSelectedSubOption(subOption);
     onChange({
       main: selectedMainOption!.label,
-      sub: subOption.label,
+      sub: subOption.label === '전체' ? undefined : subOption.label,
       lat: subOption.lat,
       lng: subOption.lng,
     });
     setIsOpen(false);
+    setSelectedMainOption(null);
+    setSelectedSubOption(null);
   };
 
   const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,7 +113,14 @@ export default function DropdownMenu({
 
   const renderSubOptions = () => {
     if (!selectedMainOption || !selectedMainOption.subOptions) return null;
-    return selectedMainOption.subOptions.map((subOption) => (
+
+    const allOption: Option = {
+      label: '전체',
+      lat: selectedMainOption.lat,
+      lng: selectedMainOption.lng,
+    };
+
+    return [allOption, ...selectedMainOption.subOptions].map((subOption) => (
       <DropdownItem
         key={subOption.label}
         label={subOption.label}
