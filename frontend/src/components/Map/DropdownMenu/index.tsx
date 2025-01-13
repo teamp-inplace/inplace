@@ -78,6 +78,12 @@ export default function DropdownMenu({
     setSelectedMainOption(option);
     setSelectedSubOption(null);
     if (!multiLevel || !option.subOptions) {
+      onChange({
+        main: option.label,
+        sub: undefined,
+        lat: option.lat,
+        lng: option.lng,
+      });
       setIsOpen(false);
     }
   };
