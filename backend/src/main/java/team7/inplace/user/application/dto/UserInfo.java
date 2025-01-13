@@ -7,8 +7,6 @@ public record UserInfo(
 ) {
 
     public static UserInfo from(User user) {
-        return new UserInfo(
-                user.getNickname()
-        );
+        return new UserInfo(user.getNickname());
     }
 }

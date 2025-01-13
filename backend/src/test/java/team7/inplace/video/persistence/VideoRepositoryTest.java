@@ -23,7 +23,6 @@ import team7.inplace.global.exception.code.VideoErrorCode;
 import team7.inplace.global.queryDsl.QueryDslConfig;
 import team7.inplace.influencer.domain.Influencer;
 import team7.inplace.place.domain.Place;
-import team7.inplace.place.persistence.PlaceRepository;
 import team7.inplace.video.domain.Video;
 
 @DataJpaTest

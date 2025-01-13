@@ -1,20 +1,19 @@
 package team7.inplace.admin.crawling.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 @Slf4j
 @Component
 public class YoutubeClient {
-    private static final String PLAY_LIST_ITEMS_BASE_URL = "https://www.googleapis.com/youtube/v3/playlistItems";
-    private static final String PLAY_LIST_PARAMS = "?part=snippet&playlistId=%s&key=%s&maxResults=50";
+    private static final String VIDEO_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search";
+    private static final String VIDEO_SEARCH_PARAMS = "?part=snippet&channelId=%s&maxResults=50&key=%s";
     private static final String VIDEO_DETAIL_URL = "https://www.googleapis.com/youtube/v3/videos";
     private static final String VIDEO_DETAIL_PARAMS = "?part=statistics&id=%s&key=%s";
     private final RestTemplate restTemplate;
@@ -40,11 +39,11 @@ public class YoutubeClient {
         return response;
     }
 
-    public List<JsonNode> getVideos(String playListId, String finalVideoUUID) {
-        List<JsonNode> snippets = new ArrayList<>();
+    public List<JsonNode> getVideos(String chanelId, String finalVideoUUID) {
+        List<JsonNode> videoItems = new ArrayList<>();
         String nextPageToken = null;
         while (true) {
-            String url = PLAY_LIST_ITEMS_BASE_URL + String.format(PLAY_LIST_PARAMS, playListId, apiKey);
+            String url = VIDEO_SEARCH_URL + String.format(VIDEO_SEARCH_PARAMS, chanelId, apiKey);
 
             JsonNode response = null;
             if (Objects.nonNull(nextPageToken)) {
@@ -53,15 +52,15 @@ public class YoutubeClient {
             try {
                 response = restTemplate.getForObject(url, JsonNode.class);
             } catch (Exception e) {
-                log.error("Youtube API 호출이 실패했습니다. Youtuber Id {}", playListId);
+                log.error("Youtube API 호출이 실패했습니다. Youtuber Id {}", chanelId);
                 break;
             }
             if (Objects.isNull(response)) {
-                log.error("Youtube API Response가 NULL입니다 {}.", playListId);
+                log.error("Youtube API Response가 NULL입니다 {}.", chanelId);
                 break;
             }
 
-            var containsLastVideo = extractSnippets(snippets, response.path("items"), finalVideoUUID);
+            var containsLastVideo = extractSnippets(videoItems, response.path("items"), finalVideoUUID);
             if (containsLastVideo) {
                 break;
             }
@@ -70,21 +69,21 @@ public class YoutubeClient {
                 break;
             }
         }
-        return snippets;
+        return videoItems;
     }
 
     private boolean isLastPage(String nextPageToken) {
         return Objects.isNull(nextPageToken) || nextPageToken.isEmpty();
     }
 
-    private boolean extractSnippets(List<JsonNode> snippets, JsonNode items, String finalVideoUUID) {
+    private boolean extractSnippets(List<JsonNode> videoItems, JsonNode items, String finalVideoUUID) {
         for (JsonNode item : items) {
             var snippet = item.path("snippet");
-            var videoId = snippet.path("resourceId").path("videoId").asText();
+            var videoId = item.get("id").get("videoId").asText();
             if (videoId.equals(finalVideoUUID)) {
                 return true;
             }
-            snippets.add(snippet);
+            videoItems.add(item);
         }
         return false;
     }

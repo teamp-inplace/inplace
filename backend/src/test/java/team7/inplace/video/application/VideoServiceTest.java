@@ -25,7 +25,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import team7.inplace.influencer.domain.Influencer;
 import team7.inplace.place.domain.Place;
-import team7.inplace.place.persistence.PlaceRepository;
 import team7.inplace.security.application.dto.CustomOAuth2User;
 import team7.inplace.user.domain.Role;
 import team7.inplace.util.TestUtil;
@@ -183,7 +182,7 @@ public class VideoServiceTest {
         );
 
         // when
-        List<VideoInfo> videoInfos = videoService.getVideosByMyInfluencer(ids);
+        List<VideoInfo> videoInfos = videoService.getMyInfluencerVideos(ids);
 
         // then
         Assertions.assertThat(videoInfos.size()).isEqualTo(3);

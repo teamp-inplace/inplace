@@ -15,23 +15,23 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import team7.inplace.liked.likedInfluencer.application.FavoriteInfluencerService;
-import team7.inplace.liked.likedInfluencer.domain.FavoriteInfluencer;
-import team7.inplace.liked.likedInfluencer.persistent.FavoriteInfluencerRepository;
 import team7.inplace.influencer.application.dto.InfluencerInfo;
 import team7.inplace.influencer.domain.Influencer;
+import team7.inplace.liked.likedInfluencer.application.LikedInfluencerService;
+import team7.inplace.liked.likedInfluencer.domain.LikedInfluencer;
+import team7.inplace.liked.likedInfluencer.persistent.LikedInfluencerRepository;
 import team7.inplace.user.domain.Role;
 import team7.inplace.user.domain.User;
 import team7.inplace.user.domain.UserType;
 
 @ExtendWith(MockitoExtension.class)
-public class FavoriteInfluencerServiceTest {
+public class LikedInfluencerServiceTest {
 
     @Mock
-    private FavoriteInfluencerRepository favoriteRepository;
+    private LikedInfluencerRepository favoriteRepository;
 
     @InjectMocks
-    private FavoriteInfluencerService favoriteInfluencerService;
+    private LikedInfluencerService likedInfluencerService;
 
     @Test
     void getFavoriteInfluencers() {
@@ -39,16 +39,16 @@ public class FavoriteInfluencerServiceTest {
         Long userId = 1L;
         User user = new User("name", "password", "nickname", UserType.KAKAO, Role.USER);
         Influencer influencer1 = new Influencer("influencer1", "imgUrl1", "job1");
-        FavoriteInfluencer favoriteInfluencer1 = new FavoriteInfluencer(user, influencer1);
-        favoriteInfluencer1.updateLike(true);
-        Page<FavoriteInfluencer> favoriteInfluencersPage = new PageImpl<>(
-            List.of(favoriteInfluencer1));
+        LikedInfluencer likedInfluencer1 = new LikedInfluencer(user, influencer1);
+        likedInfluencer1.updateLike(true);
+        Page<LikedInfluencer> favoriteInfluencersPage = new PageImpl<>(
+                List.of(likedInfluencer1));
 
         given(favoriteRepository.findByUserIdAndIsLikedTrue(userId, pageable))
-            .willReturn(favoriteInfluencersPage);
+                .willReturn(favoriteInfluencersPage);
 
-        Page<InfluencerInfo> result = favoriteInfluencerService.getFavoriteInfluencers(userId,
-            pageable);
+        Page<InfluencerInfo> result = likedInfluencerService.getFavoriteInfluencers(userId,
+                pageable);
 
         verify(favoriteRepository).findByUserIdAndIsLikedTrue(userId, pageable);
         assertThat(result.getContent().get(0)).isInstanceOf(InfluencerInfo.class);

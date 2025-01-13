@@ -1,9 +1,8 @@
 package team7.inplace.place.application.command;
 
-import team7.inplace.influencer.domain.Influencer;
-import team7.inplace.place.domain.Place;
+import team7.inplace.place.persistence.dto.PlaceQueryResult;
 import team7.inplace.video.application.AliasUtil;
-import team7.inplace.video.domain.Video;
+import team7.inplace.video.persistence.dto.VideoQueryResult;
 
 public record PlaceMessageCommand(
         Long placeId,
@@ -13,17 +12,17 @@ public record PlaceMessageCommand(
         String description
 ) {
 
-    public static PlaceMessageCommand of(Place place, Influencer influencer, Video video) {
-        String influencerName = influencer != null ? influencer.getName() : null;
-        String videoUUID = video != null ? video.getVideoUUID() : null;
+    public static PlaceMessageCommand from(PlaceQueryResult.SimplePlace place, VideoQueryResult.SimpleVideo video) {
+        String influencerName = video.influencerName();
+        String videoUUID = video.videoUUID();
         return new PlaceMessageCommand(
-                place.getId(),
-                place.getName(),
-                place.getAddress().toString(),
+                place.placeId(),
+                place.placeName(),
+                place.address1() + " " + place.address2() + " " + place.address3(),
                 String.format("https://img.youtube.com/vi/%s/maxresdefault.jpg", videoUUID),
                 AliasUtil.makeAlias(
                         influencerName,
-                        place.getCategory()
+                        video.placeCategory()
                 )
         );
     }

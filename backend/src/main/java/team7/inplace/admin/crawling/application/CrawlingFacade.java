@@ -22,11 +22,10 @@ public class CrawlingFacade {
         var crawlingInfos = youtubeCrawlingService.crawlAllVideos();
         for (var crawlingInfo : crawlingInfos) {
             var videoCommands = crawlingInfo.toVideoCommands();
-            var placesCommands = crawlingInfo.toPlacesCommands();
             if (videoCommands.isEmpty()) {
                 continue;
             }
-            videoFacade.createVideos(videoCommands, placesCommands, crawlingInfo.playListUUID());
+            videoFacade.createVideos(videoCommands, crawlingInfo.influencerId());
         }
     }
 

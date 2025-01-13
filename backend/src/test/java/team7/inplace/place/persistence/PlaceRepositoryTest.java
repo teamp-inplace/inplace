@@ -99,8 +99,8 @@ class PlaceRepositoryTest {
         entityManager.persist(influencer1);
         entityManager.persist(influencer2);
 
-        Video video1 = Video.from(influencer1, place1, "video.url");
-        Video video2 = Video.from(influencer2, place4, "video.url");
+        Video video1 = Video.from(influencer1, place1, "videos.url");
+        Video video2 = Video.from(influencer2, place4, "videos.url");
 
         entityManager.persist(video1);
         entityManager.persist(video2);

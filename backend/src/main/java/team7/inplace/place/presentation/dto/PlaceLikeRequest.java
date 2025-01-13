@@ -4,5 +4,4 @@ public record PlaceLikeRequest(
         Long placeId,
         Boolean likes
 ) {
-
 }
