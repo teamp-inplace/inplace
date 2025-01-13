@@ -7,12 +7,10 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.time.LocalDateTime;
 import java.util.List;
-import team7.inplace.influencer.domain.Influencer;
 import team7.inplace.place.domain.Menu;
-import team7.inplace.place.domain.MenuBoardPhoto;
 import team7.inplace.place.domain.OpenTime;
-import team7.inplace.place.domain.PlaceBulk;
-import team7.inplace.video.domain.Video;
+import team7.inplace.place.persistence.dto.PlaceQueryResult;
+import team7.inplace.video.persistence.dto.VideoQueryResult;
 
 public record PlaceDetailInfo(
         PlaceInfo placeInfo,
@@ -24,22 +22,28 @@ public record PlaceDetailInfo(
 ) {
 
     public static PlaceDetailInfo from(
-            PlaceBulk place, Influencer influencer, Video video,
-            boolean isLiked, int numOfLikes, int numOfDislikes
+            PlaceQueryResult.DetailedPlaceBulk place,
+            List<VideoQueryResult.SimpleVideo> videos,
+            Boolean numsOfLikes,
+            Boolean numsOfDislikes
     ) {
-        String influencerName = (influencer != null) ? influencer.getName() : "";
-        String videoUrl = (video != null) ? video.getVideoUrl() : "";
-        return new PlaceDetailInfo(
-                PlaceInfo.of(place, influencerName, isLiked),
-                facilityTree(place.getPlace().getFacility()),
-                MenuInfos.of(
-                        place.getMenuBoardPhotos().stream().map(MenuBoardPhoto::getUrl).toList(),
-                        place.getMenus(),
-                        place.getPlace().getMenuUpdatedAt()),
-                OpenHour.of(place.getOpenTimes().stream().toList(), place.getOffDays().stream().toList()),
-                PlaceLikes.of(numOfLikes, numOfDislikes),
-                videoUrl
-        );
+        //TODO: 여러명의 인플루언서가 방문할 가능성이 있어 수정이 필요함
+        var video = videos.get(0);
+
+        String influencerName = video.influencerName();
+        String videoUrl = video.videoUUID();
+        return null;
+//        return new PlaceDetailInfo(
+//                PlaceInfo.of(place, influencerName, isLiked),
+//                facilityTree(place.getPlace().getFacility()),
+//                MenuInfos.of(
+//                        place.getMenuBoardPhotos().stream().map(MenuBoardPhoto::getUrl).toList(),
+//                        place.getMenus(),
+//                        place.getPlace().getMenuUpdatedAt()),
+//                OpenHour.of(place.getOpenTimes().stream().toList(), place.getOffDays().stream().toList()),
+//                PlaceLikes.of(numOfLikes, numOfDislikes),
+//                videoUUID
+//        );
     }
 
     private static JsonNode facilityTree(String facility) {

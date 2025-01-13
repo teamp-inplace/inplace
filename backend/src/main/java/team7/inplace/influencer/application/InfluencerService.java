@@ -1,30 +1,35 @@
 package team7.inplace.influencer.application;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team7.inplace.liked.likedInfluencer.persistent.FavoriteInfluencerRepository;
+import team7.inplace.global.exception.InplaceException;
+import team7.inplace.global.exception.code.AuthorizationErrorCode;
 import team7.inplace.influencer.application.dto.InfluencerCommand;
 import team7.inplace.influencer.application.dto.InfluencerInfo;
 import team7.inplace.influencer.application.dto.InfluencerNameInfo;
+import team7.inplace.influencer.application.dto.LikedInfluencerCommand;
 import team7.inplace.influencer.domain.Influencer;
 import team7.inplace.influencer.persistence.InfluencerRepository;
+import team7.inplace.liked.likedInfluencer.domain.LikedInfluencer;
+import team7.inplace.liked.likedInfluencer.persistent.LikedInfluencerRepository;
 import team7.inplace.security.util.AuthorizationUtil;
-import team7.inplace.user.persistence.UserRepository;
 
 @RequiredArgsConstructor
 @Service
 public class InfluencerService {
-
     private final InfluencerRepository influencerRepository;
-    private final FavoriteInfluencerRepository favoriteRepository;
-    private final UserRepository userRepository;
+    private final LikedInfluencerRepository likedInfluencerRepository;
 
+    //TODO: 추후 리팩토링 필요
     @Transactional(readOnly = true)
     public Page<InfluencerInfo> getAllInfluencers(Pageable pageable) {
         Page<Influencer> influencersPage = influencerRepository.findAll(pageable);
@@ -36,7 +41,7 @@ public class InfluencerService {
 
         // 로그인 된 경우
         Long userId = AuthorizationUtil.getUserId();
-        Set<Long> likedInfluencerIds = favoriteRepository.findLikedInfluencerIdsByUserId(userId);
+        Set<Long> likedInfluencerIds = likedInfluencerRepository.findLikedInfluencerIdsByUserId(userId);
 
         List<InfluencerInfo> influencerInfos = influencersPage.stream()
                 .map(influencer -> {
@@ -88,5 +93,59 @@ public class InfluencerService {
         Influencer influencer = influencerRepository.findById(id).orElseThrow();
 
         influencerRepository.delete(influencer);
+    }
+
+    @Transactional
+    public void likeToInfluencer(LikedInfluencerCommand.Single command) {
+        Long userId = AuthorizationUtil.getUserId();
+        if (userId == null) {
+            throw InplaceException.of(AuthorizationErrorCode.TOKEN_IS_EMPTY);
+        }
+        upsertFavoriteInfluencer(userId, command);
+    }
+
+    @Transactional
+    public void likeToManyInfluencer(LikedInfluencerCommand.Multiple command) {
+        Long userId = AuthorizationUtil.getUserId();
+        if (userId == null) {
+            throw InplaceException.of(AuthorizationErrorCode.TOKEN_IS_EMPTY);
+        }
+
+        for (LikedInfluencerCommand.Single single : command.likes()) {
+            upsertFavoriteInfluencer(userId, single);
+        }
+    }
+
+    private void upsertFavoriteInfluencer(Long userId, LikedInfluencerCommand.Single command) {
+        var likedInfluencer = likedInfluencerRepository
+                .findByUserIdAndInfluencerId(userId, command.influencerId())
+                .orElseGet(() -> {
+                    var newLikedInfluencer = command.toEntity(userId);
+                    return likedInfluencerRepository.save(newLikedInfluencer);
+                });
+
+        if (command.like()) {
+            likedInfluencer.like();
+            return;
+        }
+        likedInfluencer.unlike();
+    }
+
+    //TODO: 추후 쿼리 한번으로 변경
+    @Transactional(readOnly = true)
+    public Page<InfluencerInfo> getFavoriteInfluencers(Long userId, Pageable pageable) {
+        Page<LikedInfluencer> influencerPage = likedInfluencerRepository.findByUserIdAndIsLikedTrue(
+                userId, pageable);
+        var influencerIds = influencerPage.map(LikedInfluencer::getInfluencerId).toList();
+        var influencers = influencerRepository.findAllById(influencerIds).stream()
+                .collect(toMap(Influencer::getId, Function.identity()));
+
+        var infos = influencerPage.stream()
+                .map(likedInfluencer -> {
+                    var influencer = influencers.get(likedInfluencer.getInfluencerId());
+                    return InfluencerInfo.from(influencer, true);
+                })
+                .toList();
+        return new PageImpl<>(infos, pageable, influencerPage.getTotalElements());
     }
 }

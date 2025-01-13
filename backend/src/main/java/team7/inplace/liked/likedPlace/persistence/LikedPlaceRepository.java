@@ -13,11 +13,14 @@ public interface LikedPlaceRepository extends JpaRepository<LikedPlace, Long> {
 
     Optional<LikedPlace> findByUserIdAndPlaceId(Long userId, Long placeId);
 
-    @Query("SELECT l.place.id FROM LikedPlace l WHERE l.user.id = :userId AND l.isLiked = true")
+    @Query("SELECT l.placeId FROM LikedPlace l WHERE l.userId = :userId AND l.isLiked = true")
     Set<Long> findPlaceIdsByUserIdAndIsLikedTrue(@Param("userId") Long userId);
 
-    @Query("SELECT lp FROM LikedPlace lp JOIN FETCH lp.place WHERE lp.user.id = :userId AND lp.isLiked = true")
-    Page<LikedPlace> findByUserIdAndIsLikedTrueWithPlace(@Param("userId") Long userId,
-        Pageable pageable);
+    //
+    @Query("SELECT lp FROM LikedPlace lp JOIN FETCH lp.placeId WHERE lp.userId = :userId AND lp.isLiked = true")
+    Page<LikedPlace> findByUserIdAndIsLikedTrueWithPlace(
+            @Param("userId") Long userId,
+            Pageable pageable
+    );
 
 }

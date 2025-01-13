@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import team7.inplace.influencer.domain.QInfluencer;
 import team7.inplace.place.domain.QPlace;
 import team7.inplace.search.persistence.dto.SearchResult;
-import team7.inplace.video.domain.QVideo;
 import team7.inplace.video.domain.Video;
 
 @Repository
@@ -39,23 +38,23 @@ public class VideoSearchRepository implements SearchRepository<Video> {
                 QPlace.place.name,
                 keyword
         );
-
-        return queryFactory
-                .select(QVideo.video,
-                        matchScore.as("score")
-                )
-                .from(QVideo.video)
-                .join(QVideo.video.place, QPlace.place).fetchJoin()
-                .join(QVideo.video.influencer, QInfluencer.influencer).fetchJoin()
-                .where(matchScore.gt(0))
-                .orderBy(matchScore.desc())
-                .limit(SEARCH_LIMIT)
-                .fetch()
-                .stream()
-                .map(tuple -> new SearchResult<>(
-                        tuple.get(0, Video.class),
-                        tuple.get(1, Double.class)
-                )).toList();
+        return null;
+//        return queryFactory
+//                .select(QVideo.videos,
+//                        matchScore.as("score")
+//                )
+//                .from(QVideo.videos)
+//                .join(QVideo.videos.place, QPlace.place).fetchJoin()
+//                .join(QVideo.videos.influencer, QInfluencer.influencer).fetchJoin()
+//                .where(matchScore.gt(0))
+//                .orderBy(matchScore.desc())
+//                .limit(SEARCH_LIMIT)
+//                .fetch()
+//                .stream()
+//                .map(tuple -> new SearchResult<>(
+//                        tuple.get(0, Video.class),
+//                        tuple.get(1, Double.class)
+//                )).toList();
     }
 
     private List<SearchResult<Video>> searchSimilarKeywordWithInfluencer(String keyword) {
@@ -65,22 +64,22 @@ public class VideoSearchRepository implements SearchRepository<Video> {
                 QInfluencer.influencer.name,
                 keyword
         );
-
-        return queryFactory
-                .select(QVideo.video,
-                        matchScore.as("score")
-                )
-                .from(QVideo.video)
-                .join(QVideo.video.place, QPlace.place).fetchJoin()
-                .join(QVideo.video.influencer, QInfluencer.influencer).fetchJoin()
-                .where(matchScore.gt(0))
-                .orderBy(matchScore.desc())
-                .limit(SEARCH_LIMIT)
-                .fetch()
-                .stream()
-                .map(tuple -> new SearchResult<>(
-                        tuple.get(0, Video.class),
-                        tuple.get(1, Double.class)
-                )).toList();
+        return null;
+//        return queryFactory
+//                .select(QVideo.videos,
+//                        matchScore.as("score")
+//                )
+//                .from(QVideo.videos)
+//                .join(QVideo.videos.place, QPlace.place).fetchJoin()
+//                .join(QVideo.videos.influencer, QInfluencer.influencer).fetchJoin()
+//                .where(matchScore.gt(0))
+//                .orderBy(matchScore.desc())
+//                .limit(SEARCH_LIMIT)
+//                .fetch()
+//                .stream()
+//                .map(tuple -> new SearchResult<>(
+//                        tuple.get(0, Video.class),
+//                        tuple.get(1, Double.class)
+//                )).toList();
     }
 }

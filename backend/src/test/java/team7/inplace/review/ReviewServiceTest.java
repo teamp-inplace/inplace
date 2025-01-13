@@ -27,15 +27,11 @@ import org.springframework.data.domain.Pageable;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.ReviewErrorCode;
 import team7.inplace.place.domain.Place;
-import team7.inplace.place.persistence.PlaceRepository;
-import team7.inplace.placeMessage.domain.UserReviewUuid;
-import team7.inplace.placeMessage.persistence.UserReviewUuidRepository;
 import team7.inplace.review.application.ReviewService;
-import team7.inplace.review.application.dto.MyReviewInfo;
 import team7.inplace.review.application.dto.ReviewCommand;
 import team7.inplace.review.application.dto.ReviewInfo;
 import team7.inplace.review.domain.Review;
-import team7.inplace.review.persistence.ReviewRepository;
+import team7.inplace.review.persistence.ReviewJPARepository;
 import team7.inplace.security.application.CurrentUserProvider;
 import team7.inplace.security.util.AuthorizationUtil;
 import team7.inplace.user.domain.Role;
@@ -47,16 +43,13 @@ import team7.inplace.user.persistence.UserRepository;
 public class ReviewServiceTest {
 
     @Mock
-    private ReviewRepository reviewRepository;
+    private ReviewJPARepository reviewJPARepository;
 
     @Mock
     private UserRepository userRepository;
 
     @Mock
     private PlaceRepository placeRepository;
-
-    @Mock
-    private UserReviewUuidRepository userReviewUuidRepository;
 
     @Mock
     private CurrentUserProvider currentUserProvider;
@@ -81,9 +74,9 @@ public class ReviewServiceTest {
 
         user = new User("name", "password", "nickname", UserType.KAKAO, Role.USER);
         place = new Place("name", "facility", "menuImgUrl", "category",
-            "Address 1|Address 2|Address 3",
-            "10.0", "10.0",
-            LocalDateTime.of(2024, 3, 28, 5, 30)
+                "Address 1|Address 2|Address 3",
+                "10.0", "10.0",
+                LocalDateTime.of(2024, 3, 28, 5, 30)
         );
         command = new ReviewCommand(isLiked, comment);
 
@@ -91,45 +84,43 @@ public class ReviewServiceTest {
 
     @Test
     void createReviewTest() {
-        String uuid = "test-uuid";
-        UserReviewUuid userReviewUuidMock = mock(UserReviewUuid.class);
+        MockedStatic<AuthorizationUtil> authorizationUtil = mockStatic(AuthorizationUtil.class);
         User userMock = mock(User.class);
         given(userMock.getId()).willReturn(1L);
 
-        given(userReviewUuidRepository.findById(uuid)).willReturn(Optional.of(userReviewUuidMock));
-        given(userReviewUuidMock.getUserId()).willReturn(userId);
-        given(userReviewUuidMock.getPlaceId()).willReturn(placeId);
-        given(userRepository.findById(userId)).willReturn(Optional.of(userMock));
+        given(AuthorizationUtil.getUserId()).willReturn(userId);
+        given(currentUserProvider.getCurrentUser()).willReturn(userMock);
         given(placeRepository.findById(placeId)).willReturn(Optional.of(place));
-        given(reviewRepository.existsByUserIdAndPlaceId(userId, placeId)).willReturn(false);
+        given(reviewJPARepository.existsByUserIdAndPlaceId(userId, placeId)).willReturn(false);
 
-        assertDoesNotThrow(() -> reviewService.createReview(placeId, command, uuid));
+        assertDoesNotThrow(() -> reviewService.createReview(placeId, command));
 
-        verify(reviewRepository).save(any(Review.class));
+        verify(reviewJPARepository).save(any(Review.class));
+
+        authorizationUtil.close();
     }
 
     @Test
     @DisplayName("장소에 대해 사용자의 리뷰가 이미 존재하면 예외 발생")
     void createReviewTest_ReviewAlreadyExists() {
-        String uuid = "test-uuid";
-        UserReviewUuid userReviewUuidMock = mock(UserReviewUuid.class);
+        MockedStatic<AuthorizationUtil> authorizationUtil = mockStatic(AuthorizationUtil.class);
         User userMock = mock(User.class);
         given(userMock.getId()).willReturn(1L);
 
-        given(userReviewUuidRepository.findById(uuid)).willReturn(Optional.of(userReviewUuidMock));
-        given(userReviewUuidMock.getUserId()).willReturn(userId);
-        given(userReviewUuidMock.getPlaceId()).willReturn(placeId);
-        given(userRepository.findById(userId)).willReturn(Optional.of(userMock));
+        given(AuthorizationUtil.getUserId()).willReturn(userId);
+        given(currentUserProvider.getCurrentUser()).willReturn(userMock);
         given(placeRepository.findById(placeId)).willReturn(Optional.of(place));
-        given(reviewRepository.existsByUserIdAndPlaceId(userId, placeId)).willReturn(true);
+        given(reviewJPARepository.existsByUserIdAndPlaceId(userId, placeId)).willReturn(true);
 
-        assertThatThrownBy(() -> reviewService.createReview(placeId, command, uuid))
-            .isInstanceOf(InplaceException.class)
-            .hasMessage(ReviewErrorCode.REVIEW_ALREADY_EXISTS.getMessage());
+        assertThatThrownBy(() -> reviewService.createReview(placeId, command))
+                .isInstanceOf(InplaceException.class)
+                .hasMessage(ReviewErrorCode.REVIEW_ALREADY_EXISTS.getMessage());
+
+        authorizationUtil.close();
     }
 
     @Test
-    void getReviews_LoggedIn() {
+    void getPlaceReviews_LoggedIn() {
         Pageable pageable = PageRequest.of(0, 10);
         User userMock = mock(User.class); // getId()를 위한 모의 객체
         Review review = new Review(userMock, place, isLiked, comment);
@@ -138,20 +129,20 @@ public class ReviewServiceTest {
         MockedStatic<AuthorizationUtil> authorizationUtil = mockStatic(AuthorizationUtil.class);
 
         given(AuthorizationUtil.getUserId()).willReturn(1L); // userId=1이 로그인
-        given(reviewRepository.findByPlaceId(placeId, pageable)).willReturn(reviewPage);
+        given(reviewJPARepository.findByPlaceId(placeId, pageable)).willReturn(reviewPage);
         given(userMock.getId()).willReturn(1L); // 리뷰의 userId가 1L
 
-        Page<ReviewInfo> result = reviewService.getReviews(placeId, pageable);
+        Page<ReviewInfo> result = reviewService.getPlaceReviews(placeId, pageable);
 
         assertThat(result.getContent().get(0))
-            .extracting("comment", "mine")
-            .containsExactly(comment, true);
+                .extracting("comment", "mine")
+                .containsExactly(comment, true);
 
         authorizationUtil.close();
     }
 
     @Test
-    void getReviews_NotLoggedIn() {
+    void getPlaceReviews_NotLoggedIn() {
         Pageable pageable = PageRequest.of(0, 10);
         Review review = new Review(user, place, isLiked, comment);
         Page<Review> reviewPage = new PageImpl<>(List.of(review));
@@ -159,13 +150,13 @@ public class ReviewServiceTest {
         MockedStatic<AuthorizationUtil> authorizationUtil = mockStatic(AuthorizationUtil.class);
 
         given(AuthorizationUtil.isNotLoginUser()).willReturn(true);
-        given(reviewRepository.findByPlaceId(placeId, pageable)).willReturn(reviewPage);
+        given(reviewJPARepository.findByPlaceId(placeId, pageable)).willReturn(reviewPage);
 
-        Page<ReviewInfo> result = reviewService.getReviews(placeId, pageable);
+        Page<ReviewInfo> result = reviewService.getPlaceReviews(placeId, pageable);
 
         assertThat(result.getContent().get(0))
-            .extracting("comment", "mine")
-            .containsExactly(comment, false);
+                .extracting("comment", "mine")
+                .containsExactly(comment, false);
 
         authorizationUtil.close();
     }
@@ -181,28 +172,28 @@ public class ReviewServiceTest {
         MockedStatic<AuthorizationUtil> authorizationUtil = mockStatic(AuthorizationUtil.class);
 
         given(AuthorizationUtil.getUserId()).willReturn(userId2);
-        given(reviewRepository.findById(reviewId)).willReturn(Optional.of(review));
+        given(reviewJPARepository.findById(reviewId)).willReturn(Optional.of(review));
         given(userMock.getId()).willReturn(1L); // 리뷰의 userId가 1L
 
         assertThatThrownBy(() -> reviewService.deleteReview(reviewId))
-            .isInstanceOf(InplaceException.class)
-            .hasMessage(ReviewErrorCode.NOT_OWNER.getMessage());
+                .isInstanceOf(InplaceException.class)
+                .hasMessage(ReviewErrorCode.NOT_OWNER.getMessage());
 
         authorizationUtil.close();
     }
 
     @Test
-    void getMyReviewsTest() {
+    void getUserReviewsTest() {
         Pageable pageable = PageRequest.of(0, 10);
         Review myReview = new Review(user, place, isLiked, comment);
         Page<Review> reviewPage = new PageImpl<>(List.of(myReview));
 
-        given(reviewRepository.findByUserIdWithPlace(userId, pageable)).willReturn(
-            reviewPage);
+        given(reviewJPARepository.findByUserIdWithPlace(userId, pageable)).willReturn(
+                reviewPage);
 
-        Page<MyReviewInfo> result = reviewService.getMyReviews(userId, pageable);
+        Page<MyReviewInfo> result = reviewService.getUserReviews(userId, pageable);
 
-        verify(reviewRepository).findByUserIdWithPlace(userId, pageable);
+        verify(reviewJPARepository).findByUserIdWithPlace(userId, pageable);
         assertThat(result.getContent().get(0)).isInstanceOf(MyReviewInfo.class);
         assertThat(result.getContent().get(0).comment()).isEqualTo(myReview.getComment());
         assertThat(result.getContent().get(0).placeInfo().placeName()).isEqualTo(place.getName());

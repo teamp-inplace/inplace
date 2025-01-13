@@ -4,51 +4,65 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.micrometer.common.util.StringUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import org.springframework.data.domain.Pageable;
+import team7.inplace.place.domain.Category;
 import team7.inplace.place.domain.PlaceBulk;
 import team7.inplace.video.presentation.dto.VideoSearchParams;
 
 public class PlacesCommand {
 
-    public record PlacesCoordinateCommand(
-            String topLeftLongitude,
-            String topLeftLatitude,
-            String bottomRightLongitude,
-            String bottomRightLatitude,
-            String longitude,
-            String latitude,
-            Pageable pageable
+    public record Coordinate(
+            Double topLeftLongitude,
+            Double topLeftLatitude,
+            Double bottomRightLongitude,
+            Double bottomRightLatitude,
+            Double longitude,
+            Double latitude
     ) {
 
-        public static PlacesCoordinateCommand from(
-                VideoSearchParams videoSearchParams,
-                Pageable pageable
+        public static Coordinate from(
+                VideoSearchParams videoSearchParams
         ) {
-            return new PlacesCoordinateCommand(
-                    videoSearchParams.topLeftLongitude(),
-                    videoSearchParams.topLeftLatitude(),
-                    videoSearchParams.bottomRightLatitude(),
-                    videoSearchParams.bottomRightLatitude(),
-                    videoSearchParams.longitude(),
-                    videoSearchParams.latitude(),
-                    pageable
-            );
+            return new Coordinate(
+                    Double.valueOf(videoSearchParams.topLeftLongitude()),
+                    Double.valueOf(videoSearchParams.topLeftLatitude()),
+                    Double.valueOf(videoSearchParams.bottomRightLatitude()),
+                    Double.valueOf(videoSearchParams.bottomRightLatitude()),
+                    Double.valueOf(videoSearchParams.longitude()),
+                    Double.valueOf(videoSearchParams.latitude()
+                    ));
         }
     }
 
-    public record PlacesFilterParamsCommand(
+    public record FilterParams(
             String categories,
             String influencers
     ) {
 
-        public boolean isCategoryFilterExists() {
-            return StringUtils.isNotEmpty(categories);
+        public List<Category> getCategoryFilters() {
+            if (categoryFilterNotExists()) {
+                return null;
+            }
+            return Arrays.stream(categories.split(","))
+                    .map(Category::of)
+                    .toList();
         }
 
-        public boolean isInfluencerFilterExists() {
-            return StringUtils.isNotEmpty(influencers);
+        public List<String> getInfluencerFilters() {
+            if (influencerFilterNotExists()) {
+                return null;
+            }
+            return Arrays.stream(influencers.split(",")).toList();
+        }
+
+        private boolean categoryFilterNotExists() {
+            return !StringUtils.isNotEmpty(categories);
+        }
+
+        private boolean influencerFilterNotExists() {
+            return !StringUtils.isNotEmpty(influencers);
         }
     }
 

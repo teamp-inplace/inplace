@@ -1,7 +1,6 @@
 package team7.inplace.place.application.dto;
 
-
-import team7.inplace.liked.likedPlace.domain.LikedPlace;
+import team7.inplace.place.persistence.dto.PlaceQueryResult;
 
 public record LikedPlaceInfo(
         Long placeId,
@@ -10,14 +9,14 @@ public record LikedPlaceInfo(
         String influencerName,
         boolean likes
 ) {
-
-    public static LikedPlaceInfo of(LikedPlace likedPlace, String influencerName) {
+    //TODO: Influencer 이름이 왜필요한가요?
+    public static LikedPlaceInfo of(PlaceQueryResult.DetailedPlaceBulk placeBulk) {
         return new LikedPlaceInfo(
-                likedPlace.getPlace().getId(),
-                likedPlace.getPlace().getName(),
-                likedPlace.getPlace().getMenuImgUrl(),
-                influencerName,
-                likedPlace.isLiked()
+                placeBulk.detailedPlace().placeId(),
+                placeBulk.detailedPlace().placeName(),
+                placeBulk.detailedPlace().menuImgUrl(),
+                "",
+                placeBulk.detailedPlace().isLiked()
         );
     }
 }

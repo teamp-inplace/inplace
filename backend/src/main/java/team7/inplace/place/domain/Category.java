@@ -21,6 +21,6 @@ public enum Category {
                 return category;
             }
         }
-        return NONE;
+        return null;
     }
 }
