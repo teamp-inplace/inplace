@@ -1,3 +1,0 @@
-youtube:
-  api:
-    key: ${YOUTUBE_API_KEY}
