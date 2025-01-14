@@ -76,7 +76,7 @@ public class VideoController implements VideoControllerApiSpec {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{videoId}")
     public ResponseEntity<Void> deleteVideo(@PathVariable Long videoId) {
         videoService.deleteVideo(videoId);
