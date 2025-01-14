@@ -31,8 +31,10 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/refresh-token")
-    public ResponseEntity<Void> refreshToken(@CookieValue(value = "refresh_token") Cookie cookie,
-                                             HttpServletResponse response) {
+    public ResponseEntity<Void> refreshToken(
+            @CookieValue(value = "refresh_token") Cookie cookie,
+            HttpServletResponse response
+    ) {
 
         String refreshToken = cookie.getValue();
         ReIssued reIssuedToken = refreshTokenFacade.getReIssuedRefreshTokenCookie(
@@ -58,12 +60,13 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
 
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/refresh-token")
-    public ResponseEntity<Void> deleteRefreshToken(@CookieValue(value = "refresh_token") Cookie cookie,
-                                                   HttpServletResponse response
+    public ResponseEntity<Void> deleteRefreshToken(
+            @CookieValue(value = "refresh_token") Cookie cookie,
+            HttpServletResponse response
     ) {
         String refreshToken = cookie.getValue();
         refreshTokenFacade.deleteRefreshToken(refreshToken);
-        
+
         ResponseCookie accessTokenCookie = CookieUtil.createCookie(
                 TokenType.ACCESS_TOKEN.getValue(),
                 "",
