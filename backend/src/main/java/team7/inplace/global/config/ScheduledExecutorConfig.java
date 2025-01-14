@@ -1,4 +1,4 @@
-package team7.inplace.global.scheduler;
+package team7.inplace.global.config;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

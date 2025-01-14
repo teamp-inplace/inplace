@@ -1,4 +1,4 @@
-package team7.inplace.global.kakao.config;
+package team7.inplace.global.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

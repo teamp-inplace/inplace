@@ -1,4 +1,4 @@
-package team7.inplace.global.queryDsl;
+package team7.inplace.global.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

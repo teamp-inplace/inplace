@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import team7.inplace.global.queryDsl.QueryDslConfig;
+import team7.inplace.global.config.QueryDslConfig;
 import team7.inplace.influencer.domain.Influencer;
 import team7.inplace.place.domain.Category;
 import team7.inplace.place.domain.Place;
