@@ -1,4 +1,4 @@
-package team7.inplace.global.rest;
+package team7.inplace.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

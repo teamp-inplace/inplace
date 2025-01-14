@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -51,7 +50,7 @@ public class InfluencerController implements InfluencerControllerApiSpec {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping()
     public ResponseEntity<Long> createInfluencer(@RequestBody Upsert request) {
         var command = request.toCommand();
@@ -61,7 +60,7 @@ public class InfluencerController implements InfluencerControllerApiSpec {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Long> updateInfluencer(
             @PathVariable Long id,
@@ -73,7 +72,7 @@ public class InfluencerController implements InfluencerControllerApiSpec {
         return new ResponseEntity<>(updatedId, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("/{id}/visibility")
     public ResponseEntity<Long> updateVisibility(
             @PathVariable Long id
@@ -84,7 +83,7 @@ public class InfluencerController implements InfluencerControllerApiSpec {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Long> deleteInfluencer(@PathVariable Long id) {
         influencerService.deleteInfluencer(id);

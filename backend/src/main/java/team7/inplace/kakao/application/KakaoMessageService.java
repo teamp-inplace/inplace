@@ -6,7 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import team7.inplace.global.kakao.config.KakaoApiProperties;
+import team7.inplace.global.properties.KakaoApiProperties;
 import team7.inplace.kakao.application.command.PlaceMessageCommand;
 import team7.inplace.place.util.KakaoMessageMaker;
 
