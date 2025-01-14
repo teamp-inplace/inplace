@@ -1,11 +1,10 @@
 package team7.inplace.place.util;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import team7.inplace.place.application.command.PlaceMessageCommand;
-
-import java.util.List;
+import team7.inplace.kakao.application.command.PlaceMessageCommand;
 
 public record LocationTemplate(
         @NonNull @JsonProperty("object_type") String objectType,

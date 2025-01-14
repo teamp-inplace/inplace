@@ -11,23 +11,22 @@ import team7.inplace.token.persistence.RefreshTokenRepository;
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
-
-    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtUtil jwtUtil;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public boolean isInvalidRefreshToken(String refreshToken) throws InplaceException {
         String username = jwtUtil.getUsername(refreshToken);
-        return !refreshTokenRepository.findById(username)
+        return refreshTokenRepository.get(username)
                 .orElseThrow(() -> InplaceException.of(AuthorizationErrorCode.INVALID_TOKEN))
-                .getRefreshToken().equals(refreshToken);
+                .isWrongRefreshToken(refreshToken);
     }
 
     public void saveRefreshToken(String username, String token) {
         RefreshToken refreshToken = new RefreshToken(username, token);
-        refreshTokenRepository.save(refreshToken);
+        refreshTokenRepository.save(username, refreshToken, jwtUtil.getRefreshTokenExpiredTime());
     }
 
     public void deleteRefreshToken(String username) {
-        refreshTokenRepository.deleteById(username);
+        refreshTokenRepository.delete(username);
     }
 }

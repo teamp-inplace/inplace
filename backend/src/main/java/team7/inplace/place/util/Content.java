@@ -3,7 +3,7 @@ package team7.inplace.place.util;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import team7.inplace.place.application.command.PlaceMessageCommand;
+import team7.inplace.kakao.application.command.PlaceMessageCommand;
 
 public record Content(
         @NonNull String title,
@@ -17,8 +17,10 @@ public record Content(
     private static final Integer DEFAULT_IMAGE_WIDTH = 1280;
     private static final Integer DEFAULT_IMAGE_HEIGHT = 720;
 
-    public static Content of(PlaceMessageCommand placeMessageCommand, String description,
-                             Link link) {
+    public static Content of(
+            PlaceMessageCommand placeMessageCommand, String description,
+            Link link
+    ) {
         return new Content(
                 placeMessageCommand.title(),
                 placeMessageCommand.imageUrl(),
