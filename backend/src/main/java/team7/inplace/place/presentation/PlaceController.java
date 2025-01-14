@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import team7.inplace.kakao.application.PlaceMessageFacade;
 import team7.inplace.place.application.CategoryService;
-import team7.inplace.place.application.PlaceMessageFacade;
 import team7.inplace.place.application.PlaceService;
 import team7.inplace.place.application.command.PlaceLikeCommand;
 import team7.inplace.place.application.command.PlacesCommand;
@@ -116,7 +116,7 @@ public class PlaceController implements PlaceControllerApiSpec {
     @Override
     public ResponseEntity<Void> sendPlaceMessage(Long placeId) {
         placeMessageFacade.sendPlaceMessage(placeId);
-        
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

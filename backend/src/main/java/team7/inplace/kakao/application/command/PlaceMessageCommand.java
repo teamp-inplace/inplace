@@ -1,4 +1,4 @@
-package team7.inplace.place.application.command;
+package team7.inplace.kakao.application.command;
 
 import team7.inplace.place.persistence.dto.PlaceQueryResult;
 import team7.inplace.video.application.AliasUtil;

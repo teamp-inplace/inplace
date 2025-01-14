@@ -1,9 +1,8 @@
 package team7.inplace.place.util;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import team7.inplace.place.application.command.PlaceMessageCommand;
-
 import java.util.List;
+import team7.inplace.kakao.application.command.PlaceMessageCommand;
 
 public record FeedTemplate(
         @JsonProperty("object_type") String objectType,
@@ -16,12 +15,12 @@ public record FeedTemplate(
 
     public static FeedTemplate of(String frontEndUrl, PlaceMessageCommand placeMessageCommand, String uuid) {
         Link link = Link.of(
-            frontEndUrl + "/places/" + placeMessageCommand.placeId() + "/reviews/" + uuid);
+                frontEndUrl + "/places/" + placeMessageCommand.placeId() + "/reviews/" + uuid);
         return new FeedTemplate(
-            OBJECT_TYPE,
-            Content.of(placeMessageCommand, "함께 해주셔서 감사합니다! 리뷰 부탁드려요.",
-                link),
-            List.of(Button.of(BUTTON_NAME, link))
+                OBJECT_TYPE,
+                Content.of(placeMessageCommand, "함께 해주셔서 감사합니다! 리뷰 부탁드려요.",
+                        link),
+                List.of(Button.of(BUTTON_NAME, link))
         );
     }
 }

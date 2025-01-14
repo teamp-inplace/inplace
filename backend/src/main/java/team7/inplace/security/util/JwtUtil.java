@@ -5,20 +5,20 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Jwts.SIG;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import lombok.Getter;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.AuthorizationErrorCode;
 import team7.inplace.security.config.JwtProperties;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-
 public class JwtUtil {
-
     private final SecretKey secretKey;
     private final JwtParser jwtParser;
     private final Long accessTokenExpiredTime;
+    @Getter
     private final Long refreshTokenExpiredTime;
 
     public JwtUtil(JwtProperties jwtProperties) {
@@ -37,8 +37,10 @@ public class JwtUtil {
         return createToken(username, userId, roles, "refreshToken", refreshTokenExpiredTime);
     }
 
-    private String createToken(String username, Long userId, String roles, String tokenType,
-                               Long expiredTime) {
+    private String createToken(
+            String username, Long userId, String roles, String tokenType,
+            Long expiredTime
+    ) {
         return Jwts.builder()
                 .claim("username", username)
                 .claim("id", userId)
