@@ -10,13 +10,17 @@ import { SpotData } from '@/types';
 import FallbackImage from '@/components/common/Items/FallbackImage';
 import BasicImage from '@/assets/images/basic-image.png';
 
-export default function SpotItem({ videoId, videoAlias, videoUrl, place }: SpotData) {
+interface SpotItemProps extends SpotData {
+  isInfluencer?: boolean;
+}
+
+export default function SpotItem({ videoId, videoAlias, videoUrl, place, isInfluencer = false }: SpotItemProps) {
   const extractedVideoId = useExtractYoutubeVideoId(videoUrl || '');
   const thumbnailUrl = videoUrl ? `https://img.youtube.com/vi/${extractedVideoId}/maxresdefault.jpg` : BasicImage;
 
   return (
-    <Wrapper to={`/detail/${place.placeId}`}>
-      <ImageWrapper>
+    <Wrapper to={`/detail/${place.placeId}`} $isInfluencer={isInfluencer}>
+      <ImageWrapper $isInfluencer={isInfluencer}>
         <FallbackImage src={thumbnailUrl} alt={String(videoId)} />
       </ImageWrapper>
       <Paragraph size="m" weight="bold" variant="white">
@@ -29,8 +33,8 @@ export default function SpotItem({ videoId, videoAlias, videoUrl, place }: SpotD
     </Wrapper>
   );
 }
-const Wrapper = styled(Link)`
-  width: 340px;
+const Wrapper = styled(Link)<{ $isInfluencer: boolean }>`
+  width: ${({ $isInfluencer }) => ($isInfluencer ? `440px` : '340px')};
   display: flex;
   flex-direction: column;
   align-content: end;
@@ -41,8 +45,8 @@ const Wrapper = styled(Link)`
   }
 `;
 
-const ImageWrapper = styled.div`
-  width: 340px;
+const ImageWrapper = styled.div<{ $isInfluencer?: boolean }>`
+  width: ${({ $isInfluencer }) => ($isInfluencer ? `440px` : '340px')};
   aspect-ratio: 16 / 9;
   margin-bottom: 10px;
   border-radius: 6px;
