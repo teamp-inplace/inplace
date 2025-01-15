@@ -16,14 +16,18 @@ public class CorsConfig {
     public CorsFilter corsFilterProd() {
         return createCorsFilter(
                 "https://www.inplace.my",
-                "https://inplace.my"
+                "https://inplace.my",
+                "https://api.inplace.my"
         );
     }
 
     @Bean
     @Profile("dev")
     public CorsFilter corsFilterDev() {
-        return createCorsFilter("https://inplace-dev.vercel.app/");
+        return createCorsFilter(
+                "https://inplace-dev.vercel.app",
+                "https://13.209.105.179.nip.io"
+        );
     }
 
     @Bean
