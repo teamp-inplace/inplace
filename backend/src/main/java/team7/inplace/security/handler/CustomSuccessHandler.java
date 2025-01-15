@@ -2,6 +2,8 @@ package team7.inplace.security.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -13,8 +15,7 @@ import team7.inplace.security.util.CookieUtil;
 import team7.inplace.security.util.JwtUtil;
 import team7.inplace.token.application.RefreshTokenService;
 
-import java.io.IOException;
-
+@Slf4j
 public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtUtil jwtUtil;
@@ -51,14 +52,8 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             HttpServletResponse response,
             String accessToken, String refreshToken
     ) {
-        ResponseCookie accessTokenCookie = CookieUtil.createCookie(
-                TokenType.ACCESS_TOKEN.getValue(),
-                accessToken,
-                frontEndUrl);
-        ResponseCookie refreshTokenCookie = CookieUtil.createCookie(
-                TokenType.REFRESH_TOKEN.getValue(),
-                refreshToken,
-                frontEndUrl);
+        ResponseCookie accessTokenCookie = CookieUtil.createCookie(TokenType.ACCESS_TOKEN.getValue(), accessToken);
+        ResponseCookie refreshTokenCookie = CookieUtil.createCookie(TokenType.REFRESH_TOKEN.getValue(), refreshToken);
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());

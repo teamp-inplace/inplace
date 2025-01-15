@@ -26,3 +26,5 @@ spring:
   oauth:
     password: ${OAUTH_PASSWORD}
     salt: ${OAUTH_SALT}
+cors:
+  origins: ${CORS_ORIGINS}

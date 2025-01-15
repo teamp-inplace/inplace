@@ -1,39 +1,21 @@
 package team7.inplace.security.config;
 
 import java.util.Arrays;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 public class CorsConfig {
+    @Value("${cors.origins}")
+    private String[] allowedOrigins;
 
     @Bean
-    @Profile("prod")
-    public CorsFilter corsFilterProd() {
-        return createCorsFilter(
-                "https://www.inplace.my",
-                "https://inplace.my",
-                "https://api.inplace.my"
-        );
-    }
-
-    @Bean
-    @Profile("dev")
-    public CorsFilter corsFilterDev() {
-        return createCorsFilter(
-                "https://inplace-dev.vercel.app",
-                "https://13.209.105.179.nip.io"
-        );
-    }
-
-    @Bean
-    @Profile("local")
     public CorsFilter corsFilterLocal() {
-        return createCorsFilter("http://localhost:3000");
+        return createCorsFilter(allowedOrigins);
     }
 
     private CorsFilter createCorsFilter(String... allowedOriginPatterns) {
