@@ -14,6 +14,11 @@ interface MapWindowProps {
   places: PlaceData[];
 }
 
+interface LastResponseState {
+  empty: boolean;
+  places: PlaceData[];
+}
+
 export default function MapWindow({
   onBoundsChange,
   onCenterChange,
@@ -25,6 +30,35 @@ export default function MapWindow({
   const mapRef = useRef<kakao.maps.Map | null>(null);
   const [mapCenter, setMapCenter] = useState(center);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [hasInitialLocation, setHasInitialLocation] = useState(false);
+  const [showSearchButton, setShowSearchButton] = useState(false);
+  const accumulatedPlacesRef = useRef<Set<string>>(new Set());
+  const [accumulatedPlaces, setAccumulatedPlaces] = useState<PlaceData[]>([]);
+  const previousPlacesRef = useRef<PlaceData[]>([]);
+  const lastResponseRef = useRef<LastResponseState>({
+    empty: false,
+    places,
+  });
+
+  useEffect(() => {
+    // 이전 응답이 빈 배열이고 현재도 빈 배열이면 빈 배열 상태 유지
+    if (lastResponseRef.current.empty && places.length === 0) {
+      setAccumulatedPlaces([]);
+      return;
+    }
+
+    // places가 이전과 다른 경우에만 업데이트
+    if (JSON.stringify(places) !== JSON.stringify(previousPlacesRef.current)) {
+      lastResponseRef.current = {
+        empty: places.length === 0,
+        places,
+      };
+
+      accumulatedPlacesRef.current = new Set(places.map((place) => place.placeId.toString()));
+      setAccumulatedPlaces(places);
+      previousPlacesRef.current = places;
+    }
+  }, [places]);
 
   const updateBounds = useCallback(() => {
     if (!mapRef.current) return;
@@ -44,6 +78,7 @@ export default function MapWindow({
   const handleSearchNearby = useCallback(() => {
     updateBounds();
     onSearchNearby();
+    setShowSearchButton(false);
   }, [updateBounds, onSearchNearby]);
 
   const handleResetCenter = useCallback(() => {
@@ -51,6 +86,7 @@ export default function MapWindow({
       mapRef.current.setCenter(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
       mapRef.current.setLevel(4);
       updateBounds();
+      setShowSearchButton(false);
     }
   }, [userLocation, updateBounds]);
 
@@ -61,10 +97,15 @@ export default function MapWindow({
         lat: newCenter.getLat(),
         lng: newCenter.getLng(),
       };
+
+      if (hasInitialLocation) {
+        setShowSearchButton(true);
+      }
+
       setMapCenter(centerData);
       onCenterChange(centerData);
     },
-    [onCenterChange],
+    [onCenterChange, hasInitialLocation],
   );
 
   useEffect(() => {
@@ -77,6 +118,7 @@ export default function MapWindow({
           };
           setMapCenter(newCenter);
           setUserLocation(newCenter);
+          setHasInitialLocation(true);
           onInitialLocation(true);
           if (mapRef.current) {
             mapRef.current.setCenter(new kakao.maps.LatLng(newCenter.lat, newCenter.lng));
@@ -103,16 +145,29 @@ export default function MapWindow({
 
   return (
     <MapContainer>
-      <ButtonContainer>
-        <Button onClick={handleSearchNearby} variant="mint" size="small" style={{ margin: '5px', fontSize: '16px' }}>
-          주변 찾기
-        </Button>
-      </ButtonContainer>
+      {showSearchButton && (
+        <ButtonContainer>
+          <Button
+            onClick={handleSearchNearby}
+            variant="white"
+            size="small"
+            style={{
+              height: '36px',
+              fontSize: '16px',
+              borderRadius: '20px',
+              padding: '20px',
+              boxShadow: '1px 1px 2px #707070',
+            }}
+          >
+            주변 찾기
+          </Button>
+        </ButtonContainer>
+      )}
       <Map
         center={mapCenter}
         style={{ width: '100%', height: '100%' }}
         level={4}
-        onCreate={(map: kakao.maps.Map | null) => {
+        onCreate={(map) => {
           mapRef.current = map;
         }}
         onCenterChanged={handleCenterChanged}
@@ -128,8 +183,14 @@ export default function MapWindow({
             }}
           />
         )}
-        {places.map((place) => (
-          <MapMarker key={place.placeId} position={{ lat: Number(place.latitude), lng: Number(place.longitude) }} />
+        {accumulatedPlaces.map((place) => (
+          <MapMarker
+            key={place.placeId}
+            position={{
+              lat: Number(place.latitude),
+              lng: Number(place.longitude),
+            }}
+          />
         ))}
       </Map>
       <ResetButtonContainer>
@@ -137,7 +198,7 @@ export default function MapWindow({
           onClick={handleResetCenter}
           variant="white"
           size="small"
-          style={{ width: '30px', height: '30px', boxShadow: '0px 2px 2px #707070' }}
+          style={{ width: '40px', height: '40px', boxShadow: '1px 1px 2px #707070' }}
         >
           <TbCurrentLocation size={20} />
         </Button>
@@ -150,12 +211,12 @@ const MapContainer = styled.div`
   position: relative;
   width: 100%;
   height: 570px;
-  padding: 10px 0;
+  padding: 20px 0;
 `;
 
 const ButtonContainer = styled.div`
   position: absolute;
-  top: 30px;
+  top: 8%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
@@ -163,7 +224,7 @@ const ButtonContainer = styled.div`
 
 const ResetButtonContainer = styled.div`
   position: absolute;
-  bottom: 30px;
+  bottom: 46px;
   right: 30px;
   z-index: 10;
 `;
