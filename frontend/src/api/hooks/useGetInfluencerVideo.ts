@@ -8,9 +8,7 @@ export const getInfluencerVideo = async (page: number, size: number) => {
     page: page.toString(),
     size: size.toString(),
   });
-  const response = await fetchInstance.get<PageableData<SpotData>>(`${getInfluencerVideoPath()}?${params}`, {
-    withCredentials: true,
-  });
+  const response = await fetchInstance.get<PageableData<SpotData>>(`${getInfluencerVideoPath()}?${params}`);
   return response.data;
 };
 export const useGetInfluencerVideo = (size: number) => {
