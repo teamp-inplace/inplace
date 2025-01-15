@@ -17,7 +17,7 @@ export default function InfluencerMapTap() {
   const filters = {
     categories: [],
     influencers: [],
-    location: { main: '' },
+    location: { main: '', sub: '' },
   };
   const places = [
     {
