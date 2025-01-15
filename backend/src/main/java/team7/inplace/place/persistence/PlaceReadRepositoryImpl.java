@@ -56,7 +56,9 @@ public class PlaceReadRepositoryImpl implements PlaceReadRepository {
                 ))
                 .from(QPlace.place)
                 .leftJoin(QLikedPlace.likedPlace).on(QLikedPlace.likedPlace.placeId.eq(QPlace.place.id)
-                        .and(QLikedPlace.likedPlace.userId.eq(userId))
+                        .and(userId != null ?
+                                QLikedPlace.likedPlace.userId.eq(userId) :
+                                QLikedPlace.likedPlace.userId.isNull())
                         .and(QLikedPlace.likedPlace.isLiked.isTrue()))
                 .where(QPlace.place.id.eq(placeId))
                 .fetchOne();
@@ -169,7 +171,9 @@ public class PlaceReadRepositoryImpl implements PlaceReadRepository {
                 ))
                 .from(QPlace.place)
                 .leftJoin(QLikedPlace.likedPlace).on(QLikedPlace.likedPlace.placeId.eq(QPlace.place.id)
-                        .and(QLikedPlace.likedPlace.userId.eq(userId))
+                        .and(userId != null ?
+                                QLikedPlace.likedPlace.userId.eq(userId) :
+                                QLikedPlace.likedPlace.userId.isNull())
                         .and(QLikedPlace.likedPlace.isLiked.isTrue()))
                 .where(QPlace.place.id.in(filteredPlaceId))
                 .orderBy(QPlace.place.id.asc())

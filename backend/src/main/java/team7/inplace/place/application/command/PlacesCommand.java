@@ -7,10 +7,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import team7.inplace.place.domain.Category;
 import team7.inplace.place.domain.PlaceBulk;
 import team7.inplace.video.presentation.dto.VideoSearchParams;
 
+@Slf4j
 public class PlacesCommand {
 
     public record Coordinate(
@@ -131,8 +134,14 @@ public class PlacesCommand {
                     menuNodes != null && menuNodes.has("menuUpdatedAt") ? LocalDateTime.parse(
                             placeNode.get("menuInfo").get("timeexp").asText()) : LocalDateTime.now();
             var menuBoardPhotoUrlList =
-                    menuNodes != null && menuNodes.has("menuboardphotourlList") ?
-                            menuNodes.findValuesAsText("menuboardphotourlList") : new ArrayList<String>();
+                    Optional.ofNullable(menuNodes)
+                            .map(node -> node.get("menuboardphotourlList"))
+                            .map(node -> {
+                                List<String> urls = new ArrayList<>();
+                                node.forEach(item -> urls.add(item.asText()));
+                                return urls;
+                            })
+                            .orElse(new ArrayList<>());
 
             return new Create(placeName, facility, menuImgUrl, category,
                     address + " " + addressDetail, x, y, offDays,

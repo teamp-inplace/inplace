@@ -3,7 +3,9 @@ package team7.inplace.place.presentation.dto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import team7.inplace.place.application.dto.PlaceQueryInfo;
 import team7.inplace.place.persistence.dto.PlaceQueryResult;
 import team7.inplace.review.persistence.dto.ReviewQueryResult;
@@ -119,7 +121,7 @@ public class PlacesResponse {
     public record MenuInfos(
             List<String> menuImgUrls,
             List<Menu> menuList,
-            LocalDateTime menuUpdatedAt
+            String menuUpdatedAt
     ) {
         public static MenuInfos from(
                 List<PlaceQueryResult.MenuBordPhoto> menuBoardPhotos,
@@ -129,7 +131,9 @@ public class PlacesResponse {
             return new MenuInfos(
                     menuBoardPhotos.stream().map(PlaceQueryResult.MenuBordPhoto::imgUrl).toList(),
                     menus.stream().map(PlacesResponse.Menu::from).toList(),
-                    menuUpdatedAt
+                    Optional.ofNullable(menuUpdatedAt)
+                            .map(dateTime -> dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                            .orElse(null)
             );
         }
     }

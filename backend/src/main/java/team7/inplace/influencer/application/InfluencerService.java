@@ -148,4 +148,11 @@ public class InfluencerService {
                 .toList();
         return new PageImpl<>(infos, pageable, influencerPage.getTotalElements());
     }
+
+    @Transactional()
+    public void updateLastVideo(Long influencerId, String lastVideo) {
+        var influencer = influencerRepository.findById(influencerId)
+                .orElseThrow();
+        influencer.updateLastVideo(lastVideo);
+    }
 }

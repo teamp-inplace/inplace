@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class YoutubeClient {
     private static final String VIDEO_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search";
-    private static final String VIDEO_SEARCH_PARAMS = "?part=snippet&channelId=%s&maxResults=50&key=%s";
+    private static final String VIDEO_SEARCH_PARAMS = "?part=snippet&channelId=%s&maxResults=50&key=%s&order=date&type=video";
     private static final String VIDEO_DETAIL_URL = "https://www.googleapis.com/youtube/v3/videos";
     private static final String VIDEO_DETAIL_PARAMS = "?part=statistics&id=%s&key=%s";
     private final RestTemplate restTemplate;
@@ -77,9 +77,13 @@ public class YoutubeClient {
     }
 
     private boolean extractSnippets(List<JsonNode> videoItems, JsonNode items, String finalVideoUUID) {
+
         for (JsonNode item : items) {
-            var snippet = item.path("snippet");
+            if (!item.get("id").has("videoId")) {
+                continue;
+            }
             var videoId = item.get("id").get("videoId").asText();
+
             if (videoId.equals(finalVideoUUID)) {
                 return true;
             }
