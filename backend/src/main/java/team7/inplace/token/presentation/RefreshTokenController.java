@@ -45,14 +45,10 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
     }
 
     private void addTokenToCookie(HttpServletResponse response, ReIssued reIssuedToken) {
-        ResponseCookie accessTokenCookie = CookieUtil.createCookie(
-                TokenType.ACCESS_TOKEN.getValue(),
-                reIssuedToken.accessToken(),
-                frontEndUrl);
-        ResponseCookie refreshTokenCookie = CookieUtil.createCookie(
-                TokenType.REFRESH_TOKEN.getValue(),
-                reIssuedToken.refreshToken(),
-                frontEndUrl);
+        var accessTokenCookie = CookieUtil.createCookie(TokenType.ACCESS_TOKEN.getValue(),
+                reIssuedToken.accessToken());
+        var refreshTokenCookie = CookieUtil.createCookie(TokenType.REFRESH_TOKEN.getValue(),
+                reIssuedToken.refreshToken());
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
@@ -67,14 +63,8 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
         String refreshToken = cookie.getValue();
         refreshTokenFacade.deleteRefreshToken(refreshToken);
 
-        ResponseCookie accessTokenCookie = CookieUtil.createCookie(
-                TokenType.ACCESS_TOKEN.getValue(),
-                "",
-                frontEndUrl);
-        ResponseCookie refreshTokenCookie = CookieUtil.createCookie(
-                TokenType.REFRESH_TOKEN.getValue(),
-                "",
-                frontEndUrl);
+        ResponseCookie accessTokenCookie = CookieUtil.createCookie(TokenType.ACCESS_TOKEN.getValue(), "");
+        ResponseCookie refreshTokenCookie = CookieUtil.createCookie(TokenType.REFRESH_TOKEN.getValue(), "");
         response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 
