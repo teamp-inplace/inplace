@@ -152,10 +152,11 @@ export default function MapWindow({
             variant="white"
             size="small"
             style={{
+              height: '36px',
               fontSize: '16px',
               borderRadius: '20px',
               padding: '20px',
-              boxShadow: '1px 2px 2px #707070',
+              boxShadow: '1px 1px 2px #707070',
             }}
           >
             주변 찾기
@@ -197,7 +198,7 @@ export default function MapWindow({
           onClick={handleResetCenter}
           variant="white"
           size="small"
-          style={{ width: '40px', height: '40px', boxShadow: '2px 4px 4px #707070' }}
+          style={{ width: '40px', height: '40px', boxShadow: '1px 1px 2px #707070' }}
         >
           <TbCurrentLocation size={20} />
         </Button>
