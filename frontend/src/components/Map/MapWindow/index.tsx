@@ -30,6 +30,8 @@ export default function MapWindow({
   const mapRef = useRef<kakao.maps.Map | null>(null);
   const [mapCenter, setMapCenter] = useState(center);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [hasInitialLocation, setHasInitialLocation] = useState(false);
+  const [showSearchButton, setShowSearchButton] = useState(false);
   const accumulatedPlacesRef = useRef<Set<string>>(new Set());
   const [accumulatedPlaces, setAccumulatedPlaces] = useState<PlaceData[]>([]);
   const previousPlacesRef = useRef<PlaceData[]>([]);
@@ -76,6 +78,7 @@ export default function MapWindow({
   const handleSearchNearby = useCallback(() => {
     updateBounds();
     onSearchNearby();
+    setShowSearchButton(false);
   }, [updateBounds, onSearchNearby]);
 
   const handleResetCenter = useCallback(() => {
@@ -83,6 +86,7 @@ export default function MapWindow({
       mapRef.current.setCenter(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
       mapRef.current.setLevel(4);
       updateBounds();
+      setShowSearchButton(false);
     }
   }, [userLocation, updateBounds]);
 
@@ -93,10 +97,15 @@ export default function MapWindow({
         lat: newCenter.getLat(),
         lng: newCenter.getLng(),
       };
+
+      if (hasInitialLocation) {
+        setShowSearchButton(true);
+      }
+
       setMapCenter(centerData);
       onCenterChange(centerData);
     },
-    [onCenterChange],
+    [onCenterChange, hasInitialLocation],
   );
 
   useEffect(() => {
@@ -109,6 +118,7 @@ export default function MapWindow({
           };
           setMapCenter(newCenter);
           setUserLocation(newCenter);
+          setHasInitialLocation(true);
           onInitialLocation(true);
           if (mapRef.current) {
             mapRef.current.setCenter(new kakao.maps.LatLng(newCenter.lat, newCenter.lng));
@@ -135,11 +145,23 @@ export default function MapWindow({
 
   return (
     <MapContainer>
-      <ButtonContainer>
-        <Button onClick={handleSearchNearby} variant="mint" size="small" style={{ margin: '5px', fontSize: '16px' }}>
-          주변 찾기
-        </Button>
-      </ButtonContainer>
+      {showSearchButton && (
+        <ButtonContainer>
+          <Button
+            onClick={handleSearchNearby}
+            variant="white"
+            size="small"
+            style={{
+              fontSize: '16px',
+              borderRadius: '20px',
+              padding: '20px',
+              boxShadow: '1px 2px 2px #707070',
+            }}
+          >
+            주변 찾기
+          </Button>
+        </ButtonContainer>
+      )}
       <Map
         center={mapCenter}
         style={{ width: '100%', height: '100%' }}
@@ -175,7 +197,7 @@ export default function MapWindow({
           onClick={handleResetCenter}
           variant="white"
           size="small"
-          style={{ width: '30px', height: '30px', boxShadow: '0px 2px 2px #707070' }}
+          style={{ width: '40px', height: '40px', boxShadow: '2px 4px 4px #707070' }}
         >
           <TbCurrentLocation size={20} />
         </Button>
@@ -193,7 +215,7 @@ const MapContainer = styled.div`
 
 const ButtonContainer = styled.div`
   position: absolute;
-  top: 30px;
+  top: 8%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
@@ -201,7 +223,7 @@ const ButtonContainer = styled.div`
 
 const ResetButtonContainer = styled.div`
   position: absolute;
-  bottom: 30px;
+  bottom: 46px;
   right: 30px;
   z-index: 10;
 `;
