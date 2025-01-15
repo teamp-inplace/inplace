@@ -13,13 +13,19 @@ interface PlaceSectionProps {
   filters: {
     categories: string[];
     influencers: string[];
-    location: { main: string; sub?: string; lat?: number; lng?: number };
+    location: { main: string; sub?: string; lat?: number; lng?: number }[];
   };
   onPlacesUpdate: (places: PlaceData[]) => void;
   center: { lat: number; lng: number };
   shouldFetchPlaces: boolean;
   onFetchComplete: () => void;
   initialLocation: boolean;
+}
+
+interface LastResponseState {
+  empty: boolean;
+  location: LocationData;
+  filters: PlaceSectionProps['filters'];
 }
 
 export default function PlaceSection({
@@ -32,6 +38,13 @@ export default function PlaceSection({
 }: PlaceSectionProps) {
   const navigate = useNavigate();
   const sectionRef = useRef<HTMLDivElement>(null); // 무한 스크롤을 위한 ref와 observer 설정
+  const previousPlacesRef = useRef<PlaceData[]>([]);
+  const lastResponseRef = useRef<LastResponseState>({
+    empty: false,
+    location: mapBounds,
+    filters,
+  });
+
   const { ref: loadMoreRef, inView } = useInView({
     // useInView = Intersection Oberser API를 react hook으로 구현한 것
     root: sectionRef.current,
@@ -51,29 +64,59 @@ export default function PlaceSection({
   );
 
   const filteredPlaces = useMemo(() => {
-    if (!data?.pages) return [];
+    // 지도만 움직이는 경우 빈 배열 상태 유지
+    if (
+      !shouldFetchPlaces &&
+      lastResponseRef.current.empty &&
+      JSON.stringify(lastResponseRef.current.filters) === JSON.stringify(filters)
+    ) {
+      return [];
+    }
 
-    return data.pages.flatMap((page: PageableData<PlaceData>) => {
+    if (data === undefined) {
+      return previousPlacesRef.current;
+    }
+
+    if (!data.pages) {
+      return [];
+    }
+
+    const newPlaces = data.pages.flatMap((page: PageableData<PlaceData>) => {
       return page.content.filter((place: PlaceData) => {
         const categoryMatch = filters.categories.length === 0 || filters.categories.includes(place.category);
         const influencerMatch = filters.influencers.length === 0 || filters.influencers.includes(place.influencerName);
         const locationMatch = (() => {
-          if (!filters.location.main) return true;
-          const mainMatch =
-            place.address.address1.includes(filters.location.main) ||
-            place.address.address2.includes(filters.location.main);
-          const subMatch = filters.location.sub
-            ? place.address.address2.includes(filters.location.sub) ||
-              (place.address.address3 && place.address.address3.includes(filters.location.sub))
-            : true;
-          return mainMatch && subMatch;
+          if (filters.location.length === 0) return true;
+
+          return filters.location.some((loc) => {
+            // loc = 사용자가 선택한 위치 객체
+            const mainMatch = place.address.address1.includes(loc.main) || place.address.address2.includes(loc.main);
+
+            const subMatch = loc.sub
+              ? place.address.address2.includes(loc.sub) ||
+                (place.address.address3 && place.address.address3.includes(loc.sub))
+              : true;
+
+            return mainMatch && subMatch;
+          });
         })();
         return categoryMatch && influencerMatch && locationMatch;
       });
     });
-  }, [data, filters]);
 
-  // 스크롤이 LoadMoreTrigger에 도달하면 다음 페이지 로드
+    // 새로운 요청에 대한 응답이 완료되었을 때만 상태 저장
+    if (shouldFetchPlaces && !isLoading && !isFetchingNextPage) {
+      lastResponseRef.current = {
+        empty: newPlaces.length === 0,
+        location: mapBounds,
+        filters,
+      };
+      previousPlacesRef.current = newPlaces;
+    }
+
+    return newPlaces;
+  }, [data, filters, isLoading, isFetchingNextPage, shouldFetchPlaces, mapBounds]);
+
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
@@ -99,7 +142,7 @@ export default function PlaceSection({
     [navigate],
   );
 
-  if (isLoading && !isFetchingNextPage) {
+  if (isLoading && !isFetchingNextPage && previousPlacesRef.current.length === 0) {
     return (
       <SectionContainer>
         <LoadingContainer>

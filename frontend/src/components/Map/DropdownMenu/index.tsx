@@ -75,17 +75,16 @@ export default function DropdownMenu({
   }, [options, searchTerm]);
 
   const handleMainOptionClick = (option: Option) => {
-    if (option.label === '없음') {
-      setSelectedMainOption(null);
-      setSelectedSubOption(null);
-      onChange({ main: '', sub: undefined, lat: undefined, lng: undefined });
-    } else {
-      setSelectedMainOption(option);
-      setSelectedSubOption(null);
-      onChange({ main: option.label, lat: option.lat, lng: option.lng });
-      if (!multiLevel || !option.subOptions) {
-        setIsOpen(false);
-      }
+    setSelectedMainOption(option);
+    setSelectedSubOption(null);
+    if (!multiLevel || !option.subOptions) {
+      onChange({
+        main: option.label,
+        sub: undefined,
+        lat: option.lat,
+        lng: option.lng,
+      });
+      setIsOpen(false);
     }
   };
 
@@ -93,11 +92,13 @@ export default function DropdownMenu({
     setSelectedSubOption(subOption);
     onChange({
       main: selectedMainOption!.label,
-      sub: subOption.label,
+      sub: subOption.label === '전체' ? undefined : subOption.label,
       lat: subOption.lat,
       lng: subOption.lng,
     });
     setIsOpen(false);
+    setSelectedMainOption(null);
+    setSelectedSubOption(null);
   };
 
   const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +106,7 @@ export default function DropdownMenu({
   };
 
   const renderMainOptions = () => {
-    return [{ label: '없음', lat: undefined, lng: undefined }, ...filteredOptions].map((option) => (
+    return filteredOptions.map((option) => (
       <DropdownItem
         key={option.label}
         label={option.label}
@@ -118,22 +119,25 @@ export default function DropdownMenu({
 
   const renderSubOptions = () => {
     if (!selectedMainOption || !selectedMainOption.subOptions) return null;
-    return selectedMainOption.subOptions.map((subOption) => (
+
+    const allOption: Option = {
+      label: '전체',
+      lat: selectedMainOption.lat,
+      lng: selectedMainOption.lng,
+    };
+
+    return [allOption, ...selectedMainOption.subOptions].map((subOption) => (
       <DropdownItem
         key={subOption.label}
         label={subOption.label}
         onClick={() => handleSubOptionClick(subOption)}
         type={type}
+        isSelected={selectedSubOption === subOption}
       />
     ));
   };
 
-  const displayValue = useMemo(() => {
-    if (selectedSubOption && selectedMainOption) {
-      return `${selectedMainOption.label} ${selectedSubOption.label}`;
-    }
-    return selectedMainOption?.label || placeholder;
-  }, [selectedMainOption, selectedSubOption, placeholder]);
+  const displayValue = placeholder;
 
   return (
     <DropdownContainer ref={ref} type={type}>
