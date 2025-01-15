@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import team7.inplace.global.annotation.Facade;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.AuthorizationErrorCode;
+import team7.inplace.influencer.application.InfluencerService;
 import team7.inplace.place.application.PlaceService;
 import team7.inplace.place.application.command.PlacesCommand;
 import team7.inplace.security.util.AuthorizationUtil;
@@ -20,6 +21,7 @@ import team7.inplace.video.persistence.dto.VideoQueryResult;
 @RequiredArgsConstructor
 public class VideoFacade {
     private final VideoService videoService;
+    private final InfluencerService influencerService;
     private final PlaceService placeService;
 
     @Transactional
@@ -28,6 +30,7 @@ public class VideoFacade {
             Long influencerId
     ) {
         videoService.createVideos(videoCommands, influencerId);
+        influencerService.updateLastVideo(influencerId, videoCommands.get(0).videoId());
     }
 
     @Transactional
