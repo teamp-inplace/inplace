@@ -13,6 +13,7 @@ import PrivatedRoute from '@/routes/component/PrivatedRoute';
 import GlobalStyle from './global';
 import SearchPage from './pages/Search';
 import ReviewPage from './pages/Review';
+import InfluencerInfoPage from './pages/InfluencerInfo';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/" element={<MainLayout />}>
             <Route index path="/" element={<MainPage />} />
             <Route path="/influencer" element={<InfluencerPage />} />
+            <Route path="/influencer/:id" element={<InfluencerInfoPage />} />
             <Route path="/map" element={<MapPage />} />
             <Route path="/detail/:id" element={<DetailPage />} />
             <Route path="/search" element={<SearchPage />} />

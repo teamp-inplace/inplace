@@ -63,7 +63,7 @@ export default function InfluencerItem({
 
   return (
     <>
-      <Wrapper as={useNav ? Link : 'div'} to={useNav ? `/map?influencer=${encodeURIComponent(influencerName)}` : ''}>
+      <Wrapper to={`/influencer/${influencerId}`}>
         <ImageContainer>
           <LikeIcon role="button" onClick={(e: React.MouseEvent<HTMLDivElement>) => handleClickLike(e)}>
             {isLike ? (

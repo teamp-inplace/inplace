@@ -195,3 +195,12 @@ export type SearchComplete = {
   score: number;
   searchType: string;
 };
+export type InfluencerInfoData = {
+  influencerId: number;
+  influencerName: string;
+  influencerImgUrl: string;
+  influencerJob: string;
+  likes: boolean;
+  follower: number;
+  placeCount: number;
+};
