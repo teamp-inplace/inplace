@@ -12,6 +12,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import team7.inplace.place.domain.Menu;
+import team7.inplace.place.domain.MenuBoardPhoto;
 import team7.inplace.place.domain.OffDay;
 import team7.inplace.place.domain.OpenTime;
 import team7.inplace.place.domain.Place;
@@ -33,6 +34,8 @@ public class PlaceSaveRepositoryImpl implements PlaceSaveRepository {
         saveOpenTimes(placeId, openTimes);
         List<OffDay> offDays = placeBulk.getOffDays();
         saveOffDays(placeId, offDays);
+        List<MenuBoardPhoto> menuBoardPhotos = placeBulk.getMenuBoardPhotos();
+        saveMenuBoardPhotos(placeId, menuBoardPhotos);
 
         return placeId;
     }
@@ -136,6 +139,28 @@ public class PlaceSaveRepositoryImpl implements PlaceSaveRepository {
             @Override
             public int getBatchSize() {
                 return offDays.size();
+            }
+        });
+    }
+
+    private void saveMenuBoardPhotos(long placeId, List<MenuBoardPhoto> menuBoardPhotos) {
+        String sql = """
+                INSERT INTO menu_board_photos (
+                    url, place_id
+                ) VALUES (?, ?)
+                """;
+
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                MenuBoardPhoto menuBoardPhoto = menuBoardPhotos.get(i);
+                ps.setString(1, menuBoardPhoto.getUrl());
+                ps.setLong(2, placeId);
+            }
+
+            @Override
+            public int getBatchSize() {
+                return menuBoardPhotos.size();
             }
         });
     }
