@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { Map, MapMarker } from 'react-kakao-maps-sdk';
+import { Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk';
 import styled from 'styled-components';
 import { TbCurrentLocation } from 'react-icons/tb';
 import Button from '@/components/common/Button';
@@ -152,15 +152,17 @@ export default function MapWindow({
             }}
           />
         )}
-        {markers.map((place) => (
-          <MapMarker
-            key={place.placeId}
-            position={{
-              lat: place.latitude,
-              lng: place.longitude,
-            }}
-          />
-        ))}
+        <MarkerClusterer averageCenter minLevel={10}>
+          {markers.map((place) => (
+            <MapMarker
+              key={place.placeId}
+              position={{
+                lat: place.latitude,
+                lng: place.longitude,
+              }}
+            />
+          ))}
+        </MarkerClusterer>
       </Map>
       <ResetButtonContainer>
         <Button
