@@ -14,7 +14,7 @@ interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-const ACCESS_TOKEN_REFRESH_INTERVAL = 9 * 60 * 1000;
+const ACCESS_TOKEN_REFRESH_INTERVAL = 3 * 60 * 1000;
 
 export default function AuthProvider({ children }: AuthProviderProps) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
@@ -47,7 +47,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         localStorage.setItem('nickname', userNickname);
         localStorage.setItem('isAuthenticated', 'true');
         setIsAuthenticated(true);
-        await refreshTokenRegularly();
+        setTimeout(() => refreshTokenRegularly(), ACCESS_TOKEN_REFRESH_INTERVAL);
       }
     },
     [isAuthenticated, refreshTokenRegularly],
