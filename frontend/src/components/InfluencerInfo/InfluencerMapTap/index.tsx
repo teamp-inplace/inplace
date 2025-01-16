@@ -1,7 +1,10 @@
-import { useCallback, useState } from 'react';
-import MapWindow from '@/components/Map/MapWindow';
-import PlaceSection from '@/components/Map/PlaceSection';
-import { LocationData } from '@/types';
+import { useCallback, useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { GrPowerCycle } from 'react-icons/gr';
+import { LocationData, MarkerData } from '@/types';
+import { useGetAllMarkers } from '@/api/hooks/useGetAllMarkers';
+import InfluencerMapWindow from './InfluencerMapWindow';
+import InfluencerPlaceSection from './InfluencerPlaceSection';
 
 export default function InfluencerMapTap() {
   const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
@@ -11,31 +14,27 @@ export default function InfluencerMapTap() {
     bottomRightLatitude: 0,
     bottomRightLongitude: 0,
   });
+  const filters = { categories: [], influencers: [] };
   const [shouldFetchPlaces, setShouldFetchPlaces] = useState(false);
-  const [initialLocation, setInitialLocation] = useState(false);
+  const [markers, setMarkers] = useState<MarkerData[]>([]);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  const filters = {
-    categories: [],
-    influencers: [],
-    location: { main: '', sub: '' },
-  };
-  const places = [
+  const { data: fetchedMarkers = [] } = useGetAllMarkers(
     {
-      placeId: 1,
-      placeName: '료코',
-      address: {
-        address1: '대구',
-        address2: '북구',
-        address3: '대학로',
-      },
-      category: 'RESTAURANT',
-      influencerName: '성시경',
-      longitude: '35.123',
-      latitude: '135.11',
-      likes: true,
-      menuImgUrl: 'https://via.placeholder.com/500',
+      location: mapBounds,
+      filters,
+      center,
     },
-  ];
+    isInitialLoad,
+  );
+
+  useEffect(() => {
+    if (isInitialLoad && fetchedMarkers.length > 0) {
+      setMarkers(fetchedMarkers);
+      setIsInitialLoad(false);
+    }
+  }, [isInitialLoad, fetchedMarkers]);
+
   const handleBoundsChange = useCallback((bounds: LocationData) => {
     setMapBounds(bounds);
   }, []);
@@ -44,39 +43,47 @@ export default function InfluencerMapTap() {
     setCenter(newCenter);
   }, []);
 
-  const handlePlacesUpdate = () => {};
+  const handleClickRecycle = useCallback(() => {
+    setShouldFetchPlaces(true);
+  }, []);
 
-  const handleSearchNearby = () => {};
-
-  const handleInitialLocation = useCallback((value: boolean) => {
-    setInitialLocation(value);
-    if (value) {
-      setShouldFetchPlaces(true);
+  useEffect(() => {
+    if (shouldFetchPlaces) {
+      setShouldFetchPlaces(false);
     }
-  }, []);
-  const handleFetchComplete = useCallback(() => {
-    setShouldFetchPlaces(false);
-  }, []);
+  }, [shouldFetchPlaces]);
 
   return (
     <>
-      <MapWindow
+      <InfluencerMapWindow
+        markers={markers}
         onBoundsChange={handleBoundsChange}
         onCenterChange={handleCenterChange}
-        onSearchNearby={handleSearchNearby}
-        onInitialLocation={handleInitialLocation}
-        center={center}
-        places={places}
-      />
-      <PlaceSection
-        mapBounds={mapBounds}
-        filters={filters}
-        onPlacesUpdate={handlePlacesUpdate}
-        center={center}
         shouldFetchPlaces={shouldFetchPlaces}
-        onFetchComplete={handleFetchComplete}
-        initialLocation={initialLocation}
+      />
+      <Btn onClick={handleClickRecycle}>
+        <GrPowerCycle />
+        다시 모기
+      </Btn>
+      <InfluencerPlaceSection
+        mapBounds={mapBounds}
+        center={center}
+        filters={filters}
+        shouldFetchPlaces={shouldFetchPlaces}
       />
     </>
   );
 }
+const Btn = styled.div`
+  position: absolute;
+  right: 0;
+  display: flex;
+  color: #c3c3c3;
+  border-radius: 0px;
+  font-size: 20px;
+  border-bottom: 0.5px solid #c3c3c3;
+  width: fit-content;
+  padding-bottom: 4px;
+  gap: 6px;
+  cursor: pointer;
+`;
