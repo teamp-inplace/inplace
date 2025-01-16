@@ -13,7 +13,7 @@ public class RefreshToken {
 
     private String refreshToken;
 
-    public boolean isWrongRefreshToken(String refreshToken) {
+    public boolean checkValidToken(String refreshToken) {
         return !this.refreshToken.equals(refreshToken);
     }
 }
