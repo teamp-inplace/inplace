@@ -1,5 +1,6 @@
 package team7.inplace.review.persistence;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import team7.inplace.review.domain.ReviewInvitation;
 @RequiredArgsConstructor
 public class ReviewInvitationRepository implements RedisRepository<ReviewInvitation> {
     private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper;
 
     private final Long DEFAULT_TIMEOUT = 3 * 24 * 60 * 60L; // 3일
     private final TimeUnit timeoutUnit = TimeUnit.SECONDS;
@@ -37,7 +39,8 @@ public class ReviewInvitationRepository implements RedisRepository<ReviewInvitat
     @Override
     public Optional<ReviewInvitation> get(String key) {
         var value = redisTemplate.opsForValue().get(UUID_PREFIX + key);
-        return Optional.ofNullable((ReviewInvitation) value);
+
+        return Optional.ofNullable(objectMapper.convertValue(value, ReviewInvitation.class));
     }
 
     @Override
@@ -52,6 +55,6 @@ public class ReviewInvitationRepository implements RedisRepository<ReviewInvitat
             return Optional.empty();
         }
 
-        return Optional.of((String) uuids.iterator().next());
+        return Optional.of(objectMapper.convertValue(uuids.iterator().next(), String.class));
     }
 }
