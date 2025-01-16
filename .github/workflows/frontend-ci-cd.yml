@@ -43,7 +43,12 @@ jobs:
       - name: Run tests
         run: npm test
       - name: Build project
-        run: npm run build
+        run: |
+          if [[ ${{ github.ref }} == 'refs/heads/dev' ]]; then
+            npm run build:dev
+          else
+            npm run build
+          fi
         env:
           VITE_KAKAO_JS_KEY: ${{ secrets.VITE_KAKAO_JS_KEY }}
       - name: Configure AWS credentials
