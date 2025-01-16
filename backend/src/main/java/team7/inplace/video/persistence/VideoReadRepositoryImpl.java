@@ -63,7 +63,7 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
         var content = queryFactory
                 .select(new QVideoQueryResult_SimpleVideo(
                         QVideo.video.id,
-                        QVideo.video.videoUrl,
+                        QVideo.video.uuid,
                         QInfluencer.influencer.name,
                         QPlace.place.id,
                         QPlace.place.name,
@@ -101,7 +101,7 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
         var top10Videos = queryFactory
                 .select(new QVideoQueryResult_SimpleVideo(
                         QVideo.video.id,
-                        QVideo.video.videoUrl,
+                        QVideo.video.uuid,
                         QInfluencer.influencer.name,
                         QPlace.place.id,
                         QPlace.place.name,
@@ -122,7 +122,7 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
         var top10Videos = queryFactory
                 .select(new QVideoQueryResult_SimpleVideo(
                         QVideo.video.id,
-                        QVideo.video.videoUrl,
+                        QVideo.video.uuid,
                         QInfluencer.influencer.name,
                         QPlace.place.id,
                         QPlace.place.name,
@@ -143,7 +143,7 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
         var top10Videos = queryFactory
                 .select(new QVideoQueryResult_SimpleVideo(
                         QVideo.video.id,
-                        QVideo.video.videoUrl,
+                        QVideo.video.uuid,
                         QInfluencer.influencer.name,
                         QPlace.place.id,
                         QPlace.place.name,
@@ -171,7 +171,7 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
         var videos = queryFactory
                 .select(new QVideoQueryResult_SimpleVideo(
                         QVideo.video.id,
-                        QVideo.video.videoUrl,
+                        QVideo.video.uuid,
                         QInfluencer.influencer.name,
                         QPlace.place.id,
                         QPlace.place.name,
@@ -194,7 +194,7 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
         return queryFactory
                 .select(new QVideoQueryResult_SimpleVideo(
                         QVideo.video.id,
-                        QVideo.video.videoUrl,
+                        QVideo.video.uuid,
                         QInfluencer.influencer.name,
                         QPlace.place.id,
                         QPlace.place.name,
@@ -214,7 +214,7 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
         var videos = queryFactory
                 .select(new QVideoQueryResult_SimpleVideo(
                         QVideo.video.id,
-                        QVideo.video.videoUrl,
+                        QVideo.video.uuid,
                         QInfluencer.influencer.name,
                         QPlace.place.id,
                         QPlace.place.name,

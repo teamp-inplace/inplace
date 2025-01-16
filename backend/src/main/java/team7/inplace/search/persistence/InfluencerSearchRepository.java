@@ -9,27 +9,25 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import team7.inplace.influencer.domain.Influencer;
 import team7.inplace.influencer.domain.QInfluencer;
-import team7.inplace.search.persistence.dto.SearchResult;
+import team7.inplace.influencer.persistence.dto.InfluencerQueryResult;
+import team7.inplace.influencer.persistence.dto.QInfluencerQueryResult_Simple;
+import team7.inplace.liked.likedInfluencer.domain.QLikedInfluencer;
+import team7.inplace.search.persistence.dto.SearchQueryResult.AutoComplete;
 
 @Repository
 @RequiredArgsConstructor
-public class InfluencerSearchRepository implements SearchRepository<Influencer> {
+public class InfluencerSearchRepository implements SearchRepository<InfluencerQueryResult.Simple> {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<SearchResult<Influencer>> searchEntityByKeywords(String keyword) {
-        NumberTemplate<Double> matchScore = Expressions.numberTemplate(
-                Double.class,
-                "function('match_against', {0}, {1})",
-                QInfluencer.influencer.name,
-                keyword
-        );
+    public List<AutoComplete> searchAutoComplete(String keyword) {
+        var matchScore = getMatchScore(keyword);
 
         return queryFactory
                 .select(
-                        QInfluencer.influencer,
+                        QInfluencer.influencer.name,
+                        Expressions.constant("influencer"),
                         matchScore.as("score")
                 )
                 .from(QInfluencer.influencer)
@@ -38,45 +36,51 @@ public class InfluencerSearchRepository implements SearchRepository<Influencer> 
                 .limit(SEARCH_LIMIT)
                 .fetch()
                 .stream()
-                .map(tuple -> new SearchResult<>(
-                        tuple.get(0, Influencer.class),
-                        tuple.get(1, Double.class)
+                .map(tuple -> new AutoComplete(
+                        tuple.get(0, String.class),
+                        tuple.get(1, String.class),
+                        tuple.get(2, Double.class)
                 )).toList();
     }
 
-    public Page<SearchResult<Influencer>> searchEntityByKeywords(String keyword, Pageable pageable) {
-        NumberTemplate<Double> matchScore = Expressions.numberTemplate(
+    @Override
+    public Page<InfluencerQueryResult.Simple> search(String keyword, Pageable pageable, Long userId) {
+        var matchScore = getMatchScore(keyword);
+
+        var content = queryFactory
+                .select(new QInfluencerQueryResult_Simple(
+                        QInfluencer.influencer.id,
+                        QInfluencer.influencer.name,
+                        QInfluencer.influencer.imgUrl,
+                        QInfluencer.influencer.job,
+                        QLikedInfluencer.likedInfluencer.id.isNotNull()
+                ))
+                .from(QInfluencer.influencer)
+                .leftJoin(QLikedInfluencer.likedInfluencer).on(
+                        QLikedInfluencer.likedInfluencer.influencerId.eq(QInfluencer.influencer.id),
+                        userId == null ? QLikedInfluencer.likedInfluencer.userId.isNull()
+                                : QLikedInfluencer.likedInfluencer.userId.eq(userId)
+                )
+                .where(matchScore.gt(0))
+                .orderBy(matchScore.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        var total = queryFactory
+                .selectFrom(QInfluencer.influencer)
+                .where(matchScore.gt(0))
+                .fetchCount();
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    private NumberTemplate<Double> getMatchScore(String keyword) {
+        return Expressions.numberTemplate(
                 Double.class,
                 "function('match_against', {0}, {1})",
                 QInfluencer.influencer.name,
                 keyword
         );
-
-        // 결과 조회
-        List<SearchResult<Influencer>> content = queryFactory
-                .select(
-                        QInfluencer.influencer,
-                        matchScore.as("score")
-                )
-                .from(QInfluencer.influencer)
-                .where(matchScore.gt(0))
-                .orderBy(matchScore.desc())
-                .offset(pageable.getOffset())   // 페이지 오프셋
-                .limit(pageable.getPageSize())  // 페이지 사이즈
-                .fetch()
-                .stream()
-                .map(tuple -> new SearchResult<>(
-                        tuple.get(0, Influencer.class),
-                        tuple.get(1, Double.class)
-                )).toList();
-
-        // 전체 카운트 조회
-        long total = queryFactory
-                .select(QInfluencer.influencer.count())
-                .from(QInfluencer.influencer)
-                .where(matchScore.gt(0))
-                .fetchOne();
-
-        return new PageImpl<>(content, pageable, total);
     }
 }

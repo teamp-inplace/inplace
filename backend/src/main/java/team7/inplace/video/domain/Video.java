@@ -2,7 +2,6 @@ package team7.inplace.video.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -16,8 +15,7 @@ import team7.inplace.global.baseEntity.BaseEntity;
 @Table(name = "videos")
 @NoArgsConstructor(access = PROTECTED)
 public class Video extends BaseEntity {
-    @Column(name = "video_url", nullable = false, columnDefinition = "TEXT")
-    private String videoUrl;
+    private String uuid;
 
     @Embedded
     private View view;
@@ -28,23 +26,19 @@ public class Video extends BaseEntity {
 
     private Long placeId;
 
-    public Video(String videoUrl, LocalDateTime publishTime, Long influencerId) {
-        this.videoUrl = videoUrl;
+    public Video(String uuid, LocalDateTime publishTime, Long influencerId) {
+        this.uuid = uuid;
         this.view = new View();
         this.publishTime = publishTime;
         this.influencerId = influencerId;
     }
 
-    public static Video from(String videoUrl, LocalDateTime publishTime, Long influencerId) {
-        return new Video(videoUrl, publishTime, influencerId);
+    public static Video from(String uuid, LocalDateTime publishTime, Long influencerId) {
+        return new Video(uuid, publishTime, influencerId);
     }
 
     public String getVideoUrl() {
-        return String.format("https://www.youtube.com/watch?v=%s", videoUrl);
-    }
-
-    public String getVideoUUID() {
-        return videoUrl;
+        return String.format("https://www.youtube.com/watch?v=%s", uuid);
     }
 
     public Long getViewCount() {

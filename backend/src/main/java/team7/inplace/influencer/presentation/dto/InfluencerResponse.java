@@ -2,6 +2,7 @@ package team7.inplace.influencer.presentation.dto;
 
 import team7.inplace.influencer.application.dto.InfluencerInfo;
 import team7.inplace.influencer.application.dto.InfluencerNameInfo;
+import team7.inplace.influencer.persistence.dto.InfluencerQueryResult;
 
 public class InfluencerResponse {
     //TODO: 클래스 이름 변경해야함
@@ -19,6 +20,16 @@ public class InfluencerResponse {
                     influencerInfo.influencerImgUrl(),
                     influencerInfo.influencerJob(),
                     influencerInfo.likes()
+            );
+        }
+
+        public static InfluencerResponse.Info from(InfluencerQueryResult.Simple influencerInfo) {
+            return new InfluencerResponse.Info(
+                    influencerInfo.id(),
+                    influencerInfo.name(),
+                    influencerInfo.imgUrl(),
+                    influencerInfo.job(),
+                    influencerInfo.isLiked()
             );
         }
     }
