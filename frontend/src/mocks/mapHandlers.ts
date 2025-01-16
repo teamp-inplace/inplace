@@ -1,6 +1,7 @@
 import { rest } from 'msw';
 import { BASE_URL } from '@/api/instance';
 import { PlaceData } from '@/types';
+import { getAllMarkersPath } from '@/api/hooks/useGetAllMarkers';
 
 const dummyInfluencers = [
   { influencerName: '성시경' },
@@ -13,6 +14,23 @@ const dummyInfluencers = [
   { influencerName: '백종원' },
   { influencerName: '안성재' },
   { influencerName: '임영웅' },
+];
+const dummyAllMarkers = [
+  { placeId: 1, longitude: '128.59691803894955', latitude: '35.879135694467514' },
+  { placeId: 2, longitude: '126.9314925', latitude: '37.5666478' },
+  { placeId: 3, longitude: '128.6101069', latitude: '35.8857457' },
+  { placeId: 4, longitude: '128.65037738548736', latitude: '35.855300594743575' },
+  { placeId: 5, longitude: '127.33301043369335', latitude: '36.351477682663756' },
+  { placeId: 6, longitude: '126.931851791899', latitude: '35.1256604935401' },
+  { placeId: 7, longitude: '128.6101608', latitude: '35.8857457' },
+  { placeId: 8, longitude: '127.753131738285', latitude: '37.8763535115171' },
+  { placeId: 9, longitude: '127.1436094525637', latitude: '37.275820090934495' },
+  { placeId: 10, longitude: '129.11483195198562', latitude: '35.158494192685914' },
+  { placeId: 11, longitude: '128.748643', latitude: '35.783343' },
+  { placeId: 12, longitude: '128.642', latitude: '35.79' },
+  { placeId: 13, longitude: '128.545', latitude: '35.81' },
+  { placeId: 14, longitude: '128.51', latitude: '35.7777' },
+  { placeId: 15, longitude: '128.79', latitude: '35.783222' },
 ];
 
 const dummyPlaces: PlaceData[] = [
@@ -181,6 +199,81 @@ const dummyPlaces: PlaceData[] = [
     likes: false,
     menuImgUrl: 'https://via.placeholder.com/500',
   },
+  {
+    placeId: 12,
+    placeName: '11맘스터치 대구현점',
+    address: {
+      address1: '대구',
+      address2: '북구',
+      address3: '대현동 119-11',
+    },
+    category: 'WESTERN',
+    influencerName: '풍자',
+    longitude: '128.848642',
+    latitude: '35.7834',
+    likes: false,
+    menuImgUrl: 'https://via.placeholder.com/500',
+  },
+  {
+    placeId: 13,
+    placeName: '11맘스터치 대점',
+    address: {
+      address1: '대구',
+      address2: '북구',
+      address3: '대현동 119-11',
+    },
+    category: 'WESTERN',
+    influencerName: '풍자',
+    longitude: '128.8483',
+    latitude: '35.789',
+    likes: false,
+    menuImgUrl: 'https://via.placeholder.com/500',
+  },
+  {
+    placeId: 14,
+    placeName: '11맘스터치 대구대현',
+    address: {
+      address1: '대구',
+      address2: '북구',
+      address3: '대현동 119-11',
+    },
+    category: 'WESTERN',
+    influencerName: '풍자',
+    longitude: '128.84873',
+    latitude: '35.789',
+    likes: false,
+    menuImgUrl: 'https://via.placeholder.com/500',
+  },
+  {
+    placeId: 15,
+    placeName: '11맘스터치 현점',
+    address: {
+      address1: '대구',
+      address2: '북구',
+      address3: '대현동 119-11',
+    },
+    category: 'WESTERN',
+    influencerName: '풍자',
+    longitude: '128.8499',
+    latitude: '35.71',
+    likes: false,
+    menuImgUrl: 'https://via.placeholder.com/500',
+  },
+  {
+    placeId: 16,
+    placeName: '11맘스터치 구점',
+    address: {
+      address1: '대구',
+      address2: '북구',
+      address3: '대현동 119-11',
+    },
+    category: 'WESTERN',
+    influencerName: '풍자',
+    longitude: '128.9',
+    latitude: '35.78',
+    likes: false,
+    menuImgUrl: 'https://via.placeholder.com/500',
+  },
 ];
 
 export const mapHandlers = [
@@ -238,6 +331,9 @@ export const mapHandlers = [
   }),
   rest.get(`${BASE_URL}/influencers/names`, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(dummyInfluencers));
+  }),
+  rest.get(`${BASE_URL}${getAllMarkersPath()}`, (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(dummyAllMarkers));
   }),
 ];
 

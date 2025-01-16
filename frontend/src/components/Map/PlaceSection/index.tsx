@@ -15,11 +15,9 @@ interface PlaceSectionProps {
     influencers: string[];
     location: { main: string; sub?: string; lat?: number; lng?: number }[];
   };
-  onPlacesUpdate: (places: PlaceData[]) => void;
   center: { lat: number; lng: number };
   shouldFetchPlaces: boolean;
-  onFetchComplete: () => void;
-  initialLocation: boolean;
+  onShouldFetch: (vaule: boolean) => void;
 }
 
 interface LastResponseState {
@@ -31,10 +29,9 @@ interface LastResponseState {
 export default function PlaceSection({
   mapBounds,
   filters,
-  onPlacesUpdate,
   center,
   shouldFetchPlaces,
-  onFetchComplete,
+  onShouldFetch,
 }: PlaceSectionProps) {
   const navigate = useNavigate();
   const sectionRef = useRef<HTMLDivElement>(null); // 무한 스크롤을 위한 ref와 observer 설정
@@ -124,16 +121,10 @@ export default function PlaceSection({
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   useEffect(() => {
-    if (!isLoading && shouldFetchPlaces) {
-      onFetchComplete();
+    if (shouldFetchPlaces) {
+      onShouldFetch(false);
     }
-  }, [isLoading, shouldFetchPlaces, onFetchComplete]);
-
-  useEffect(() => {
-    if (!isLoading) {
-      onPlacesUpdate(filteredPlaces);
-    }
-  }, [filteredPlaces, onPlacesUpdate, isLoading]);
+  }, [shouldFetchPlaces, onShouldFetch]);
 
   const handlePlaceClick = useCallback(
     (placeId: number) => {
