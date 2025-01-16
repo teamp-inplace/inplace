@@ -204,3 +204,8 @@ export type InfluencerInfoData = {
   follower: number;
   placeCount: number;
 };
+export type MarkerData = {
+  placeId: number;
+  longitude: number;
+  latitude: number;
+};
