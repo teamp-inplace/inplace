@@ -9,7 +9,7 @@ const DEFAULT_CONFIGS: Record<Environment, Config> = {
     baseURL: 'https://api.inplace.my',
   },
   development: {
-    baseURL: 'https://13.209.105.179.nip.io',
+    baseURL: 'https://a7b2c3d4-dev.inplace.my',
   },
 } as const;
 
