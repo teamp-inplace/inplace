@@ -1,6 +1,7 @@
 package team7.inplace.token.application;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.AuthorizationErrorCode;
@@ -9,14 +10,15 @@ import team7.inplace.token.domain.RefreshToken;
 import team7.inplace.token.persistence.RefreshTokenRepository;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class RefreshTokenService {
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public boolean isInvalidRefreshToken(String refreshToken) throws InplaceException {
+    public void checkInvalidToken(String refreshToken) throws InplaceException {
         String username = jwtUtil.getUsername(refreshToken);
-        return refreshTokenRepository.get(username)
+        refreshTokenRepository.get(username)
                 .orElseThrow(() -> InplaceException.of(AuthorizationErrorCode.INVALID_TOKEN))
                 .checkValidToken(refreshToken);
     }

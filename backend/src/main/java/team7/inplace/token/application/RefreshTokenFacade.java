@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import team7.inplace.global.exception.InplaceException;
-import team7.inplace.global.exception.code.AuthorizationErrorCode;
 import team7.inplace.security.util.JwtUtil;
 import team7.inplace.token.application.command.TokenCommand;
 import team7.inplace.token.application.command.TokenCommand.ReIssued;
@@ -20,11 +19,8 @@ public class RefreshTokenFacade {
     private final UserService userService;
 
     @Transactional
-    public ReIssued getReIssuedRefreshTokenCookie(String username, String refreshToken)
-            throws InplaceException {
-        if (refreshTokenService.isInvalidRefreshToken(refreshToken)) {
-            throw InplaceException.of(AuthorizationErrorCode.INVALID_TOKEN);
-        }
+    public ReIssued getReIssuedRefreshTokenCookie(String username, String refreshToken) throws InplaceException {
+        refreshTokenService.checkInvalidToken(refreshToken);
 
         UserCommand.Info userInfo = userService.getUserByUsername(username);
         String reIssuedRefreshToken = jwtUtil
