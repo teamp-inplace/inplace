@@ -19,24 +19,13 @@ public class RefreshTokenService {
     public void checkInvalidToken(String refreshToken) throws InplaceException {
         String username = jwtUtil.getUsername(refreshToken);
         refreshTokenRepository.get(username)
-                .ifPresentOrElse(
-                        token -> token.checkValidToken(refreshToken),
-                        () -> {
-                            log.error("username: {}", username);
-                            log.error("Not found refresh token");
-                            throw InplaceException.of(AuthorizationErrorCode.INVALID_TOKEN);
-                        }
-                );
-//        refreshTokenRepository.get(username)
-//                .orElseThrow(() -> InplaceException.of(AuthorizationErrorCode.INVALID_TOKEN))
-//                .checkValidToken(refreshToken);
+                .orElseThrow(() -> InplaceException.of(AuthorizationErrorCode.INVALID_TOKEN))
+                .checkValidToken(refreshToken);
     }
 
     public void saveRefreshToken(String username, String token) {
         RefreshToken refreshToken = new RefreshToken(username, token);
         refreshTokenRepository.save(username, refreshToken, jwtUtil.getRefreshTokenExpiredTime());
-        log.info("Refresh token saved: {}", refreshToken);
-        log.info("Refresh token saved: {}", refreshTokenRepository.get(username));
     }
 
     public void deleteRefreshToken(String username) {
