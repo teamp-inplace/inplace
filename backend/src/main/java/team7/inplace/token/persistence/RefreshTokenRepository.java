@@ -16,7 +16,7 @@ public class RefreshTokenRepository implements RedisRepository<RefreshToken> {
     private final ObjectMapper objectMapper;
 
     private final String REFRESH_TOKEN_PREFIX = "refresh:";
-    private final TimeUnit timeoutUnit = TimeUnit.MICROSECONDS;
+    private final TimeUnit timeoutUnit = TimeUnit.MILLISECONDS;
 
     @Override
     public void save(String key, RefreshToken value) {
