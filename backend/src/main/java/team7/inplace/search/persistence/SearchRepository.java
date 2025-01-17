@@ -1,12 +1,16 @@
 package team7.inplace.search.persistence;
 
 import java.util.List;
-import team7.inplace.search.persistence.dto.SearchResult;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import team7.inplace.search.persistence.dto.SearchQueryResult;
 
-public interface SearchRepository<T> {
+public interface SearchRepository<D> {
     Integer SEARCH_LIMIT = 10;
 
-    default List<SearchResult<T>> searchEntityByKeywords(String keyword) {
+    default List<SearchQueryResult.AutoComplete> searchAutoComplete(String keyword) {
         return List.of();
     }
+
+    Page<D> search(String keyword, Pageable pageable, Long userId);
 }
