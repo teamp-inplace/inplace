@@ -10,10 +10,12 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.AuthorizationErrorCode;
 import team7.inplace.security.config.JwtProperties;
 
+@Slf4j
 public class JwtUtil {
     private final SecretKey secretKey;
     private final JwtParser jwtParser;
@@ -56,6 +58,7 @@ public class JwtUtil {
         try {
             return jwtParser.parseSignedClaims(token).getPayload().get("username", String.class);
         } catch (JwtException | IllegalArgumentException e) {
+            log.error("Username parsing error");
             throw InplaceException.of(AuthorizationErrorCode.INVALID_TOKEN);
         }
     }
@@ -73,6 +76,7 @@ public class JwtUtil {
         try {
             return jwtParser.parseSignedClaims(token).getPayload().get("id", Long.class);
         } catch (JwtException | IllegalArgumentException e) {
+            log.error("Id parsing error");
             throw InplaceException.of(AuthorizationErrorCode.INVALID_TOKEN);
         }
     }
