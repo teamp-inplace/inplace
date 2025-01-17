@@ -4,8 +4,12 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import team7.inplace.global.exception.InplaceException;
+import team7.inplace.global.exception.code.AuthorizationErrorCode;
 
 @Getter
+@Slf4j
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RefreshToken {
@@ -13,7 +17,13 @@ public class RefreshToken {
 
     private String refreshToken;
 
-    public boolean checkValidToken(String refreshToken) {
-        return !this.refreshToken.equals(refreshToken);
+    public void checkValidToken(String refreshToken) {
+        if (this.refreshToken.equals(refreshToken)) {
+            return;
+        }
+        log.error("Invalid Token");
+        log.error("Expected: {}", this.refreshToken);
+        log.error("Actual: {}", refreshToken);
+        throw InplaceException.of(AuthorizationErrorCode.INVALID_TOKEN);
     }
 }
