@@ -58,7 +58,6 @@ public class JwtUtil {
         try {
             return jwtParser.parseSignedClaims(token).getPayload().get("username", String.class);
         } catch (JwtException | IllegalArgumentException e) {
-            log.error("Username parsing error");
             throw InplaceException.of(AuthorizationErrorCode.INVALID_TOKEN);
         }
     }
@@ -76,7 +75,6 @@ public class JwtUtil {
         try {
             return jwtParser.parseSignedClaims(token).getPayload().get("id", Long.class);
         } catch (JwtException | IllegalArgumentException e) {
-            log.error("Id parsing error");
             throw InplaceException.of(AuthorizationErrorCode.INVALID_TOKEN);
         }
     }

@@ -23,9 +23,6 @@ public class RefreshToken {
         if (this.refreshToken.equals(refreshToken)) {
             return;
         }
-        log.error("Invalid Token");
-        log.error("Expected: {}", this.refreshToken);
-        log.error("Actual: {}", refreshToken);
         throw InplaceException.of(AuthorizationErrorCode.INVALID_TOKEN);
     }
 }

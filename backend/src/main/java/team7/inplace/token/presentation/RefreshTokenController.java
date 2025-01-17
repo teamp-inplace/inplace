@@ -2,6 +2,7 @@ package team7.inplace.token.presentation;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +23,6 @@ import team7.inplace.token.application.command.TokenCommand.ReIssued;
 @RestController
 @RequiredArgsConstructor
 public class RefreshTokenController implements RefreshTokenControllerApiSpec {
-
     private final JwtUtil jwtUtil;
     private final RefreshTokenFacade refreshTokenFacade;
 
@@ -59,7 +59,7 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
     public ResponseEntity<Void> deleteRefreshToken(
             @CookieValue(value = "refresh_token") Cookie cookie,
             HttpServletResponse response
-    ) {
+    ) throws IOException {
         String refreshToken = cookie.getValue();
         refreshTokenFacade.deleteRefreshToken(refreshToken);
 
@@ -67,6 +67,7 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
         ResponseCookie refreshTokenCookie = CookieUtil.createCookie(TokenType.REFRESH_TOKEN.getValue(), "");
         response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+        response.sendRedirect(frontEndUrl);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
