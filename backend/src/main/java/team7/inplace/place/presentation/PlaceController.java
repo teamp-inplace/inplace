@@ -21,6 +21,7 @@ import team7.inplace.place.application.PlaceService;
 import team7.inplace.place.application.command.PlaceLikeCommand;
 import team7.inplace.place.application.command.PlacesCommand;
 import team7.inplace.place.application.dto.CategoryInfo;
+import team7.inplace.place.persistence.dto.PlaceQueryResult;
 import team7.inplace.place.presentation.dto.CategoriesResponse;
 import team7.inplace.place.presentation.dto.PlaceLikeRequest;
 import team7.inplace.place.presentation.dto.PlacesResponse;
@@ -64,6 +65,32 @@ public class PlaceController implements PlaceControllerApiSpec {
         return new ResponseEntity<>(
                 new PageImpl<>(responses, pageable, placeSimpleInfos.getTotalElements()),
                 HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<PlacesResponse.Location>> getPlaceLocations(
+        @RequestParam Double longitude,
+        @RequestParam Double latitude,
+        @RequestParam Double topLeftLongitude,
+        @RequestParam Double topLeftLatitude,
+        @RequestParam Double bottomRightLongitude,
+        @RequestParam Double bottomRightLatitude,
+        @RequestParam(required = false, defaultValue = "") String categories,
+        @RequestParam(required = false, defaultValue = "") String influencers
+    ) {
+        List<PlaceQueryResult.Location> placeLocationInfos = placeService.getPlaceLocations(
+            new PlacesCommand.Coordinate(
+                topLeftLongitude, topLeftLatitude,
+                bottomRightLongitude, bottomRightLatitude,
+                longitude, latitude
+            ),
+            new PlacesCommand.FilterParams(categories, influencers)
+        );
+
+        return new ResponseEntity<>(
+            PlacesResponse.Location.from(placeLocationInfos),
+            HttpStatus.OK
         );
     }
 
