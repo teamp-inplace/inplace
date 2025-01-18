@@ -2,7 +2,6 @@ package team7.inplace.token.presentation;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -57,19 +56,17 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/refresh-token")
     public ResponseEntity<Void> deleteRefreshToken(
-            @CookieValue(value = "refresh_token") Cookie cookie
+            @CookieValue(value = "refresh_token") Cookie cookie,
+            HttpServletResponse response
     ) {
         String refreshToken = cookie.getValue();
         refreshTokenFacade.deleteRefreshToken(refreshToken);
 
         ResponseCookie accessTokenCookie = CookieUtil.createCookie(TokenType.ACCESS_TOKEN.getValue(), "");
         ResponseCookie refreshTokenCookie = CookieUtil.createCookie(TokenType.REFRESH_TOKEN.getValue(), "");
+        response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
-        headers.add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
-        headers.setLocation(URI.create(frontEndUrl));
-
-        return new ResponseEntity<>(headers, HttpStatus.FOUND);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
