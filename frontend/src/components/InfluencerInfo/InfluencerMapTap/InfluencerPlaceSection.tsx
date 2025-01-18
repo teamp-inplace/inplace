@@ -16,9 +16,16 @@ interface PlaceSectionProps {
   };
   center: { lat: number; lng: number };
   shouldFetchPlaces: boolean;
+  onCompleteFetch: (value: boolean) => void;
 }
 
-export default function InfluencerPlaceSection({ mapBounds, filters, center, shouldFetchPlaces }: PlaceSectionProps) {
+export default function InfluencerPlaceSection({
+  mapBounds,
+  filters,
+  center,
+  shouldFetchPlaces,
+  onCompleteFetch,
+}: PlaceSectionProps) {
   const navigate = useNavigate();
   const sectionRef = useRef<HTMLDivElement>(null); // 무한 스크롤을 위한 ref와 observer 설정
   const previousPlacesRef = useRef<PlaceData[]>([]);
@@ -42,23 +49,15 @@ export default function InfluencerPlaceSection({ mapBounds, filters, center, sho
   );
 
   const filteredPlaces = useMemo(() => {
-    if (data === undefined) {
-      return previousPlacesRef.current;
+    if (!data?.pages) return [];
+    return data.pages.flatMap((page: PageableData<PlaceData>) => page.content);
+  }, [data]);
+
+  useEffect(() => {
+    if (shouldFetchPlaces) {
+      onCompleteFetch(false);
     }
-
-    if (!data.pages) {
-      return [];
-    }
-
-    const newPlaces = data.pages.flatMap((page: PageableData<PlaceData>) => page.content);
-
-    // 새로운 요청에 대한 응답이 완료되었을 때만 상태 저장
-    if (shouldFetchPlaces && !isLoading && !isFetchingNextPage) {
-      previousPlacesRef.current = newPlaces;
-    }
-
-    return newPlaces;
-  }, [data, isLoading, isFetchingNextPage, shouldFetchPlaces, mapBounds]);
+  }, [shouldFetchPlaces, onCompleteFetch]);
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {

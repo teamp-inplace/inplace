@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { GrPowerCycle } from 'react-icons/gr';
 import { LocationData, MarkerData } from '@/types';
 import { useGetAllMarkers } from '@/api/hooks/useGetAllMarkers';
 import InfluencerMapWindow from './InfluencerMapWindow';
@@ -43,47 +42,32 @@ export default function InfluencerMapTap() {
     setCenter(newCenter);
   }, []);
 
-  const handleClickRecycle = useCallback(() => {
-    setShouldFetchPlaces(true);
+  const handleCompleteFetch = useCallback((value: boolean) => {
+    setShouldFetchPlaces(value);
   }, []);
 
-  useEffect(() => {
-    if (shouldFetchPlaces) {
-      setShouldFetchPlaces(false);
-    }
-  }, [shouldFetchPlaces]);
-
   return (
-    <>
+    <Wrapper>
       <InfluencerMapWindow
         markers={markers}
         onBoundsChange={handleBoundsChange}
         onCenterChange={handleCenterChange}
         shouldFetchPlaces={shouldFetchPlaces}
+        onCompleteFetch={handleCompleteFetch}
       />
-      <Btn onClick={handleClickRecycle}>
-        <GrPowerCycle />
-        다시 모기
-      </Btn>
+
       <InfluencerPlaceSection
         mapBounds={mapBounds}
         center={center}
         filters={filters}
         shouldFetchPlaces={shouldFetchPlaces}
+        onCompleteFetch={handleCompleteFetch}
       />
-    </>
+    </Wrapper>
   );
 }
-const Btn = styled.div`
-  position: absolute;
-  right: 0;
+const Wrapper = styled.div`
   display: flex;
-  color: #c3c3c3;
-  border-radius: 0px;
-  font-size: 20px;
-  border-bottom: 0.5px solid #c3c3c3;
-  width: fit-content;
-  padding-bottom: 4px;
-  gap: 6px;
-  cursor: pointer;
+  flex-direction: column;
+  align-items: end;
 `;
