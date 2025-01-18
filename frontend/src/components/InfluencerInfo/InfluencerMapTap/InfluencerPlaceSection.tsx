@@ -17,6 +17,7 @@ interface PlaceSectionProps {
   center: { lat: number; lng: number };
   shouldFetchPlaces: boolean;
   onCompleteFetch: (value: boolean) => void;
+  onGetPlaceData: (data: PlaceData[]) => void;
 }
 
 export default function InfluencerPlaceSection({
@@ -25,6 +26,7 @@ export default function InfluencerPlaceSection({
   center,
   shouldFetchPlaces,
   onCompleteFetch,
+  onGetPlaceData,
 }: PlaceSectionProps) {
   const navigate = useNavigate();
   const sectionRef = useRef<HTMLDivElement>(null); // 무한 스크롤을 위한 ref와 observer 설정
@@ -43,7 +45,7 @@ export default function InfluencerPlaceSection({
       location: mapBounds,
       filters,
       center,
-      size: 10, // 한 페이지에 보여줄 아이템 개수; 변경하며 api 잘 받아오는지 확인 가능
+      size: 10,
     },
     shouldFetchPlaces,
   );
@@ -54,10 +56,11 @@ export default function InfluencerPlaceSection({
   }, [data]);
 
   useEffect(() => {
-    if (shouldFetchPlaces) {
+    if (shouldFetchPlaces && filteredPlaces.length > 0) {
+      onGetPlaceData(filteredPlaces);
       onCompleteFetch(false);
     }
-  }, [shouldFetchPlaces, onCompleteFetch]);
+  }, [filteredPlaces, shouldFetchPlaces, onCompleteFetch, onGetPlaceData]);
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {

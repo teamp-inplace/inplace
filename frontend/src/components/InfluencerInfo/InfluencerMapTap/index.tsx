@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { LocationData, MarkerData } from '@/types';
+import { LocationData, MarkerData, PlaceData } from '@/types';
 import { useGetAllMarkers } from '@/api/hooks/useGetAllMarkers';
 import InfluencerMapWindow from './InfluencerMapWindow';
 import InfluencerPlaceSection from './InfluencerPlaceSection';
 
-export default function InfluencerMapTap() {
+export default function InfluencerMapTap({ influencerImg }: { influencerImg: string }) {
   const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
   const [mapBounds, setMapBounds] = useState<LocationData>({
     topLeftLatitude: 0,
@@ -17,7 +17,7 @@ export default function InfluencerMapTap() {
   const [shouldFetchPlaces, setShouldFetchPlaces] = useState(false);
   const [markers, setMarkers] = useState<MarkerData[]>([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-
+  const [placeData, setPlaceData] = useState<PlaceData[]>([]);
   const { data: fetchedMarkers = [] } = useGetAllMarkers(
     {
       location: mapBounds,
@@ -46,22 +46,27 @@ export default function InfluencerMapTap() {
     setShouldFetchPlaces(value);
   }, []);
 
+  const handleGetPlaceData = useCallback((data: PlaceData[]) => {
+    setPlaceData(data);
+  }, []);
   return (
     <Wrapper>
       <InfluencerMapWindow
+        influencerImg={influencerImg}
+        placeData={placeData}
         markers={markers}
         onBoundsChange={handleBoundsChange}
         onCenterChange={handleCenterChange}
         shouldFetchPlaces={shouldFetchPlaces}
         onCompleteFetch={handleCompleteFetch}
       />
-
       <InfluencerPlaceSection
         mapBounds={mapBounds}
         center={center}
         filters={filters}
         shouldFetchPlaces={shouldFetchPlaces}
         onCompleteFetch={handleCompleteFetch}
+        onGetPlaceData={handleGetPlaceData}
       />
     </Wrapper>
   );

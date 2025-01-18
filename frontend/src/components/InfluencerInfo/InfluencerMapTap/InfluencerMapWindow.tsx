@@ -4,12 +4,15 @@ import styled from 'styled-components';
 import { TbCurrentLocation } from 'react-icons/tb';
 import { GrPowerCycle } from 'react-icons/gr';
 import Button from '@/components/common/Button';
-import { LocationData, MarkerData } from '@/types';
+import { LocationData, MarkerData, MarkerInfo, PlaceData } from '@/types';
 import InfoWindow from './InfoWindow';
 import BasicImage from '@/assets/images/basic-image.png';
+import { useGetMarkerInfo } from '@/api/hooks/useGetMarkerInfo';
 
 interface MapWindowProps {
+  influencerImg: string;
   markers: MarkerData[];
+  placeData: PlaceData[];
   onBoundsChange: (bounds: LocationData) => void;
   onCenterChange: (center: { lat: number; lng: number }) => void;
   shouldFetchPlaces: boolean;
@@ -17,7 +20,9 @@ interface MapWindowProps {
 }
 
 export default function InfluencerMapWindow({
+  influencerImg,
   markers,
+  placeData,
   onBoundsChange,
   onCenterChange,
   shouldFetchPlaces,
@@ -25,11 +30,15 @@ export default function InfluencerMapWindow({
 }: MapWindowProps) {
   const originSize = 34;
   const mapRef = useRef<kakao.maps.Map | null>(null);
-  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [openInfoWindow, setOpenInfoWindow] = useState<number | null>(null);
-  const [markerSizes, setMarkerSizes] = useState<{ [key: number]: number }>({});
+  const openInfoWindowRef = useRef<number | null>(null);
 
-  const markerData = markers.find((m) => m.placeId === openInfoWindow);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [markerSizes, setMarkerSizes] = useState<{ [key: number]: number }>({});
+  const [markerInfo, setMarkerInfo] = useState<MarkerInfo | PlaceData>();
+  const [shouldFetchData, setShouldFetchData] = useState<boolean>(false);
+  const openMarkerData = markers.find((m) => m.placeId === openInfoWindowRef.current); // 열려있는 인포 찾기
+
+  const MarkerInfoData = useGetMarkerInfo(openInfoWindowRef.current?.toString() || '', shouldFetchData);
 
   const fetchLocation = useCallback(() => {
     if (!mapRef.current) return;
@@ -47,7 +56,7 @@ export default function InfluencerMapWindow({
     onBoundsChange(newBounds);
 
     onCompleteFetch(true);
-  }, [onBoundsChange, onCenterChange]);
+  }, [onBoundsChange, onCenterChange, onCompleteFetch]);
 
   useEffect(() => {
     if (shouldFetchPlaces) {
@@ -88,9 +97,10 @@ export default function InfluencerMapWindow({
 
   const handleMarkerClick = useCallback(
     (place: number, marker: kakao.maps.Marker) => {
-      if (mapRef.current && marker && openInfoWindow !== place) {
+      if (mapRef.current && marker && openInfoWindowRef.current !== place) {
+        openInfoWindowRef.current = place;
+        getMarkerInfoWithPlaceInfo(place);
         const pos = marker.getPosition();
-
         setMarkerSizes((prevSizes) => ({
           ...Object.keys(prevSizes).reduce(
             (acc, key) => ({
@@ -101,7 +111,6 @@ export default function InfluencerMapWindow({
           ),
           [place]: originSize + 10,
         }));
-
         if (mapRef.current.getLevel() > 10) {
           mapRef.current.setLevel(9, {
             anchor: pos,
@@ -111,19 +120,41 @@ export default function InfluencerMapWindow({
         setTimeout(() => {
           if (mapRef.current) {
             mapRef.current.panTo(pos);
-            setOpenInfoWindow(place);
+            openInfoWindowRef.current = place;
           }
         }, 100);
       } else {
-        setOpenInfoWindow(null);
+        openInfoWindowRef.current = null;
+        setShouldFetchData(false);
         setMarkerSizes((prevSizes) => ({
           ...prevSizes,
           [place]: originSize,
         }));
       }
     },
-    [mapRef.current, openInfoWindow],
+    [mapRef.current, openInfoWindowRef],
   );
+
+  const getMarkerInfoWithPlaceInfo = useCallback(
+    (place: number) => {
+      console.log(placeData);
+      const existData = placeData.find((m) => m.placeId === place);
+      if (existData) {
+        setMarkerInfo(existData);
+        setShouldFetchData(false);
+      } else {
+        setShouldFetchData(true);
+      }
+    },
+    [placeData],
+  );
+
+  useEffect(() => {
+    if (shouldFetchData && MarkerInfoData.data) {
+      setMarkerInfo(MarkerInfoData.data);
+      setShouldFetchData(false);
+    }
+  }, [MarkerInfoData.data, shouldFetchData]);
 
   return (
     <>
@@ -161,6 +192,7 @@ export default function InfluencerMapWindow({
                   lng: place.longitude,
                 }}
                 image={{
+                  // influencerImg || basigImg
                   src: BasicImage,
                   size: {
                     width: markerSizes[place.placeId] || originSize,
@@ -170,21 +202,21 @@ export default function InfluencerMapWindow({
               />
             ))}
           </MarkerClusterer>
-          {openInfoWindow !== null && markerData && (
+          {openInfoWindowRef.current !== null && openMarkerData && markerInfo && (
             <CustomOverlayMap
               zIndex={100}
               position={{
-                lat: markerData.latitude,
-                lng: markerData.longitude,
+                lat: openMarkerData.latitude,
+                lng: openMarkerData.longitude,
               }}
             >
               <InfoWindow
-                data={markerData}
+                data={markerInfo}
                 onClose={() => {
-                  setOpenInfoWindow(null);
+                  openInfoWindowRef.current = null;
                   setMarkerSizes((prevSizes) => ({
                     ...prevSizes,
-                    [openInfoWindow!]: originSize,
+                    [openInfoWindowRef.current!]: originSize,
                   }));
                 }}
               />
@@ -204,7 +236,7 @@ export default function InfluencerMapWindow({
       </MapContainer>
       <Btn onClick={handleSearchNearby}>
         <GrPowerCycle />
-        다시 모기
+        현재 위치에서 장소정보 보기{influencerImg}
       </Btn>
     </>
   );
