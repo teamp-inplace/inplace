@@ -1,4 +1,5 @@
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useGetRefreshToken } from '@/api/hooks/useGetRefreshToken';
 import { useDeleteToken } from '@/api/hooks/useDeleteToken';
 
@@ -23,12 +24,14 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const { mutateAsync: refreshToken } = useGetRefreshToken();
   const { mutate: logout } = useDeleteToken();
+  const navigate = useNavigate();
 
   const handleLogout = useCallback(() => {
     logout();
     setIsAuthenticated(false);
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('nickname');
+    navigate('/', { replace: true });
   }, [logout]);
 
   const refreshTokenRegularly = useCallback(async () => {
