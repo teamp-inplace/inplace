@@ -2,28 +2,33 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import FallbackImage from '@/components/common/Items/FallbackImage';
 import { Text } from '@/components/common/typography/Text';
-import { MarkerData } from '@/types';
+import { AddressInfo, MarkerInfo, PlaceData } from '@/types';
 
 type Props = {
-  data: MarkerData; // 임시
+  data: MarkerInfo | PlaceData;
   onClose: () => void;
 };
+
+const getFullAddress = (addr: AddressInfo) => {
+  return [addr.address1, addr.address2, addr.address3].filter(Boolean).join(' ');
+};
+
 export default function InfoWindow({ data, onClose }: Props) {
   return (
     <Wrapper>
       <Text size="m" weight="bold">
-        료코{data.placeId}
+        {data.placeName}
       </Text>
       <Info>
         <Img>
-          <FallbackImage src="" alt="" />
+          <FallbackImage src={data.menuImgUrl} alt={data.placeName} />
         </Img>
         <TextInfo>
           <Text size="xs" weight="normal">
-            경상북도 경주시 달서구 더길게
+            {data.address ? getFullAddress(data.address) : '주소 정보가 없습니다'}
           </Text>
           <Text size="xs" weight="normal">
-            월~금 10:00 ~ 22:00
+            추가할 내용 있을까?
           </Text>
           <Link to={`/detail/${data.placeId}`}>상세보기</Link>
         </TextInfo>
