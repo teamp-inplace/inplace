@@ -47,7 +47,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         localStorage.setItem('nickname', userNickname);
         localStorage.setItem('isAuthenticated', 'true');
         setIsAuthenticated(true);
-        setTimeout(() => refreshTokenRegularly(), ACCESS_TOKEN_REFRESH_INTERVAL);
       }
     },
     [isAuthenticated],
