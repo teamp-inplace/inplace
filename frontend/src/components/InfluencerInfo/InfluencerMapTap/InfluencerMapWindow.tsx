@@ -26,6 +26,8 @@ export default function InfluencerMapWindow({
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [openInfoWindow, setOpenInfoWindow] = useState<number | null>(null);
 
+  const markerData = markers.find((m) => m.placeId === openInfoWindow);
+
   const fetchLocation = useCallback(() => {
     if (!mapRef.current) return;
 
@@ -82,15 +84,28 @@ export default function InfluencerMapWindow({
   }, [userLocation]);
 
   const handleMarkerClick = useCallback(
-    (placeId: number, marker: kakao.maps.Marker) => {
-      if (mapRef.current && marker && openInfoWindow !== placeId) {
-        mapRef.current.panTo(marker.getPosition());
-        setOpenInfoWindow(placeId);
+    (place: number, marker: kakao.maps.Marker) => {
+      if (mapRef.current && marker && openInfoWindow !== place) {
+        const pos = marker.getPosition();
+
+        if (mapRef.current.getLevel() > 10) {
+          mapRef.current.setLevel(9, {
+            anchor: pos,
+            animate: true,
+          });
+        }
+        setTimeout(() => {
+          if (mapRef.current) {
+            mapRef.current.panTo(pos);
+            setOpenInfoWindow(place);
+          }
+        }, 100);
+      } else {
+        setOpenInfoWindow(null);
       }
     },
     [mapRef.current, openInfoWindow],
   );
-
   return (
     <>
       <MapContainer>
@@ -115,31 +130,31 @@ export default function InfluencerMapWindow({
               }}
             />
           )}
-          <MarkerClusterer averageCenter minLevel={10}>
+          <MarkerClusterer averageCenter minLevel={10} minClusterSize={2}>
             {markers.map((place) => (
-              <div key={place.placeId}>
-                <MapMarker
-                  onClick={(marker) => {
-                    handleMarkerClick(place.placeId, marker);
-                  }}
-                  position={{
-                    lat: place.latitude,
-                    lng: place.longitude,
-                  }}
-                />
-                {openInfoWindow === place.placeId && (
-                  <CustomOverlayMap
-                    position={{
-                      lat: place.latitude,
-                      lng: place.longitude,
-                    }}
-                  >
-                    <InfoWindow data={place} onClose={() => setOpenInfoWindow(null)} />
-                  </CustomOverlayMap>
-                )}
-              </div>
+              <MapMarker
+                key={place.placeId}
+                onClick={(marker) => {
+                  handleMarkerClick(place.placeId, marker);
+                }}
+                position={{
+                  lat: place.latitude,
+                  lng: place.longitude,
+                }}
+              />
             ))}
           </MarkerClusterer>
+          {openInfoWindow !== null && markerData && (
+            <CustomOverlayMap
+              zIndex={100}
+              position={{
+                lat: markerData.latitude,
+                lng: markerData.longitude,
+              }}
+            >
+              <InfoWindow data={markerData} onClose={() => setOpenInfoWindow(null)} />
+            </CustomOverlayMap>
+          )}
         </Map>
         <ResetButtonContainer>
           <Button

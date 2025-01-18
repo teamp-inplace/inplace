@@ -20,7 +20,7 @@ export default function InfoWindow({ data, onClose }: Props) {
         </Img>
         <TextInfo>
           <Text size="xs" weight="normal">
-            경상북도 경주시 달서구 45
+            경상북도 경주시 달서구 더길게
           </Text>
           <Text size="xs" weight="normal">
             월~금 10:00 ~ 22:00
@@ -33,13 +33,23 @@ export default function InfoWindow({ data, onClose }: Props) {
   );
 }
 const Wrapper = styled.div`
-  width: 280px;
-  background-color: white;
-  padding: 30px;
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  margin-left: -144px;
+  width: 300px;
+  height: 130px;
+  overflow: hidden;
+  background-color: #ffffff;
+  padding: 20px;
   border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 1px 1px 1px #b3b3b3;
 `;
 const Img = styled.div`
-  width: 40%;
+  width: 35%;
 `;
 const CloseBtn = styled.button`
   position: absolute;
@@ -53,16 +63,23 @@ const CloseBtn = styled.button`
 `;
 const Info = styled.div`
   display: flex;
+  gap: 10px;
 `;
 const TextInfo = styled.div`
+  width: 65%;
   display: flex;
   flex-direction: column;
   gap: 6px;
   padding: 20px 0px;
   color: #4d4d4d;
+  text-overflow: ellipsis;
+  span {
+    font-size: 14px;
+  }
   a {
     color: black;
     text-decoration-line: underline;
+    font-size: 14px;
   }
   a:visited {
     color: black;
