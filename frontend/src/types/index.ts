@@ -209,3 +209,9 @@ export type MarkerData = {
   longitude: number;
   latitude: number;
 };
+export type MarkerInfo = {
+  placeId: number;
+  placeName: string;
+  address: AddressInfo;
+  menuImgUrl: string;
+};
