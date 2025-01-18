@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { fetchInstance } from '../instance';
 
 export const getRefreshTokenPath = () => '/refresh-token';
@@ -9,8 +9,7 @@ export const getRefreshToken = async () => {
 };
 
 export const useGetRefreshToken = () => {
-  return useSuspenseQuery({
-    queryKey: ['refreshToken'],
-    queryFn: () => getRefreshToken(),
+  return useMutation({
+    mutationFn: () => getRefreshToken(),
   });
 };
