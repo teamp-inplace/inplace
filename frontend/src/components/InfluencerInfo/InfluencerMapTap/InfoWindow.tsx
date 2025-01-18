@@ -34,7 +34,7 @@ export default function InfoWindow({ data, onClose }: Props) {
 }
 const Wrapper = styled.div`
   position: absolute;
-  bottom: 40px;
+  bottom: 50px;
   left: 0;
   margin-left: -144px;
   width: 300px;

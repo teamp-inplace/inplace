@@ -6,6 +6,7 @@ import { GrPowerCycle } from 'react-icons/gr';
 import Button from '@/components/common/Button';
 import { LocationData, MarkerData } from '@/types';
 import InfoWindow from './InfoWindow';
+import BasicImage from '@/assets/images/basic-image.png';
 
 interface MapWindowProps {
   markers: MarkerData[];
@@ -22,9 +23,11 @@ export default function InfluencerMapWindow({
   shouldFetchPlaces,
   onCompleteFetch,
 }: MapWindowProps) {
+  const originSize = 34;
   const mapRef = useRef<kakao.maps.Map | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [openInfoWindow, setOpenInfoWindow] = useState<number | null>(null);
+  const [markerSizes, setMarkerSizes] = useState<{ [key: number]: number }>({});
 
   const markerData = markers.find((m) => m.placeId === openInfoWindow);
 
@@ -88,6 +91,17 @@ export default function InfluencerMapWindow({
       if (mapRef.current && marker && openInfoWindow !== place) {
         const pos = marker.getPosition();
 
+        setMarkerSizes((prevSizes) => ({
+          ...Object.keys(prevSizes).reduce(
+            (acc, key) => ({
+              ...acc,
+              [key]: originSize,
+            }),
+            {},
+          ),
+          [place]: originSize + 10,
+        }));
+
         if (mapRef.current.getLevel() > 10) {
           mapRef.current.setLevel(9, {
             anchor: pos,
@@ -102,10 +116,15 @@ export default function InfluencerMapWindow({
         }, 100);
       } else {
         setOpenInfoWindow(null);
+        setMarkerSizes((prevSizes) => ({
+          ...prevSizes,
+          [place]: originSize,
+        }));
       }
     },
     [mapRef.current, openInfoWindow],
   );
+
   return (
     <>
       <MapContainer>
@@ -141,6 +160,13 @@ export default function InfluencerMapWindow({
                   lat: place.latitude,
                   lng: place.longitude,
                 }}
+                image={{
+                  src: BasicImage,
+                  size: {
+                    width: markerSizes[place.placeId] || originSize,
+                    height: markerSizes[place.placeId] || originSize,
+                  },
+                }}
               />
             ))}
           </MarkerClusterer>
@@ -152,7 +178,16 @@ export default function InfluencerMapWindow({
                 lng: markerData.longitude,
               }}
             >
-              <InfoWindow data={markerData} onClose={() => setOpenInfoWindow(null)} />
+              <InfoWindow
+                data={markerData}
+                onClose={() => {
+                  setOpenInfoWindow(null);
+                  setMarkerSizes((prevSizes) => ({
+                    ...prevSizes,
+                    [openInfoWindow!]: originSize,
+                  }));
+                }}
+              />
             </CustomOverlayMap>
           )}
         </Map>
