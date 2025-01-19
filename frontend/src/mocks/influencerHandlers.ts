@@ -199,7 +199,7 @@ export const InfluencerHandlers = [
       ctx.json({
         influencerId: 1,
         influencerName: '성시경',
-        influencerImgUrl: 'https://via.placeholder.com/100',
+        influencerImgUrl: '',
         influencerJob: '가수',
         likes: false,
         follower: 200,
