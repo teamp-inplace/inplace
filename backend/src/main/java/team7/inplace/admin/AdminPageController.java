@@ -4,11 +4,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import team7.inplace.admin.banner.persistence.BannerRepository;
+import team7.inplace.admin.dto.LoginRequest;
 import team7.inplace.global.properties.KakaoApiProperties;
 import team7.inplace.global.properties.YoutubeApiProperties;
 import team7.inplace.influencer.persistence.InfluencerRepository;
@@ -19,11 +28,13 @@ import team7.inplace.video.persistence.VideoRepository;
 @RequiredArgsConstructor
 @RequestMapping("/admin")
 public class AdminPageController {
+
     private final KakaoApiProperties kakaoApiProperties;
     private final YoutubeApiProperties youtubeApiProperties;
     private final VideoRepository videoRepository;
     private final BannerRepository bannerRepository;
     private final InfluencerRepository influencerRepository;
+    private final AuthenticationManager authenticationManager;
 
     @GetMapping("/video")
     public String getVideos(@PageableDefault Pageable pageable, Model model) {
@@ -63,6 +74,17 @@ public class AdminPageController {
     }
 
     @GetMapping("/login")
-    public String getLoginPage() { return "admin/login.html"; }
+    public String getLoginPage() {
+        return "admin/login.html";
+    }
 
+    @PostMapping("/login")
+    @ResponseBody
+    public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest) {
+        System.out.println(loginRequest.username() + loginRequest.password());
+        Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(),
+            loginRequest.password());
+        Authentication authenticationResponse = authenticationManager.authenticate(authenticationRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

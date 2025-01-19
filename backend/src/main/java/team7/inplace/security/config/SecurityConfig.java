@@ -12,7 +12,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 import team7.inplace.security.application.CustomOAuth2UserService;
-import team7.inplace.security.entryPoint.LoginAuthenticationEntryPoint;
 import team7.inplace.security.filter.AuthorizationFilter;
 import team7.inplace.security.filter.ExceptionHandlingFilter;
 import team7.inplace.security.handler.CustomAccessDeniedHandler;
@@ -31,7 +30,6 @@ public class SecurityConfig {
     private final AuthorizationFilter authorizationFilter;
     private final CustomFailureHandler customFailureHandler;
     private final CorsFilter corsFilter;
-    private final LoginAuthenticationEntryPoint loginAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
@@ -41,7 +39,8 @@ public class SecurityConfig {
         //http 설정
         http.csrf(AbstractHttpConfigurer::disable)
             .formLogin((form) -> form
-                .loginPage("/admin/login"))
+                .loginPage("/admin/login")
+                .defaultSuccessUrl("/admin/main"))
             .httpBasic(AbstractHttpConfigurer::disable)
             //authentication Service, Handler 설정
             .oauth2Login((oauth2) -> oauth2
@@ -56,27 +55,11 @@ public class SecurityConfig {
             .addFilterBefore(exceptionHandlingFilter, AuthorizationFilter.class)
 
             .exceptionHandling((auth) -> auth
-                .authenticationEntryPoint(loginAuthenticationEntryPoint)
                 .accessDeniedHandler(customAccessDeniedHandler))
             //authentication 경로 설정
             .authorizeHttpRequests((auth) -> auth
-//                .requestMatchers("/api/error-logs/**", "/cicd", "crawling/**").hasRole("ADMIN")
-//                .requestMatchers("/admin/**").hasRole("ADMIN")
-//                .requestMatchers("/users/**").authenticated()
-//                .requestMatchers("/influencers/likes").authenticated()
-//                .requestMatchers("/influencers/multiple/likes").authenticated()
-//                .requestMatchers(HttpMethod.POST, "/influencers/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.PUT, "/influencers/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.DELETE, "/influencers/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.GET, "/influencers/**").permitAll()
-//                .requestMatchers(HttpMethod.POST, "/places/**").authenticated()
-//                .requestMatchers(HttpMethod.GET, "/places/**").permitAll()
-//                .requestMatchers("/place-message/**").authenticated()
-//                .requestMatchers("/reviews/**").authenticated()
-//                .requestMatchers("/refresh-token").authenticated()
-//                .requestMatchers("/videos", "videos/my").authenticated()
-//                .requestMatchers("/videos/**").permitAll()
-//                .requestMatchers(HttpMethod.DELETE, "/videos/{videoId}").authenticated()
+                    .requestMatchers("/admin/login").permitAll()
+                    .requestMatchers("/admin/**").permitAll()
                     .anyRequest().permitAll()
             )
             //cors 설정

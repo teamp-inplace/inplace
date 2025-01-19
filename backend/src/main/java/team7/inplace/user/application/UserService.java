@@ -9,15 +9,19 @@ import team7.inplace.global.exception.code.UserErrorCode;
 import team7.inplace.security.application.CurrentUserProvider;
 import team7.inplace.security.util.AuthorizationUtil;
 import team7.inplace.user.application.dto.UserCommand;
+import team7.inplace.user.application.dto.UserCommand.AdminUserInfo;
 import team7.inplace.user.application.dto.UserCommand.Info;
 import team7.inplace.user.application.dto.UserInfo;
 import team7.inplace.user.domain.User;
+import team7.inplace.user.persistence.AdminUserRepository;
 import team7.inplace.user.persistence.UserRepository;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
+    private final AdminUserRepository adminUserRepository;
     private final CurrentUserProvider currentUserProvider;
 
     @Transactional
@@ -30,7 +34,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserCommand.Info getUserByUsername(String username) {
         return UserCommand.Info.of(userRepository.findByUsername(username)
-                .orElseThrow(() -> InplaceException.of(UserErrorCode.NOT_FOUND)));
+            .orElseThrow(() -> InplaceException.of(UserErrorCode.NOT_FOUND)));
     }
 
     @Transactional
@@ -42,7 +46,7 @@ public class UserService {
     @Transactional
     public void updateNickname(String nickname) {
         User user = userRepository.findByUsername(AuthorizationUtil.getUsername()).orElseThrow(
-                () -> InplaceException.of(UserErrorCode.NOT_FOUND)
+            () -> InplaceException.of(UserErrorCode.NOT_FOUND)
         );
 
         user.updateInfo(nickname);
@@ -53,4 +57,11 @@ public class UserService {
         User user = currentUserProvider.getCurrentUser();
         return UserInfo.from(user);
     }
+
+    @Transactional
+    public Optional<UserCommand.AdminUserInfo> findAdminUserByUsername(String username) {
+        return adminUserRepository.findByUsername(username)
+            .map(AdminUserInfo::of);
+    }
+
 }
