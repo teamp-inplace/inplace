@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import team7.inplace.influencer.presentation.dto.InfluencerResponse.Info;
 import team7.inplace.search.application.SearchService;
@@ -23,7 +24,7 @@ public class SearchController implements SearchControllerApiSpec {
 
     @Override
     @GetMapping("/complete")
-    public ResponseEntity<List<AutoCompletionInfo>> searchKeywords(String keyword) {
+    public ResponseEntity<List<AutoCompletionInfo>> searchKeywords(@RequestParam(name = "value") String keyword) {
         var autoCompletions = searchService.searchAutoCompletions(keyword);
 
         return new ResponseEntity<>(autoCompletions, HttpStatus.OK);
@@ -31,7 +32,7 @@ public class SearchController implements SearchControllerApiSpec {
 
     @Override
     @GetMapping("/video")
-    public ResponseEntity<List<Simple>> searchVideo(String keyword) {
+    public ResponseEntity<List<Simple>> searchVideo(@RequestParam(name = "value") String keyword) {
         var videos = searchService.searchVideo(keyword);
 
         var response = videos.stream()
@@ -42,7 +43,7 @@ public class SearchController implements SearchControllerApiSpec {
 
     @Override
     @GetMapping("/influencer")
-    public ResponseEntity<List<Info>> getInfluencersForPaging(String keyword) {
+    public ResponseEntity<List<Info>> getInfluencersForPaging(@RequestParam(name = "value") String keyword) {
         var influencers = searchService.searchInfluencer(keyword);
 
         var response = influencers.stream()
@@ -53,7 +54,8 @@ public class SearchController implements SearchControllerApiSpec {
 
     @Override
     @GetMapping("/page/influencer")
-    public ResponseEntity<Page<Info>> getInfluencersForPaging(String keyword, Pageable pageable) {
+    public ResponseEntity<Page<Info>> getInfluencersForPaging(
+            @RequestParam(name = "value") String keyword, Pageable pageable) {
         var influencers = searchService.searchInfluencer(keyword, pageable);
 
         var response = influencers.map(Info::from);
