@@ -11,14 +11,15 @@ import team7.inplace.user.application.dto.UserCommand;
 import team7.inplace.user.domain.AdminUser;
 
 public record CustomUserDetails(
+    Long id,
     String username,
     String password,
     String roles,
     Collection<GrantedAuthority> authorities
 ) implements UserDetails {
 
-    public CustomUserDetails(String username, String password, String roles) {
-        this(username, password, roles, createAuthorities(roles));
+    public CustomUserDetails(Long id, String username, String password, String roles) {
+        this(id, username, password, roles, createAuthorities(roles));
     }
 
     private static Collection<GrantedAuthority> createAuthorities(String roles) {
@@ -47,6 +48,6 @@ public record CustomUserDetails(
     }
 
     public static CustomUserDetails makeUser(UserCommand.AdminUserInfo adminUserInfo) {
-        return new CustomUserDetails(adminUserInfo.username(), adminUserInfo.password(), adminUserInfo.role().getRoles());
+        return new CustomUserDetails(adminUserInfo.id(), adminUserInfo.username(), adminUserInfo.password(), adminUserInfo.role().getRoles());
     }
 }

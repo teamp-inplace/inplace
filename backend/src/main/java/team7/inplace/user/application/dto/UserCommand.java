@@ -37,12 +37,13 @@ public class UserCommand {
     }
 
     public record AdminUserInfo(
+        Long id,
         String username,
         String password,
         Role role
     ) {
         public static AdminUserInfo of(AdminUser adminUser) {
-            return new AdminUserInfo(adminUser.getUsername(), adminUser.getPassword(), adminUser.getRole());
+            return new AdminUserInfo(adminUser.getId(), adminUser.getUsername(), adminUser.getPassword(), adminUser.getRole());
         }
     }
 }
