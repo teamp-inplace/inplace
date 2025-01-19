@@ -40,31 +40,6 @@ export default function InfluencerMapWindow({
 
   const MarkerInfoData = useGetMarkerInfo(openInfoWindowRef.current?.toString() || '', shouldFetchData);
 
-  const fetchLocation = useCallback(() => {
-    if (!mapRef.current) return;
-
-    const bounds = mapRef.current.getBounds();
-    const currentCenter = mapRef.current.getCenter();
-
-    const newBounds: LocationData = {
-      topLeftLatitude: bounds.getNorthEast().getLat(),
-      topLeftLongitude: bounds.getSouthWest().getLng(),
-      bottomRightLatitude: bounds.getSouthWest().getLat(),
-      bottomRightLongitude: bounds.getNorthEast().getLng(),
-    };
-    onCenterChange({ lat: currentCenter.getLat(), lng: currentCenter.getLng() });
-    onBoundsChange(newBounds);
-
-    onCompleteFetch(true);
-  }, [onBoundsChange, onCenterChange, onCompleteFetch]);
-
-  useEffect(() => {
-    if (shouldFetchPlaces) {
-      fetchLocation();
-      onCompleteFetch(false);
-    }
-  }, [shouldFetchPlaces, fetchLocation, onCompleteFetch]);
-
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -84,6 +59,63 @@ export default function InfluencerMapWindow({
     }
   }, []);
 
+  const fetchLocation = useCallback(() => {
+    if (!mapRef.current) return;
+
+    const bounds = mapRef.current.getBounds();
+    const currentCenter = mapRef.current.getCenter();
+
+    const newBounds: LocationData = {
+      topLeftLatitude: bounds.getNorthEast().getLat(),
+      topLeftLongitude: bounds.getSouthWest().getLng(),
+      bottomRightLatitude: bounds.getSouthWest().getLat(),
+      bottomRightLongitude: bounds.getNorthEast().getLng(),
+    };
+    onCenterChange({ lat: currentCenter.getLat(), lng: currentCenter.getLng() });
+    onBoundsChange(newBounds);
+
+    onCompleteFetch(true);
+  }, [onBoundsChange, onCenterChange, onCompleteFetch]);
+
+  // 장소 정보 업데이트가 필요한 경우 바운더리와 센터를 구해서 전달
+  useEffect(() => {
+    if (shouldFetchPlaces) {
+      fetchLocation();
+      onCompleteFetch(false);
+    }
+  }, [shouldFetchPlaces, fetchLocation, onCompleteFetch]);
+
+  // 마커 정보를 새로 호출한 후 데이터 업데이트
+  useEffect(() => {
+    if (shouldFetchData && MarkerInfoData.data) {
+      setMarkerInfo(MarkerInfoData.data);
+      setShouldFetchData(false);
+    }
+  }, [MarkerInfoData.data, shouldFetchData]);
+
+  // 마커 정보가 있을 경우 전달, 없을 경우 새로 호출 함수
+  const getMarkerInfoWithPlaceInfo = useCallback(
+    (place: number) => {
+      if (!placeData) return;
+
+      const existData = placeData.find((m) => m.placeId === place);
+      if (existData) {
+        setMarkerInfo(existData);
+        setShouldFetchData(false);
+      } else {
+        setShouldFetchData(true);
+      }
+    },
+    [placeData],
+  );
+
+  // 장소 정보에 마커 정보가 있을 경우 - 1
+  useEffect(() => {
+    if (openInfoWindowRef.current && placeData.length > 0) {
+      getMarkerInfoWithPlaceInfo(openInfoWindowRef.current);
+    }
+  }, [placeData, getMarkerInfoWithPlaceInfo]);
+
   const handleSearchNearby = useCallback(() => {
     fetchLocation();
   }, [fetchLocation]);
@@ -95,11 +127,14 @@ export default function InfluencerMapWindow({
     }
   }, [userLocation]);
 
+  // 마커 클릭 시, 사이즈 조절 및 마커 정보 가져오기
   const handleMarkerClick = useCallback(
     (place: number, marker: kakao.maps.Marker) => {
       if (mapRef.current && marker && openInfoWindowRef.current !== place) {
         openInfoWindowRef.current = place;
-        getMarkerInfoWithPlaceInfo(place);
+        setTimeout(() => {
+          getMarkerInfoWithPlaceInfo(place);
+        }, 0);
         const pos = marker.getPosition();
         setMarkerSizes((prevSizes) => ({
           ...Object.keys(prevSizes).reduce(
@@ -123,7 +158,9 @@ export default function InfluencerMapWindow({
             openInfoWindowRef.current = place;
           }
         }, 100);
-      } else {
+      }
+      // 같은 마커 클릭하면 다시 닫음
+      else {
         openInfoWindowRef.current = null;
         setShouldFetchData(false);
         setMarkerSizes((prevSizes) => ({
@@ -132,29 +169,8 @@ export default function InfluencerMapWindow({
         }));
       }
     },
-    [mapRef.current, openInfoWindowRef],
+    [getMarkerInfoWithPlaceInfo],
   );
-
-  const getMarkerInfoWithPlaceInfo = useCallback(
-    (place: number) => {
-      console.log(placeData);
-      const existData = placeData.find((m) => m.placeId === place);
-      if (existData) {
-        setMarkerInfo(existData);
-        setShouldFetchData(false);
-      } else {
-        setShouldFetchData(true);
-      }
-    },
-    [placeData],
-  );
-
-  useEffect(() => {
-    if (shouldFetchData && MarkerInfoData.data) {
-      setMarkerInfo(MarkerInfoData.data);
-      setShouldFetchData(false);
-    }
-  }, [MarkerInfoData.data, shouldFetchData]);
 
   return (
     <>
@@ -192,8 +208,7 @@ export default function InfluencerMapWindow({
                   lng: place.longitude,
                 }}
                 image={{
-                  // influencerImg || basigImg
-                  src: BasicImage,
+                  src: influencerImg || BasicImage,
                   size: {
                     width: markerSizes[place.placeId] || originSize,
                     height: markerSizes[place.placeId] || originSize,
@@ -213,11 +228,11 @@ export default function InfluencerMapWindow({
               <InfoWindow
                 data={markerInfo}
                 onClose={() => {
-                  openInfoWindowRef.current = null;
                   setMarkerSizes((prevSizes) => ({
                     ...prevSizes,
                     [openInfoWindowRef.current!]: originSize,
                   }));
+                  openInfoWindowRef.current = null;
                 }}
               />
             </CustomOverlayMap>
@@ -236,7 +251,7 @@ export default function InfluencerMapWindow({
       </MapContainer>
       <Btn onClick={handleSearchNearby}>
         <GrPowerCycle />
-        현재 위치에서 장소정보 보기{influencerImg}
+        현재 위치에서 장소정보 보기
       </Btn>
     </>
   );

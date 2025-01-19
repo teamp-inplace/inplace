@@ -47,8 +47,14 @@ export default function InfluencerMapTap({ influencerImg }: { influencerImg: str
   }, []);
 
   const handleGetPlaceData = useCallback((data: PlaceData[]) => {
-    setPlaceData(data);
+    setPlaceData((prevData) => {
+      if (JSON.stringify(prevData) !== JSON.stringify(data)) {
+        return data;
+      }
+      return prevData;
+    });
   }, []);
+
   return (
     <Wrapper>
       <InfluencerMapWindow

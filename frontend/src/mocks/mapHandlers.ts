@@ -1,8 +1,7 @@
 import { rest } from 'msw';
 import { BASE_URL } from '@/api/instance';
-import { PlaceData } from '@/types';
+import { MarkerInfo, PlaceData } from '@/types';
 import { getAllMarkersPath } from '@/api/hooks/useGetAllMarkers';
-import { getMarkerInfoPath } from '@/api/hooks/useGetMarkerInfo';
 
 const dummyInfluencers = [
   { influencerName: '성시경' },
@@ -32,16 +31,19 @@ const dummyAllMarkers = [
   { placeId: 13, longitude: '128.545', latitude: '35.81' },
   { placeId: 14, longitude: '128.51', latitude: '35.7777' },
   { placeId: 15, longitude: '128.79', latitude: '35.783222' },
+  { placeId: 16, longitude: '128.71', latitude: '35.02222' },
 ];
-const dummyMarkerInfos = {
-  placeId: 1,
-  placeName: '리안',
-  address: {
-    address1: '대구',
-    address2: '수성구',
-    address3: '교학로4길 48',
+const dummyMarkerInfos: Record<string, MarkerInfo> = {
+  '16': {
+    placeId: 16,
+    placeName: '11맘스터치 구점',
+    address: {
+      address1: '대구',
+      address2: '북구',
+      address3: '대현동 119-11',
+    },
+    menuImgUrl: 'https://via.placeholder.com/500',
   },
-  menuImgUrl: 'https://via.placeholder.com/500',
 };
 
 const dummyPlaces: PlaceData[] = [
@@ -346,8 +348,11 @@ export const mapHandlers = [
   rest.get(`${BASE_URL}${getAllMarkersPath()}`, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(dummyAllMarkers));
   }),
-  rest.get(`${BASE_URL}${getMarkerInfoPath('1')}`, (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(dummyMarkerInfos));
+  rest.get(`${BASE_URL}/places/marker/:id`, (req, res, ctx) => {
+    const { id } = req.params;
+    const data = dummyMarkerInfos[id.toString()];
+
+    return res(ctx.status(200), ctx.json(data));
   }),
 ];
 

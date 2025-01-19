@@ -56,8 +56,14 @@ export default function InfluencerPlaceSection({
   }, [data]);
 
   useEffect(() => {
-    if (shouldFetchPlaces && filteredPlaces.length > 0) {
-      onGetPlaceData(filteredPlaces);
+    if (data?.pages) {
+      const places = data.pages.flatMap((page: PageableData<PlaceData>) => page.content);
+      onGetPlaceData(places);
+    }
+  }, [data, onGetPlaceData]);
+
+  useEffect(() => {
+    if (shouldFetchPlaces) {
       onCompleteFetch(false);
     }
   }, [filteredPlaces, shouldFetchPlaces, onCompleteFetch, onGetPlaceData]);
