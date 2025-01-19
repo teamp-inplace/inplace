@@ -61,4 +61,8 @@ public class AdminPageController {
     public String getMainPage() {
         return "admin/main.html";
     }
+
+    @GetMapping("/login")
+    public String getLoginPage() { return "admin/login.html"; }
+
 }

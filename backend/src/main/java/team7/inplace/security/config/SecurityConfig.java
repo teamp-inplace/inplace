@@ -36,29 +36,30 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
-            throws Exception {
+        throws Exception {
 
         //http 설정
         http.csrf(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
+            .formLogin((form) -> form
+                .loginPage("/admin/login"))
+            .httpBasic(AbstractHttpConfigurer::disable)
+            //authentication Service, Handler 설정
+            .oauth2Login((oauth2) -> oauth2
+                .userInfoEndpoint((userInfoEndPointConfig) -> userInfoEndPointConfig
+                    .userService(customOauth2UserService))
+                .successHandler(customSuccessHandler)
+                .failureHandler(customFailureHandler))
 
-                //authentication Service, Handler 설정
-                .oauth2Login((oauth2) -> oauth2
-                        .userInfoEndpoint((userInfoEndPointConfig) -> userInfoEndPointConfig
-                                .userService(customOauth2UserService)).successHandler(customSuccessHandler)
-                        .failureHandler(customFailureHandler))
+            //authentication Filter 설정
+            .addFilterBefore(authorizationFilter,
+                UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(exceptionHandlingFilter, AuthorizationFilter.class)
 
-                //authentication Filter 설정
-                .addFilterBefore(authorizationFilter,
-                        UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(exceptionHandlingFilter, AuthorizationFilter.class)
-
-                .exceptionHandling((auth) -> auth
-                        .authenticationEntryPoint(loginAuthenticationEntryPoint)
-                        .accessDeniedHandler(customAccessDeniedHandler))
-                //authentication 경로 설정
-                .authorizeHttpRequests((auth) -> auth
+            .exceptionHandling((auth) -> auth
+                .authenticationEntryPoint(loginAuthenticationEntryPoint)
+                .accessDeniedHandler(customAccessDeniedHandler))
+            //authentication 경로 설정
+            .authorizeHttpRequests((auth) -> auth
 //                .requestMatchers("/api/error-logs/**", "/cicd", "crawling/**").hasRole("ADMIN")
 //                .requestMatchers("/admin/**").hasRole("ADMIN")
 //                .requestMatchers("/users/**").authenticated()
@@ -76,13 +77,13 @@ public class SecurityConfig {
 //                .requestMatchers("/videos", "videos/my").authenticated()
 //                .requestMatchers("/videos/**").permitAll()
 //                .requestMatchers(HttpMethod.DELETE, "/videos/{videoId}").authenticated()
-                                .anyRequest().permitAll()
-                )
-                //cors 설정
-                .addFilter(corsFilter)
-                //session 설정
-                .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                    .anyRequest().permitAll()
+            )
+            //cors 설정
+            .addFilter(corsFilter)
+            //session 설정
+            .sessionManagement((session) -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
