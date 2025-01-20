@@ -137,7 +137,7 @@ export default function InfluencerMapWindow({
 
   // 마커나 장소가 선택되었을 경우
   useEffect(() => {
-    if (selectedPlaceId && placeData.length > 0) {
+    if (selectedPlaceId) {
       getMarkerInfoWithPlaceInfo(selectedPlaceId);
     }
   }, [selectedPlaceId, placeData, getMarkerInfoWithPlaceInfo]);
