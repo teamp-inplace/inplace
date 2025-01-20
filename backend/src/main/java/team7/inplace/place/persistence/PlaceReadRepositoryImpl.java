@@ -144,14 +144,13 @@ public class PlaceReadRepositoryImpl implements PlaceReadRepository {
         /* 조건에 맞는 장소 ID 목록 조회 */
         List<Long> filteredPlaceId = jpaQueryFactory
                 .select(QPlace.place.id).distinct()
-                .from(QVideo.video)
+                .from(QPlace.place)
+                .leftJoin(QVideo.video).on(QVideo.video.placeId.eq(QPlace.place.id))
                 .leftJoin(QInfluencer.influencer).on(QVideo.video.influencerId.eq(QInfluencer.influencer.id))
-                .leftJoin(QPlace.place).on(QVideo.video.placeId.eq(QPlace.place.id))
                 .where(
                         QPlace.place.coordinate.longitude.between(topLeftLongitude, bottomRightLongitude),
                         QPlace.place.coordinate.latitude.between(bottomRightLatitude, topLeftLatitude),
-                        filterExpression,
-                        QVideo.video.placeId.isNotNull()
+                        filterExpression
                 ).fetch();
         /* 필터링 된 장소 ID 목록으로 장소 상세 정보 조회 */
         List<PlaceQueryResult.DetailedPlace> places = jpaQueryFactory
@@ -168,20 +167,26 @@ public class PlaceReadRepositoryImpl implements PlaceReadRepository {
                         QPlace.place.menuImgUrl,
                         QPlace.place.menuUpdatedAt,
                         QLikedPlace.likedPlace.isLiked.isNotNull()
-                ))
+                )).distinct()
                 .from(QPlace.place)
+                .leftJoin(QVideo.video).on(QVideo.video.placeId.eq(QPlace.place.id))
+                .leftJoin(QInfluencer.influencer).on(QVideo.video.influencerId.eq(QInfluencer.influencer.id))
                 .leftJoin(QLikedPlace.likedPlace).on(QLikedPlace.likedPlace.placeId.eq(QPlace.place.id)
                         .and(userId != null ?
                                 QLikedPlace.likedPlace.userId.eq(userId) :
                                 QLikedPlace.likedPlace.userId.isNull())
                         .and(QLikedPlace.likedPlace.isLiked.isTrue()))
-                .where(QPlace.place.id.in(filteredPlaceId))
+                .where(
+                        QPlace.place.coordinate.longitude.between(topLeftLongitude, bottomRightLongitude),
+                        QPlace.place.coordinate.latitude.between(bottomRightLatitude, topLeftLatitude),
+                        filterExpression
+                )
                 .orderBy(QPlace.place.id.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        if (filteredPlaceId.isEmpty()) {
+        if (places.isEmpty()) {
             return new PageImpl<>(List.of(), pageable, 0);
         }
         return PageableExecutionUtils.getPage(places, pageable, filteredPlaceId::size);
