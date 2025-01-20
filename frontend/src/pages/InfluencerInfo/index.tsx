@@ -111,7 +111,10 @@ export default function InfluencerInfoPage() {
             {({ reset }) => (
               <ErrorBoundary FallbackComponent={Error} onReset={reset}>
                 <Suspense fallback={<Loading size={50} />}>
-                  <InfluencerMapTap influencerImg={influencerInfoData.influencerImgUrl} />
+                  <InfluencerMapTap
+                    influencerImg={influencerInfoData.influencerImgUrl}
+                    influencerName={influencerInfoData.influencerName}
+                  />
                 </Suspense>
               </ErrorBoundary>
             )}

@@ -1,11 +1,17 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { LocationData, MarkerData, PlaceData } from '@/types';
 import { useGetAllMarkers } from '@/api/hooks/useGetAllMarkers';
-import InfluencerMapWindow from './InfluencerMapWindow';
+import InfluencerMapWindow, { MapWindowRef } from './InfluencerMapWindow';
 import InfluencerPlaceSection from './InfluencerPlaceSection';
 
-export default function InfluencerMapTap({ influencerImg }: { influencerImg: string }) {
+export default function InfluencerMapTap({
+  influencerImg,
+  influencerName,
+}: {
+  influencerImg: string;
+  influencerName: string;
+}) {
   const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
   const [mapBounds, setMapBounds] = useState<LocationData>({
     topLeftLatitude: 0,
@@ -13,11 +19,15 @@ export default function InfluencerMapTap({ influencerImg }: { influencerImg: str
     bottomRightLatitude: 0,
     bottomRightLongitude: 0,
   });
-  const filters = { categories: [], influencers: [] };
+  const filters = { categories: [], influencers: [influencerName] };
   const [shouldFetchPlaces, setShouldFetchPlaces] = useState(false);
   const [markers, setMarkers] = useState<MarkerData[]>([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [placeData, setPlaceData] = useState<PlaceData[]>([]);
+  const [selectedPlaceId, setSelectedPlaceId] = useState<number | null>(null);
+
+  const mapRef = useRef<MapWindowRef>(null);
+
   const { data: fetchedMarkers = [] } = useGetAllMarkers(
     {
       location: mapBounds,
@@ -55,9 +65,25 @@ export default function InfluencerMapTap({ influencerImg }: { influencerImg: str
     });
   }, []);
 
+  const handlePlaceSelect = useCallback(
+    (placeId: number) => {
+      setSelectedPlaceId(placeId);
+      const marker = markers.find((m) => m.placeId === placeId);
+      if (marker && mapRef.current?.handleMarkerClick) {
+        mapRef.current.handleMarkerClick(placeId);
+      }
+    },
+    [markers],
+  );
+
+  const handleClosePlace = useCallback(() => {
+    setSelectedPlaceId(null);
+  }, []);
+
   return (
     <Wrapper>
       <InfluencerMapWindow
+        ref={mapRef}
         influencerImg={influencerImg}
         placeData={placeData}
         markers={markers}
@@ -65,6 +91,7 @@ export default function InfluencerMapTap({ influencerImg }: { influencerImg: str
         onCenterChange={handleCenterChange}
         shouldFetchPlaces={shouldFetchPlaces}
         onCompleteFetch={handleCompleteFetch}
+        onClosePlace={handleClosePlace}
       />
       <InfluencerPlaceSection
         mapBounds={mapBounds}
@@ -73,6 +100,8 @@ export default function InfluencerMapTap({ influencerImg }: { influencerImg: str
         shouldFetchPlaces={shouldFetchPlaces}
         onCompleteFetch={handleCompleteFetch}
         onGetPlaceData={handleGetPlaceData}
+        onPlaceSelect={handlePlaceSelect}
+        selectedPlaceId={selectedPlaceId}
       />
     </Wrapper>
   );
