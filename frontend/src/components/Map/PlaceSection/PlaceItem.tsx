@@ -11,7 +11,7 @@ import FallbackImage from '@/components/common/Items/FallbackImage';
 
 interface PlaceItemProps extends PlaceData {
   onClick: () => void;
-  isSelected: boolean;
+  isSelected?: boolean;
 }
 const getFullAddress = (addr: PlaceData['address']) => {
   return [addr.address1, addr.address2, addr.address3].filter(Boolean).join(' ');
@@ -25,7 +25,7 @@ export default function PlaceItem({
   likes,
   menuImgUrl,
   onClick,
-  isSelected,
+  isSelected = false,
 }: PlaceItemProps) {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
