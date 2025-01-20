@@ -67,26 +67,22 @@ export default function PlaceItem({
           <FallbackImage src={menuImgUrl} alt={placeName} />
         </ImageContainer>
         <CardContent>
-          <PlaceDetails>
-            <Text size="l" weight="bold" variant="white">
-              {placeName}
+          <Text size="m" weight="bold" variant="white">
+            {placeName}
+          </Text>
+          <Text size="xs" weight="normal" variant="white">
+            {getFullAddress(address)}
+          </Text>
+          <InfluencerName>
+            <Text size="xs" weight="normal" variant="white">
+              {influencerName}
             </Text>
-            <Address>
-              <Text size="s" weight="normal" variant="white">
-                {getFullAddress(address)}
-              </Text>
-            </Address>
-            <InfluencerName>
-              <Text size="s" weight="normal" variant="white">
-                {influencerName}
-              </Text>
-            </InfluencerName>
-          </PlaceDetails>
+          </InfluencerName>
           <LikeIcon role="button" onClick={(e: React.MouseEvent<HTMLDivElement>) => handleClickLike(e)}>
             {isLike ? (
-              <PiHeartFill color="#fe7373" size={32} data-testid="PiHeartFill" />
+              <PiHeartFill color="#fe7373" size={30} data-testid="PiHeartFill" />
             ) : (
-              <PiHeartLight color="white" size={32} data-testid="PiHeartLight" />
+              <PiHeartLight color="white" size={30} data-testid="PiHeartLight" />
             )}
           </LikeIcon>
         </CardContent>
@@ -99,12 +95,14 @@ export default function PlaceItem({
 }
 
 const PlaceCard = styled.div<{ $isSelected: boolean }>`
-  width: 460px;
-  height: 160px;
   position: relative;
+  width: 460px;
+  height: 120px;
   display: flex;
-  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
   border-radius: 8px;
+  gap: 20px;
   cursor: pointer;
   background-color: ${({ $isSelected }) => ($isSelected ? '#1b1a1a' : 'none')};
   transition: background-color 0.2s ease;
@@ -115,40 +113,21 @@ const PlaceCard = styled.div<{ $isSelected: boolean }>`
 `;
 
 const ImageContainer = styled.div`
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  left: 10px;
-  top: 30px;
+  width: 20%;
+  aspect-ratio: 1;
   object-fit: cover;
   border-radius: 30px;
 `;
 
 const CardContent = styled.div`
-  position: absolute;
-  width: 320px;
-  height: 100px;
-  left: 130px;
-  top: 30px;
+  width: 70%;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const PlaceDetails = styled.div`
-  position: relative;
-  width: 290px;
-  height: 102px;
-`;
-
-const Address = styled.div`
-  position: absolute;
-  top: 30px;
+  flex-direction: column;
+  gap: 8px;
 `;
 
 const InfluencerName = styled.div`
-  position: absolute;
-  top: 70px;
+  padding-top: 6px;
 `;
 
 const LikeIcon = styled.div`
@@ -156,7 +135,7 @@ const LikeIcon = styled.div`
   width: 30px;
   height: 30px;
   right: 10px;
-  top: 12px;
+  top: 20px;
   z-index: 100;
   cursor: pointer;
 `;
