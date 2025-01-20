@@ -42,6 +42,7 @@ export default function InfluencerMapWindow({
   const selectedMarker = markers.find((m) => m.placeId === selectedPlaceId);
   const MarkerInfoData = useGetMarkerInfo(selectedPlaceId?.toString() || '', shouldFetchData);
 
+  // 마커나 장소 선택시 지도 중심으로 이동
   const moveMapToMarker = useCallback((latitude: number, longitude: number) => {
     if (mapRef.current) {
       const position = new kakao.maps.LatLng(latitude, longitude);
@@ -134,7 +135,7 @@ export default function InfluencerMapWindow({
     [placeData],
   );
 
-  // 장소 정보에 마커 정보가 있을 경우 - 1
+  // 마커나 장소가 선택되었을 경우
   useEffect(() => {
     if (selectedPlaceId && placeData.length > 0) {
       getMarkerInfoWithPlaceInfo(selectedPlaceId);
@@ -152,7 +153,7 @@ export default function InfluencerMapWindow({
     }
   }, [userLocation]);
 
-  // 마커 클릭 시, 사이즈 조절 및 마커 정보 가져오기
+  // 마커 클릭 시, 장소와 마커를 선택 상태로
   const handleMarkerClick = useCallback(
     (placeId: number, marker: kakao.maps.Marker) => {
       if (mapRef.current && marker) {

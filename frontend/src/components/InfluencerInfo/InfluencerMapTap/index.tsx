@@ -63,6 +63,7 @@ export default function InfluencerMapTap({
     });
   }, []);
 
+  // 현재 선택된 장소 id 저장, 같은장소 재선택시 취소
   const handlePlaceSelect = useCallback((placeId: number | null) => {
     setSelectedPlaceId((prevId) => (prevId === placeId ? null : placeId));
   }, []);

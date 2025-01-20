@@ -31,17 +31,15 @@ export default function InfluencerPlaceSection({
   onPlaceSelect,
   selectedPlaceId,
 }: PlaceSectionProps) {
-  const sectionRef = useRef<HTMLDivElement>(null); // 무한 스크롤을 위한 ref와 observer 설정
+  const sectionRef = useRef<HTMLDivElement>(null);
   const previousPlacesRef = useRef<PlaceData[]>([]);
 
   const { ref: loadMoreRef, inView } = useInView({
-    // useInView = Intersection Oberser API를 react hook으로 구현한 것
     root: sectionRef.current,
     rootMargin: '0px',
-    threshold: 0, // 요소가 조금이라도 보이면 감지
+    threshold: 0,
   });
 
-  // 데이터 fetching hook
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetInfinitePlaceList(
     {
       location: mapBounds,
@@ -76,6 +74,7 @@ export default function InfluencerPlaceSection({
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+  // 장소 클릭 시 상위로 선택된 장소 전달
   const handlePlaceClick = useCallback(
     (placeId: number) => {
       onPlaceSelect(placeId);
