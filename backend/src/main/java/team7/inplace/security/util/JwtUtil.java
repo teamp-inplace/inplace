@@ -10,10 +10,12 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.AuthorizationErrorCode;
 import team7.inplace.security.config.JwtProperties;
 
+@Slf4j
 public class JwtUtil {
     private final SecretKey secretKey;
     private final JwtParser jwtParser;

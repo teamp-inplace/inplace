@@ -25,7 +25,7 @@ jobs:
         run: npm test
 
   build-and-deploy:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -43,7 +43,12 @@ jobs:
       - name: Run tests
         run: npm test
       - name: Build project
-        run: npm run build
+        run: |
+          if [[ ${{ github.ref }} == 'refs/heads/dev' ]]; then
+            npm run build:dev
+          else
+            npm run build
+          fi
         env:
           VITE_KAKAO_JS_KEY: ${{ secrets.VITE_KAKAO_JS_KEY }}
       - name: Configure AWS credentials
@@ -55,8 +60,13 @@ jobs:
       
       - name: Deploy to S3
         run: |
-            # 두 버킷에 배포
+          if [[ ${{ github.ref }} == 'refs/heads/main' ]]; then
+            # production 배포
             aws s3 sync dist/ s3://inplace.my --delete
             aws s3 sync dist/ s3://www.inplace.my --delete
-            # CloudFront 캐시 무효화 필수
             aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_ID }} --paths "/*"
+          elif [[ ${{ github.ref }} == 'refs/heads/dev' ]]; then
+            # dev 배포
+            aws s3 sync dist/ s3://ecalpni-dev.inplace.my/ --delete
+            aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DEV_CLOUDFRONT_ID }} --paths "/*"
+          fi

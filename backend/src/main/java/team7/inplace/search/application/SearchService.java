@@ -6,23 +6,18 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team7.inplace.influencer.application.dto.InfluencerInfo;
-import team7.inplace.influencer.domain.Influencer;
-import team7.inplace.liked.likedInfluencer.persistent.LikedInfluencerRepository;
-import team7.inplace.liked.likedPlace.persistence.LikedPlaceRepository;
+import team7.inplace.influencer.persistence.dto.InfluencerQueryResult;
 import team7.inplace.search.application.dto.AutoCompletionInfo;
-import team7.inplace.search.application.dto.PlaceSearchInfo;
 import team7.inplace.search.application.dto.SearchType;
 import team7.inplace.search.persistence.InfluencerSearchRepository;
 import team7.inplace.search.persistence.PlaceSearchRepository;
 import team7.inplace.search.persistence.VideoSearchRepository;
-import team7.inplace.search.persistence.dto.SearchResult;
+import team7.inplace.search.persistence.dto.SearchQueryResult;
 import team7.inplace.security.util.AuthorizationUtil;
-import team7.inplace.video.application.dto.VideoInfo;
+import team7.inplace.video.persistence.dto.VideoQueryResult;
 
 @Service
 @Slf4j
@@ -30,22 +25,21 @@ import team7.inplace.video.application.dto.VideoInfo;
 @RequiredArgsConstructor
 public class SearchService {
     private static final Integer MAX_COMPLETION_RESULTS = 5;
+    private static final Integer SEARCH_LIMIT = 10;
 
     private final VideoSearchRepository videoSearchRepository;
     private final InfluencerSearchRepository influencerSearchRepository;
     private final PlaceSearchRepository placeSearchRepository;
-    private final LikedInfluencerRepository likedInfluencerRepository;
-    private final LikedPlaceRepository likedPlaceRepository;
 
     public List<AutoCompletionInfo> searchAutoCompletions(String keyword) {
-        var influencerSearchInfo = influencerSearchRepository.searchEntityByKeywords(keyword);
-        var placeSearchInfo = placeSearchRepository.searchEntityByKeywords(keyword);
+        var influencerSearchInfo = influencerSearchRepository.searchAutoComplete(keyword);
+        var placeSearchInfo = placeSearchRepository.searchAutoComplete(keyword);
 
         var influencerAutoComplete = influencerSearchInfo.stream()
-                .map(info -> new AutoCompletionInfo(info.searchResult().getName(), info.score(), SearchType.INFLUENCER))
+                .map(info -> new AutoCompletionInfo(info.keyword(), info.score(), SearchType.INFLUENCER))
                 .toList();
         var placeAutoComplete = placeSearchInfo.stream()
-                .map(info -> new AutoCompletionInfo(info.searchResult().getName(), info.score(), SearchType.PLACE))
+                .map(info -> new AutoCompletionInfo(info.keyword(), info.score(), SearchType.PLACE))
                 .toList();
 
         return Stream.concat(influencerAutoComplete.stream(), placeAutoComplete.stream())
@@ -54,86 +48,31 @@ public class SearchService {
                 .toList();
     }
 
-    public List<VideoInfo> searchVideo(String keyword) {
-        var videoInfos = videoSearchRepository.searchEntityByKeywords(keyword);
-//        return videoInfos.stream()
-//                .map(videoInfo -> {
-//                    return VideoInfo.from(videoInfo.searchResult());
-//                })
-//                .toList();
-        return null;
+    public Page<InfluencerQueryResult.Simple> searchInfluencer(String keyword, Pageable pageable) {
+        var userId = AuthorizationUtil.getUserId();
+        var influencerInfos = influencerSearchRepository.search(keyword, pageable, userId);
+
+        return influencerInfos;
     }
 
-    public List<InfluencerInfo> searchInfluencer(String keyword) {
-        var influencerInfos = influencerSearchRepository.searchEntityByKeywords(keyword);
-        Long userId = AuthorizationUtil.getUserId();
+    public List<InfluencerQueryResult.Simple> searchInfluencer(String keyword) {
+        var userId = AuthorizationUtil.getUserId();
+        var influencerInfos = influencerSearchRepository.search(keyword, Pageable.unpaged(), userId);
 
-        if (userId == null) {
-            return influencerInfos.stream()
-                    .map(influencer -> InfluencerInfo.from(influencer.searchResult(), false))
-                    .toList();
-        }
-
-        var likedInfluencerIds = likedInfluencerRepository.findLikedInfluencerIdsByUserId(userId);
-
-        return influencerInfos.stream()
-                .map(influencerInfo -> {
-                    boolean isLiked = likedInfluencerIds.contains(influencerInfo.searchResult().getId());
-                    return InfluencerInfo.from(influencerInfo.searchResult(), isLiked);
-                })
-                .sorted((a, b) -> Boolean.compare(b.likes(), a.likes()))
-                .toList();
+        return influencerInfos.getContent().subList(0, Math.min(influencerInfos.getContent().size(), SEARCH_LIMIT));
     }
 
-    public Page<InfluencerInfo> searchInfluencer(String keyword, Pageable pageable) {
-        Page<SearchResult<Influencer>> influencerInfos = influencerSearchRepository.searchEntityByKeywords(keyword,
-                pageable);
-        Long userId = AuthorizationUtil.getUserId();
+    public List<VideoQueryResult.SimpleVideo> searchVideo(String keyword) {
+        var userId = AuthorizationUtil.getUserId();
+        var videoInfos = videoSearchRepository.search(keyword, Pageable.unpaged(), userId);
 
-        if (userId == null) {
-            return new PageImpl<>(
-                    influencerInfos.getContent().stream()
-                            .map(influencer -> InfluencerInfo.from(influencer.searchResult(), false))
-                            .toList(),
-                    pageable,
-                    influencerInfos.getTotalElements()
-            );
-        }
-
-        var likedInfluencerIds = likedInfluencerRepository.findLikedInfluencerIdsByUserId(userId);
-
-        List<InfluencerInfo> sortedContent = influencerInfos.getContent().stream()
-                .map(influencerInfo -> {
-                    boolean isLiked = likedInfluencerIds.contains(influencerInfo.searchResult().getId());
-                    return InfluencerInfo.from(influencerInfo.searchResult(), isLiked);
-                })
-                .sorted((a, b) -> Boolean.compare(b.likes(), a.likes()))
-                .toList();
-
-        return new PageImpl<>(
-                sortedContent,
-                pageable,
-                influencerInfos.getTotalElements()
-        );
+        return videoInfos.getContent().subList(0, Math.min(videoInfos.getContent().size(), SEARCH_LIMIT));
     }
 
-    public List<PlaceSearchInfo> searchPlace(String keyword) {
-        var placeInfos = placeSearchRepository.searchEntityByKeywords(keyword);
-        Long userId = AuthorizationUtil.getUserId();
+    public List<SearchQueryResult.Place> searchPlace(String keyword) {
+        var userId = AuthorizationUtil.getUserId();
+        var placeInfos = placeSearchRepository.search(keyword, Pageable.unpaged(), userId);
 
-        if (userId == null) {
-            return placeInfos.stream()
-                    .map(placeInfo -> PlaceSearchInfo.from(placeInfo.searchResult(), false))
-                    .toList();
-        }
-
-        var likedPlaceIds = likedPlaceRepository.findPlaceIdsByUserIdAndIsLikedTrue(userId);
-        return placeInfos.stream()
-                .map(placeInfo -> {
-                    boolean isLiked = likedPlaceIds.contains(placeInfo.searchResult().getId());
-                    return PlaceSearchInfo.from(placeInfo.searchResult(), isLiked);
-                })
-                .sorted((a, b) -> Boolean.compare(b.likes(), a.likes()))
-                .toList();
+        return placeInfos.getContent().subList(0, Math.min(placeInfos.getContent().size(), SEARCH_LIMIT));
     }
 }

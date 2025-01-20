@@ -1,5 +1,6 @@
 package team7.inplace.token.persistence;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +13,10 @@ import team7.inplace.token.domain.RefreshToken;
 @RequiredArgsConstructor
 public class RefreshTokenRepository implements RedisRepository<RefreshToken> {
     private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper;
 
     private final String REFRESH_TOKEN_PREFIX = "refresh:";
-    private final TimeUnit timeoutUnit = TimeUnit.MICROSECONDS;
+    private final TimeUnit timeoutUnit = TimeUnit.MILLISECONDS;
 
     @Override
     public void save(String key, RefreshToken value) {
@@ -29,7 +31,8 @@ public class RefreshTokenRepository implements RedisRepository<RefreshToken> {
     @Override
     public Optional<RefreshToken> get(String key) {
         var value = redisTemplate.opsForValue().get(REFRESH_TOKEN_PREFIX + key);
-        return Optional.ofNullable((RefreshToken) value);
+
+        return Optional.ofNullable(objectMapper.convertValue(value, RefreshToken.class));
     }
 
     @Override

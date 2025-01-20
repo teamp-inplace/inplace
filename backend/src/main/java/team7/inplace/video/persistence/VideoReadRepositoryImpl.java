@@ -1,6 +1,5 @@
 package team7.inplace.video.persistence;
 
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Collections;
@@ -33,29 +32,14 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
             Double longitude, Double latitude,
             Pageable pageable
     ) {
-        NumberExpression<Integer> gridX = QPlace.place.coordinate.longitude
-                .subtract(topLeftLongitude)
-                .divide(GRID_SIZE)
-                .floor()
-                .castToNum(Integer.class);
-
-        NumberExpression<Integer> gridY = QPlace.place.coordinate.latitude
-                .subtract(bottomRightLatitude)
-                .divide(GRID_SIZE)
-                .floor()
-                .castToNum(Integer.class);
-
         // Pagination 위한 총 개수 조회
         Long total = queryFactory
                 .select(QVideo.video.count())
                 .from(QVideo.video)
-                .join(QPlace.place)
-                .on(QVideo.video.placeId.eq(QPlace.place.id))
+                .join(QPlace.place).on(QVideo.video.placeId.eq(QPlace.place.id))
                 .where(
-                        QPlace.place.coordinate.longitude.between(topLeftLongitude, bottomRightLongitude),
-                        QPlace.place.coordinate.latitude.between(bottomRightLatitude, topLeftLatitude),
-                        QPlace.place.coordinate.longitude.between(longitude - 0.01, longitude + 0.01),
-                        QPlace.place.coordinate.latitude.between(latitude - 0.01, latitude + 0.01)
+                        QPlace.place.coordinate.longitude.between(longitude - 0.03, longitude + 0.03),
+                        QPlace.place.coordinate.latitude.between(latitude - 0.03, latitude + 0.03)
                 )
                 .fetchOne();
 
@@ -63,32 +47,20 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
         var content = queryFactory
                 .select(new QVideoQueryResult_SimpleVideo(
                         QVideo.video.id,
-                        QVideo.video.videoUrl,
+                        QVideo.video.uuid,
                         QInfluencer.influencer.name,
                         QPlace.place.id,
                         QPlace.place.name,
                         QPlace.place.category
                 ))
                 .from(QVideo.video)
-                .join(QPlace.place)
-                .on(QVideo.video.placeId.eq(QPlace.place.id))
-                .join(QInfluencer.influencer)
-                .on(QVideo.video.influencerId.eq(QInfluencer.influencer.id))
+                .join(QPlace.place).on(QVideo.video.placeId.eq(QPlace.place.id))
+                .join(QInfluencer.influencer).on(QVideo.video.influencerId.eq(QInfluencer.influencer.id))
                 .where(
-                        QPlace.place.coordinate.longitude.between(topLeftLongitude, bottomRightLongitude),
-                        QPlace.place.coordinate.latitude.between(bottomRightLatitude, topLeftLatitude),
-                        QPlace.place.coordinate.longitude.between(longitude - 0.01, longitude + 0.01),
-                        QPlace.place.coordinate.latitude.between(latitude - 0.01, latitude + 0.01)
+                        QPlace.place.coordinate.longitude.between(longitude - 0.03, longitude + 0.03),
+                        QPlace.place.coordinate.latitude.between(latitude - 0.03, latitude + 0.03)
                 )
-                .orderBy(
-                        gridX.add(gridY).asc(),
-                        QPlace.place.coordinate.longitude
-                                .subtract(longitude)
-                                .multiply(QPlace.place.coordinate.longitude.subtract(longitude))
-                                .add(QPlace.place.coordinate.latitude.subtract(latitude)
-                                        .multiply(QPlace.place.coordinate.latitude.subtract(latitude)))
-                                .asc()
-                )
+                .orderBy(QVideo.video.publishTime.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -101,7 +73,7 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
         var top10Videos = queryFactory
                 .select(new QVideoQueryResult_SimpleVideo(
                         QVideo.video.id,
-                        QVideo.video.videoUrl,
+                        QVideo.video.uuid,
                         QInfluencer.influencer.name,
                         QPlace.place.id,
                         QPlace.place.name,
@@ -122,7 +94,7 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
         var top10Videos = queryFactory
                 .select(new QVideoQueryResult_SimpleVideo(
                         QVideo.video.id,
-                        QVideo.video.videoUrl,
+                        QVideo.video.uuid,
                         QInfluencer.influencer.name,
                         QPlace.place.id,
                         QPlace.place.name,
@@ -143,7 +115,7 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
         var top10Videos = queryFactory
                 .select(new QVideoQueryResult_SimpleVideo(
                         QVideo.video.id,
-                        QVideo.video.videoUrl,
+                        QVideo.video.uuid,
                         QInfluencer.influencer.name,
                         QPlace.place.id,
                         QPlace.place.name,
@@ -171,7 +143,7 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
         var videos = queryFactory
                 .select(new QVideoQueryResult_SimpleVideo(
                         QVideo.video.id,
-                        QVideo.video.videoUrl,
+                        QVideo.video.uuid,
                         QInfluencer.influencer.name,
                         QPlace.place.id,
                         QPlace.place.name,
@@ -194,7 +166,7 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
         return queryFactory
                 .select(new QVideoQueryResult_SimpleVideo(
                         QVideo.video.id,
-                        QVideo.video.videoUrl,
+                        QVideo.video.uuid,
                         QInfluencer.influencer.name,
                         QPlace.place.id,
                         QPlace.place.name,
@@ -214,7 +186,7 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
         var videos = queryFactory
                 .select(new QVideoQueryResult_SimpleVideo(
                         QVideo.video.id,
-                        QVideo.video.videoUrl,
+                        QVideo.video.uuid,
                         QInfluencer.influencer.name,
                         QPlace.place.id,
                         QPlace.place.name,

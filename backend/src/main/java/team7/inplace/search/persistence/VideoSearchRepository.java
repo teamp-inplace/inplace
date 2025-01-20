@@ -3,83 +3,73 @@ package team7.inplace.search.persistence;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.List;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import team7.inplace.influencer.domain.QInfluencer;
 import team7.inplace.place.domain.QPlace;
-import team7.inplace.search.persistence.dto.SearchResult;
-import team7.inplace.video.domain.Video;
+import team7.inplace.video.domain.QVideo;
+import team7.inplace.video.persistence.dto.QVideoQueryResult_SimpleVideo;
+import team7.inplace.video.persistence.dto.VideoQueryResult;
 
 @Repository
 @Slf4j
 @RequiredArgsConstructor
-public class VideoSearchRepository implements SearchRepository<Video> {
+public class VideoSearchRepository implements SearchRepository<VideoQueryResult.SimpleVideo> {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<SearchResult<Video>> searchEntityByKeywords(String keyword) {
-        var placeKeywordSearchResults = searchSimilarKeywordWithPlace(keyword);
-        var influencerKeywordSearchResults = searchSimilarKeywordWithInfluencer(keyword);
+    public Page<VideoQueryResult.SimpleVideo> search(String keyword, Pageable pageable, Long userId) {
+        var contents = queryFactory
+                .select(new QVideoQueryResult_SimpleVideo(
+                        QVideo.video.id,
+                        QVideo.video.uuid,
+                        QInfluencer.influencer.name,
+                        QPlace.place.id,
+                        QPlace.place.name,
+                        QPlace.place.category
+                ))
+                .from(QVideo.video)
+                .leftJoin(QPlace.place).on(QVideo.video.placeId.eq(QPlace.place.id))
+                .leftJoin(QInfluencer.influencer).on(QVideo.video.influencerId.eq(QInfluencer.influencer.id))
+                .where(getPlaceMatchScore(keyword).gt(0)
+                        .or(getInfluencerMatchScore(keyword).gt(0)))
+                .orderBy(getPlaceMatchScore(keyword).desc(), getInfluencerMatchScore(keyword).desc())
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetch();
 
-        return Stream.concat(placeKeywordSearchResults.stream(), influencerKeywordSearchResults.stream())
-                .distinct()
-                .sorted((a, b) -> Double.compare(b.score(), a.score()))
-                .limit(SEARCH_LIMIT)
-                .toList();
+        var count = queryFactory
+                .select(QVideo.video.count())
+                .from(QVideo.video)
+                .leftJoin(QPlace.place).on(QVideo.video.placeId.eq(QPlace.place.id))
+                .leftJoin(QInfluencer.influencer).on(QVideo.video.influencerId.eq(QInfluencer.influencer.id))
+                .where(getPlaceMatchScore(keyword).gt(0)
+                        .or(getInfluencerMatchScore(keyword).gt(0))
+                ).fetchOne();
+
+        return new PageImpl<>(contents, pageable, count);
     }
 
-    private List<SearchResult<Video>> searchSimilarKeywordWithPlace(String keyword) {
-        NumberTemplate<Double> matchScore = Expressions.numberTemplate(
+    private NumberTemplate<Double> getPlaceMatchScore(String keyword) {
+        return Expressions.numberTemplate(
                 Double.class,
                 "function('match_against', {0}, {1})",
                 QPlace.place.name,
                 keyword
         );
-        return null;
-//        return queryFactory
-//                .select(QVideo.videos,
-//                        matchScore.as("score")
-//                )
-//                .from(QVideo.videos)
-//                .join(QVideo.videos.place, QPlace.place).fetchJoin()
-//                .join(QVideo.videos.influencer, QInfluencer.influencer).fetchJoin()
-//                .where(matchScore.gt(0))
-//                .orderBy(matchScore.desc())
-//                .limit(SEARCH_LIMIT)
-//                .fetch()
-//                .stream()
-//                .map(tuple -> new SearchResult<>(
-//                        tuple.get(0, Video.class),
-//                        tuple.get(1, Double.class)
-//                )).toList();
     }
 
-    private List<SearchResult<Video>> searchSimilarKeywordWithInfluencer(String keyword) {
-        NumberTemplate<Double> matchScore = Expressions.numberTemplate(
+
+    private NumberTemplate<Double> getInfluencerMatchScore(String keyword) {
+        return Expressions.numberTemplate(
                 Double.class,
                 "function('match_against', {0}, {1})",
                 QInfluencer.influencer.name,
                 keyword
         );
-        return null;
-//        return queryFactory
-//                .select(QVideo.videos,
-//                        matchScore.as("score")
-//                )
-//                .from(QVideo.videos)
-//                .join(QVideo.videos.place, QPlace.place).fetchJoin()
-//                .join(QVideo.videos.influencer, QInfluencer.influencer).fetchJoin()
-//                .where(matchScore.gt(0))
-//                .orderBy(matchScore.desc())
-//                .limit(SEARCH_LIMIT)
-//                .fetch()
-//                .stream()
-//                .map(tuple -> new SearchResult<>(
-//                        tuple.get(0, Video.class),
-//                        tuple.get(1, Double.class)
-//                )).toList();
     }
 }

@@ -22,7 +22,6 @@ import team7.inplace.token.application.command.TokenCommand.ReIssued;
 @RestController
 @RequiredArgsConstructor
 public class RefreshTokenController implements RefreshTokenControllerApiSpec {
-
     private final JwtUtil jwtUtil;
     private final RefreshTokenFacade refreshTokenFacade;
 
@@ -70,5 +69,4 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }
