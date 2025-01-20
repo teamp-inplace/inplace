@@ -74,7 +74,6 @@ export default function MapPage() {
 
   const handleCategorySelect = useCallback((selected: string[]) => {
     setSelectedCategories(selected);
-    console.log('한번호출');
   }, []);
 
   const handleClearLocation = useCallback((locationToRemove: SelectedOption) => {
