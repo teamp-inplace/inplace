@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useInView } from 'react-intersection-observer';
 import PlaceItem from '@/components/Map/PlaceSection/PlaceItem';
@@ -13,106 +12,61 @@ interface PlaceSectionProps {
   filters: {
     categories: string[];
     influencers: string[];
-    location: { main: string; sub?: string; lat?: number; lng?: number }[];
   };
   center: { lat: number; lng: number };
   shouldFetchPlaces: boolean;
-  onShouldFetch: (vaule: boolean) => void;
+  onCompleteFetch: (value: boolean) => void;
+  onGetPlaceData: (data: PlaceData[]) => void;
+  onPlaceSelect: (placeId: number) => void;
+  selectedPlaceId: number | null;
 }
 
-interface LastResponseState {
-  empty: boolean;
-  location: LocationData;
-  filters: PlaceSectionProps['filters'];
-}
-
-export default function PlaceSection({
+export default function InfluencerPlaceSection({
   mapBounds,
   filters,
   center,
   shouldFetchPlaces,
-  onShouldFetch,
+  onCompleteFetch,
+  onGetPlaceData,
+  onPlaceSelect,
+  selectedPlaceId,
 }: PlaceSectionProps) {
-  const navigate = useNavigate();
-  const sectionRef = useRef<HTMLDivElement>(null); // 무한 스크롤을 위한 ref와 observer 설정
+  const sectionRef = useRef<HTMLDivElement>(null);
   const previousPlacesRef = useRef<PlaceData[]>([]);
-  const lastResponseRef = useRef<LastResponseState>({
-    empty: false,
-    location: mapBounds,
-    filters,
-  });
 
   const { ref: loadMoreRef, inView } = useInView({
-    // useInView = Intersection Oberser API를 react hook으로 구현한 것
     root: sectionRef.current,
     rootMargin: '0px',
-    threshold: 0, // 요소가 조금이라도 보이면 감지
+    threshold: 0,
   });
 
-  // 데이터 fetching hook
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetInfinitePlaceList(
     {
       location: mapBounds,
       filters,
       center,
-      size: 10, // 한 페이지에 보여줄 아이템 개수; 변경하며 api 잘 받아오는지 확인 가능
+      size: 10,
     },
     shouldFetchPlaces,
   );
 
   const filteredPlaces = useMemo(() => {
-    // 지도만 움직이는 경우 빈 배열 상태 유지
-    if (
-      !shouldFetchPlaces &&
-      lastResponseRef.current.empty &&
-      JSON.stringify(lastResponseRef.current.filters) === JSON.stringify(filters)
-    ) {
-      return [];
+    if (!data?.pages) return [];
+    return data.pages.flatMap((page: PageableData<PlaceData>) => page.content);
+  }, [data]);
+
+  useEffect(() => {
+    if (data?.pages) {
+      const places = data.pages.flatMap((page: PageableData<PlaceData>) => page.content);
+      onGetPlaceData(places);
     }
+  }, [data, onGetPlaceData]);
 
-    if (data === undefined) {
-      return previousPlacesRef.current;
+  useEffect(() => {
+    if (shouldFetchPlaces) {
+      onCompleteFetch(false);
     }
-
-    if (!data.pages) {
-      return [];
-    }
-
-    const newPlaces = data.pages.flatMap((page: PageableData<PlaceData>) => {
-      return page.content.filter((place: PlaceData) => {
-        const categoryMatch = filters.categories.length === 0 || filters.categories.includes(place.category);
-        const influencerMatch = filters.influencers.length === 0 || filters.influencers.includes(place.influencerName);
-        const locationMatch = (() => {
-          if (filters.location.length === 0) return true;
-
-          return filters.location.some((loc) => {
-            // loc = 사용자가 선택한 위치 객체
-            const mainMatch = place.address.address1.includes(loc.main) || place.address.address2.includes(loc.main);
-
-            const subMatch = loc.sub
-              ? place.address.address2.includes(loc.sub) ||
-                (place.address.address3 && place.address.address3.includes(loc.sub))
-              : true;
-
-            return mainMatch && subMatch;
-          });
-        })();
-        return categoryMatch && influencerMatch && locationMatch;
-      });
-    });
-
-    // 새로운 요청에 대한 응답이 완료되었을 때만 상태 저장
-    if (shouldFetchPlaces && !isLoading && !isFetchingNextPage) {
-      lastResponseRef.current = {
-        empty: newPlaces.length === 0,
-        location: mapBounds,
-        filters,
-      };
-      previousPlacesRef.current = newPlaces;
-    }
-
-    return newPlaces;
-  }, [data, filters, isLoading, isFetchingNextPage, shouldFetchPlaces, mapBounds]);
+  }, [filteredPlaces, shouldFetchPlaces, onCompleteFetch, onGetPlaceData]);
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -120,17 +74,12 @@ export default function PlaceSection({
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  useEffect(() => {
-    if (shouldFetchPlaces) {
-      onShouldFetch(false);
-    }
-  }, [shouldFetchPlaces, onShouldFetch]);
-
+  // 장소 클릭 시 상위로 선택된 장소 전달
   const handlePlaceClick = useCallback(
     (placeId: number) => {
-      navigate(`/detail/${placeId}`);
+      onPlaceSelect(placeId);
     },
-    [navigate],
+    [onPlaceSelect],
   );
 
   if (isLoading && !isFetchingNextPage && previousPlacesRef.current.length === 0) {
@@ -159,7 +108,12 @@ export default function PlaceSection({
         <ContentContainer>
           <PlacesGrid>
             {filteredPlaces.map((place) => (
-              <PlaceItem key={place.placeId} {...place} onClick={() => handlePlaceClick(place.placeId)} />
+              <PlaceItem
+                key={place.placeId}
+                {...place}
+                onClick={() => handlePlaceClick(place.placeId)}
+                isSelected={selectedPlaceId === place.placeId}
+              />
             ))}
           </PlacesGrid>
           {(hasNextPage || isFetchingNextPage) && (

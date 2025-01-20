@@ -1,9 +1,17 @@
-import { useCallback, useState } from 'react';
-import MapWindow from '@/components/Map/MapWindow';
-import PlaceSection from '@/components/Map/PlaceSection';
-import { LocationData } from '@/types';
+import { useCallback, useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { LocationData, MarkerData, PlaceData } from '@/types';
+import { useGetAllMarkers } from '@/api/hooks/useGetAllMarkers';
+import InfluencerMapWindow from './InfluencerMapWindow';
+import InfluencerPlaceSection from './InfluencerPlaceSection';
 
-export default function InfluencerMapTap() {
+export default function InfluencerMapTap({
+  influencerImg,
+  influencerName,
+}: {
+  influencerImg: string;
+  influencerName: string;
+}) {
   const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
   const [mapBounds, setMapBounds] = useState<LocationData>({
     topLeftLatitude: 0,
@@ -11,31 +19,29 @@ export default function InfluencerMapTap() {
     bottomRightLatitude: 0,
     bottomRightLongitude: 0,
   });
+  const filters = { categories: [], influencers: [influencerName] };
   const [shouldFetchPlaces, setShouldFetchPlaces] = useState(false);
-  const [initialLocation, setInitialLocation] = useState(false);
+  const [markers, setMarkers] = useState<MarkerData[]>([]);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [placeData, setPlaceData] = useState<PlaceData[]>([]);
+  const [selectedPlaceId, setSelectedPlaceId] = useState<number | null>(null);
 
-  const filters = {
-    categories: [],
-    influencers: [],
-    location: [{ main: '', sub: '' }],
-  };
-  const places = [
+  const { data: fetchedMarkers = [] } = useGetAllMarkers(
     {
-      placeId: 1,
-      placeName: '료코',
-      address: {
-        address1: '대구',
-        address2: '북구',
-        address3: '대학로',
-      },
-      category: 'RESTAURANT',
-      influencerName: '성시경',
-      longitude: '35.123',
-      latitude: '135.11',
-      likes: true,
-      menuImgUrl: 'https://via.placeholder.com/500',
+      location: mapBounds,
+      filters,
+      center,
     },
-  ];
+    isInitialLoad,
+  );
+
+  useEffect(() => {
+    if (isInitialLoad && fetchedMarkers.length > 0) {
+      setMarkers(fetchedMarkers);
+      setIsInitialLoad(false);
+    }
+  }, [isInitialLoad, fetchedMarkers]);
+
   const handleBoundsChange = useCallback((bounds: LocationData) => {
     setMapBounds(bounds);
   }, []);
@@ -44,39 +50,52 @@ export default function InfluencerMapTap() {
     setCenter(newCenter);
   }, []);
 
-  const handlePlacesUpdate = () => {};
-
-  const handleSearchNearby = () => {};
-
-  const handleInitialLocation = useCallback((value: boolean) => {
-    setInitialLocation(value);
-    if (value) {
-      setShouldFetchPlaces(true);
-    }
+  const handleCompleteFetch = useCallback((value: boolean) => {
+    setShouldFetchPlaces(value);
   }, []);
-  const handleFetchComplete = useCallback(() => {
-    setShouldFetchPlaces(false);
+
+  const handleGetPlaceData = useCallback((data: PlaceData[]) => {
+    setPlaceData((prevData) => {
+      if (JSON.stringify(prevData) !== JSON.stringify(data)) {
+        return data;
+      }
+      return prevData;
+    });
+  }, []);
+
+  // 현재 선택된 장소 id 저장, 같은장소 재선택시 취소
+  const handlePlaceSelect = useCallback((placeId: number | null) => {
+    setSelectedPlaceId((prevId) => (prevId === placeId ? null : placeId));
   }, []);
 
   return (
-    <>
-      <MapWindow
+    <Wrapper>
+      <InfluencerMapWindow
+        influencerImg={influencerImg}
+        placeData={placeData}
+        markers={markers}
+        selectedPlaceId={selectedPlaceId}
         onBoundsChange={handleBoundsChange}
         onCenterChange={handleCenterChange}
-        onSearchNearby={handleSearchNearby}
-        onInitialLocation={handleInitialLocation}
-        center={center}
-        places={places}
-      />
-      <PlaceSection
-        mapBounds={mapBounds}
-        filters={filters}
-        onPlacesUpdate={handlePlacesUpdate}
-        center={center}
         shouldFetchPlaces={shouldFetchPlaces}
-        onFetchComplete={handleFetchComplete}
-        initialLocation={initialLocation}
+        onCompleteFetch={handleCompleteFetch}
+        onPlaceSelect={handlePlaceSelect}
       />
-    </>
+      <InfluencerPlaceSection
+        mapBounds={mapBounds}
+        center={center}
+        filters={filters}
+        shouldFetchPlaces={shouldFetchPlaces}
+        onCompleteFetch={handleCompleteFetch}
+        onGetPlaceData={handleGetPlaceData}
+        onPlaceSelect={handlePlaceSelect}
+        selectedPlaceId={selectedPlaceId}
+      />
+    </Wrapper>
   );
 }
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+`;

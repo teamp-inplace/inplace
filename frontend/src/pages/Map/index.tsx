@@ -1,5 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useState, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
 import DropdownMenu from '@/components/Map/DropdownMenu';
 import MapWindow from '@/components/Map/MapWindow';
@@ -8,7 +7,7 @@ import ToggleButton from '@/components/Map/ToggleButton';
 import Chip from '@/components/common/Chip';
 import { Text } from '@/components/common/typography/Text';
 import locationOptions from '@/utils/constants/LocationOptions';
-import { LocationData, PlaceData } from '@/types';
+import { LocationData } from '@/types';
 import useGetDropdownName from '@/api/hooks/useGetDropdownName';
 
 type SelectedOption = {
@@ -19,14 +18,11 @@ type SelectedOption = {
 };
 
 export default function MapPage() {
-  const [searchParams] = useSearchParams();
-  const influencerParam = searchParams.get('influencer');
   const { data: influencerOptions } = useGetDropdownName();
 
-  const [selectedInfluencers, setSelectedInfluencers] = useState<string[]>(influencerParam ? [influencerParam] : []);
+  const [selectedInfluencers, setSelectedInfluencers] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<SelectedOption[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [filteredPlaces, setFilteredPlaces] = useState<PlaceData[]>([]);
   const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
   const [mapBounds, setMapBounds] = useState<LocationData>({
     topLeftLatitude: 0,
@@ -35,11 +31,6 @@ export default function MapPage() {
     bottomRightLongitude: 0,
   });
   const [shouldFetchPlaces, setShouldFetchPlaces] = useState(false);
-  const [initialLocation, setInitialLocation] = useState(false);
-
-  useEffect(() => {
-    if (influencerParam) setShouldFetchPlaces(true);
-  }, [influencerParam]);
 
   const filters = useMemo(
     () => ({
@@ -96,23 +87,8 @@ export default function MapPage() {
     setCenter(newCenter);
   }, []);
 
-  const handlePlacesUpdate = useCallback((updatedPlaces: PlaceData[]) => {
-    setFilteredPlaces(updatedPlaces);
-  }, []);
-
-  const handleSearchNearby = useCallback(() => {
-    setShouldFetchPlaces(true);
-  }, []);
-
-  const handleInitialLocation = useCallback((value: boolean) => {
-    setInitialLocation(value);
-    if (value) {
-      setShouldFetchPlaces(true);
-    }
-  }, []);
-
-  const handleFetchComplete = useCallback(() => {
-    setShouldFetchPlaces(false);
+  const handleShouldFetch = useCallback((value: boolean) => {
+    setShouldFetchPlaces(value);
   }, []);
 
   const handleClearLocation = useCallback((locationToRemove: SelectedOption) => {
@@ -145,7 +121,7 @@ export default function MapPage() {
           onChange={handleInfluencerChange}
           placeholder="인플루언서"
           type="influencer"
-          defaultValue={influencerParam ? { main: influencerParam } : undefined}
+          defaultValue={undefined}
         />
       </DropdownContainer>
       <ToggleButton options={['CAFE', 'JAPANESE', 'KOREAN', 'RESTAURANT', 'WESTERN']} onSelect={handleCategorySelect} />
@@ -158,19 +134,16 @@ export default function MapPage() {
       <MapWindow
         onBoundsChange={handleBoundsChange}
         onCenterChange={handleCenterChange}
-        onSearchNearby={handleSearchNearby}
-        onInitialLocation={handleInitialLocation}
-        center={center}
-        places={filteredPlaces}
+        filters={filters}
+        shouldFetchPlaces={shouldFetchPlaces}
+        onShouldFetch={handleShouldFetch}
       />
       <PlaceSection
         mapBounds={mapBounds}
         filters={filters}
-        onPlacesUpdate={handlePlacesUpdate}
         center={center}
         shouldFetchPlaces={shouldFetchPlaces}
-        onFetchComplete={handleFetchComplete}
-        initialLocation={initialLocation}
+        onShouldFetch={handleShouldFetch}
       />
     </PageContainer>
   );
