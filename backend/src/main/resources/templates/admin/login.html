@@ -2,21 +2,93 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
     <title>Please Log In</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #e9f7ef; /* 연한 초록색 배경 */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .login-container {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        border-left: 5px solid #28a745; /* 초록색 왼쪽 테두리 */
+      }
+
+      .login-container h1 {
+        text-align: center;
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      input[type="text"], input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      input[type="submit"] {
+        width: 100%;
+        padding: 12px;
+        background-color: #28a745; /* 초록색 배경 */
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #218838; /* 초록색 hover 효과 */
+      }
+
+      .message {
+        text-align: center;
+        font-size: 14px;
+        color: #e74c3c;
+        margin-bottom: 20px;
+      }
+
+      .message.logout {
+        color: #2ecc71; /* 로그아웃 성공 시 초록색 */
+      }
+    </style>
 </head>
 <body>
-<h1>Please Log In</h1>
-<div th:if="${param.error}">
-    Invalid username and password.</div>
-<div th:if="${param.logout}">
-    You have been logged out.</div>
-<form th:action="@{/admin/login}" method="post">
-    <div>
-        <input type="text" name="username" placeholder="Username"/>
+<div class="login-container">
+    <h1>Please Log In</h1>
+    <div th:if="${param.error}" class="message">
+        Invalid username and password.
     </div>
-    <div>
-        <input type="password" name="password" placeholder="Password"/>
+    <div th:if="${param.logout}" class="message logout">
+        You have been logged out.
     </div>
-    <input type="submit" value="Log in" />
-</form>
+    <form th:action="@{/admin/login}" method="post">
+        <div class="form-group">
+            <input type="text" name="username" placeholder="Username" required/>
+        </div>
+        <div class="form-group">
+            <input type="password" name="password" placeholder="Password" required/>
+        </div>
+        <input type="submit" value="Log in" />
+    </form>
+</div>
 </body>
 </html>
