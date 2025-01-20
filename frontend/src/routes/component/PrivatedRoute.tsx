@@ -10,7 +10,6 @@ type PrivateRouteProps = {
 
 export default function PrivateRoute({ children }: PrivateRouteProps) {
   const [shouldShowModal, setShouldShowModal] = useState(false);
-  const [isAccessChecked, setIsAccessChecked] = useState(false);
   const { isAuthenticated, handleLoginSuccess } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,19 +17,14 @@ export default function PrivateRoute({ children }: PrivateRouteProps) {
   const directRedirectPaths = ['/choice', '/auth'];
   const isProtectedPath = directRedirectPaths.includes(location.pathname);
 
+  console.log('[PrivateRoute] Current state:', {
+    path: location.pathname,
+    isAuthenticated,
+  });
+
   const { data: userInfo, isLoading, isError } = useGetUserInfo();
 
   useEffect(() => {
-    const referer = document.referrer;
-    const isDirectAccess = !referer || referer.includes(window.location.origin) === false;
-
-    if (location.pathname === '/choice') {
-      if (isDirectAccess) {
-        navigate('/', { replace: true });
-        return;
-      }
-    }
-
     if (isError) {
       console.error('[PrivateRoute] Failed to fetch user info.');
       navigate('/', { replace: true });
@@ -39,10 +33,6 @@ export default function PrivateRoute({ children }: PrivateRouteProps) {
 
     if (isProtectedPath && !isAuthenticated && !isLoading && !userInfo?.nickname) {
       navigate('/', { replace: true });
-    }
-
-    if (!isLoading) {
-      setIsAccessChecked(true);
     }
   }, [isProtectedPath, isAuthenticated, userInfo, isLoading, isError, navigate]);
 
@@ -67,7 +57,7 @@ export default function PrivateRoute({ children }: PrivateRouteProps) {
     }
   }, [userInfo, isAuthenticated, handleLoginSuccess]);
 
-  if (isLoading || !isAccessChecked) return null;
+  if (isLoading) return null;
 
   if (shouldShowModal && !isAuthenticated) {
     return (
