@@ -23,15 +23,19 @@ const getFullAddress = (addr: AddressInfo) => {
 
 export default function InfoWindow({ data, onClose }: Props) {
   const translatedCategory = categoryMapping[data.category as keyof typeof categoryMapping] || '기타';
+  const isLongName = data.placeName.length > 20;
+
   return (
     <Wrapper>
       <Title>
-        <Text size="xs" weight="bold">
+        <Text size="xs" weight="bold" className="title">
           {data.placeName}
         </Text>
-        <Text size="14px" weight="normal" variant="grey">
-          {translatedCategory}
-        </Text>
+        {!isLongName && (
+          <Text size="14px" weight="normal" variant="grey">
+            {translatedCategory}
+          </Text>
+        )}
       </Title>
       <Info>
         <Img>
@@ -55,15 +59,13 @@ const Wrapper = styled.div`
   position: absolute;
   bottom: 50px;
   left: 0;
-  margin-left: -144px;
+  margin-left: -124px;
   width: 260px;
-  height: 130px;
   overflow: hidden;
   background-color: #ffffff;
   border-radius: 4px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
   box-shadow: 1px 1px 1px #b3b3b3;
 `;
 const Title = styled.div`
@@ -74,14 +76,16 @@ const Title = styled.div`
   align-items: end;
   background-color: #ecfdff;
   box-sizing: border-box;
-`;
-const Img = styled.div`
-  width: 30%;
-  aspect-ratio: 1/1;
+
+  .title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 const CloseBtn = styled.button`
   position: absolute;
-  right: 10px;
+  right: 6px;
   top: 6px;
   font-size: 18px;
   background: none;
@@ -93,8 +97,12 @@ const Info = styled.div`
   width: 100%;
   display: flex;
   gap: 12px;
-  padding: 4px;
+  padding: 8px;
   box-sizing: border-box;
+`;
+const Img = styled.div`
+  width: 30%;
+  aspect-ratio: 1 / 1;
 `;
 const TextInfo = styled.div`
   width: 65%;
