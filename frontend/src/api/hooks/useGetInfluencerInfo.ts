@@ -4,7 +4,9 @@ import { InfluencerInfoData } from '@/types';
 
 export const getInfluencerInfoPath = (id: string) => `/influencers/${id}`;
 export const getInfluencerInfo = async (id: string) => {
-  const response = await fetchInstance.get<InfluencerInfoData>(getInfluencerInfoPath(id));
+  const response = await fetchInstance.get<InfluencerInfoData>(getInfluencerInfoPath(id), {
+    withCredentials: true,
+  });
   return response.data;
 };
 export const useGetInfluencerInfo = (id: string) => {
