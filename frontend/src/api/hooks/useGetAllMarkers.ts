@@ -34,7 +34,7 @@ interface QueryParams {
   center: { lat: number; lng: number };
 }
 
-export const useGetAllMarkers = ({ location, filters, center }: QueryParams, enabled: boolean) => {
+export const useGetAllMarkers = ({ location, filters, center }: QueryParams, enabled?: boolean) => {
   return useQuery({
     queryKey: ['allMarkers', location, filters, center],
     queryFn: () => getAllMarkers(location, filters, center),

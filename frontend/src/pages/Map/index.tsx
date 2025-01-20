@@ -25,7 +25,6 @@ export default function MapPage() {
   const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
   const [selectedPlaceId, setSelectedPlaceId] = useState<number | null>(null);
   const [placeData, setPlaceData] = useState<PlaceData[]>([]);
-  const [shouldFetchPlaces, setShouldFetchPlaces] = useState(false);
   const [mapBounds, setMapBounds] = useState<LocationData>({
     topLeftLatitude: 0,
     topLeftLongitude: 0,
@@ -48,8 +47,6 @@ export default function MapPage() {
       if (prev.includes(value.main)) return prev;
       return [...prev, value.main];
     });
-    setShouldFetchPlaces(true);
-    console.log('한번호출');
   }, []);
 
   const handleLocationChange = useCallback((value: SelectedOption) => {
@@ -73,12 +70,21 @@ export default function MapPage() {
     if (value.lat && value.lng) {
       setCenter({ lat: value.lat, lng: value.lng });
     }
-    setShouldFetchPlaces(true);
   }, []);
 
   const handleCategorySelect = useCallback((selected: string[]) => {
     setSelectedCategories(selected);
-    setShouldFetchPlaces(true);
+    console.log('한번호출');
+  }, []);
+
+  const handleClearLocation = useCallback((locationToRemove: SelectedOption) => {
+    setSelectedLocations((prev) =>
+      prev.filter((location) => !(location.main === locationToRemove.main && location.sub === locationToRemove.sub)),
+    );
+  }, []);
+
+  const handleClearInfluencer = useCallback((influencerToRemove: string) => {
+    setSelectedInfluencers((prev) => prev.filter((influencer) => influencer !== influencerToRemove));
   }, []);
 
   const handleBoundsChange = useCallback((bounds: LocationData) => {
@@ -87,23 +93,6 @@ export default function MapPage() {
 
   const handleCenterChange = useCallback((newCenter: { lat: number; lng: number }) => {
     setCenter(newCenter);
-  }, []);
-
-  const handleShouldFetch = useCallback((value: boolean) => {
-    // 여기
-    setShouldFetchPlaces(value);
-  }, []);
-
-  const handleClearLocation = useCallback((locationToRemove: SelectedOption) => {
-    setSelectedLocations((prev) =>
-      prev.filter((location) => !(location.main === locationToRemove.main && location.sub === locationToRemove.sub)),
-    );
-    setShouldFetchPlaces(true);
-  }, []);
-
-  const handleClearInfluencer = useCallback((influencerToRemove: string) => {
-    setSelectedInfluencers((prev) => prev.filter((influencer) => influencer !== influencerToRemove));
-    setShouldFetchPlaces(true);
   }, []);
 
   const handleGetPlaceData = useCallback((data: PlaceData[]) => {
@@ -152,17 +141,13 @@ export default function MapPage() {
         onCenterChange={handleCenterChange}
         filters={filters}
         placeData={placeData}
-        shouldFetchPlaces={shouldFetchPlaces}
         selectedPlaceId={selectedPlaceId}
-        onShouldFetch={handleShouldFetch}
         onPlaceSelect={handlePlaceSelect}
       />
       <PlaceSection
         mapBounds={mapBounds}
         filters={filters}
         center={center}
-        shouldFetchPlaces={shouldFetchPlaces}
-        onShouldFetch={handleShouldFetch}
         onGetPlaceData={handleGetPlaceData}
         onPlaceSelect={handlePlaceSelect}
         selectedPlaceId={selectedPlaceId}

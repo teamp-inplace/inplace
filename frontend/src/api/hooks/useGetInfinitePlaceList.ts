@@ -36,7 +36,7 @@ interface QueryParams {
   size: number;
 }
 
-export const useGetInfinitePlaceList = ({ location, filters, center, size }: QueryParams, enabled: boolean) => {
+export const useGetInfinitePlaceList = ({ location, filters, center, size }: QueryParams, enabled?: boolean) => {
   return useInfiniteQuery<
     PageableData<PlaceData>,
     Error,

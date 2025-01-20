@@ -15,36 +15,21 @@ interface PlaceSectionProps {
     location: { main: string; sub?: string; lat?: number; lng?: number }[];
   };
   center: { lat: number; lng: number };
-  shouldFetchPlaces: boolean;
-  onShouldFetch: (vaule: boolean) => void;
   onGetPlaceData: (data: PlaceData[]) => void;
   onPlaceSelect: (placeId: number) => void;
   selectedPlaceId: number | null;
-}
-
-interface LastResponseState {
-  empty: boolean;
-  location: LocationData;
-  filters: PlaceSectionProps['filters'];
 }
 
 export default function PlaceSection({
   mapBounds,
   filters,
   center,
-  shouldFetchPlaces,
-  onShouldFetch,
   onGetPlaceData,
   onPlaceSelect,
   selectedPlaceId,
 }: PlaceSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null); // 무한 스크롤을 위한 ref와 observer 설정
   const previousPlacesRef = useRef<PlaceData[]>([]);
-  const lastResponseRef = useRef<LastResponseState>({
-    empty: false,
-    location: mapBounds,
-    filters,
-  });
 
   const { ref: loadMoreRef, inView } = useInView({
     // useInView = Intersection Oberser API를 react hook으로 구현한 것
@@ -54,26 +39,14 @@ export default function PlaceSection({
   });
 
   // 데이터 fetching hook
-  const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetInfinitePlaceList(
-    {
-      location: mapBounds,
-      filters,
-      center,
-      size: 10, // 한 페이지에 보여줄 아이템 개수; 변경하며 api 잘 받아오는지 확인 가능
-    },
-    shouldFetchPlaces,
-  );
+  const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetInfinitePlaceList({
+    location: mapBounds,
+    filters,
+    center,
+    size: 10, // 한 페이지에 보여줄 아이템 개수; 변경하며 api 잘 받아오는지 확인 가능
+  });
 
   const filteredPlaces = useMemo(() => {
-    // 지도만 움직이는 경우 빈 배열 상태 유지
-    if (
-      !shouldFetchPlaces &&
-      lastResponseRef.current.empty &&
-      JSON.stringify(lastResponseRef.current.filters) === JSON.stringify(filters)
-    ) {
-      return [];
-    }
-
     if (data === undefined) {
       return previousPlacesRef.current;
     }
@@ -83,40 +56,12 @@ export default function PlaceSection({
     }
 
     const newPlaces = data.pages.flatMap((page: PageableData<PlaceData>) => {
-      return page.content.filter((place: PlaceData) => {
-        const categoryMatch = filters.categories.length === 0 || filters.categories.includes(place.category);
-        const influencerMatch = filters.influencers.length === 0 || filters.influencers.includes(place.influencerName);
-        const locationMatch = (() => {
-          if (filters.location.length === 0) return true;
-
-          return filters.location.some((loc) => {
-            // loc = 사용자가 선택한 위치 객체
-            const mainMatch = place.address.address1.includes(loc.main) || place.address.address2.includes(loc.main);
-
-            const subMatch = loc.sub
-              ? place.address.address2.includes(loc.sub) ||
-                (place.address.address3 && place.address.address3.includes(loc.sub))
-              : true;
-
-            return mainMatch && subMatch;
-          });
-        })();
-        return categoryMatch && influencerMatch && locationMatch;
-      });
+      return page.content;
     });
 
-    // 새로운 요청에 대한 응답이 완료되었을 때만 상태 저장
-    if (shouldFetchPlaces && !isLoading && !isFetchingNextPage) {
-      lastResponseRef.current = {
-        empty: newPlaces.length === 0,
-        location: mapBounds,
-        filters,
-      };
-      previousPlacesRef.current = newPlaces;
-    }
-
+    previousPlacesRef.current = newPlaces;
     return newPlaces;
-  }, [data, filters, isLoading, isFetchingNextPage, shouldFetchPlaces, mapBounds]);
+  }, [data]);
 
   useEffect(() => {
     if (data?.pages) {
@@ -124,12 +69,6 @@ export default function PlaceSection({
       onGetPlaceData(places);
     }
   }, [data, onGetPlaceData]);
-
-  useEffect(() => {
-    if (shouldFetchPlaces) {
-      onShouldFetch(false);
-    }
-  }, [filteredPlaces, shouldFetchPlaces, onShouldFetch, onGetPlaceData]);
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {

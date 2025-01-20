@@ -18,9 +18,7 @@ interface MapWindowProps {
     location: { main: string; sub?: string; lat?: number; lng?: number }[];
   };
   placeData: PlaceData[];
-  shouldFetchPlaces: boolean;
   selectedPlaceId: number | null;
-  onShouldFetch: (vaule: boolean) => void;
   onPlaceSelect: (placeId: number | null) => void;
 }
 
@@ -29,9 +27,7 @@ export default function MapWindow({
   onCenterChange,
   filters,
   placeData,
-  shouldFetchPlaces,
   selectedPlaceId,
-  onShouldFetch,
   onPlaceSelect,
 }: MapWindowProps) {
   const originSize = 34;
@@ -49,14 +45,11 @@ export default function MapWindow({
   const [markerInfo, setMarkerInfo] = useState<MarkerInfo | PlaceData>();
   const [shouldFetchData, setShouldFetchData] = useState<boolean>(false);
 
-  const { data: markers = [] } = useGetAllMarkers(
-    {
-      location: mapBound,
-      filters,
-      center: mapCenter,
-    },
-    shouldFetchPlaces,
-  );
+  const { data: markers = [] } = useGetAllMarkers({
+    location: mapBound,
+    filters,
+    center: mapCenter,
+  });
 
   const selectedMarker = markers.find((m) => m.placeId === selectedPlaceId);
   const MarkerInfoData = useGetMarkerInfo(selectedPlaceId?.toString() || '', shouldFetchData);
@@ -78,9 +71,7 @@ export default function MapWindow({
 
     onCenterChange({ lat: currentCenter.getLat(), lng: currentCenter.getLng() });
     onBoundsChange(newBounds);
-
-    onShouldFetch(true);
-  }, [onBoundsChange, onCenterChange, onShouldFetch]);
+  }, [onBoundsChange, onCenterChange]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -129,13 +120,6 @@ export default function MapWindow({
       moveMapToMarker(selectedMarker.latitude, selectedMarker.longitude);
     }
   }, [selectedPlaceId, selectedMarker, moveMapToMarker]);
-
-  useEffect(() => {
-    if (shouldFetchPlaces) {
-      fetchMarkers();
-      onShouldFetch(false);
-    }
-  }, [shouldFetchPlaces, fetchMarkers, onShouldFetch]);
 
   // 마커 정보를 새로 호출한 후 데이터 업데이트
   useEffect(() => {
