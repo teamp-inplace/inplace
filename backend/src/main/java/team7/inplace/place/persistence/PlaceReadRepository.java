@@ -26,5 +26,14 @@ public interface PlaceReadRepository {
             Long userId
     );
 
+    List<PlaceQueryResult.Location> findPlaceLocationsInMapRange(
+            Double topLeftLongitude,
+            Double topLeftLatitude,
+            Double bottomRightLongitude,
+            Double bottomRightLatitude,
+            List<Category> categoryFilters,
+            List<String> influencerFilters
+    );
+
     Page<PlaceQueryResult.DetailedPlaceBulk> findLikedPlacesByUserIdWithPaging(Long userId, Pageable pageable);
 }

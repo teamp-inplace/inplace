@@ -25,6 +25,7 @@ import team7.inplace.place.domain.QPlace;
 import team7.inplace.place.persistence.dto.PlaceQueryResult;
 import team7.inplace.place.persistence.dto.PlaceQueryResult.SimplePlace;
 import team7.inplace.place.persistence.dto.QPlaceQueryResult_DetailedPlace;
+import team7.inplace.place.persistence.dto.QPlaceQueryResult_Location;
 import team7.inplace.place.persistence.dto.QPlaceQueryResult_Menu;
 import team7.inplace.place.persistence.dto.QPlaceQueryResult_MenuBordPhoto;
 import team7.inplace.place.persistence.dto.QPlaceQueryResult_OffDay;
@@ -185,6 +186,41 @@ public class PlaceReadRepositoryImpl implements PlaceReadRepository {
             return new PageImpl<>(List.of(), pageable, 0);
         }
         return PageableExecutionUtils.getPage(places, pageable, filteredPlaceId::size);
+    }
+
+    @Override
+    public List<PlaceQueryResult.Location> findPlaceLocationsInMapRange(
+        Double topLeftLongitude,
+        Double topLeftLatitude,
+        Double bottomRightLongitude,
+        Double bottomRightLatitude,
+        List<Category> categoryFilters,
+        List<String> influencerFilters
+    ) {
+        var filterExpression = createFilters(categoryFilters, influencerFilters);
+
+        List<Long> filteredPlaceId = jpaQueryFactory
+            .select(QPlace.place.id).distinct()
+            .from(QVideo.video)
+            .leftJoin(QInfluencer.influencer).on(QVideo.video.influencerId.eq(QInfluencer.influencer.id))
+            .leftJoin(QPlace.place).on(QVideo.video.placeId.eq(QPlace.place.id))
+            .where(
+                QPlace.place.coordinate.longitude.between(topLeftLongitude, bottomRightLongitude),
+                QPlace.place.coordinate.latitude.between(bottomRightLatitude, topLeftLatitude),
+                filterExpression,
+                QVideo.video.placeId.isNotNull()
+            ).fetch();
+
+        return jpaQueryFactory
+            .select(new QPlaceQueryResult_Location(
+                    QPlace.place.id,
+                    QPlace.place.coordinate.longitude,
+                    QPlace.place.coordinate.latitude
+                )
+            )
+            .from(QPlace.place)
+            .where(QPlace.place.id.in(filteredPlaceId))
+            .fetch();
     }
 
     private BooleanBuilder createFilters(
