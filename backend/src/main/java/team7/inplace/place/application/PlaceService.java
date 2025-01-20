@@ -33,6 +33,7 @@ import team7.inplace.video.persistence.VideoReadRepository;
 @Service
 @RequiredArgsConstructor
 public class PlaceService {
+
     private final PlaceReadRepository placeReadRepository;
     private final PlaceSaveRepository placeSaveRepository;
 
@@ -41,9 +42,9 @@ public class PlaceService {
     private final VideoReadRepository videoReadRepository;
 
     public Page<PlaceQueryInfo.Simple> getPlacesInMapRange(
-            Coordinate coordinateCommand,
-            FilterParams filterParamsCommand,
-            Pageable pageable
+        Coordinate coordinateCommand,
+        FilterParams filterParamsCommand,
+        Pageable pageable
     ) {
         var categoryFilters = filterParamsCommand.getCategoryFilters();
         var influencerFilters = filterParamsCommand.getInfluencerFilters();
@@ -51,11 +52,11 @@ public class PlaceService {
         // 위치와 필터링으로 Place 조회
         var userId = AuthorizationUtil.getUserId();
         var placesPage = getPlacesByDistance(
-                coordinateCommand,
-                categoryFilters,
-                influencerFilters,
-                pageable,
-                userId
+            coordinateCommand,
+            categoryFilters,
+            influencerFilters,
+            pageable,
+            userId
         );
         if (placesPage.isEmpty()) {
             return new PageImpl<>(List.of(), pageable, 0);
@@ -63,34 +64,34 @@ public class PlaceService {
 
         // Place 에 대한 Video 조회
         var placeIds = placesPage.getContent().stream()
-                .map(PlaceQueryResult.DetailedPlace::placeId)
-                .toList();
+            .map(PlaceQueryResult.DetailedPlace::placeId)
+            .toList();
         var placeVideos = videoReadRepository.findSimpleVideosByPlaceIds(placeIds);
 
         List<PlaceQueryInfo.Simple> placeInfos = placesPage.getContent().stream()
-                .map(place -> PlaceQueryInfo.Simple.from(place, placeVideos.get(place.placeId())))
-                .toList();
+            .map(place -> PlaceQueryInfo.Simple.from(place, placeVideos.get(place.placeId())))
+            .toList();
         return new PageImpl<>(placeInfos, pageable, placesPage.getTotalElements());
     }
 
     private Page<PlaceQueryResult.DetailedPlace> getPlacesByDistance(
-            Coordinate placesCoordinateCommand,
-            List<Category> categoryFilters,
-            List<String> influencerFilters,
-            Pageable pageable,
-            Long userId
+        Coordinate placesCoordinateCommand,
+        List<Category> categoryFilters,
+        List<String> influencerFilters,
+        Pageable pageable,
+        Long userId
     ) {
         return placeReadRepository.findPlacesInMapRangeWithPaging(
-                placesCoordinateCommand.topLeftLongitude(),
-                placesCoordinateCommand.topLeftLatitude(),
-                placesCoordinateCommand.bottomRightLongitude(),
-                placesCoordinateCommand.bottomRightLatitude(),
-                placesCoordinateCommand.longitude(),
-                placesCoordinateCommand.latitude(),
-                categoryFilters,
-                influencerFilters,
-                pageable,
-                userId
+            placesCoordinateCommand.topLeftLongitude(),
+            placesCoordinateCommand.topLeftLatitude(),
+            placesCoordinateCommand.bottomRightLongitude(),
+            placesCoordinateCommand.bottomRightLatitude(),
+            placesCoordinateCommand.longitude(),
+            placesCoordinateCommand.latitude(),
+            categoryFilters,
+            influencerFilters,
+            pageable,
+            userId
         );
     }
 
@@ -99,7 +100,7 @@ public class PlaceService {
         var userId = AuthorizationUtil.getUserId();
 
         var detailedPlace = placeReadRepository.findDetailedPlaceById(placeId, userId)
-                .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
+            .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
         var placeVideos = videoReadRepository.findSimpleVideoByPlaceId(placeId);
         var placeReviewRate = reviewJPARepository.countRateByPlaceId(placeId);
 
@@ -115,7 +116,7 @@ public class PlaceService {
 
         Long placeId = command.placeId();
         LikedPlace likedPlace = likedPlaceRepository.findByUserIdAndPlaceId(userId, placeId)
-                .orElseGet(() -> LikedPlace.from(userId, placeId));
+            .orElseGet(() -> LikedPlace.from(userId, placeId));
 
         likedPlace.updateLike(command.likes());
         likedPlaceRepository.save(likedPlace);
@@ -129,7 +130,7 @@ public class PlaceService {
     //TODO: 한 장소에 비디오가 여러개일 수 있으니 수정 필요
     public PlaceMessageCommand getPlaceMessageCommand(Long placeId) {
         var place = placeReadRepository.findSimplePlaceById(placeId)
-                .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
+            .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
         var video = videoReadRepository.findSimpleVideoByPlaceId(placeId);
 
         return PlaceMessageCommand.from(place, video.get(0));
@@ -139,8 +140,25 @@ public class PlaceService {
         var likedPlaceQueryResult = placeReadRepository.findLikedPlacesByUserIdWithPaging(userId, pageable);
 
         var likedPlaceInfos = likedPlaceQueryResult.getContent().stream()
-                .map(LikedPlaceInfo::of)
-                .toList();
+            .map(LikedPlaceInfo::of)
+            .toList();
         return new PageImpl<>(likedPlaceInfos, pageable, likedPlaceQueryResult.getTotalElements());
+    }
+
+    public List<PlaceQueryResult.Location> getPlaceLocations(
+        Coordinate coordinateCommand,
+        FilterParams filterParamsCommand
+    ) {
+        List<Category> categoryFilter = filterParamsCommand.getCategoryFilters();
+        List<String> influencerFilter = filterParamsCommand.getInfluencerFilters();
+
+        return placeReadRepository.findPlaceLocationsInMapRange(
+            coordinateCommand.topLeftLongitude(),
+            coordinateCommand.topLeftLatitude(),
+            coordinateCommand.bottomRightLongitude(),
+            coordinateCommand.bottomRightLatitude(),
+            categoryFilter,
+            influencerFilter
+        );
     }
 }
