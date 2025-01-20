@@ -88,4 +88,14 @@ public class PlaceQueryResult {
         public OffDay {
         }
     }
+
+    public record Location (
+        Long placeId,
+        Double longitude,
+        Double latitude
+    ) {
+        @QueryProjection
+        public Location {
+        }
+    }
 }

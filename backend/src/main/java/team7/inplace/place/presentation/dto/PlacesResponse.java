@@ -207,4 +207,24 @@ public class PlacesResponse {
             return new PlaceLikes(likeRate.likes().toString(), likeRate.dislikes().toString());
         }
     }
+
+    public record Location (
+            Long placeId,
+            Double longitude,
+            Double latitude
+    ) {
+        public static List<Location> from(List<PlaceQueryResult.Location> locations) {
+            return locations.stream()
+                .map(PlacesResponse.Location::from)
+                .toList();
+        }
+
+        private static Location from(PlaceQueryResult.Location location) {
+            return new Location(
+                location.placeId(),
+                location.longitude(),
+                location.latitude()
+            );
+        }
+    }
 }
