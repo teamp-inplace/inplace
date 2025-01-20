@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useInView } from 'react-intersection-observer';
 import PlaceItem from '@/components/Map/PlaceSection/PlaceItem';
@@ -18,6 +17,9 @@ interface PlaceSectionProps {
   center: { lat: number; lng: number };
   shouldFetchPlaces: boolean;
   onShouldFetch: (vaule: boolean) => void;
+  onGetPlaceData: (data: PlaceData[]) => void;
+  onPlaceSelect: (placeId: number) => void;
+  selectedPlaceId: number | null;
 }
 
 interface LastResponseState {
@@ -32,8 +34,10 @@ export default function PlaceSection({
   center,
   shouldFetchPlaces,
   onShouldFetch,
+  onGetPlaceData,
+  onPlaceSelect,
+  selectedPlaceId,
 }: PlaceSectionProps) {
-  const navigate = useNavigate();
   const sectionRef = useRef<HTMLDivElement>(null); // 무한 스크롤을 위한 ref와 observer 설정
   const previousPlacesRef = useRef<PlaceData[]>([]);
   const lastResponseRef = useRef<LastResponseState>({
@@ -115,22 +119,29 @@ export default function PlaceSection({
   }, [data, filters, isLoading, isFetchingNextPage, shouldFetchPlaces, mapBounds]);
 
   useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
+    if (data?.pages) {
+      const places = data.pages.flatMap((page: PageableData<PlaceData>) => page.content);
+      onGetPlaceData(places);
     }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [data, onGetPlaceData]);
 
   useEffect(() => {
     if (shouldFetchPlaces) {
       onShouldFetch(false);
     }
-  }, [shouldFetchPlaces, onShouldFetch]);
+  }, [filteredPlaces, shouldFetchPlaces, onShouldFetch, onGetPlaceData]);
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handlePlaceClick = useCallback(
     (placeId: number) => {
-      navigate(`/detail/${placeId}`);
+      onPlaceSelect(placeId);
     },
-    [navigate],
+    [onPlaceSelect],
   );
 
   if (isLoading && !isFetchingNextPage && previousPlacesRef.current.length === 0) {
@@ -159,7 +170,12 @@ export default function PlaceSection({
         <ContentContainer>
           <PlacesGrid>
             {filteredPlaces.map((place) => (
-              <PlaceItem key={place.placeId} {...place} onClick={() => handlePlaceClick(place.placeId)} />
+              <PlaceItem
+                key={place.placeId}
+                {...place}
+                onClick={() => handlePlaceClick(place.placeId)}
+                isSelected={selectedPlaceId === place.placeId}
+              />
             ))}
           </PlacesGrid>
           {(hasNextPage || isFetchingNextPage) && (

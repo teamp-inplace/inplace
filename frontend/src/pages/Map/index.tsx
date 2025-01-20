@@ -7,7 +7,7 @@ import ToggleButton from '@/components/Map/ToggleButton';
 import Chip from '@/components/common/Chip';
 import { Text } from '@/components/common/typography/Text';
 import locationOptions from '@/utils/constants/LocationOptions';
-import { LocationData } from '@/types';
+import { LocationData, PlaceData } from '@/types';
 import useGetDropdownName from '@/api/hooks/useGetDropdownName';
 
 type SelectedOption = {
@@ -19,18 +19,19 @@ type SelectedOption = {
 
 export default function MapPage() {
   const { data: influencerOptions } = useGetDropdownName();
-
   const [selectedInfluencers, setSelectedInfluencers] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<SelectedOption[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
+  const [selectedPlaceId, setSelectedPlaceId] = useState<number | null>(null);
+  const [placeData, setPlaceData] = useState<PlaceData[]>([]);
+  const [shouldFetchPlaces, setShouldFetchPlaces] = useState(false);
   const [mapBounds, setMapBounds] = useState<LocationData>({
     topLeftLatitude: 0,
     topLeftLongitude: 0,
     bottomRightLatitude: 0,
     bottomRightLongitude: 0,
   });
-  const [shouldFetchPlaces, setShouldFetchPlaces] = useState(false);
 
   const filters = useMemo(
     () => ({
@@ -48,6 +49,7 @@ export default function MapPage() {
       return [...prev, value.main];
     });
     setShouldFetchPlaces(true);
+    console.log('한번호출');
   }, []);
 
   const handleLocationChange = useCallback((value: SelectedOption) => {
@@ -88,6 +90,7 @@ export default function MapPage() {
   }, []);
 
   const handleShouldFetch = useCallback((value: boolean) => {
+    // 여기
     setShouldFetchPlaces(value);
   }, []);
 
@@ -101,6 +104,19 @@ export default function MapPage() {
   const handleClearInfluencer = useCallback((influencerToRemove: string) => {
     setSelectedInfluencers((prev) => prev.filter((influencer) => influencer !== influencerToRemove));
     setShouldFetchPlaces(true);
+  }, []);
+
+  const handleGetPlaceData = useCallback((data: PlaceData[]) => {
+    setPlaceData((prevData) => {
+      if (JSON.stringify(prevData) !== JSON.stringify(data)) {
+        return data;
+      }
+      return prevData;
+    });
+  }, []);
+
+  const handlePlaceSelect = useCallback((placeId: number | null) => {
+    setSelectedPlaceId((prevId) => (prevId === placeId ? null : placeId));
   }, []);
 
   return (
@@ -135,8 +151,11 @@ export default function MapPage() {
         onBoundsChange={handleBoundsChange}
         onCenterChange={handleCenterChange}
         filters={filters}
+        placeData={placeData}
         shouldFetchPlaces={shouldFetchPlaces}
+        selectedPlaceId={selectedPlaceId}
         onShouldFetch={handleShouldFetch}
+        onPlaceSelect={handlePlaceSelect}
       />
       <PlaceSection
         mapBounds={mapBounds}
@@ -144,6 +163,9 @@ export default function MapPage() {
         center={center}
         shouldFetchPlaces={shouldFetchPlaces}
         onShouldFetch={handleShouldFetch}
+        onGetPlaceData={handleGetPlaceData}
+        onPlaceSelect={handlePlaceSelect}
+        selectedPlaceId={selectedPlaceId}
       />
     </PageContainer>
   );
