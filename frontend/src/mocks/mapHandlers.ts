@@ -43,6 +43,8 @@ const dummyMarkerInfos: Record<string, MarkerInfo> = {
       address3: '대현동 119-11',
     },
     menuImgUrl: 'https://via.placeholder.com/500',
+    influencerName: '성시경',
+    category: '한식',
   },
 };
 
