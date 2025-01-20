@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useInView } from 'react-intersection-observer';
 import PlaceItem from '@/components/Map/PlaceSection/PlaceItem';
@@ -18,6 +17,8 @@ interface PlaceSectionProps {
   shouldFetchPlaces: boolean;
   onCompleteFetch: (value: boolean) => void;
   onGetPlaceData: (data: PlaceData[]) => void;
+  onPlaceSelect: (placeId: number) => void;
+  selectedPlaceId: number | null;
 }
 
 export default function InfluencerPlaceSection({
@@ -27,8 +28,9 @@ export default function InfluencerPlaceSection({
   shouldFetchPlaces,
   onCompleteFetch,
   onGetPlaceData,
+  onPlaceSelect,
+  selectedPlaceId,
 }: PlaceSectionProps) {
-  const navigate = useNavigate();
   const sectionRef = useRef<HTMLDivElement>(null); // 무한 스크롤을 위한 ref와 observer 설정
   const previousPlacesRef = useRef<PlaceData[]>([]);
 
@@ -76,9 +78,9 @@ export default function InfluencerPlaceSection({
 
   const handlePlaceClick = useCallback(
     (placeId: number) => {
-      navigate(`/detail/${placeId}`);
+      onPlaceSelect(placeId);
     },
-    [navigate],
+    [onPlaceSelect],
   );
 
   if (isLoading && !isFetchingNextPage && previousPlacesRef.current.length === 0) {
@@ -107,7 +109,12 @@ export default function InfluencerPlaceSection({
         <ContentContainer>
           <PlacesGrid>
             {filteredPlaces.map((place) => (
-              <PlaceItem key={place.placeId} {...place} onClick={() => handlePlaceClick(place.placeId)} />
+              <PlaceItem
+                key={place.placeId}
+                {...place}
+                onClick={() => handlePlaceClick(place.placeId)}
+                isSelected={selectedPlaceId === place.placeId}
+              />
             ))}
           </PlacesGrid>
           {(hasNextPage || isFetchingNextPage) && (

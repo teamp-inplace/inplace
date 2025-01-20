@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { LocationData, MarkerData, PlaceData } from '@/types';
 import { useGetAllMarkers } from '@/api/hooks/useGetAllMarkers';
-import InfluencerMapWindow, { MapWindowRef } from './InfluencerMapWindow';
+import InfluencerMapWindow from './InfluencerMapWindow';
 import InfluencerPlaceSection from './InfluencerPlaceSection';
 
 export default function InfluencerMapTap({
@@ -25,8 +25,6 @@ export default function InfluencerMapTap({
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [placeData, setPlaceData] = useState<PlaceData[]>([]);
   const [selectedPlaceId, setSelectedPlaceId] = useState<number | null>(null);
-
-  const mapRef = useRef<MapWindowRef>(null);
 
   const { data: fetchedMarkers = [] } = useGetAllMarkers(
     {
@@ -65,33 +63,22 @@ export default function InfluencerMapTap({
     });
   }, []);
 
-  const handlePlaceSelect = useCallback(
-    (placeId: number) => {
-      setSelectedPlaceId(placeId);
-      const marker = markers.find((m) => m.placeId === placeId);
-      if (marker && mapRef.current?.handleMarkerClick) {
-        mapRef.current.handleMarkerClick(placeId);
-      }
-    },
-    [markers],
-  );
-
-  const handleClosePlace = useCallback(() => {
-    setSelectedPlaceId(null);
+  const handlePlaceSelect = useCallback((placeId: number | null) => {
+    setSelectedPlaceId((prevId) => (prevId === placeId ? null : placeId));
   }, []);
 
   return (
     <Wrapper>
       <InfluencerMapWindow
-        ref={mapRef}
         influencerImg={influencerImg}
         placeData={placeData}
         markers={markers}
+        selectedPlaceId={selectedPlaceId}
         onBoundsChange={handleBoundsChange}
         onCenterChange={handleCenterChange}
         shouldFetchPlaces={shouldFetchPlaces}
         onCompleteFetch={handleCompleteFetch}
-        onClosePlace={handleClosePlace}
+        onPlaceSelect={handlePlaceSelect}
       />
       <InfluencerPlaceSection
         mapBounds={mapBounds}

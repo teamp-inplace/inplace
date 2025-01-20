@@ -11,6 +11,7 @@ import FallbackImage from '@/components/common/Items/FallbackImage';
 
 interface PlaceItemProps extends PlaceData {
   onClick: () => void;
+  isSelected: boolean;
 }
 const getFullAddress = (addr: PlaceData['address']) => {
   return [addr.address1, addr.address2, addr.address3].filter(Boolean).join(' ');
@@ -24,6 +25,7 @@ export default function PlaceItem({
   likes,
   menuImgUrl,
   onClick,
+  isSelected,
 }: PlaceItemProps) {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
@@ -60,7 +62,7 @@ export default function PlaceItem({
 
   return (
     <>
-      <PlaceCard key={placeId} onClick={onClick}>
+      <PlaceCard key={placeId} onClick={onClick} $isSelected={isSelected}>
         <ImageContainer>
           <FallbackImage src={menuImgUrl} alt={placeName} />
         </ImageContainer>
@@ -96,12 +98,20 @@ export default function PlaceItem({
   );
 }
 
-const PlaceCard = styled.div`
+const PlaceCard = styled.div<{ $isSelected: boolean }>`
   width: 460px;
   height: 160px;
   position: relative;
   display: flex;
   box-sizing: border-box;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: ${({ $isSelected }) => ($isSelected ? '#1b1a1a' : 'none')};
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #1b1a1a;
+  }
 `;
 
 const ImageContainer = styled.div`

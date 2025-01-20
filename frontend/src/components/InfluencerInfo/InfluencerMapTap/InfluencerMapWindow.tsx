@@ -13,32 +13,57 @@ interface MapWindowProps {
   influencerImg: string;
   markers: MarkerData[];
   placeData: PlaceData[];
+  selectedPlaceId: number | null;
   onBoundsChange: (bounds: LocationData) => void;
   onCenterChange: (center: { lat: number; lng: number }) => void;
   shouldFetchPlaces: boolean;
   onCompleteFetch: (value: boolean) => void;
+  onPlaceSelect: (placeId: number | null) => void;
 }
 
 export default function InfluencerMapWindow({
   influencerImg,
   markers,
   placeData,
+  selectedPlaceId,
   onBoundsChange,
   onCenterChange,
   shouldFetchPlaces,
   onCompleteFetch,
+  onPlaceSelect,
 }: MapWindowProps) {
   const originSize = 34;
   const mapRef = useRef<kakao.maps.Map | null>(null);
-  const openInfoWindowRef = useRef<number | null>(null);
 
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [markerSizes, setMarkerSizes] = useState<{ [key: number]: number }>({});
   const [markerInfo, setMarkerInfo] = useState<MarkerInfo | PlaceData>();
   const [shouldFetchData, setShouldFetchData] = useState<boolean>(false);
-  const openMarkerData = markers.find((m) => m.placeId === openInfoWindowRef.current); // 열려있는 인포 찾기
 
-  const MarkerInfoData = useGetMarkerInfo(openInfoWindowRef.current?.toString() || '', shouldFetchData);
+  const selectedMarker = markers.find((m) => m.placeId === selectedPlaceId);
+  const MarkerInfoData = useGetMarkerInfo(selectedPlaceId?.toString() || '', shouldFetchData);
+
+  const moveMapToMarker = useCallback((latitude: number, longitude: number) => {
+    if (mapRef.current) {
+      const position = new kakao.maps.LatLng(latitude, longitude);
+      if (mapRef.current.getLevel() > 10) {
+        mapRef.current.setLevel(9, {
+          anchor: position,
+          animate: true,
+        });
+      }
+      setTimeout(() => {
+        if (mapRef.current) {
+          mapRef.current.panTo(position);
+        }
+      }, 100);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (selectedPlaceId && selectedMarker) {
+      moveMapToMarker(selectedMarker.latitude, selectedMarker.longitude);
+    }
+  }, [selectedPlaceId, selectedMarker, moveMapToMarker]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -111,10 +136,10 @@ export default function InfluencerMapWindow({
 
   // 장소 정보에 마커 정보가 있을 경우 - 1
   useEffect(() => {
-    if (openInfoWindowRef.current && placeData.length > 0) {
-      getMarkerInfoWithPlaceInfo(openInfoWindowRef.current);
+    if (selectedPlaceId && placeData.length > 0) {
+      getMarkerInfoWithPlaceInfo(selectedPlaceId);
     }
-  }, [placeData, getMarkerInfoWithPlaceInfo]);
+  }, [selectedPlaceId, placeData, getMarkerInfoWithPlaceInfo]);
 
   const handleSearchNearby = useCallback(() => {
     fetchLocation();
@@ -129,47 +154,16 @@ export default function InfluencerMapWindow({
 
   // 마커 클릭 시, 사이즈 조절 및 마커 정보 가져오기
   const handleMarkerClick = useCallback(
-    (place: number, marker: kakao.maps.Marker) => {
-      if (mapRef.current && marker && openInfoWindowRef.current !== place) {
-        openInfoWindowRef.current = place;
-        setTimeout(() => {
-          getMarkerInfoWithPlaceInfo(place);
-        }, 0);
-        const pos = marker.getPosition();
-        setMarkerSizes((prevSizes) => ({
-          ...Object.keys(prevSizes).reduce(
-            (acc, key) => ({
-              ...acc,
-              [key]: originSize,
-            }),
-            {},
-          ),
-          [place]: originSize + 10,
-        }));
-        if (mapRef.current.getLevel() > 10) {
-          mapRef.current.setLevel(9, {
-            anchor: pos,
-            animate: true,
-          });
+    (placeId: number, marker: kakao.maps.Marker) => {
+      if (mapRef.current && marker) {
+        onPlaceSelect(selectedPlaceId === placeId ? null : placeId);
+        if (selectedPlaceId !== placeId) {
+          const pos = marker.getPosition();
+          moveMapToMarker(pos.getLat(), pos.getLng());
         }
-        setTimeout(() => {
-          if (mapRef.current) {
-            mapRef.current.panTo(pos);
-            openInfoWindowRef.current = place;
-          }
-        }, 100);
-      }
-      // 같은 마커 클릭하면 다시 닫음
-      else {
-        openInfoWindowRef.current = null;
-        setShouldFetchData(false);
-        setMarkerSizes((prevSizes) => ({
-          ...prevSizes,
-          [place]: originSize,
-        }));
       }
     },
-    [getMarkerInfoWithPlaceInfo],
+    [selectedPlaceId, onPlaceSelect, moveMapToMarker],
   );
 
   return (
@@ -210,29 +204,25 @@ export default function InfluencerMapWindow({
                 image={{
                   src: influencerImg || BasicImage,
                   size: {
-                    width: markerSizes[place.placeId] || originSize,
-                    height: markerSizes[place.placeId] || originSize,
+                    width: selectedPlaceId === place.placeId ? originSize + 10 : originSize,
+                    height: selectedPlaceId === place.placeId ? originSize + 10 : originSize,
                   },
                 }}
               />
             ))}
           </MarkerClusterer>
-          {openInfoWindowRef.current !== null && openMarkerData && markerInfo && (
+          {selectedPlaceId !== null && selectedMarker && markerInfo && (
             <CustomOverlayMap
               zIndex={100}
               position={{
-                lat: openMarkerData.latitude,
-                lng: openMarkerData.longitude,
+                lat: selectedMarker.latitude,
+                lng: selectedMarker.longitude,
               }}
             >
               <InfoWindow
                 data={markerInfo}
                 onClose={() => {
-                  setMarkerSizes((prevSizes) => ({
-                    ...prevSizes,
-                    [openInfoWindowRef.current!]: originSize,
-                  }));
-                  openInfoWindowRef.current = null;
+                  onPlaceSelect(null);
                 }}
               />
             </CustomOverlayMap>
@@ -274,7 +264,7 @@ const Btn = styled.div`
   display: flex;
   color: #c3c3c3;
   border-radius: 0px;
-  font-size: 20px;
+  font-size: 18px;
   border-bottom: 0.5px solid #c3c3c3;
   width: fit-content;
   padding-bottom: 4px;
