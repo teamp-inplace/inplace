@@ -40,7 +40,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
             .formLogin((form) -> form
                 .loginPage("/admin/login")
-                .defaultSuccessUrl("/admin/main"))
+                .successHandler(customSuccessHandler))
             .httpBasic(AbstractHttpConfigurer::disable)
             //authentication Service, Handler 설정
             .oauth2Login((oauth2) -> oauth2
@@ -59,7 +59,7 @@ public class SecurityConfig {
             //authentication 경로 설정
             .authorizeHttpRequests((auth) -> auth
                     .requestMatchers("/admin/login").permitAll()
-                    .requestMatchers("/admin/**").permitAll()
+                    .requestMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().permitAll()
             )
             //cors 설정
