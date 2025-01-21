@@ -50,8 +50,8 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             String refreshToken = jwtUtil.createRefreshToken(customOAuth2User.username(),
                 customOAuth2User.id(), customOAuth2User.roles());
             refreshTokenService.saveRefreshToken(customOAuth2User.username(), refreshToken);
-            setCookie(response, TokenType.ACCESS_TOKEN.toString(), accessToken);
-            setCookie(response, TokenType.REFRESH_TOKEN.toString(), refreshToken);
+            setCookie(response, TokenType.ACCESS_TOKEN.getValue(), accessToken);
+            setCookie(response, TokenType.REFRESH_TOKEN.getValue(), refreshToken);
             setFirstUserToResponse(response, customOAuth2User.isFirstUser());
             if (customOAuth2User.isFirstUser()) {
                 response.sendRedirect(frontEndUrl + "/choice");
@@ -63,7 +63,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         CustomUserDetails customUserDetails = (CustomUserDetails) principal;
         String accessToken = jwtUtil.createAccessToken(customUserDetails.username(),
             customUserDetails.id(), customUserDetails.roles());
-        setCookie(response, TokenType.ACCESS_TOKEN.toString(), accessToken);
+        setCookie(response, TokenType.ACCESS_TOKEN.getValue(), accessToken);
         response.sendRedirect("/admin/main");
     }
 
