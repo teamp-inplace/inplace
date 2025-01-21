@@ -50,8 +50,8 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             String refreshToken = jwtUtil.createRefreshToken(customOAuth2User.username(),
                 customOAuth2User.id(), customOAuth2User.roles());
             refreshTokenService.saveRefreshToken(customOAuth2User.username(), refreshToken);
-            setCookie(response, accessToken);
-            setCookie(response, refreshToken);
+            setCookie(response, TokenType.ACCESS_TOKEN.toString(), accessToken);
+            setCookie(response, TokenType.REFRESH_TOKEN.toString(), refreshToken);
             setFirstUserToResponse(response, customOAuth2User.isFirstUser());
             if (customOAuth2User.isFirstUser()) {
                 response.sendRedirect(frontEndUrl + "/choice");
@@ -63,24 +63,16 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         CustomUserDetails customUserDetails = (CustomUserDetails) principal;
         String accessToken = jwtUtil.createAccessToken(customUserDetails.username(),
             customUserDetails.id(), customUserDetails.roles());
-        setCookie(response, accessToken);
+        setCookie(response, TokenType.ACCESS_TOKEN.toString(), accessToken);
         response.sendRedirect("/admin/main");
     }
 
-    private void setFirstUserToResponse(HttpServletResponse response, boolean isFirstUser) {
-        if (isFirstUser) {
-            response.addHeader(HttpHeaders.SET_COOKIE,
-                CookieUtil.createCookie(IS_FIRST_USER, "true", domain).toString());
-            return;
-        }
-        response.addHeader(HttpHeaders.SET_COOKIE, CookieUtil.createCookie(IS_FIRST_USER, "false", domain).toString());
+    private void setFirstUserToResponse(HttpServletResponse response, Boolean isFirstUser) {
+        response.addHeader(HttpHeaders.SET_COOKIE, CookieUtil.createCookie(IS_FIRST_USER, isFirstUser.toString(), domain).toString());
     }
 
-    private void setCookie(
-        HttpServletResponse response, String cookieValue
-    ) {
-        ResponseCookie cookie = CookieUtil.createHttpOnlyCookie(TokenType.REFRESH_TOKEN.getValue(), cookieValue,
-            domain);
+    private void setCookie(HttpServletResponse response, String key, String value) {
+        ResponseCookie cookie = CookieUtil.createHttpOnlyCookie(key, value, domain);
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }
