@@ -22,20 +22,22 @@ import team7.inplace.influencer.presentation.dto.InfluencerRequest;
 import team7.inplace.influencer.presentation.dto.InfluencerRequest.Like;
 import team7.inplace.influencer.presentation.dto.InfluencerRequest.Upsert;
 import team7.inplace.influencer.presentation.dto.InfluencerResponse;
+import team7.inplace.influencer.presentation.dto.InfluencerResponse.Detail;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/influencers")
 public class InfluencerController implements InfluencerControllerApiSpec {
+
     private final InfluencerService influencerService;
 
     @Override
     @GetMapping()
     public ResponseEntity<Page<InfluencerResponse.Info>> getAllInfluencers(
-            @PageableDefault(page = 0, size = 10) Pageable pageable
+        @PageableDefault(page = 0, size = 10) Pageable pageable
     ) {
         var influencers = influencerService.getAllInfluencers(pageable)
-                .map(InfluencerResponse.Info::from);
+            .map(InfluencerResponse.Info::from);
 
         return new ResponseEntity<>(influencers, HttpStatus.OK);
     }
@@ -44,8 +46,8 @@ public class InfluencerController implements InfluencerControllerApiSpec {
     @GetMapping("/names")
     public ResponseEntity<List<InfluencerResponse.Name>> getAllInfluencerNames() {
         var names = influencerService.getAllInfluencerNames().stream()
-                .map(InfluencerResponse.Name::from)
-                .toList();
+            .map(InfluencerResponse.Name::from)
+            .toList();
         return new ResponseEntity<>(names, HttpStatus.OK);
     }
 
@@ -63,8 +65,8 @@ public class InfluencerController implements InfluencerControllerApiSpec {
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Long> updateInfluencer(
-            @PathVariable Long id,
-            @RequestBody Upsert request
+        @PathVariable Long id,
+        @RequestBody Upsert request
     ) {
         InfluencerCommand influencerCommand = request.toCommand();
         Long updatedId = influencerService.updateInfluencer(id, influencerCommand);
@@ -75,7 +77,7 @@ public class InfluencerController implements InfluencerControllerApiSpec {
     //    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("/{id}/visibility")
     public ResponseEntity<Long> updateVisibility(
-            @PathVariable Long id
+        @PathVariable Long id
     ) {
         Long updatedId = influencerService.updateVisibility(id);
 
@@ -107,5 +109,14 @@ public class InfluencerController implements InfluencerControllerApiSpec {
         influencerService.likeToManyInfluencer(command);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    @GetMapping("/{id}")
+    public ResponseEntity<Detail> getInfluencer(@PathVariable Long id) {
+        var influencer = influencerService.getInfluencerDetail(id);
+
+        var response = InfluencerResponse.Detail.from(influencer);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
