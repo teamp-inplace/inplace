@@ -32,7 +32,7 @@ export default function Chip({ selectedLocations, selectedInfluencers, onClearLo
   return (
     <Container>
       {selectedLocations.map((location) => (
-        <FilterChip hasButton key={`${location.main}-${location.sub}`}>
+        <FilterChip $hasButton key={`${location.main}-${location.sub}`}>
           <Text size="xs" weight="bold" variant="#36617f">
             {location.sub ? `${location.main} > ${location.sub}` : location.main}
           </Text>
@@ -43,7 +43,7 @@ export default function Chip({ selectedLocations, selectedInfluencers, onClearLo
       ))}
 
       {selectedInfluencers.map((influencer) => (
-        <FilterChip hasButton key={influencer}>
+        <FilterChip $hasButton key={influencer}>
           <Text size="xs" weight="bold" variant="#36617f">
             {influencer}
           </Text>
@@ -62,11 +62,11 @@ const Container = styled.div`
   gap: 20px;
 `;
 
-const FilterChip = styled.div<{ hasButton: boolean }>`
+const FilterChip = styled.div<{ $hasButton: boolean }>`
   display: flex;
   align-items: center;
-  justify-content: ${(props) => (props.hasButton ? 'space-between' : 'center')};
-  padding: ${(props) => (props.hasButton ? '8px 12px 8px 20px' : '8px 20px')};
+  justify-content: ${(props) => (props.$hasButton ? 'space-between' : 'center')};
+  padding: ${(props) => (props.$hasButton ? '8px 12px 8px 20px' : '8px 20px')};
   height: 24px;
   border-radius: 18px;
   background-color: #e8f9ff;

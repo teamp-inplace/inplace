@@ -137,7 +137,7 @@ export default function InfluencerMapWindow({
 
   // 마커나 장소가 선택되었을 경우
   useEffect(() => {
-    if (selectedPlaceId && placeData.length > 0) {
+    if (selectedPlaceId) {
       getMarkerInfoWithPlaceInfo(selectedPlaceId);
     }
   }, [selectedPlaceId, placeData, getMarkerInfoWithPlaceInfo]);
@@ -251,8 +251,8 @@ export default function InfluencerMapWindow({
 const MapContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 570px;
-  padding: 20px 0;
+  height: 500px;
+  padding-bottom: 20px;
 `;
 
 const ResetButtonContainer = styled.div`
@@ -265,7 +265,7 @@ const Btn = styled.div`
   display: flex;
   color: #c3c3c3;
   border-radius: 0px;
-  font-size: 18px;
+  font-size: 16px;
   border-bottom: 0.5px solid #c3c3c3;
   width: fit-content;
   padding-bottom: 4px;

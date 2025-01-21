@@ -146,12 +146,12 @@ export default function DropdownMenu({
         {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
       </DropdownButton>
       {isOpen && (
-        <DropdownMenuContainer multiLevel={multiLevel} hasSubOptions={!!selectedMainOption?.subOptions}>
+        <DropdownMenuContainer $multiLevel={multiLevel} $hasSubOptions={!!selectedMainOption?.subOptions}>
           <SearchInputContainer>
             <SearchInput placeholder="검색" value={searchTerm} onChange={handleSearchInputChange} />
             <SearchIcon />
           </SearchInputContainer>
-          <OptionsContainer multiLevel={multiLevel} hasSubOptions={!!selectedMainOption?.subOptions}>
+          <OptionsContainer>
             <MainOptions>{renderMainOptions()}</MainOptions>
             {multiLevel && selectedMainOption?.subOptions && <SubOptions>{renderSubOptions()}</SubOptions>}
           </OptionsContainer>
@@ -189,11 +189,11 @@ const DropdownButton = styled.button<{ $isOpen: boolean }>`
   }
 `;
 
-const DropdownMenuContainer = styled.div<{ multiLevel: boolean; hasSubOptions: boolean }>`
+const DropdownMenuContainer = styled.div<{ $multiLevel: boolean; $hasSubOptions: boolean }>`
   position: absolute;
   top: 100%;
   left: 0;
-  width: ${(props) => (props.multiLevel && props.hasSubOptions ? '200%' : '100%')};
+  width: ${(props) => (props.$multiLevel && props.$hasSubOptions ? '200%' : '100%')};
   background: #ffffff;
   border: 2px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
@@ -227,7 +227,7 @@ const SearchIcon = styled(FaSearch)`
   cursor: pointer;
 `;
 
-const OptionsContainer = styled.div<{ multiLevel: boolean; hasSubOptions: boolean }>`
+const OptionsContainer = styled.div`
   display: flex;
   max-height: 250px;
   overflow-y: auto;
