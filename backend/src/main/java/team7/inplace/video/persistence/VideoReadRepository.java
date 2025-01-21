@@ -23,9 +23,11 @@ public interface VideoReadRepository {
 
     List<VideoQueryResult.SimpleVideo> findTop10ByLikedInfluencer(Long userId);
 
-    List<VideoQueryResult.SimpleVideo> findSimpleVideoByPlaceId(Long placeId);
+    List<VideoQueryResult.SimpleVideo> findSimpleVideosByPlaceId(Long placeId);
 
     Map<Long, List<VideoQueryResult.SimpleVideo>> findSimpleVideosByPlaceIds(List<Long> placeIds);
 
     Page<VideoQueryResult.SimpleVideo> findVideoWithNoPlace(Pageable pageable);
+
+    Page<VideoQueryResult.SimpleVideo> findSimpleVideosWithOneInfluencerId(Long influencerId, Pageable pageable);
 }
