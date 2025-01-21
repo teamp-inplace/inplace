@@ -22,14 +22,18 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   );
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const { mutateAsync: refreshToken } = useGetRefreshToken();
-  const { mutate: logout } = useDeleteToken();
+  const { mutateAsync: logout } = useDeleteToken();
 
-  const handleLogout = useCallback(() => {
-    setIsAuthenticated(false);
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('nickname');
-    window.location.href = '/';
-    logout();
+  const handleLogout = useCallback(async () => {
+    try {
+      await logout();
+      setIsAuthenticated(false);
+      localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('nickname');
+      window.location.href = '/';
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+    }
   }, [logout]);
 
   const refreshTokenRegularly = useCallback(async () => {
