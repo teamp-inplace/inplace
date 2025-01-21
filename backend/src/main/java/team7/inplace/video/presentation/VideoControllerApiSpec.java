@@ -38,7 +38,16 @@ public interface VideoControllerApiSpec {
             summary = "내 인플루언서의 비디오 반환",
             description = "내가 좋아요를 누른 인플루언서의 Video 정보를 조회합니다."
     )
-    ResponseEntity<List<VideoResponse.Simple>> readByInfluencer();
+    ResponseEntity<List<VideoResponse.Simple>> readByMyInfluencer();
+
+    @Operation(
+            summary = "특정 인플루언서의 비디오 반환",
+            description = "특정 인플루언서의 Video 정보를 조회합니다."
+    )
+    ResponseEntity<Page<VideoResponse.Simple>> readByOneInfluencer(
+            @PageableDefault(page = 0, size = 6) Pageable pageable,
+            @PathVariable Long influencerId
+    );
 
     @Operation(
             summary = "비디오 삭제",
