@@ -76,9 +76,7 @@ public class InfluencerController implements InfluencerControllerApiSpec {
 
     //    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("/{id}/visibility")
-    public ResponseEntity<Long> updateVisibility(
-        @PathVariable Long id
-    ) {
+    public ResponseEntity<Long> updateVisibility(@PathVariable Long id) {
         Long updatedId = influencerService.updateVisibility(id);
 
         return new ResponseEntity<>(updatedId, HttpStatus.OK);
@@ -95,7 +93,7 @@ public class InfluencerController implements InfluencerControllerApiSpec {
 
     @Override
     @PostMapping("/likes")
-    public ResponseEntity<Void> addLikeInfluencer(Like request) {
+    public ResponseEntity<Void> addLikeInfluencer(@RequestBody Like request) {
         var command = request.toCommand();
         influencerService.likeToInfluencer(command);
 
@@ -104,7 +102,7 @@ public class InfluencerController implements InfluencerControllerApiSpec {
 
     @Override
     @PostMapping("/multiple/likes")
-    public ResponseEntity<Void> addLikeInfluencers(InfluencerRequest.Likes request) {
+    public ResponseEntity<Void> addLikeInfluencers(@RequestBody InfluencerRequest.Likes request) {
         var command = request.toCommand();
         influencerService.likeToManyInfluencer(command);
 
