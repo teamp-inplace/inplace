@@ -52,6 +52,8 @@ const SectionContainer = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+  overflow: visible;
+  width: 100%;
 `;
 const ListContainer = styled.div`
   overflow: hidden;
@@ -94,5 +96,11 @@ const ArrowButton = styled.button<{ direction: 'left' | 'right' }>`
 
   &.right-arrow {
     right: 0;
+  }
+
+  @media screen and (max-width: 768px) {
+    svg {
+      height: 20px;
+    }
   }
 `;

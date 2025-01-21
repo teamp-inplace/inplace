@@ -8,6 +8,7 @@ import SpotSection from '@/components/Main/SpotSection';
 import { InfluencerData, SpotData, UserPlaceData } from '@/types';
 import ChoiceList from '@/components/Choice/ChoiceList';
 import UserPlaceSection from '../My/UserPlaceSection';
+import { Paragraph } from './typography/Paragraph';
 
 type Props = {
   type: string;
@@ -67,13 +68,13 @@ export default function BaseLayout({
   return (
     <Container>
       <TitleContainer>
-        <Text size="m" weight="bold">
+        <Paragraph size="m" weight="bold">
           {prevSubText || ''}
-          <Text size="28px" weight="bold" variant="mint">
+          <Text size="ll" weight="bold" variant="mint">
             {mainText || ''}
           </Text>
           {SubText}
-        </Text>
+        </Paragraph>
         {type === 'influencer' && showMoreButton ? (
           <MoreBtn onClick={() => navigate('/influencer')}>더보기</MoreBtn>
         ) : null}
@@ -88,6 +89,14 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
 `;
 
 const TitleContainer = styled.div`
@@ -95,6 +104,7 @@ const TitleContainer = styled.div`
   justify-content: space-between;
   align-items: end;
   color: white;
+  width: 100%;
 `;
 
 const MoreBtn = styled.button`
@@ -103,4 +113,11 @@ const MoreBtn = styled.button`
   background: none;
   border: none;
   cursor: pointer;
+
+  @media screen and (max-width: 768px) {
+    font-size: 10px;
+    text-align: end;
+    padding-block: 0;
+    padding-inline: 0;
+  }
 `;

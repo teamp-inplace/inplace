@@ -126,6 +126,11 @@ export default function SearchBar({ placeholder = '키워드를 입력해주세�
 const SearchBarContainer = styled.div`
   width: 100%;
   height: 44px;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+    height: 36px;
+  }
 `;
 
 const SearchInputWrapper = styled.div<{ $isInputValue: boolean }>`
@@ -180,6 +185,10 @@ const SearchDropDownBox = styled.ul`
   color: #ffffff;
   box-sizing: border-box;
   z-index: 10;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
 `;
 
 const SearchDropDownItem = styled.li`
