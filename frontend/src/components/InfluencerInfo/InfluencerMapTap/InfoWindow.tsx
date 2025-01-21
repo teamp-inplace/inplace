@@ -9,26 +9,44 @@ type Props = {
   onClose: () => void;
 };
 
+const categoryMapping = {
+  RESTAURANT: '음식점',
+  CAFE: '카페',
+  JAPANESE: '일식',
+  KOREAN: '한식',
+  WESTERN: '양식',
+} as const;
+
 const getFullAddress = (addr: AddressInfo) => {
   return [addr.address1, addr.address2, addr.address3].filter(Boolean).join(' ');
 };
 
 export default function InfoWindow({ data, onClose }: Props) {
+  const translatedCategory = categoryMapping[data.category as keyof typeof categoryMapping] || '기타';
+  const isLongName = data.placeName.length > 20;
+
   return (
     <Wrapper>
-      <Text size="m" weight="bold">
-        {data.placeName}
-      </Text>
+      <Title>
+        <Text size="xs" weight="bold" className="title">
+          {data.placeName}
+        </Text>
+        {!isLongName && (
+          <Text size="14px" weight="normal" variant="grey">
+            {translatedCategory}
+          </Text>
+        )}
+      </Title>
       <Info>
         <Img>
           <FallbackImage src={data.menuImgUrl} alt={data.placeName} />
         </Img>
         <TextInfo>
-          <Text size="xs" weight="normal">
+          <Text size="14px" weight="normal">
             {data.address ? getFullAddress(data.address) : '주소 정보가 없습니다'}
           </Text>
-          <Text size="xs" weight="normal">
-            추가할 내용 있을까?
+          <Text size="14px" weight="normal">
+            {data.influencerName}
           </Text>
           <Link to={`/detail/${data.placeId}`}>상세보기</Link>
         </TextInfo>
@@ -41,50 +59,68 @@ const Wrapper = styled.div`
   position: absolute;
   bottom: 50px;
   left: 0;
-  margin-left: -144px;
-  width: 300px;
-  height: 130px;
+  margin-left: -124px;
+  width: 260px;
   overflow: hidden;
   background-color: #ffffff;
-  padding: 20px;
   border-radius: 4px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
   box-shadow: 1px 1px 1px #b3b3b3;
 `;
-const Img = styled.div`
-  width: 35%;
+const Title = styled.div`
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  gap: 6px;
+  align-items: end;
+  background-color: #ecfdff;
+  box-sizing: border-box;
+
+  .title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 const CloseBtn = styled.button`
   position: absolute;
-  right: 20px;
-  top: 20px;
-  font-size: 26px;
+  right: 6px;
+  top: 6px;
+  font-size: 18px;
   background: none;
   color: #818181;
   border: none;
   cursor: 'pointer';
 `;
 const Info = styled.div`
+  width: 100%;
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  padding: 8px;
+  box-sizing: border-box;
+`;
+const Img = styled.div`
+  width: 30%;
+  aspect-ratio: 1 / 1;
 `;
 const TextInfo = styled.div`
   width: 65%;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 20px 0px;
+  padding: 14px 0px;
   color: #4d4d4d;
-  text-overflow: ellipsis;
+  overflow: hidden;
   span {
-    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   a {
     color: black;
     text-decoration-line: underline;
-    font-size: 14px;
+    font-size: 12px;
   }
   a:visited {
     color: black;

@@ -43,6 +43,8 @@ const dummyMarkerInfos: Record<string, MarkerInfo> = {
       address3: '대현동 119-11',
     },
     menuImgUrl: 'https://via.placeholder.com/500',
+    influencerName: '성시경',
+    category: '한식',
   },
 };
 
@@ -169,7 +171,7 @@ const dummyPlaces: PlaceData[] = [
   },
   {
     placeId: 9,
-    placeName: '맛있는초밥집 동백2호점',
+    placeName: '맛있는초밥집 동백2호점 제목 개길면어떻게되나',
     address: {
       address1: '경기',
       address2: '용인시',

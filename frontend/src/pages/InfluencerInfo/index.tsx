@@ -72,13 +72,13 @@ export default function InfluencerInfoPage() {
           <FallbackImage src={influencerInfoData.influencerImgUrl} alt={influencerInfoData.influencerName} />
         </Image>
         <TextInfo>
-          <Text size="xxl" weight="bold" variant="white">
+          <Text size="xl" weight="bold" variant="white">
             {influencerInfoData.influencerName}
           </Text>
-          <Text size="m" weight="normal" variant="white">
+          <Text size="s" weight="normal" variant="white">
             좋아요 수 {influencerInfoData.follower}명 • 쿨 플레이스 {influencerInfoData.placeCount}곳
           </Text>
-          <Text size="s" weight="normal" variant="white">
+          <Text size="xs" weight="normal" variant="white">
             {influencerInfoData.influencerJob}
           </Text>
         </TextInfo>
@@ -135,12 +135,13 @@ const PageContainer = styled.div`
   gap: 50px;
 `;
 const InfluencerInfoSection = styled.div`
+  position: relative;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 `;
 const Image = styled.div`
-  width: 232px;
+  width: 200px;
   border-radius: 50%;
   aspect-ratio: 1;
 `;
@@ -153,9 +154,11 @@ const TextInfo = styled.div`
   gap: 20px;
 `;
 const LikeIcon = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 10px;
   width: 30px;
   height: 30px;
-  padding-top: 30px;
   cursor: pointer;
 `;
 const Tap = styled.button<{ $active: boolean }>`
@@ -176,6 +179,4 @@ const TapContainer = styled.div`
   display: flex;
   justify-content: space-between;
 `;
-const InfoContainer = styled.div`
-  padding-top: 20px;
-`;
+const InfoContainer = styled.div``;
