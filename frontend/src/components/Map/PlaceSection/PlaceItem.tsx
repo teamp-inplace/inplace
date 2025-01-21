@@ -120,10 +120,15 @@ const ImageContainer = styled.div`
 `;
 
 const CardContent = styled.div`
-  width: 70%;
+  width: 60%;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 const InfluencerName = styled.div`
