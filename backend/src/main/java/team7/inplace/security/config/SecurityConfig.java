@@ -58,7 +58,7 @@ public class SecurityConfig {
                 .accessDeniedHandler(customAccessDeniedHandler))
             //authentication 경로 설정
             .authorizeHttpRequests((auth) -> auth
-                    .requestMatchers("/admin/login").permitAll()
+                    .requestMatchers("/admin/login", "/admin/register").permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().permitAll()
             )
