@@ -44,9 +44,9 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
     }
 
     private void addTokenToCookie(HttpServletResponse response, ReIssued reIssuedToken) {
-        var accessTokenCookie = CookieUtil.createCookie(TokenType.ACCESS_TOKEN.getValue(),
+        var accessTokenCookie = CookieUtil.createHttpOnlyCookie(TokenType.ACCESS_TOKEN.getValue(),
                 reIssuedToken.accessToken(), domain);
-        var refreshTokenCookie = CookieUtil.createCookie(TokenType.REFRESH_TOKEN.getValue(),
+        var refreshTokenCookie = CookieUtil.createHttpOnlyCookie(TokenType.REFRESH_TOKEN.getValue(),
                 reIssuedToken.refreshToken(), domain);
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
@@ -62,8 +62,8 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
         String refreshToken = cookie.getValue();
         refreshTokenFacade.deleteRefreshToken(refreshToken);
 
-        ResponseCookie accessTokenCookie = CookieUtil.createCookie(TokenType.ACCESS_TOKEN.getValue(), "", domain);
-        ResponseCookie refreshTokenCookie = CookieUtil.createCookie(TokenType.REFRESH_TOKEN.getValue(), "", domain);
+        ResponseCookie accessTokenCookie = CookieUtil.createHttpOnlyCookie(TokenType.ACCESS_TOKEN.getValue(), "", domain);
+        ResponseCookie refreshTokenCookie = CookieUtil.createHttpOnlyCookie(TokenType.REFRESH_TOKEN.getValue(), "", domain);
         response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 

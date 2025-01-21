@@ -4,12 +4,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
-import org.antlr.v4.runtime.Token;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import team7.inplace.security.application.dto.CustomOAuth2User;
 import team7.inplace.security.application.dto.CustomUserDetails;
@@ -21,6 +19,7 @@ import team7.inplace.token.application.RefreshTokenService;
 @Slf4j
 public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
+    private static final String IS_FIRST_USER = "is_first_user";
     private final JwtUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
 
@@ -51,30 +50,37 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             String refreshToken = jwtUtil.createRefreshToken(customOAuth2User.username(),
                 customOAuth2User.id(), customOAuth2User.roles());
             refreshTokenService.saveRefreshToken(customOAuth2User.username(), refreshToken);
-            addAccessTokenToResponse(response, accessToken);
-            addRefreshTokenToResponse(response, refreshToken);
-            if (customOAuth2User.isFirstUser()) response.sendRedirect(frontEndUrl + "/choice");
-            else response.sendRedirect(frontEndUrl + "/auth");
+            setCookie(response, accessToken);
+            setCookie(response, refreshToken);
+            setFirstUserToResponse(response, customOAuth2User.isFirstUser());
+            if (customOAuth2User.isFirstUser()) {
+                response.sendRedirect(frontEndUrl + "/choice");
+                return;
+            }
+            response.sendRedirect(frontEndUrl + "/auth");
             return;
         }
         CustomUserDetails customUserDetails = (CustomUserDetails) principal;
         String accessToken = jwtUtil.createAccessToken(customUserDetails.username(),
             customUserDetails.id(), customUserDetails.roles());
-        addAccessTokenToResponse(response, accessToken);
+        setCookie(response, accessToken);
         response.sendRedirect("/admin/main");
     }
 
-    private void addAccessTokenToResponse(
-        HttpServletResponse response, String accessToken
-    ) {
-        ResponseCookie accessTokenCookie = CookieUtil.createCookie(TokenType.ACCESS_TOKEN.getValue(), accessToken, domain);
-        response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+    private void setFirstUserToResponse(HttpServletResponse response, boolean isFirstUser) {
+        if (isFirstUser) {
+            response.addHeader(HttpHeaders.SET_COOKIE,
+                CookieUtil.createCookie(IS_FIRST_USER, "true", domain).toString());
+            return;
+        }
+        response.addHeader(HttpHeaders.SET_COOKIE, CookieUtil.createCookie(IS_FIRST_USER, "false", domain).toString());
     }
 
-    private void addRefreshTokenToResponse(
-        HttpServletResponse response, String refreshToken
+    private void setCookie(
+        HttpServletResponse response, String cookieValue
     ) {
-        ResponseCookie refreshTokenCookie = CookieUtil.createCookie(TokenType.REFRESH_TOKEN.getValue(), refreshToken, domain);
-        response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+        ResponseCookie cookie = CookieUtil.createHttpOnlyCookie(TokenType.REFRESH_TOKEN.getValue(), cookieValue,
+            domain);
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }
