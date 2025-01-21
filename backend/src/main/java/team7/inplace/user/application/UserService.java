@@ -9,11 +9,9 @@ import team7.inplace.global.exception.code.UserErrorCode;
 import team7.inplace.security.application.CurrentUserProvider;
 import team7.inplace.security.util.AuthorizationUtil;
 import team7.inplace.user.application.dto.UserCommand;
-import team7.inplace.user.application.dto.UserCommand.AdminUserInfo;
 import team7.inplace.user.application.dto.UserCommand.Info;
 import team7.inplace.user.application.dto.UserInfo;
 import team7.inplace.user.domain.User;
-import team7.inplace.user.persistence.AdminUserRepository;
 import team7.inplace.user.persistence.UserRepository;
 
 @Service
@@ -21,7 +19,6 @@ import team7.inplace.user.persistence.UserRepository;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final AdminUserRepository adminUserRepository;
     private final CurrentUserProvider currentUserProvider;
 
     @Transactional
@@ -56,12 +53,6 @@ public class UserService {
     public UserInfo getUserInfo() {
         User user = currentUserProvider.getCurrentUser();
         return UserInfo.from(user);
-    }
-
-    @Transactional
-    public Optional<UserCommand.AdminUserInfo> findAdminUserByUsername(String username) {
-        return adminUserRepository.findByUsername(username)
-            .map(AdminUserInfo::of);
     }
 
 }

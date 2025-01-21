@@ -7,8 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
-import team7.inplace.user.application.dto.UserCommand;
-import team7.inplace.user.domain.AdminUser;
+import team7.inplace.admin.user.application.dto.AdminUserInfo;
 
 public record CustomUserDetails(
     Long id,
@@ -26,7 +25,9 @@ public record CustomUserDetails(
         Collection<GrantedAuthority> authorities = new ArrayList<>();
 
         for (String role : roles.split(",")) {
-            if (!StringUtils.hasText(role)) continue;
+            if (!StringUtils.hasText(role)) {
+                continue;
+            }
             authorities.add(new SimpleGrantedAuthority(role));
         }
         return authorities;
@@ -47,7 +48,8 @@ public record CustomUserDetails(
         return this.username;
     }
 
-    public static CustomUserDetails makeUser(UserCommand.AdminUserInfo adminUserInfo) {
-        return new CustomUserDetails(adminUserInfo.id(), adminUserInfo.username(), adminUserInfo.password(), adminUserInfo.role().getRoles());
+    public static CustomUserDetails makeUser(AdminUserInfo adminUserInfo) {
+        return new CustomUserDetails(adminUserInfo.id(), adminUserInfo.username(), adminUserInfo.password(),
+            adminUserInfo.role().getRoles());
     }
 }

@@ -1,7 +1,7 @@
 package team7.inplace.user.application.dto;
 
 import team7.inplace.security.application.dto.KakaoOAuthResponse;
-import team7.inplace.user.domain.AdminUser;
+import team7.inplace.admin.user.domain.AdminUser;
 import team7.inplace.user.domain.Role;
 import team7.inplace.user.domain.User;
 import team7.inplace.user.domain.UserType;
@@ -33,17 +33,6 @@ public class UserCommand {
 
         public static Info of(User user) {
             return new Info(user.getId(), user.getUsername(), user.getRole());
-        }
-    }
-
-    public record AdminUserInfo(
-        Long id,
-        String username,
-        String password,
-        Role role
-    ) {
-        public static AdminUserInfo of(AdminUser adminUser) {
-            return new AdminUserInfo(adminUser.getId(), adminUser.getUsername(), adminUser.getPassword(), adminUser.getRole());
         }
     }
 }

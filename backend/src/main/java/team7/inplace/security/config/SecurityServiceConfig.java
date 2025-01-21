@@ -3,6 +3,7 @@ package team7.inplace.security.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import team7.inplace.admin.user.application.AdminUserService;
 import team7.inplace.security.application.CustomOAuth2UserService;
 import team7.inplace.security.application.CustomUserDetailsService;
 import team7.inplace.token.application.OauthTokenService;
@@ -27,7 +28,7 @@ public class SecurityServiceConfig {
     }
 
     @Bean
-    public CustomUserDetailsService customUserDetailsService(UserService userService) {
-        return new CustomUserDetailsService(userService);
+    public CustomUserDetailsService customUserDetailsService(AdminUserService adminUserService) {
+        return new CustomUserDetailsService(adminUserService);
     }
 }

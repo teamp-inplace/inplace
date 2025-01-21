@@ -1,4 +1,4 @@
-package team7.inplace.user.domain;
+package team7.inplace.admin.user.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team7.inplace.global.baseEntity.BaseEntity;
+import team7.inplace.user.domain.Role;
 
 @Getter
 @Entity
