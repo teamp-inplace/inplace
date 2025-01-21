@@ -44,7 +44,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const handleLoginSuccess = useCallback(
     async (userNickname: string) => {
       if (!isAuthenticated) {
-        console.log('[AuthProvider] Setting login success for:', userNickname);
         localStorage.setItem('nickname', userNickname);
         localStorage.setItem('isAuthenticated', 'true');
         setIsAuthenticated(true);
