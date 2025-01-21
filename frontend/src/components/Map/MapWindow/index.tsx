@@ -4,10 +4,11 @@ import styled from 'styled-components';
 import { TbCurrentLocation } from 'react-icons/tb';
 import Button from '@/components/common/Button';
 import { LocationData, MarkerInfo, PlaceData } from '@/types';
-import BasicImage from '@/assets/images/basic-image.png';
 import { useGetAllMarkers } from '@/api/hooks/useGetAllMarkers';
 import InfoWindow from '@/components/InfluencerInfo/InfluencerMapTap/InfoWindow';
 import { useGetMarkerInfo } from '@/api/hooks/useGetMarkerInfo';
+import OriginMarker from '@/assets/images/OriginMarker.png';
+import SelectedMarker from '@/assets/images/InplaceMarker.png';
 
 interface MapWindowProps {
   onBoundsChange: (bounds: LocationData) => void;
@@ -218,7 +219,7 @@ export default function MapWindow({
             position={userLocation}
             image={{
               src: 'https://i.ibb.co/4gGFjRx/circle.png',
-              size: { width: 24, height: 24 },
+              size: { width: 22, height: 22 },
             }}
           />
         )}
@@ -234,10 +235,10 @@ export default function MapWindow({
                 lng: place.longitude,
               }}
               image={{
-                src: BasicImage,
+                src: selectedPlaceId === place.placeId ? SelectedMarker : OriginMarker,
                 size: {
-                  width: selectedPlaceId === place.placeId ? originSize + 10 : originSize,
-                  height: selectedPlaceId === place.placeId ? originSize + 10 : originSize,
+                  width: selectedPlaceId === place.placeId ? originSize + 14 : originSize,
+                  height: selectedPlaceId === place.placeId ? originSize + 14 : originSize,
                 },
               }}
             />

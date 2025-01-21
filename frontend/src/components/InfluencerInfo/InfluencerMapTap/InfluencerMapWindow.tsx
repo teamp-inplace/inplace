@@ -205,8 +205,8 @@ export default function InfluencerMapWindow({
                 image={{
                   src: influencerImg || BasicImage,
                   size: {
-                    width: selectedPlaceId === place.placeId ? originSize + 10 : originSize,
-                    height: selectedPlaceId === place.placeId ? originSize + 10 : originSize,
+                    width: selectedPlaceId === place.placeId ? originSize + 14 : originSize,
+                    height: selectedPlaceId === place.placeId ? originSize + 14 : originSize,
                   },
                 }}
               />

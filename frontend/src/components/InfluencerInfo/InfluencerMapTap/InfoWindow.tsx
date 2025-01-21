@@ -32,7 +32,7 @@ export default function InfoWindow({ data, onClose }: Props) {
           {data.placeName}
         </Text>
         {!isLongName && (
-          <Text size="14px" weight="normal" variant="grey">
+          <Text size="12px" weight="normal" variant="grey">
             {translatedCategory}
           </Text>
         )}
