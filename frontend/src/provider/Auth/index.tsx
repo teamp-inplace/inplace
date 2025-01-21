@@ -27,12 +27,13 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const handleLogout = useCallback(async () => {
     try {
       await logout();
+    } catch (error) {
+      console.error('로그아웃 요청 실패:', error);
+    } finally {
       setIsAuthenticated(false);
       localStorage.removeItem('isAuthenticated');
       localStorage.removeItem('nickname');
       window.location.href = '/';
-    } catch (error) {
-      console.error('로그아웃 실패:', error);
     }
   }, [logout]);
 
