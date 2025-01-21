@@ -17,6 +17,7 @@ import team7.inplace.user.persistence.UserRepository;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
     private final CurrentUserProvider currentUserProvider;
 
@@ -30,7 +31,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserCommand.Info getUserByUsername(String username) {
         return UserCommand.Info.of(userRepository.findByUsername(username)
-                .orElseThrow(() -> InplaceException.of(UserErrorCode.NOT_FOUND)));
+            .orElseThrow(() -> InplaceException.of(UserErrorCode.NOT_FOUND)));
     }
 
     @Transactional
@@ -42,7 +43,7 @@ public class UserService {
     @Transactional
     public void updateNickname(String nickname) {
         User user = userRepository.findByUsername(AuthorizationUtil.getUsername()).orElseThrow(
-                () -> InplaceException.of(UserErrorCode.NOT_FOUND)
+            () -> InplaceException.of(UserErrorCode.NOT_FOUND)
         );
 
         user.updateInfo(nickname);
@@ -53,4 +54,5 @@ public class UserService {
         User user = currentUserProvider.getCurrentUser();
         return UserInfo.from(user);
     }
+
 }

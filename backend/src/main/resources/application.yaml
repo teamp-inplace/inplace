@@ -1,6 +1,7 @@
 spring:
   application:
     name: ${APP_NAME}
+    domain: ${DOMAIN}
   profiles:
     include: db, redis, s3, monitoring, security, youtube, kakao
   servlet:

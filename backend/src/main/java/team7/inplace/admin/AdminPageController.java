@@ -19,6 +19,7 @@ import team7.inplace.video.persistence.VideoRepository;
 @RequiredArgsConstructor
 @RequestMapping("/admin")
 public class AdminPageController {
+
     private final KakaoApiProperties kakaoApiProperties;
     private final YoutubeApiProperties youtubeApiProperties;
     private final VideoRepository videoRepository;
@@ -60,5 +61,10 @@ public class AdminPageController {
     @GetMapping("/main")
     public String getMainPage() {
         return "admin/main.html";
+    }
+
+    @GetMapping("/login")
+    public String getLoginPage() {
+        return "admin/login.html";
     }
 }
