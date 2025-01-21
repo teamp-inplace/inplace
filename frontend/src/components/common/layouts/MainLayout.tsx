@@ -50,6 +50,10 @@ const Wrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const InnerWrapper = styled.div`

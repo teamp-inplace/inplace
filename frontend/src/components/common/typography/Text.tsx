@@ -21,6 +21,8 @@ export const Text = styled.span<IText>`
         return '20px';
       case 'l':
         return '24px';
+      case 'll':
+        return '28px';
       case 'xl':
         return '32px';
       case 'xxl':
@@ -29,6 +31,31 @@ export const Text = styled.span<IText>`
         return props.size;
     }
   }};
+
+  @media screen and (max-width: 768px) {
+    font-size: ${(props) => {
+      switch (props.size) {
+        case 'xxs':
+          return '10px';
+        case 'xs':
+          return '12px';
+        case 's':
+          return '14px';
+        case 'm':
+          return '16px';
+        case 'l':
+          return '18px';
+        case 'll':
+          return '20px';
+        case 'xl':
+          return '26px';
+        case 'xxl':
+          return '32px';
+        default:
+          return '14px';
+      }
+    }};
+  }
 
   color: ${(props) => {
     switch (props.variant) {
