@@ -1,5 +1,6 @@
 package team7.inplace.influencer.persistence;
 
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,9 @@ public class InfluencerReadRepositoryImpl implements InfluencerReadRepository {
                         QInfluencer.influencer.name,
                         QInfluencer.influencer.imgUrl,
                         QInfluencer.influencer.job,
-                        QLikedInfluencer.likedInfluencer.id.in(userId).isNotNull(),
+                        userId == null ?
+                            Expressions.constant(false) :
+                            QLikedInfluencer.likedInfluencer.id.in(userId).isNotNull(),
                         QLikedInfluencer.likedInfluencer.id.count(),
                         QVideo.video.id.count()
                     )
