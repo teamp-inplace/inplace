@@ -212,6 +212,8 @@ export type MarkerData = {
 export type MarkerInfo = {
   placeId: number;
   placeName: string;
+  category: string;
+  influencerName: string;
   address: AddressInfo;
   menuImgUrl: string;
 };

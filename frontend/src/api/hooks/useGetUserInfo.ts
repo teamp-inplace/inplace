@@ -1,35 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { AxiosError, isAxiosError } from 'axios';
 import { fetchInstance } from '../instance';
 import { UserInfoData } from '@/types';
 
 export const getUserInfoPath = () => `/users/info`;
-
-interface ApiErrorResponse {
-  message: string;
-  code: string;
-  status: number;
-}
-
-export const isAuthorizationError = (
-  error: unknown,
-): error is AxiosError<ApiErrorResponse> & {
-  response: NonNullable<AxiosError<ApiErrorResponse>['response']>;
-} => {
-  if (!isAxiosError(error)) return false;
-  if (!error.response) return false;
-
-  return (
-    error.response.status === 401 && error.response.data !== undefined && typeof error.response.data.code === 'string'
-  );
-};
-
-interface QueryOptions {
-  retry?: boolean | number;
-  enabled?: boolean;
-  onError?: (error: unknown) => void;
-  onSuccess?: (data: UserInfoData) => void;
-}
 
 export const getUserInfo = async () => {
   try {
@@ -43,12 +16,12 @@ export const getUserInfo = async () => {
   }
 };
 
-export const useGetUserInfo = (options: QueryOptions = {}) => {
-  return useQuery<UserInfoData, unknown>({
+export const useGetUserInfo = () => {
+  return useQuery<UserInfoData>({
     queryKey: ['UserInfo'],
     queryFn: () => getUserInfo(),
+    staleTime: 2.9 * 60 * 1000,
     retry: false,
-    staleTime: 5 * 60 * 1000,
-    ...options,
+    throwOnError: false,
   });
 };

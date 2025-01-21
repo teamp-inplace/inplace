@@ -14,10 +14,10 @@ export default function InfluencerMapTap({
 }) {
   const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
   const [mapBounds, setMapBounds] = useState<LocationData>({
-    topLeftLatitude: 0,
-    topLeftLongitude: 0,
-    bottomRightLatitude: 0,
-    bottomRightLongitude: 0,
+    topLeftLatitude: 40.22639734631998,
+    topLeftLongitude: 117.27774208342159,
+    bottomRightLatitude: 31.274644378932404,
+    bottomRightLongitude: 139.18297869519475,
   });
   const filters = { categories: [], influencers: [influencerName] };
   const [shouldFetchPlaces, setShouldFetchPlaces] = useState(false);

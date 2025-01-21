@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '@/hooks/useAuth';
 import LoginModal from '@/components/common/modals/LoginModal';
-import { useGetUserInfo, isAuthorizationError } from '@/api/hooks/useGetUserInfo';
+import { useGetUserInfo } from '@/api/hooks/useGetUserInfo';
 
 type PrivateRouteProps = {
   children: ReactElement;
@@ -10,6 +10,7 @@ type PrivateRouteProps = {
 
 export default function PrivateRoute({ children }: PrivateRouteProps) {
   const [shouldShowModal, setShouldShowModal] = useState(false);
+  const [isAccessChecked, setIsAccessChecked] = useState(false);
   const { isAuthenticated, handleLoginSuccess } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -17,50 +18,33 @@ export default function PrivateRoute({ children }: PrivateRouteProps) {
   const directRedirectPaths = ['/choice', '/auth'];
   const isProtectedPath = directRedirectPaths.includes(location.pathname);
 
-  console.log('[PrivateRoute] Current state:', {
-    path: location.pathname,
-    isAuthenticated,
-  });
-
-  const { data: userInfo, isLoading } = useGetUserInfo({
-    retry: false,
-    enabled: true,
-    onSuccess: (data) => {
-      if (data?.nickname && !isAuthenticated) {
-        handleLoginSuccess(data.nickname);
-      }
-    },
-    onError: (error: unknown) => {
-      console.log('Error occurred:', error);
-
-      if (isAuthorizationError(error)) {
-        console.log('[PrivateRoute] Unauthorized access:', {
-          message: error.response.data.message,
-          status: error.response.status,
-        });
-
-        if (isProtectedPath) {
-          navigate('/', { replace: true });
-        } else {
-          setShouldShowModal(true);
-        }
-        return;
-      }
-
-      console.error('사용자 정보 요청 실패:', error);
-      if (isProtectedPath) {
-        navigate('/', { replace: true });
-      } else {
-        setShouldShowModal(true);
-      }
-    },
-  });
+  const { data: userInfo, isLoading, isError } = useGetUserInfo();
 
   useEffect(() => {
+    const referer = document.referrer;
+    const isDirectAccess = !referer || referer.includes(window.location.origin) === false;
+
+    if (location.pathname === '/choice') {
+      if (isDirectAccess) {
+        navigate('/', { replace: true });
+        return;
+      }
+    }
+
+    if (isError) {
+      console.error('[PrivateRoute] Failed to fetch user info.');
+      navigate('/', { replace: true });
+      return;
+    }
+
     if (isProtectedPath && !isAuthenticated && !isLoading && !userInfo?.nickname) {
       navigate('/', { replace: true });
     }
-  }, [isProtectedPath, isAuthenticated, userInfo, isLoading, navigate]);
+
+    if (!isLoading) {
+      setIsAccessChecked(true);
+    }
+  }, [isProtectedPath, isAuthenticated, userInfo, isLoading, isError, navigate]);
 
   const handleCloseModal = () => {
     if (window.history.length > 2) {
@@ -83,7 +67,7 @@ export default function PrivateRoute({ children }: PrivateRouteProps) {
     }
   }, [userInfo, isAuthenticated, handleLoginSuccess]);
 
-  if (isLoading) return null;
+  if (isLoading || !isAccessChecked) return null;
 
   if (shouldShowModal && !isAuthenticated) {
     return (

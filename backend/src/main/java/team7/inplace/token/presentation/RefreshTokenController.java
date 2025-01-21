@@ -25,8 +25,8 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
     private final JwtUtil jwtUtil;
     private final RefreshTokenFacade refreshTokenFacade;
 
-    @Value("${spring.redirect.front-end-url}")
-    private String frontEndUrl;
+    @Value("${spring.application.domain}")
+    private String domain;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/refresh-token")
@@ -44,10 +44,10 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
     }
 
     private void addTokenToCookie(HttpServletResponse response, ReIssued reIssuedToken) {
-        var accessTokenCookie = CookieUtil.createCookie(TokenType.ACCESS_TOKEN.getValue(),
-                reIssuedToken.accessToken());
-        var refreshTokenCookie = CookieUtil.createCookie(TokenType.REFRESH_TOKEN.getValue(),
-                reIssuedToken.refreshToken());
+        var accessTokenCookie = CookieUtil.createHttpOnlyCookie(TokenType.ACCESS_TOKEN.getValue(),
+                reIssuedToken.accessToken(), domain);
+        var refreshTokenCookie = CookieUtil.createHttpOnlyCookie(TokenType.REFRESH_TOKEN.getValue(),
+                reIssuedToken.refreshToken(), domain);
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
@@ -62,8 +62,8 @@ public class RefreshTokenController implements RefreshTokenControllerApiSpec {
         String refreshToken = cookie.getValue();
         refreshTokenFacade.deleteRefreshToken(refreshToken);
 
-        ResponseCookie accessTokenCookie = CookieUtil.createCookie(TokenType.ACCESS_TOKEN.getValue(), "");
-        ResponseCookie refreshTokenCookie = CookieUtil.createCookie(TokenType.REFRESH_TOKEN.getValue(), "");
+        ResponseCookie accessTokenCookie = CookieUtil.createHttpOnlyCookie(TokenType.ACCESS_TOKEN.getValue(), "", domain);
+        ResponseCookie refreshTokenCookie = CookieUtil.createHttpOnlyCookie(TokenType.REFRESH_TOKEN.getValue(), "", domain);
         response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 

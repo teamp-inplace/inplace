@@ -1,6 +1,7 @@
 package team7.inplace.user.application.dto;
 
 import team7.inplace.security.application.dto.KakaoOAuthResponse;
+import team7.inplace.admin.user.domain.AdminUser;
 import team7.inplace.user.domain.Role;
 import team7.inplace.user.domain.User;
 import team7.inplace.user.domain.UserType;
