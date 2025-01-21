@@ -24,8 +24,8 @@ public interface InfluencerControllerApiSpec {
 
     @Operation(summary = "인플루언서 수정", description = "인플루언서를 수정합니다.")
     ResponseEntity<Long> updateInfluencer(
-            @PathVariable Long id,
-            @RequestBody InfluencerRequest.Upsert request
+        @PathVariable Long id,
+        @RequestBody InfluencerRequest.Upsert request
     );
 
     @Operation(summary = "인플루언서 삭제", description = "인플루언서를 삭제합니다.")
@@ -36,4 +36,7 @@ public interface InfluencerControllerApiSpec {
 
     @Operation(summary = "여러 인플루언서 좋아요/좋아요 취소", description = "여러 인플루언서를 모두 좋아요하거나 모든 좋아요를 취소합니다.")
     ResponseEntity<Void> addLikeInfluencers(@RequestBody InfluencerRequest.Likes request);
+
+    @Operation(summary = "특정 인플루언서의 정보 조회", description = "특정 인플루언서의 정보를 조회합니다.")
+    ResponseEntity<InfluencerResponse.Detail> getInfluencer(@PathVariable Long id);
 }
