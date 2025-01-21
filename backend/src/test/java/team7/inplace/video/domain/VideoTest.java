@@ -11,7 +11,7 @@ public class VideoTest {
     @DisplayName("처음 업데이트 되는 비디오일 경우, viewCountIncrease는 0")
     void viewCountIncreaseTest_whenFirstUpdated() {
         // given
-        Video video = Video.from(null, null, "UUID");
+        Video video = Video.from(null, null, 1L);
         final Long updateCount = 10000L;
 
         // when
@@ -25,7 +25,7 @@ public class VideoTest {
     @DisplayName("처음 업데이트가 되지 않는 비디오의 경우, viewCountIncrease는 이전 viewCount와의 차이")
     void viewCountIncreaseTest_whenNotFirstUpdated() {
         // given
-        Video video = Video.from(null, null, "UUID");
+        Video video = Video.from(null, null, 1L);
         final Long updateCount = 10000L;
         final Long updateCount2 = 20000L;
         video.updateViewCount(updateCount);
