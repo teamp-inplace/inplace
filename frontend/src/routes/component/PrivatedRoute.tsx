@@ -18,11 +18,6 @@ export default function PrivateRoute({ children }: PrivateRouteProps) {
   const directRedirectPaths = ['/choice', '/auth'];
   const isProtectedPath = directRedirectPaths.includes(location.pathname);
 
-  console.log('[PrivateRoute] Current state:', {
-    path: location.pathname,
-    isAuthenticated,
-  });
-
   const { data: userInfo, isLoading, isError } = useGetUserInfo();
 
   useEffect(() => {
