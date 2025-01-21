@@ -26,7 +26,7 @@ export default function AuthPage() {
           navigate('/', { replace: true });
         }
       } else if (isAuthenticated) {
-        navigate('/choice', { replace: true });
+        navigate('/', { replace: true });
       }
     };
 

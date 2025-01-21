@@ -1,5 +1,5 @@
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
-import { getRefreshToken } from '@/api/hooks/useGetRefreshToken';
+import { useGetRefreshToken } from '@/api/hooks/useGetRefreshToken';
 import { useDeleteToken } from '@/api/hooks/useDeleteToken';
 
 type AuthInfo = {
@@ -14,26 +14,27 @@ interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-const ACCESS_TOKEN_REFRESH_INTERVAL = 9 * 60 * 1000;
+const ACCESS_TOKEN_REFRESH_INTERVAL = 3 * 60 * 1000;
 
 export default function AuthProvider({ children }: AuthProviderProps) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
     () => localStorage.getItem('isAuthenticated') === 'true',
   );
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
+  const { mutateAsync: refreshToken } = useGetRefreshToken();
   const { mutate: logout } = useDeleteToken();
 
   const handleLogout = useCallback(() => {
-    logout();
     setIsAuthenticated(false);
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('nickname');
+    window.location.href = '/';
+    logout();
   }, [logout]);
 
   const refreshTokenRegularly = useCallback(async () => {
     try {
-      await getRefreshToken();
-      setTimeout(refreshTokenRegularly, ACCESS_TOKEN_REFRESH_INTERVAL);
+      await refreshToken();
     } catch (error) {
       console.error('Token refresh failed:', error);
       handleLogout();
@@ -43,14 +44,12 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const handleLoginSuccess = useCallback(
     async (userNickname: string) => {
       if (!isAuthenticated) {
-        console.log('[AuthProvider] Setting login success for:', userNickname);
         localStorage.setItem('nickname', userNickname);
         localStorage.setItem('isAuthenticated', 'true');
         setIsAuthenticated(true);
-        await refreshTokenRegularly();
       }
     },
-    [isAuthenticated, refreshTokenRegularly],
+    [isAuthenticated],
   );
 
   useEffect(() => {
@@ -69,6 +68,22 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
     initialize();
   }, [refreshTokenRegularly, handleLogout]);
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
+    if (isAuthenticated) {
+      intervalId = setInterval(() => {
+        refreshTokenRegularly();
+      }, ACCESS_TOKEN_REFRESH_INTERVAL);
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isAuthenticated, refreshTokenRegularly]);
 
   const value = useMemo(
     () => (isInitialized ? { isAuthenticated, handleLoginSuccess, handleLogout } : undefined),
