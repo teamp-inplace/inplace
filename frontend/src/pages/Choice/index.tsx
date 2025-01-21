@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { Text } from '@/components/common/typography/Text';
 import BaseLayout from '@/components/common/BaseLayout';
 import { useGetAllInfluencers } from '@/api/hooks/useGetAllInfluencers';
 import { usePostMultipleInfluencerLike } from '@/api/hooks/usePostMultipleInfluencerLike';
@@ -85,29 +86,33 @@ export default function ChoicePage() {
 
   return (
     <PageContainer>
+      <Text size="l" weight="bold" variant="white">
+        관심 있는{' '}
+        <Text as="span" size="28px" weight="bold" variant="mint">
+          인플루언서
+        </Text>
+        를 선택하세요!
+      </Text>
+      <InfluencerSearchBar inputValue={inputValue} setInputValue={setInputValue} />
       <LayoutWrapper>
-        <SearchBarWrapper>
-          <InfluencerSearchBar inputValue={inputValue} setInputValue={setInputValue} />
-        </SearchBarWrapper>
         <BaseLayout
           type="influencer"
-          prevSubText="관심 있는 "
-          mainText="인플루언서"
-          SubText="를 선택하세요!"
+          mainText=""
+          SubText=""
           items={pageableData?.content || []}
           showMoreButton={false}
           isChoice
           onToggleLike={handleToggleLike}
           selectedInfluencers={selectedInfluencers}
         />
-        <Pagination
-          currentPage={currentPage}
-          totalPages={pageableData?.totalPages || 0}
-          totalItems={pageableData?.totalElements}
-          onPageChange={handlePageChange}
-          itemsPerPage={pageableData?.pageable.pageSize}
-        />
       </LayoutWrapper>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={pageableData?.totalPages || 0}
+        totalItems={pageableData?.totalElements}
+        onPageChange={handlePageChange}
+        itemsPerPage={pageableData?.pageable.pageSize}
+      />
       <ButtonWrapper>
         <Button
           variant="white"
@@ -144,8 +149,4 @@ const ButtonWrapper = styled.div`
   justify-content: space-between;
   width: 960px;
   margin-bottom: 30px;
-`;
-
-const SearchBarWrapper = styled.div`
-  margin: 20px 0;
 `;
