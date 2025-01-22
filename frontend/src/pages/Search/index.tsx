@@ -15,12 +15,14 @@ export default function SearchPage() {
   return (
     <Wrapper>
       <SearchBar placeholder="인플루언서, 장소를 검색해주세요!" />
-      <Paragraph weight="normal" size="m" variant="white">
-        <Text weight="bold" size="m" variant="mint">
-          {`${query} `}
-        </Text>
-        검색 결과
-      </Paragraph>
+      <Title>
+        <Paragraph weight="normal" size="m" variant="white">
+          <Text weight="bold" size="m" variant="mint">
+            {`${query} `}
+          </Text>
+          검색 결과
+        </Paragraph>
+      </Title>
       <SplitLine />
       <BaseLayout type="influencer" mainText="" SubText="인플루언서" items={influencersData || []} />
       <SplitLine />
@@ -34,7 +36,19 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 50px;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+  }
 `;
 const SplitLine = styled.div`
   border-bottom: 1px solid #595959;
+`;
+
+const Title = styled.div`
+  width: 90%;
 `;
