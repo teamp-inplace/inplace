@@ -31,7 +31,12 @@ export default function InfiniteScrollSection<T>({
     if (!listRef.current) return;
 
     const someWidth = 400;
-    const scrollAmount = direction === 'left' ? -someWidth : someWidth;
+    const { scrollLeft, scrollWidth, clientWidth } = listRef.current;
+    const remainingScroll = direction === 'left' ? scrollLeft : scrollWidth - clientWidth - scrollLeft;
+
+    const scrollAmount =
+      direction === 'left' ? -Math.min(someWidth, remainingScroll) : Math.min(someWidth, remainingScroll);
+
     listRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
 
     if (direction === 'right' && hasNextPage) {

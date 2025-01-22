@@ -8,13 +8,20 @@ import NoItem from '@/components/common/layouts/NoItem';
 
 export default function InfluencerSection({ items = [] }: { items: InfluencerData[] }) {
   const listRef = useRef<HTMLDivElement | null>(null);
+
   const scrollList = (direction: 'left' | 'right') => {
-    if (listRef.current) {
-      const someWidth = 400;
-      const scrollAmount = direction === 'left' ? -someWidth : someWidth;
-      listRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
+    if (!listRef.current) return;
+
+    const someWidth = 400;
+    const { scrollLeft, scrollWidth, clientWidth } = listRef.current;
+    const remainingScroll = direction === 'left' ? scrollLeft : scrollWidth - clientWidth - scrollLeft;
+
+    const scrollAmount =
+      direction === 'left' ? -Math.min(someWidth, remainingScroll) : Math.min(someWidth, remainingScroll);
+
+    listRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   };
+
   return (
     <SectionContainer>
       {items.length === 0 ? (
