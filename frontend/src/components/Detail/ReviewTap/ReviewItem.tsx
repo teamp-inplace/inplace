@@ -64,6 +64,14 @@ const Wrapper = styled.div`
   svg {
     margin-left: 20px;
   }
+  @media screen and (max-width: 768px) {
+    line-height: 130%;
+    svg {
+      margin-left: 10px;
+      width: 20px;
+      height: 16px;
+    }
+  }
 `;
 const Title = styled.div`
   display: flex;
@@ -76,6 +84,10 @@ const DeleteBtn = styled.button`
   background: none;
   border: none;
   cursor: pointer;
+
+  @media screen and (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 const Comment = styled.div`
   display: flex;

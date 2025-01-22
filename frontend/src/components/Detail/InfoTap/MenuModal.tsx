@@ -47,22 +47,14 @@ export default function MenuModal({ images }: { images: string[] }) {
             src={src}
             alt={`Menu Image ${index + 1}`}
             onClick={() => openModal(index)}
-            style={{ width: '465px' }}
+            style={{ width: '100%' }}
             cursor="pointer"
           />
         ))}
       </ImageWrapper>
       <Modal blockScrollOnMount isOpen={isOpen} onClose={closeModal} isCentered>
         <ModalOverlay />
-        <ModalContent
-          maxWidth={{ base: '800px', md: '80%' }}
-          height={{ base: '700px', md: '500px' }}
-          margin={{ base: '0px auto', md: '0px auto' }}
-          alignItems="center"
-          justifyContent="center"
-          backgroundColor="white"
-          zIndex={200000000}
-        >
+        <StyledModalContent>
           <ModalHeader padding="20px 0px" fontSize={{ base: '20px', md: '16px' }}>
             Menu {currentImageIndex + 1}/{images.length}
           </ModalHeader>
@@ -76,21 +68,22 @@ export default function MenuModal({ images }: { images: string[] }) {
             color="grey"
             cursor="pointer"
           />
-          <ModalBody display="flex" justifyContent="center" width="90%" height="70%">
+          <StyledModalBody display="flex" justifyContent="center" width={{ base: '90%', md: '100%' }} height="auto">
             <Button onClick={prevImage}>
               <GrFormPrevious size={30} color="grey" />
             </Button>
             <Image
               src={images[currentImageIndex]}
               alt={`Menu Image ${currentImageIndex + 1}`}
-              width="100%"
+              width="80%"
               height="auto"
+              aspectRatio="1.2 / 1"
               objectFit="cover"
             />
             <Button onClick={nextImage}>
               <GrFormNext size={30} color="grey" />
             </Button>
-          </ModalBody>
+          </StyledModalBody>
           <ThumbnailWrapper>
             <ThumbnailContainer>
               {images.map((src, index) => (
@@ -104,7 +97,7 @@ export default function MenuModal({ images }: { images: string[] }) {
               ))}
             </ThumbnailContainer>
           </ThumbnailWrapper>
-        </ModalContent>
+        </StyledModalContent>
       </Modal>
     </>
   );
@@ -135,8 +128,37 @@ const Button = styled.button`
   border: none;
   cursor: pointer;
 `;
+
+const StyledModalContent = styled(ModalContent)`
+  max-width: 800px;
+  height: 700px;
+  margin: 50px auto;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  z-index: 200000;
+
+  @media screen and (max-width: 768px) {
+    max-width: 80%;
+    aspect-ratio: 1 / 1;
+    height: auto;
+    margin: 30vh auto;
+  }
+`;
+
+const StyledModalBody = styled(ModalBody)`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
+`;
 const ThumbnailWrapper = styled.div`
   width: 90%;
+  height: auto;
   display: flex;
   justify-content: center;
   gap: 10px;
@@ -170,5 +192,11 @@ const Thumbnail = styled.img<{ $isActive: boolean }>`
 
   &:hover {
     opacity: 1;
+  }
+
+  @media screen and (max-width: 768px) {
+    width: 80px;
+    aspect-ratio: 1;
+    height: auto;
   }
 `;
