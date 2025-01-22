@@ -133,17 +133,32 @@ const PageContainer = styled.div`
   flex-direction: column;
   margin-top: 30px;
   gap: 50px;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    gap: 20px;
+    margin-top: 20px;
+    align-items: center;
+  }
 `;
 const InfluencerInfoSection = styled.div`
   position: relative;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
 `;
 const Image = styled.div`
   width: 200px;
   border-radius: 50%;
   aspect-ratio: 1;
+
+  @media screen and (max-width: 768px) {
+    width: 100px;
+  }
 `;
 const TextInfo = styled.div`
   width: 100%;
@@ -152,6 +167,11 @@ const TextInfo = styled.div`
   flex-direction: column;
   justify-content: center;
   gap: 20px;
+
+  @media screen and (max-width: 768px) {
+    padding-left: 20px;
+    gap: 8px;
+  }
 `;
 const LikeIcon = styled.div`
   position: absolute;
@@ -160,6 +180,15 @@ const LikeIcon = styled.div`
   width: 30px;
   height: 30px;
   cursor: pointer;
+
+  @media screen and (max-width: 768px) {
+    top: 0px;
+    right: 0px;
+    svg {
+      width: 30px;
+      height: 26px;
+    }
+  }
 `;
 const Tap = styled.button<{ $active: boolean }>`
   width: 100%;
@@ -174,9 +203,23 @@ const Tap = styled.button<{ $active: boolean }>`
   transition:
     color 0.3s ease,
     border-bottom 0.3s ease;
+
+  @media screen and (max-width: 768px) {
+    height: 50px;
+    font-size: 16px;
+    border-bottom: 2px solid ${({ $active }) => ($active ? '#55ebff' : 'white')};
+  }
 `;
 const TapContainer = styled.div`
   display: flex;
   justify-content: space-between;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
 `;
-const InfoContainer = styled.div``;
+const InfoContainer = styled.div`
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
+`;

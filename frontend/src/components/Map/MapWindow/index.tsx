@@ -31,8 +31,6 @@ export default function MapWindow({
   selectedPlaceId,
   onPlaceSelect,
 }: MapWindowProps) {
-  const originSize = 34;
-
   const mapRef = useRef<kakao.maps.Map | null>(null);
   const [mapCenter, setMapCenter] = useState({ lat: 37.5665, lng: 126.978 });
   const [mapBound, setMapBound] = useState<LocationData>({
@@ -45,6 +43,21 @@ export default function MapWindow({
   const [showSearchButton, setShowSearchButton] = useState(false);
   const [markerInfo, setMarkerInfo] = useState<MarkerInfo | PlaceData>();
   const [shouldFetchData, setShouldFetchData] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const originSize = isMobile ? 26 : 34;
+  const userLocationSize = isMobile ? 16 : 24;
 
   const { data: markers = [] } = useGetAllMarkers({
     location: mapBound,
@@ -219,7 +232,7 @@ export default function MapWindow({
             position={userLocation}
             image={{
               src: 'https://i.ibb.co/4gGFjRx/circle.png',
-              size: { width: 22, height: 22 },
+              size: { width: userLocationSize, height: userLocationSize },
             }}
           />
         )}

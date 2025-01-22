@@ -32,13 +32,26 @@ export default function InfluencerMapWindow({
   onCompleteFetch,
   onPlaceSelect,
 }: MapWindowProps) {
-  const originSize = 34;
   const mapRef = useRef<kakao.maps.Map | null>(null);
 
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [markerInfo, setMarkerInfo] = useState<MarkerInfo | PlaceData>();
   const [shouldFetchData, setShouldFetchData] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState(false);
 
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const originSize = isMobile ? 26 : 34;
+  const userLocationSize = isMobile ? 16 : 24;
   const selectedMarker = markers.find((m) => m.placeId === selectedPlaceId);
   const MarkerInfoData = useGetMarkerInfo(selectedPlaceId?.toString() || '', shouldFetchData);
 
@@ -175,7 +188,7 @@ export default function InfluencerMapWindow({
             lat: 36.2683,
             lng: 127.6358,
           }}
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: '100%', height: 'auto', aspectRatio: '1.4/1' }}
           level={14}
           onCreate={(map) => {
             mapRef.current = map;
@@ -187,7 +200,7 @@ export default function InfluencerMapWindow({
               position={userLocation}
               image={{
                 src: 'https://i.ibb.co/4gGFjRx/circle.png',
-                size: { width: 24, height: 24 },
+                size: { width: userLocationSize, height: userLocationSize },
               }}
             />
           )}
@@ -230,14 +243,9 @@ export default function InfluencerMapWindow({
           )}
         </Map>
         <ResetButtonContainer>
-          <Button
-            onClick={handleResetCenter}
-            variant="white"
-            size="small"
-            style={{ width: '40px', height: '40px', boxShadow: '1px 1px 2px #707070' }}
-          >
+          <StyledBtn onClick={handleResetCenter} variant="white" size="small">
             <TbCurrentLocation size={20} />
-          </Button>
+          </StyledBtn>
         </ResetButtonContainer>
       </MapContainer>
       <Btn onClick={handleSearchNearby}>
@@ -251,7 +259,6 @@ export default function InfluencerMapWindow({
 const MapContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 500px;
   padding-bottom: 20px;
 `;
 
@@ -260,6 +267,26 @@ const ResetButtonContainer = styled.div`
   bottom: 46px;
   right: 30px;
   z-index: 10;
+
+  @media screen and (max-width: 768px) {
+    bottom: 34px;
+    right: 14px;
+  }
+`;
+const StyledBtn = styled(Button)`
+  width: 40px;
+  height: 40px;
+  box-shadow: 1px 1px 2px #707070;
+
+  @media screen and (max-width: 768px) {
+    width: 28px;
+    height: 28px;
+    box-shadow: 1px 1px 1px #707070;
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
 `;
 const Btn = styled.div`
   display: flex;
@@ -271,4 +298,8 @@ const Btn = styled.div`
   padding-bottom: 4px;
   gap: 6px;
   cursor: pointer;
+
+  @media screen and (max-width: 768px) {
+    font-size: 14px;
+  }
 `;

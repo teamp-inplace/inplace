@@ -52,6 +52,7 @@ const Wrapper = styled(Link)<{ $isInfluencer: boolean }>`
       height: 14px;
       margin: 0px;
     }
+    width: ${({ $isInfluencer }) => ($isInfluencer ? '100%' : null)};
   }
 `;
 
@@ -61,4 +62,6 @@ const ImageWrapper = styled.div<{ $isInfluencer?: boolean }>`
   margin-bottom: 10px;
   border-radius: 6px;
   overflow: hidden;
+
+  width: ${({ $isInfluencer }) => ($isInfluencer ? '100%' : null)};
 `;
