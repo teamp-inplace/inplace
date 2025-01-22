@@ -24,7 +24,6 @@ public class ReviewController implements ReviewControllerApiSpec {
 
     private final ReviewInvitationService reviewInvitationService;
     private final ReviewService reviewService;
-    private final ReviewInvitationService reviewInvitationService;
 
     @Override
     @GetMapping
