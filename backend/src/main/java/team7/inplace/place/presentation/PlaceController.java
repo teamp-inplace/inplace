@@ -25,15 +25,14 @@ import team7.inplace.place.persistence.dto.PlaceQueryResult;
 import team7.inplace.place.presentation.dto.CategoriesResponse;
 import team7.inplace.place.presentation.dto.PlaceLikeRequest;
 import team7.inplace.place.presentation.dto.PlacesResponse;
-import team7.inplace.place.presentation.dto.ReviewRequest;
 import team7.inplace.place.presentation.dto.ReviewResponse;
 import team7.inplace.review.application.ReviewService;
-import team7.inplace.review.application.dto.ReviewCommand;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/places")
 public class PlaceController implements PlaceControllerApiSpec {
+
     private final PlaceMessageFacade placeMessageFacade;
     private final PlaceService placeService;
     private final CategoryService categoryService;
@@ -41,30 +40,30 @@ public class PlaceController implements PlaceControllerApiSpec {
 
     @GetMapping
     public ResponseEntity<Page<PlacesResponse.Simple>> getPlaces(
-            @RequestParam Double longitude,
-            @RequestParam Double latitude,
-            @RequestParam Double topLeftLongitude,
-            @RequestParam Double topLeftLatitude,
-            @RequestParam Double bottomRightLongitude,
-            @RequestParam Double bottomRightLatitude,
-            @RequestParam(required = false) String categories,
-            @RequestParam(required = false) String influencers,
-            @PageableDefault(page = 0, size = 10) Pageable pageable
+        @RequestParam Double longitude,
+        @RequestParam Double latitude,
+        @RequestParam Double topLeftLongitude,
+        @RequestParam Double topLeftLatitude,
+        @RequestParam Double bottomRightLongitude,
+        @RequestParam Double bottomRightLatitude,
+        @RequestParam(required = false) String categories,
+        @RequestParam(required = false) String influencers,
+        @PageableDefault(page = 0, size = 10) Pageable pageable
     ) {
         var placeSimpleInfos = placeService.getPlacesInMapRange(
-                new PlacesCommand.Coordinate(
-                        topLeftLongitude, topLeftLatitude,
-                        bottomRightLongitude, bottomRightLatitude,
-                        longitude, latitude
-                ),
-                new PlacesCommand.FilterParams(categories, influencers),
-                pageable
+            new PlacesCommand.Coordinate(
+                topLeftLongitude, topLeftLatitude,
+                bottomRightLongitude, bottomRightLatitude,
+                longitude, latitude
+            ),
+            new PlacesCommand.FilterParams(categories, influencers),
+            pageable
         );
 
         var responses = PlacesResponse.Simple.from(placeSimpleInfos.getContent());
         return new ResponseEntity<>(
-                new PageImpl<>(responses, pageable, placeSimpleInfos.getTotalElements()),
-                HttpStatus.OK
+            new PageImpl<>(responses, pageable, placeSimpleInfos.getTotalElements()),
+            HttpStatus.OK
         );
     }
 
@@ -96,7 +95,7 @@ public class PlaceController implements PlaceControllerApiSpec {
 
     @GetMapping("/{id}")
     public ResponseEntity<PlacesResponse.Detail> getPlaceDetail(
-            @PathVariable("id") Long placeId
+        @PathVariable("id") Long placeId
     ) {
         var placeDetail = placeService.getPlaceDetailInfo(placeId);
 
@@ -118,32 +117,14 @@ public class PlaceController implements PlaceControllerApiSpec {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/reviews")
-    public ResponseEntity<Void> createReview(
-            @PathVariable("id") Long placeId,
-            @RequestBody ReviewRequest request
-    ) {
-        ReviewCommand reviewCommand = request.toCommand();
-
-        reviewService.createReview(placeId, reviewCommand);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
     @GetMapping("/{id}/reviews")
     public ResponseEntity<Page<ReviewResponse.Simple>> getReviews(
-            @PathVariable("id") Long placeId,
-            @PageableDefault(page = 0, size = 10) Pageable pageable
+        @PathVariable("id") Long placeId,
+        @PageableDefault(page = 0, size = 10) Pageable pageable
     ) {
         var responses = reviewService.getPlaceReviews(placeId, pageable)
-                .map(ReviewResponse.Simple::from);
+            .map(ReviewResponse.Simple::from);
 
         return new ResponseEntity<>(responses, HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<Void> sendPlaceMessage(Long placeId) {
-        placeMessageFacade.sendPlaceMessage(placeId);
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
