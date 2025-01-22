@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import useDebounce from '@/hooks/useDebounce';
@@ -14,61 +14,83 @@ export default function SearchBar({ placeholder = '키워드를 입력해주세�
   const [inputValue, setInputValue] = useState('');
   const [dropDownList, setDropDownList] = useState<SearchComplete[]>([]);
   const [itemIndex, setItemIndex] = useState(-1);
+  const [isOpen, setIsOpen] = useState(false);
 
   const debouncedInputValue = useDebounce(inputValue, 300);
 
   const { data: searchResults } = useGetSearchComplete(debouncedInputValue);
 
+  const searchBarRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (searchResults) {
       setDropDownList(searchResults);
+      setItemIndex(-1);
     } else {
       setDropDownList([]);
     }
-  }, [searchResults]);
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchBarRef.current && !searchBarRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+
+    setIsOpen(inputValue !== '');
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [searchResults, inputValue]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newInputValue = event.target.value;
-    setInputValue(newInputValue);
+    if (newInputValue !== inputValue) {
+      setInputValue(newInputValue);
+    }
   };
 
   const handleDropDownItem = (item: string) => {
     setInputValue(item);
     setItemIndex(-1);
+    setIsOpen(false);
     handleSearch(item);
   };
 
   const handleSearch = (searchValue: string) => {
     if (searchValue.trim()) {
       const query = encodeURIComponent(searchValue);
+      setTimeout(() => setInputValue(''), 0);
       navigate(`/search?query=${query}`);
     }
   };
 
   const handleDropDownKey = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (inputValue) {
-      if (event.key === 'ArrowDown' && dropDownList.length - 1 > itemIndex) {
-        setItemIndex(itemIndex + 1);
-      }
+    if (!inputValue || event.nativeEvent.isComposing || !isOpen) return;
 
-      if (event.key === 'ArrowUp' && itemIndex >= 0) {
-        setItemIndex(itemIndex - 1);
-      }
-
-      if (event.key === 'Enter') {
-        event.preventDefault();
+    switch (event.key) {
+      case 'ArrowDown':
+        setItemIndex((prev) => (prev === dropDownList.length - 1 ? 0 : prev + 1));
+        break;
+      case 'ArrowUp':
+        setItemIndex((prev) => (prev <= 0 ? dropDownList.length - 1 : prev - 1));
+        break;
+      case 'Enter':
         if (itemIndex >= 0) {
           handleDropDownItem(dropDownList[itemIndex].result);
         } else {
           handleSearch(inputValue);
         }
-      }
+        setIsOpen(false);
+        break;
+      default:
     }
   };
 
   return (
-    <SearchBarContainer>
-      <SearchInputWrapper $isInputValue={inputValue !== ''}>
+    <SearchBarContainer ref={searchBarRef}>
+      <SearchInputWrapper $isOpen={isOpen}>
         <SearchInput
           type="text"
           value={inputValue}
@@ -78,7 +100,7 @@ export default function SearchBar({ placeholder = '키워드를 입력해주세�
         />
         <SearchIconWrapper role="button" aria-label="검색" onClick={() => handleSearch(inputValue)} />
       </SearchInputWrapper>
-      {inputValue && (
+      {inputValue && isOpen && (
         <SearchDropDownBox>
           {dropDownList.length === 0 ? (
             <SearchDropDownItem>해당하는 키워드가 없습니다!</SearchDropDownItem>
@@ -133,14 +155,14 @@ const SearchBarContainer = styled.div`
   }
 `;
 
-const SearchInputWrapper = styled.div<{ $isInputValue: boolean }>`
+const SearchInputWrapper = styled.div<{ $isOpen: boolean }>`
   display: flex;
   align-items: center;
   background: #414141;
   padding: 12px 16px;
   border: 1.5px solid #a5a5a5;
-  border-bottom: ${({ $isInputValue }) => ($isInputValue ? 'none' : null)};
-  border-radius: ${({ $isInputValue }) => ($isInputValue ? '16px 16px 0 0' : '16px')};
+  border-bottom: ${({ $isOpen }) => ($isOpen ? 'none' : null)};
+  border-radius: ${({ $isOpen }) => ($isOpen ? '16px 16px 0 0' : '16px')};
   z-index: 3;
 `;
 
