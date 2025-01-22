@@ -99,7 +99,7 @@ export type PlaceInfo = {
   };
   openHour: OpenHourData;
   placeLikes: PlaceLikes;
-  videoUrl: string;
+  videoUrl: [string];
 };
 
 export type PlaceLikes = {
@@ -217,3 +217,11 @@ export type MarkerInfo = {
   address: AddressInfo;
   menuImgUrl: string;
 };
+
+export interface ReviewInfo {
+  placeName: string;
+  placeAddress: string;
+  placeImgUrl: string;
+  influencerName: string;
+  userNickname: string;
+}

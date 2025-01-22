@@ -73,7 +73,7 @@ describe('세부페이지 ErrorBoundary 테스트', () => {
         data: {
           placeName: 'Test Place',
           placeId: 123,
-          videoUrl: 'https://test.video',
+          videoUrl: ['https://test.video'],
           facilityInfo: {},
           openHour: {
             periodList: [],

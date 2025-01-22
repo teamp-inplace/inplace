@@ -3,10 +3,10 @@ import { useMutation } from '@tanstack/react-query';
 import { fetchInstance } from '../instance';
 import { RequestPlaceReview } from '@/types';
 
-export const postPlaceReviewPath = (id: string) => `/places/${id}/reviews`;
-const postPlaceReview = async (id: string, { likes, comments }: RequestPlaceReview) => {
+export const postPlaceReviewPath = (uuid: string) => `/review/${uuid}`;
+const postPlaceReview = async (uuid: string, { likes, comments }: RequestPlaceReview) => {
   const response = await fetchInstance.post(
-    postPlaceReviewPath(id),
+    postPlaceReviewPath(uuid),
     {
       likes,
       comments,
@@ -16,8 +16,8 @@ const postPlaceReview = async (id: string, { likes, comments }: RequestPlaceRevi
   return response.data;
 };
 
-export const usePostPlaceReview = (id: string) => {
+export const usePostPlaceReview = (uuid: string) => {
   return useMutation({
-    mutationFn: ({ likes, comments }: RequestPlaceReview) => postPlaceReview(id, { likes, comments }),
+    mutationFn: ({ likes, comments }: RequestPlaceReview) => postPlaceReview(uuid, { likes, comments }),
   });
 };
