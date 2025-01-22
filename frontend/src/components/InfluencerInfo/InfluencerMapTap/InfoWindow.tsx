@@ -9,20 +9,11 @@ type Props = {
   onClose: () => void;
 };
 
-const categoryMapping = {
-  RESTAURANT: '음식점',
-  CAFE: '카페',
-  JAPANESE: '일식',
-  KOREAN: '한식',
-  WESTERN: '양식',
-} as const;
-
 const getFullAddress = (addr: AddressInfo) => {
   return [addr.address1, addr.address2, addr.address3].filter(Boolean).join(' ');
 };
 
 export default function InfoWindow({ data, onClose }: Props) {
-  const translatedCategory = categoryMapping[data.category as keyof typeof categoryMapping] || '기타';
   const isLongName = data.placeName.length > 20;
 
   return (
@@ -33,7 +24,7 @@ export default function InfoWindow({ data, onClose }: Props) {
         </Text>
         {!isLongName && (
           <Text size="xxs" weight="normal" variant="grey">
-            {translatedCategory}
+            {data.category}
           </Text>
         )}
       </Title>
