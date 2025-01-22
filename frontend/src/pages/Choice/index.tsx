@@ -88,7 +88,7 @@ export default function ChoicePage() {
     <PageContainer>
       <Text size="l" weight="bold" variant="white">
         관심 있는{' '}
-        <Text as="span" size="28px" weight="bold" variant="mint">
+        <Text size="28px" weight="bold" variant="mint">
           인플루언서
         </Text>
         를 선택하세요!
