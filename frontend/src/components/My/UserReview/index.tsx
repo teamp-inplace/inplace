@@ -37,6 +37,11 @@ const Container = styled.div`
   flex-direction: column;
   gap: 30px;
   max-height: 500px;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+    gap: 14px;
+  }
 `;
 const TitleContainer = styled.div`
   display: flex;

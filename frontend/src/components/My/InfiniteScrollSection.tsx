@@ -80,6 +80,8 @@ const SectionContainer = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+  overflow: visible;
+  width: 100%;
 `;
 
 const ListContainer = styled.div`
@@ -93,6 +95,14 @@ const ListContainer = styled.div`
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  & > * {
+    flex-shrink: 0;
+  }
+
+  @media screen and (max-width: 768px) {
+    gap: 18px;
   }
 `;
 
@@ -124,6 +134,12 @@ const ArrowButton = styled.button<{ direction: 'left' | 'right' }>`
 
   &.right-arrow {
     right: 0;
+  }
+
+  @media screen and (max-width: 768px) {
+    svg {
+      height: 20px;
+    }
   }
 `;
 

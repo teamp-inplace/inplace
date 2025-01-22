@@ -28,14 +28,7 @@ function App() {
             <Route path="/map" element={<MapPage />} />
             <Route path="/detail/:id" element={<DetailPage />} />
             <Route path="/search" element={<SearchPage />} />
-            <Route
-              path="/my"
-              element={
-                <PrivatedRoute>
-                  <MyPage />
-                </PrivatedRoute>
-              }
-            />
+            <Route path="/my" element={<MyPage />} />
             <Route
               path="/choice"
               element={
