@@ -5,12 +5,12 @@ import { RequestPlaceReview } from '@/types';
 import RatingStep from '@/components/Review/steps/RatingStep';
 import CommentStep from '@/components/Review/steps/CommentStep';
 import { usePostPlaceReview } from '@/api/hooks/usePostPlaceReview';
-import { useGetPlaceInfo } from '@/api/hooks/useGetPlaceInfo';
+import { useGetReviewInfo } from '@/api/hooks/useGetReviewInfo';
 
 export default function ReviewPage() {
-  const { id } = useParams() as { id: string };
-  const { data: infoData } = useGetPlaceInfo(id);
-  const { mutate: postReview } = usePostPlaceReview(id);
+  const { uuid } = useParams() as { uuid: string };
+  const { data: reviewInfo } = useGetReviewInfo(uuid);
+  const { mutate: postReview } = usePostPlaceReview(uuid);
 
   const [reviewData, setReviewData] = useState<RequestPlaceReview>({
     likes: null,
@@ -56,13 +56,13 @@ export default function ReviewPage() {
   return (
     <Container>
       <MainContent>
-        {currentStep === 1 && <RatingStep onSubmit={handleRatingSubmit} placeInfo={infoData} />}
+        {currentStep === 1 && <RatingStep onSubmit={handleRatingSubmit} placeInfo={reviewInfo} />}
         {currentStep === 2 && (
           <CommentStep
             isLiked={reviewData.likes}
             onBack={() => setCurrentStep(1)}
             onSubmit={handleCommentSubmit}
-            placeInfo={infoData}
+            placeInfo={reviewInfo}
           />
         )}
       </MainContent>

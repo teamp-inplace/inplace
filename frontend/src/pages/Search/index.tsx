@@ -21,12 +21,24 @@ export default function SearchPage() {
         </Text>
         검색 결과
       </Paragraph>
-      <SplitLine />
-      <BaseLayout type="influencer" mainText="" SubText="인플루언서" items={influencersData || []} />
-      <SplitLine />
-      <BaseLayout type="spot" mainText="" SubText="바로 그곳" items={VideoData || []} />
-      <SplitLine />
-      <BaseLayout type="place" mainText="" SubText="관련 장소" items={places || []} />
+      {influencersData && influencersData.length > 0 && (
+        <>
+          <SplitLine />
+          <BaseLayout type="influencer" mainText="" SubText="인플루언서" items={influencersData || []} />
+        </>
+      )}
+      {places && places.length > 0 && (
+        <>
+          <SplitLine />
+          <BaseLayout type="place" mainText="" SubText="관련 장소" items={places || []} />
+        </>
+      )}
+      {VideoData && VideoData.length > 0 && (
+        <>
+          <SplitLine />
+          <BaseLayout type="spot" mainText="" SubText="바로 그곳" items={VideoData || []} />
+        </>
+      )}
     </Wrapper>
   );
 }
