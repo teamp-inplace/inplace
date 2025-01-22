@@ -221,7 +221,11 @@ export const detailHandlers = [
           like: 240,
           dislike: 100,
         },
-        videoUrl: 'https://youtu.be/qbqquv_8wM0?si=j7LiU5DSfTVpKa1I',
+        videoUrl: [
+          'https://youtu.be/qbqquv_8wM0?si=j7LiU5DSfTVpKa1I',
+          'https://www.youtube.com/watch?v=nCEtQ7dP8zY',
+          '',
+        ],
       }),
     );
   }),

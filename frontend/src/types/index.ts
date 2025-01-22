@@ -99,7 +99,7 @@ export type PlaceInfo = {
   };
   openHour: OpenHourData;
   placeLikes: PlaceLikes;
-  videoUrl: string;
+  videoUrl: [string];
 };
 
 export type PlaceLikes = {

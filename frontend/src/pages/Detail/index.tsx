@@ -1,6 +1,7 @@
 import { Suspense, useState } from 'react';
 import { FaYoutube } from 'react-icons/fa';
 import { RiKakaoTalkFill } from 'react-icons/ri';
+import { GrPrevious, GrNext } from 'react-icons/gr';
 
 import styled from 'styled-components';
 
@@ -23,12 +24,26 @@ import BasicThumb from '@/assets/images/basic-thumb.png';
 export default function DetailPage() {
   const [activeTab, setActiveTab] = useState<'info' | 'review'>('info');
   const [visitModal, setVisitModal] = useState(false);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const { id } = useParams() as { id: string };
   const { data: infoData } = useGetPlaceInfo(id);
-  const extractedVideoId = useExtractYoutubeVideoId(infoData.videoUrl || '');
-  const thumbnailUrl = infoData.videoUrl
+
+  const currentVideoUrl = infoData.videoUrl?.[currentVideoIndex] || '';
+  const extractedVideoId = useExtractYoutubeVideoId(currentVideoUrl);
+  const thumbnailUrl = currentVideoUrl
     ? `https://img.youtube.com/vi/${extractedVideoId}/maxresdefault.jpg`
     : BasicThumb;
+
+  const handleBtnPrevClick = () => {
+    setCurrentVideoIndex((prev) => Math.max(prev - 1, 0));
+  };
+
+  const handleBtnNextClick = () => {
+    if (infoData.videoUrl.length > 1) {
+      setCurrentVideoIndex((prev) => Math.min(prev + 1, infoData.videoUrl.length - 1));
+    }
+  };
+
   return (
     <Wrapper>
       <ImageContainer>
@@ -36,6 +51,16 @@ export default function DetailPage() {
           <FallbackImage src={thumbnailUrl} alt="장소 사진" />
         </ImageWrapper>
         <GradientOverlay />
+        {infoData.videoUrl && infoData.videoUrl.length > 1 && (
+          <>
+            <PrevBtn onClick={handleBtnPrevClick} disabled={currentVideoIndex === 0}>
+              <GrPrevious size={40} color="white" />
+            </PrevBtn>
+            <NextBtn onClick={handleBtnNextClick} disabled={currentVideoIndex === infoData.videoUrl.length - 1}>
+              <GrNext size={40} color="white" />
+            </NextBtn>
+          </>
+        )}
         <TitleContainer>
           <Text size="26px" weight="bold" variant="white">
             {infoData.placeName}
@@ -55,7 +80,7 @@ export default function DetailPage() {
               <RiKakaoTalkFill size={20} color="yellow" />
               방문할래요
             </Button>
-            <a href={infoData.videoUrl}>
+            <a href={currentVideoUrl}>
               <FaYoutube size={46} color="red" style={{ marginTop: '4px' }} />
             </a>
           </ButtonWrapper>
@@ -157,4 +182,34 @@ const GradientOverlay = styled.div`
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0.9) 100%);
   z-index: 0;
   pointer-events: none;
+`;
+
+const PrevBtn = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const NextBtn = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
