@@ -59,7 +59,7 @@ const MenuImage = styled.img`
     width: 20%;
     aspect-ratio: 1/1;
     height: auto;
-    border-radius: 6px;
+    border-radius: 12px;
   }
 `;
 const MenuContent = styled.div`

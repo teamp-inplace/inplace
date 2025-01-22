@@ -65,7 +65,7 @@ const ImageContainer = styled.div`
   border-radius: 30px;
 
   @media screen and (max-width: 768px) {
-    border-radius: 16px;
+    border-radius: 12px;
   }
 `;
 
