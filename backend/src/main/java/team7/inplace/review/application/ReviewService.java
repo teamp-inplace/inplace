@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.AuthorizationErrorCode;
 import team7.inplace.global.exception.code.ReviewErrorCode;
-import team7.inplace.review.application.dto.ReviewCommand;
 import team7.inplace.review.domain.Review;
 import team7.inplace.review.persistence.ReviewJPARepository;
 import team7.inplace.review.persistence.ReviewReadRepository;
@@ -18,22 +17,9 @@ import team7.inplace.security.util.AuthorizationUtil;
 @RequiredArgsConstructor
 @Service
 public class ReviewService {
+
     private final ReviewReadRepository reviewReadRepository;
     private final ReviewJPARepository reviewJPARepository;
-
-    @Transactional
-    public void createReview(Long placeId, ReviewCommand command) {
-        Long userId = AuthorizationUtil.getUserId();
-        if (userId == null) {
-            throw InplaceException.of(AuthorizationErrorCode.TOKEN_IS_EMPTY);
-        }
-
-        if (reviewJPARepository.existsByUserIdAndPlaceId(userId, placeId)) {
-            throw InplaceException.of(ReviewErrorCode.REVIEW_ALREADY_EXISTS);
-        }
-        Review review = command.toEntityFrom(userId, placeId);
-        reviewJPARepository.save(review);
-    }
 
     @Transactional(readOnly = true)
     public Page<ReviewQueryResult.Simple> getPlaceReviews(Long placeId, Pageable pageable) {
@@ -43,7 +29,7 @@ public class ReviewService {
         }
 
         Page<ReviewQueryResult.Simple> reviewResults = reviewReadRepository
-                .findSimpleReviewByUserIdAndPlaceId(placeId, userId, pageable);
+            .findSimpleReviewByUserIdAndPlaceId(placeId, userId, pageable);
         return reviewResults;
     }
 
@@ -51,7 +37,7 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public Page<ReviewQueryResult.Detail> getUserReviews(Long userId, Pageable pageable) {
         Page<ReviewQueryResult.Detail> reviewPage =
-                reviewReadRepository.findDetailedReviewByUserId(userId, pageable);
+            reviewReadRepository.findDetailedReviewByUserId(userId, pageable);
 
         return reviewPage;
     }
@@ -64,7 +50,7 @@ public class ReviewService {
         }
 
         Review review = reviewJPARepository.findById(reviewId)
-                .orElseThrow(() -> InplaceException.of(ReviewErrorCode.NOT_FOUND));
+            .orElseThrow(() -> InplaceException.of(ReviewErrorCode.NOT_FOUND));
 
         if (review.isNotOwner(userId)) {
             throw InplaceException.of(ReviewErrorCode.NOT_OWNER);
