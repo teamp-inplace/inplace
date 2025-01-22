@@ -7,13 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.ReviewErrorCode;
 import team7.inplace.place.persistence.PlaceReadRepository;
-import team7.inplace.review.application.dto.ReviewInfo;
 import team7.inplace.review.application.dto.ReviewCommand;
+import team7.inplace.review.application.dto.ReviewInfo;
 import team7.inplace.review.domain.ReviewInvitation;
 import team7.inplace.review.persistence.ReviewInvitationRepository;
+import team7.inplace.review.persistence.ReviewJPARepository;
 import team7.inplace.user.persistence.UserRepository;
 import team7.inplace.video.persistence.VideoReadRepository;
-import team7.inplace.review.persistence.ReviewJPARepository;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +27,17 @@ public class ReviewInvitationService {
 
     @Transactional
     public String generateReviewUuid(Long userId, Long placeId) {
-        var existInvitationId = reviewInvitationRepository.findUUIDByUserIdAndPlaceId(userId,
-            placeId);
-        if (existInvitationId.isPresent()) {
-            return existInvitationId.get();
+        //리뷰가 작성되어 있다면 null을 반환
+        var reviewed = reviewJPARepository.existsByUserIdAndPlaceId(userId, placeId);
+        if (reviewed) {
+            return null;
+        }
+
+        //이미 초대장이 존재한다면 해당 초대장의 uuid를 반환
+        var existingInvitation = reviewInvitationRepository.findUUIDByUserIdAndPlaceId(
+            userId, placeId);
+        if (existingInvitation.isPresent()) {
+            return existingInvitation.get();
         }
 
         // uuid 새로 생성

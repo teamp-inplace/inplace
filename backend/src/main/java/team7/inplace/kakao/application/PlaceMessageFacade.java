@@ -15,6 +15,7 @@ import team7.inplace.token.application.OauthTokenService;
 @Facade
 @RequiredArgsConstructor
 public class PlaceMessageFacade {
+
     private final OauthTokenService oauthTokenService;
     private final ScheduledExecutorService scheduledExecutorService;
 
@@ -33,9 +34,12 @@ public class PlaceMessageFacade {
         kakaoMessageService.sendLocationMessageToMe(oauthToken, placeMessageCommand);
 
         String uuid = userReviewLinkService.generateReviewUuid(AuthorizationUtil.getUserId(),
-                placeId);
+            placeId);
+        if (uuid == null) {
+            return;
+        }
         scheduledExecutorService.schedule(
-                () -> kakaoMessageService.sendFeedMessageToMe(oauthToken, placeMessageCommand, uuid), 1,
-                TimeUnit.MINUTES);
+            () -> kakaoMessageService.sendFeedMessageToMe(oauthToken, placeMessageCommand, uuid), 1,
+            TimeUnit.MINUTES);
     }
 }
