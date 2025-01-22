@@ -67,6 +67,10 @@ const ListContainer = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+
+  @media screen and (max-width: 768px) {
+    gap: 18px;
+  }
 `;
 const ArrowButton = styled.button<{ direction: 'left' | 'right' }>`
   position: absolute;
