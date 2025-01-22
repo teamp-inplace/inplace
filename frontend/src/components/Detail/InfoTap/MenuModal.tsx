@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BsCardImage } from 'react-icons/bs';
 import { GrFormPrevious, GrFormNext } from 'react-icons/gr';
 
@@ -9,6 +9,18 @@ import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseBu
 export default function MenuModal({ images }: { images: string[] }) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const openModal = (index: number) => {
     setCurrentImageIndex(index);
@@ -29,7 +41,7 @@ export default function MenuModal({ images }: { images: string[] }) {
     <>
       <ImageWrapper>
         <BsCardImage size={26} color="white" onClick={() => openModal(0)} />
-        {images.slice(0, 2).map((src, index) => (
+        {images.slice(0, isMobile ? 1 : 2).map((src, index) => (
           <Image
             key={src}
             src={src}
@@ -43,14 +55,15 @@ export default function MenuModal({ images }: { images: string[] }) {
       <Modal blockScrollOnMount isOpen={isOpen} onClose={closeModal} isCentered>
         <ModalOverlay />
         <ModalContent
-          maxWidth="800px"
+          maxWidth={{ base: '800px', md: '80%' }}
+          height={{ base: '700px', md: '500px' }}
+          margin={{ base: '0px auto', md: '0px auto' }}
           alignItems="center"
+          justifyContent="center"
           backgroundColor="white"
-          height="700px"
-          margin="50px auto"
-          zIndex={20000}
+          zIndex={200000000}
         >
-          <ModalHeader padding="20px 0px" fontSize="20px">
+          <ModalHeader padding="20px 0px" fontSize={{ base: '20px', md: '16px' }}>
             Menu {currentImageIndex + 1}/{images.length}
           </ModalHeader>
           <ModalCloseButton
@@ -59,7 +72,7 @@ export default function MenuModal({ images }: { images: string[] }) {
             top={20}
             background="none"
             border="none"
-            fontSize="20px"
+            fontSize={{ base: '20px', md: '16px' }}
             color="grey"
             cursor="pointer"
           />
@@ -107,6 +120,14 @@ const ImageWrapper = styled.div`
     right: 16px;
     bottom: 14px;
     cursor: pointer;
+  }
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    height: 200px;
+    svg {
+      width: 20px;
+    }
   }
 `;
 const Button = styled.button`
