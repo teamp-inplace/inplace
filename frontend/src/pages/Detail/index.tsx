@@ -1,10 +1,8 @@
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { FaYoutube } from 'react-icons/fa';
 import { RiKakaoTalkFill } from 'react-icons/ri';
 import { GrPrevious, GrNext } from 'react-icons/gr';
-
 import styled from 'styled-components';
-
 import { useParams } from 'react-router-dom';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -13,8 +11,6 @@ import { Text } from '@/components/common/typography/Text';
 import InfoTap from '@/components/Detail/InfoTap';
 import ReviewTap from '@/components/Detail/ReviewTap';
 import VisitModal from '@/components/Detail/VisitModal';
-
-import useExtractYoutubeVideoId from '@/libs/youtube/useExtractYoutube';
 import { useGetPlaceInfo } from '@/api/hooks/useGetPlaceInfo';
 import Loading from '@/components/common/layouts/Loading';
 import Error from '@/components/common/layouts/Error';
@@ -28,30 +24,52 @@ export default function DetailPage() {
   const { id } = useParams() as { id: string };
   const { data: infoData } = useGetPlaceInfo(id);
 
-  const currentVideoUrl = infoData.videoUrl?.[currentVideoIndex] || '';
-  const extractedVideoId = useExtractYoutubeVideoId(currentVideoUrl);
-  const thumbnailUrl = currentVideoUrl
-    ? `https://img.youtube.com/vi/${extractedVideoId}/maxresdefault.jpg`
-    : BasicThumb;
+  const currentVideoUrl = infoData?.videoUrl?.[currentVideoIndex] || '';
+  const extractYoutubeId = (url: string) => {
+    const match = url?.match(/(?:https?:\/\/)?(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w-]*)(&(amp;)?[\w?=]*)?/);
+    return match && match[1] ? match[1] : null;
+  };
 
   const handleBtnPrevClick = () => {
     setCurrentVideoIndex((prev) => Math.max(prev - 1, 0));
   };
 
   const handleBtnNextClick = () => {
-    if (infoData.videoUrl.length > 1) {
+    if (infoData?.videoUrl?.length > 1) {
       setCurrentVideoIndex((prev) => Math.min(prev + 1, infoData.videoUrl.length - 1));
     }
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (infoData?.videoUrl?.length > 1) {
+        setCurrentVideoIndex((prevIndex) => (prevIndex === infoData.videoUrl.length - 1 ? 0 : prevIndex + 1));
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [infoData?.videoUrl?.length]);
+
   return (
     <Wrapper>
       <ImageContainer>
-        <ImageWrapper>
-          <FallbackImage src={thumbnailUrl} alt="장소 사진" />
-        </ImageWrapper>
+        <CarouselWrapper>
+          <CarouselContainer $currentIndex={currentVideoIndex}>
+            {infoData?.videoUrl?.map((url) => {
+              const videoId = extractYoutubeId(url);
+              return (
+                <ImageWrapper key={`${id}-${videoId}-${url}`}>
+                  <FallbackImage
+                    src={url ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : BasicThumb}
+                    alt="장소 사진"
+                  />
+                </ImageWrapper>
+              );
+            })}
+          </CarouselContainer>
+        </CarouselWrapper>
         <GradientOverlay />
-        {infoData.videoUrl && infoData.videoUrl.length > 1 && (
+        {infoData?.videoUrl && infoData.videoUrl.length > 1 && (
           <>
             <PrevBtn onClick={handleBtnPrevClick} disabled={currentVideoIndex === 0}>
               <GrPrevious size={40} color="white" />
@@ -63,7 +81,7 @@ export default function DetailPage() {
         )}
         <TitleContainer>
           <Text size="26px" weight="bold" variant="white">
-            {infoData.placeName}
+            {infoData?.placeName}
           </Text>
           <ButtonWrapper>
             <Button
@@ -97,18 +115,18 @@ export default function DetailPage() {
       <InfoContainer>
         {activeTab === 'info' ? (
           <InfoTap
-            facilityInfo={infoData.facilityInfo}
-            openHour={infoData.openHour}
-            menuInfos={infoData.menuInfos}
-            longitude={infoData.longitude}
-            latitude={infoData.latitude}
+            facilityInfo={infoData?.facilityInfo}
+            openHour={infoData?.openHour}
+            menuInfos={infoData?.menuInfos}
+            longitude={infoData?.longitude}
+            latitude={infoData?.latitude}
           />
         ) : (
           <QueryErrorResetBoundary>
             {({ reset }) => (
               <ErrorBoundary FallbackComponent={Error} onReset={reset}>
                 <Suspense fallback={<Loading size={50} />}>
-                  <ReviewTap placeLikes={infoData.placeLikes} id={id} />
+                  <ReviewTap placeLikes={infoData?.placeLikes} id={id} />
                 </Suspense>
               </ErrorBoundary>
             )}
@@ -116,26 +134,42 @@ export default function DetailPage() {
         )}
       </InfoContainer>
       {visitModal && (
-        <VisitModal id={infoData.placeId} placeName={infoData.placeName} onClose={() => setVisitModal(false)} />
+        <VisitModal id={infoData?.placeId} placeName={infoData?.placeName} onClose={() => setVisitModal(false)} />
       )}
     </Wrapper>
   );
 }
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
 `;
+
 const ImageContainer = styled.div`
   position: relative;
+  width: 100%;
+  overflow: hidden;
 `;
+
+const CarouselWrapper = styled.div`
+  width: 100%;
+  overflow: hidden;
+`;
+
+const CarouselContainer = styled.div<{ $currentIndex: number }>`
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  transform: translateX(-${(props) => props.$currentIndex * 100}%);
+  width: 100%;
+`;
+
 const ImageWrapper = styled.div`
+  flex: 0 0 100%;
   width: 100%;
   aspect-ratio: 3 / 1;
-  object-fit: cover;
-  object-position: center;
-  display: block;
 `;
+
 const TitleContainer = styled.div`
   position: absolute;
   width: 90%;
@@ -147,6 +181,7 @@ const TitleContainer = styled.div`
   align-items: center;
   z-index: 1;
 `;
+
 const Tap = styled.button<{ $active: boolean }>`
   width: 100%;
   height: 60px;
@@ -161,18 +196,22 @@ const Tap = styled.button<{ $active: boolean }>`
     color 0.3s ease,
     border-bottom 0.3s ease;
 `;
+
 const TapContainer = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+
 const ButtonWrapper = styled.div`
   display: flex;
   gap: 20px;
   align-items: center;
 `;
+
 const InfoContainer = styled.div`
   padding-top: 20px;
 `;
+
 const GradientOverlay = styled.div`
   position: absolute;
   top: 0;
