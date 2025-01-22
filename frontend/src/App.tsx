@@ -53,7 +53,7 @@ function App() {
               </PrivatedRoute>
             }
           />
-          <Route path="/places/:id/reviews" element={<ReviewPage />} />
+          <Route path="/review/:uuid" element={<ReviewPage />} />
         </Routes>
       </AuthProvider>
     </>

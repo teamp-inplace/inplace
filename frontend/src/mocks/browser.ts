@@ -5,6 +5,7 @@ import { mapHandlers } from './mapHandlers';
 import { myHandlers } from './myPageHandlers';
 import { InfluencerHandlers } from './influencerHandlers';
 import { searchHandlers } from './searchHandlers';
+import { reviewHandlers } from './reviewHandler';
 
 export const worker = setupWorker(
   ...InfluencerHandlers,
@@ -13,5 +14,6 @@ export const worker = setupWorker(
   ...mapHandlers,
   ...myHandlers,
   ...searchHandlers,
+  ...reviewHandlers,
 );
 export default worker;
