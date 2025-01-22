@@ -42,7 +42,10 @@ public class InfluencerReadRepositoryImpl implements InfluencerReadRepository {
                 .on(QInfluencer.influencer.id.eq(QLikedInfluencer.likedInfluencer.influencerId)
                     .and(QLikedInfluencer.likedInfluencer.isLiked.isTrue()))
                 .join(QVideo.video).on(QInfluencer.influencer.id.eq(QVideo.video.influencerId))
-                .where(QInfluencer.influencer.id.eq(influencerId))
+                .where(QInfluencer.influencer.id.eq(influencerId),
+                    QInfluencer.influencer.deleteAt.isNull(),
+                    QVideo.video.deleteAt.isNull(),
+                    QLikedInfluencer.likedInfluencer.deleteAt.isNull())
                 .fetchOne()
         );
     }
