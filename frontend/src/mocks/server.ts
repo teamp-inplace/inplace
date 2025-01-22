@@ -4,7 +4,7 @@ import { detailHandlers } from './detailHandlers';
 import { mapHandlers } from './mapHandlers';
 import { myHandlers } from './myPageHandlers';
 import { searchHandlers } from './searchHandlers';
-import { reviewHandlers } from './reviewHandler';
+import { reviewHandlers } from './reviewHandlers';
 
 const server = setupServer(
   ...mainHandlers,
