@@ -48,7 +48,7 @@ export const Text = styled.span<IText>`
         case 'll':
           return '20px';
         case 'xl':
-          return '26px';
+          return '24px';
         case 'xxl':
           return '32px';
         default:

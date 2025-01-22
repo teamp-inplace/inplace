@@ -35,8 +35,16 @@ const TextWrapper = styled.div<{ alignItems?: string }>`
   gap: 20px;
   white-space: pre-line;
   line-height: 26px;
+
+  @media screen and (max-width: 768px) {
+    gap: 10px;
+  }
 `;
 const LogoImage = styled.img`
   height: 80px;
+
+  @media screen and (max-width: 768px) {
+    height: 60px;
+  }
 `;
 export default NoItem;
