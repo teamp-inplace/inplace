@@ -27,11 +27,11 @@ public class InfluencerRequest {
 
     public record Like(
         Long influencerId,
-        Boolean like
+        Boolean likes
     ) {
 
         public LikedInfluencerCommand.Single toCommand() {
-            return new LikedInfluencerCommand.Single(influencerId(), like());
+            return new LikedInfluencerCommand.Single(influencerId(), likes());
         }
     }
 
