@@ -61,8 +61,14 @@ function registerPlace(placeId) {
         return;
     }
     $.ajax({
-        url: `/crawling/video/${videoId}/place/${placeId}/${category}`,
+        url: `/crawling/video/place/register`,
         method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            videoId: videoId,
+            placeUUID: placeId,
+            category: category
+        }),
         success: function () {
             alert("장소가 등록되었습니다.");
             closeModal();
