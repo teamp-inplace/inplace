@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import team7.inplace.review.application.ReviewInvitationService;
 import team7.inplace.review.application.ReviewService;
@@ -26,20 +25,12 @@ public class ReviewController implements ReviewControllerApiSpec {
     private final ReviewService reviewService;
 
     @Override
-    @GetMapping
-    public ResponseEntity<Invitation> getReviewInfo(@RequestParam String uuid) {
+    @GetMapping("/{uuid}")
+    public ResponseEntity<Invitation> getReviewInfo(@PathVariable String uuid) {
         var invitationInfo = reviewInvitationService.getReviewInvitation(uuid);
 
         var response = ReviewResponse.Invitation.from(invitationInfo);
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @Override
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReview(@PathVariable Long id) {
-        reviewService.deleteReview(id);
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
@@ -52,4 +43,13 @@ public class ReviewController implements ReviewControllerApiSpec {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Override
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteReview(@PathVariable Long id) {
+        reviewService.deleteReview(id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
