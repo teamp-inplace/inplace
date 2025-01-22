@@ -52,9 +52,9 @@ export default function MenuModal({ images }: { images: string[] }) {
           />
         ))}
       </ImageWrapper>
-      <Modal blockScrollOnMount isOpen={isOpen} onClose={closeModal} isCentered>
-        <ModalOverlay />
-        <StyledModalContent>
+      <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={closeModal} isCentered size="xl">
+        <ModalOverlay onClick={closeModal} />
+        <StyledModalContent position="fixed" left="50%" transform="translateX(-50%) !important">
           <ModalHeader padding="20px 0px" fontSize={{ base: '20px', md: '16px' }}>
             Menu {currentImageIndex + 1}/{images.length}
           </ModalHeader>
@@ -132,17 +132,18 @@ const Button = styled.button`
 const StyledModalContent = styled(ModalContent)`
   max-width: 800px;
   height: 700px;
-  margin: 50px auto;
+  top: 5vh;
+  display: flex;
   align-items: center;
   justify-content: center;
   background-color: white;
-  z-index: 200000;
+  z-index: 100;
 
   @media screen and (max-width: 768px) {
     max-width: 80%;
     aspect-ratio: 1 / 1;
     height: auto;
-    margin: 30vh auto;
+    top: 10vh;
   }
 `;
 

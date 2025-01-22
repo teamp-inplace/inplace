@@ -135,7 +135,7 @@ const TitleContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 1;
+  /* z-index: 1; */
   @media screen and (max-width: 768px) {
     bottom: 4px;
   }
