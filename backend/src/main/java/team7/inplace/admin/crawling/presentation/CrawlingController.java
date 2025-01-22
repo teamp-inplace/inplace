@@ -16,9 +16,9 @@ public class CrawlingController {
     private final CrawlingFacade crawlingFacade;
 
     //    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/video/{videoId}/place/{placeUUID}")
-    public ResponseEntity<Void> addPlaceInfo(@PathVariable Long videoId, @PathVariable Long placeUUID) {
-        crawlingFacade.addPlaceInfo(videoId, placeUUID);
+    @PostMapping("/video/{videoId}/place/{placeUUID}/{category}")
+    public ResponseEntity<Void> addPlaceInfo(@PathVariable Long videoId, @PathVariable Long placeUUID, @PathVariable String category) {
+        crawlingFacade.addPlaceInfo(videoId, placeUUID, category);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
