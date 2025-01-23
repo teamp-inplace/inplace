@@ -10,7 +10,7 @@ import { queryClient } from './api/instance/index.js';
 import App from './App';
 
 Sentry.init({
-  dsn: import.meta.env.VITE_SENTRY_DNS_KEY,
+  dsn: import.meta.env.VITE_SENTRY_DNS,
   enabled: import.meta.env.PROD,
   integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
   // Tracing
