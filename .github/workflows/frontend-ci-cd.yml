@@ -48,7 +48,7 @@ jobs:
 
       - name: Create Sentry release
         env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.VITE_SENTRY_AUTH_TOKEN }}
           VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
           SENTRY_ORG: inplace-na
           SENTRY_PROJECT: inplace
@@ -69,7 +69,7 @@ jobs:
 
       - name: Upload sourcemaps to Sentry
         env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.VITE_SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: inplace-na
           SENTRY_PROJECT: inplace
         run: |

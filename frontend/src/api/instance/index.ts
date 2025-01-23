@@ -2,7 +2,7 @@ import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 import axios from 'axios';
 import * as Sentry from '@sentry/react';
 
-import { QueryClient } from '@tanstack/react-query';
+import { QueryCache, QueryClient } from '@tanstack/react-query';
 import getCurrentConfig from '../config';
 
 const initInstance = (config: AxiosRequestConfig): AxiosInstance => {
@@ -16,11 +16,7 @@ const initInstance = (config: AxiosRequestConfig): AxiosInstance => {
   });
   axios.defaults.withCredentials = true;
   instance.interceptors.response.use(
-    (response) => {
-      const { result } = response.data;
-
-      return result;
-    },
+    (response) => response,
     async (error) => {
       if (!error.response) {
         const requestUrl = error.config?.url || 'URL 정보 없음';
@@ -64,7 +60,19 @@ export const queryClient = new QueryClient({
       throwOnError: true,
     },
     mutations: {
+      onError: (error) => {
+        Sentry.captureException(error, {
+          tags: {
+            type: 'mutation_error',
+          },
+        });
+      },
       throwOnError: true,
     },
   },
+  queryCache: new QueryCache({
+    onError: (error) => {
+      Sentry.captureException(error);
+    },
+  }),
 });

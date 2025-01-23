@@ -9,8 +9,15 @@ import { queryClient } from './api/instance/index.js';
 
 import App from './App';
 
+async function startApp() {
+  if (import.meta.env.DEV) {
+    const { worker } = await import('./mocks/browser.js');
+    await worker.start({ onUnhandledRequest: 'bypass' });
+  }
+}
+
 Sentry.init({
-  dsn: import.meta.env.VITE_SENTRY_DNS,
+  dsn: import.meta.env.VITE_SENTRY_DSN,
   enabled: import.meta.env.PROD,
   integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
   // Tracing
@@ -22,13 +29,6 @@ Sentry.init({
   replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
   ignoreErrors: [/AxiosError/i],
 });
-
-async function startApp() {
-  if (import.meta.env.DEV) {
-    const { worker } = await import('./mocks/browser.js');
-    await worker.start({ onUnhandledRequest: 'bypass' });
-  }
-}
 startApp().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
