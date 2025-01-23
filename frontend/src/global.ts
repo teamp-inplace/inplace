@@ -1,6 +1,20 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
+	@font-face {
+		font-family: "Noto Sans";
+		font-weight: bold;
+		src: url("./assets/fonts/noto-sans-v38-latin-700.woff2") format("woff2"),
+		url("./assets/fonts/Noto-Sans-700.woff") format('woff'),;
+	}
+
+	@font-face {
+		font-family: "Noto Sans";
+		font-weight: normal;
+		src: url("./assets/fonts/noto-sans-v38-latin-regular.woff2") format("woff2"),
+		url("./assets/fonts/Noto-Sans-regular.woff") format('woff'),;
+	}
+
 	html {
 		background-color: #292929;
 	}
@@ -31,6 +45,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
+	font-family: 'Noto Sans', sans-serif;
 }
 ol, ul {
 	list-style: none;

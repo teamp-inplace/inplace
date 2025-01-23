@@ -67,21 +67,37 @@ const Wrapper = styled.div`
   margin: 10px 0px;
   padding: 20px;
   line-height: 170%;
+
+  @media screen and (max-width: 768px) {
+    line-height: 140%;
+  }
 `;
 
 const HourItem = styled.div`
   display: flex;
   gap: 10px;
+
+  @media screen and (max-width: 768px) {
+    gap: 2px;
+  }
 `;
 const DayOfWeek = styled.p`
   font-size: 16px;
   color: #dcdcdc;
   width: 50px;
+
+  @media screen and (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 const OffItem = styled.div`
   margin: 10px 0px;
   display: flex;
   gap: 8px;
+
+  @media screen and (max-width: 768px) {
+    gap: 4px;
+  }
 `;
 const TimeItem = styled.div`
   display: flex;

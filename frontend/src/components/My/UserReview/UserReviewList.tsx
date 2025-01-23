@@ -56,4 +56,8 @@ const ListContainer = styled.div`
   &::-webkit-scrollbar-track {
     background-color: transparent;
   }
+
+  @media screen and (max-width: 768px) {
+    gap: 20px;
+  }
 `;

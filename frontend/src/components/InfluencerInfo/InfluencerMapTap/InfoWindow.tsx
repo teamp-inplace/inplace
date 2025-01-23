@@ -9,20 +9,11 @@ type Props = {
   onClose: () => void;
 };
 
-const categoryMapping = {
-  RESTAURANT: '음식점',
-  CAFE: '카페',
-  JAPANESE: '일식',
-  KOREAN: '한식',
-  WESTERN: '양식',
-} as const;
-
 const getFullAddress = (addr: AddressInfo) => {
   return [addr.address1, addr.address2, addr.address3].filter(Boolean).join(' ');
 };
 
 export default function InfoWindow({ data, onClose }: Props) {
-  const translatedCategory = categoryMapping[data.category as keyof typeof categoryMapping] || '기타';
   const isLongName = data.placeName.length > 20;
 
   return (
@@ -32,8 +23,8 @@ export default function InfoWindow({ data, onClose }: Props) {
           {data.placeName}
         </Text>
         {!isLongName && (
-          <Text size="14px" weight="normal" variant="grey">
-            {translatedCategory}
+          <Text size="xxs" weight="normal" variant="grey">
+            {data.category}
           </Text>
         )}
       </Title>
@@ -42,10 +33,10 @@ export default function InfoWindow({ data, onClose }: Props) {
           <FallbackImage src={data.menuImgUrl} alt={data.placeName} />
         </Img>
         <TextInfo>
-          <Text size="14px" weight="normal">
+          <Text size="xs" weight="normal">
             {data.address ? getFullAddress(data.address) : '주소 정보가 없습니다'}
           </Text>
-          <Text size="14px" weight="normal">
+          <Text size="xs" weight="normal">
             {data.influencerName}
           </Text>
           <Link to={`/detail/${data.placeId}`}>상세보기</Link>
@@ -67,10 +58,16 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   box-shadow: 1px 1px 1px #b3b3b3;
+
+  @media screen and (max-width: 768px) {
+    width: 200px;
+    margin-left: -100px;
+    bottom: 40px;
+  }
 `;
 const Title = styled.div`
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   display: flex;
   gap: 6px;
   align-items: end;
@@ -82,6 +79,9 @@ const Title = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  @media screen and (max-width: 768px) {
+    padding: 10px;
+  }
 `;
 const CloseBtn = styled.button`
   position: absolute;
@@ -92,24 +92,37 @@ const CloseBtn = styled.button`
   color: #818181;
   border: none;
   cursor: 'pointer';
+
+  @media screen and (max-width: 768px) {
+    right: 4px;
+    font-size: 14px;
+  }
 `;
 const Info = styled.div`
   width: 100%;
   display: flex;
   gap: 12px;
-  padding: 8px;
+  padding: 6px;
   box-sizing: border-box;
+  justify-content: space-between;
+  align-items: center;
+
+  @media screen and (max-width: 768px) {
+    padding: 4px;
+    gap: 0px;
+  }
 `;
 const Img = styled.div`
   width: 30%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1;
+  height: auto;
 `;
 const TextInfo = styled.div`
   width: 65%;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 14px 0px;
+  /* padding: 14px 0px; */
   color: #4d4d4d;
   overflow: hidden;
   span {
@@ -124,5 +137,10 @@ const TextInfo = styled.div`
   }
   a:visited {
     color: black;
+  }
+
+  @media screen and (max-width: 768px) {
+    padding: 8px 0px;
+    gap: 4px;
   }
 `;

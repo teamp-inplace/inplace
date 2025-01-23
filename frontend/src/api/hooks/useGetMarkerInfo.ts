@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { MarkerInfo } from '@/types';
 import { fetchInstance } from '../instance';
 
-export const getMarkerInfoPath = (id: string) => `/places/marker/${id}`;
+export const getMarkerInfoPath = (id: string) => `/places/${id}/marker`;
 export const getMarkerInfo = async (id: string) => {
   const response = await fetchInstance.get<MarkerInfo>(getMarkerInfoPath(id));
   return response.data;

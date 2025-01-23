@@ -80,8 +80,8 @@ export default function DetailPage() {
           </>
         )}
         <TitleContainer>
-          <Text size="26px" weight="bold" variant="white">
-            {infoData?.placeName}
+          <Text size="ll" weight="bold" variant="white">
+            {infoData.placeName}
           </Text>
           <ButtonWrapper>
             <Button
@@ -144,12 +144,21 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
 `;
 
 const ImageContainer = styled.div`
   position: relative;
-  width: 100%;
-  overflow: hidden;
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
 `;
 
 const CarouselWrapper = styled.div`
@@ -168,6 +177,13 @@ const ImageWrapper = styled.div`
   flex: 0 0 100%;
   width: 100%;
   aspect-ratio: 3 / 1;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+
+  @media screen and (max-width: 768px) {
+    aspect-ratio: 16 / 9;
+  }
 `;
 
 const TitleContainer = styled.div`
@@ -179,7 +195,10 @@ const TitleContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 1;
+  /* z-index: 1; */
+  @media screen and (max-width: 768px) {
+    bottom: 4px;
+  }
 `;
 
 const Tap = styled.button<{ $active: boolean }>`
@@ -195,21 +214,42 @@ const Tap = styled.button<{ $active: boolean }>`
   transition:
     color 0.3s ease,
     border-bottom 0.3s ease;
+
+  @media screen and (max-width: 768px) {
+    height: 50px;
+    font-size: 16px;
+    border-bottom: 2px solid ${({ $active }) => ($active ? '#55ebff' : 'white')};
+  }
 `;
 
 const TapContainer = styled.div`
   display: flex;
   justify-content: space-between;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
 `;
 
 const ButtonWrapper = styled.div`
   display: flex;
   gap: 20px;
   align-items: center;
+
+  @media screen and (max-width: 768px) {
+    a > svg {
+      width: 30px;
+    }
+    gap: 10px;
+  }
 `;
 
 const InfoContainer = styled.div`
   padding-top: 20px;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
 `;
 
 const GradientOverlay = styled.div`

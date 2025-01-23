@@ -66,8 +66,8 @@ export default function InfoTap({ facilityInfo, openHour, menuInfos, longitude, 
             lng,
           }}
           style={{
-            width: '90%',
-            height: '410px',
+            width: '100%',
+            height: '100%',
             zIndex: 0,
           }}
           level={3}
@@ -87,6 +87,10 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 50px;
+
+  @media screen and (max-width: 768px) {
+    gap: 30px;
+  }
 `;
 const MenuWrapper = styled.div``;
 const PeriodWrapper = styled.div``;
@@ -95,6 +99,11 @@ const MenuContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    padding: 20px 0px;
+  }
 `;
 const MoreMenuBtn = styled.button`
   cursor: pointer;
@@ -106,6 +115,9 @@ const MoreMenuBtn = styled.button`
   &:hover {
     text-decoration: underline;
   }
+  @media screen and (max-width: 768px) {
+    font-size: 14px;
+  }
 `;
 const TitleContainer = styled.div`
   display: flex;
@@ -116,5 +128,14 @@ const TitleContainer = styled.div`
 const MapContainer = styled.div`
   display: flex;
   justify-content: center;
+  margin: 0 auto;
+  width: 95%;
+  height: 410px;
   margin-bottom: 120px;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    height: 300px;
+    margin-bottom: 60px;
+  }
 `;

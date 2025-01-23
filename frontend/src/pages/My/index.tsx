@@ -127,11 +127,23 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: 60px;
   padding: 30px 0px 60px;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    gap: 30px;
+    align-items: center;
+  }
 `;
 const TitleWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 14px;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
 `;
 const Form = styled.form`
   display: flex;
