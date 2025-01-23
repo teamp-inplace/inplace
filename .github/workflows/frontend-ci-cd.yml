@@ -53,7 +53,7 @@ jobs:
         run: |
           npm install -g @sentry/cli
           sentry-cli releases new -p $SENTRY_PROJECT ${{ github.sha }}
-          sentry-cli releases set-commits --auto ${{ github.sha }}
+          sentry-cli releases set-commits --auto ${{ github.sha }} --ignore-missing
           sentry-cli releases files ${{ github.sha }} upload-sourcemaps ./dist
           sentry-cli releases finalize ${{ github.sha }}
 
