@@ -6,6 +6,7 @@ import RatingStep from '@/components/Review/steps/RatingStep';
 import CommentStep from '@/components/Review/steps/CommentStep';
 import { usePostPlaceReview } from '@/api/hooks/usePostPlaceReview';
 import { useGetReviewInfo } from '@/api/hooks/useGetReviewInfo';
+import Header from '@/components/common/layouts/Header';
 
 export default function ReviewPage() {
   const { uuid } = useParams() as { uuid: string };
@@ -43,6 +44,7 @@ export default function ReviewPage() {
   if (isCompleted) {
     return (
       <Container>
+        <Header />
         <MainContent>
           <CompletionMessage>
             <h2>완료되었습니다</h2>
@@ -55,6 +57,7 @@ export default function ReviewPage() {
 
   return (
     <Container>
+      <Header />
       <MainContent>
         {currentStep === 1 && <RatingStep onSubmit={handleRatingSubmit} placeInfo={reviewInfo} />}
         {currentStep === 2 && (
