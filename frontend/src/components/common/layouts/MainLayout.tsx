@@ -1,8 +1,8 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import { Suspense } from 'react';
 import styled from 'styled-components';
+import * as Sentry from '@sentry/react';
 
-import { ErrorBoundary } from 'react-error-boundary';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import Footer from '@/components/common/layouts/Footer';
 import Header from '@/components/common/layouts/Header';
@@ -30,11 +30,11 @@ export default function MainLayout() {
       <InnerWrapper>
         <QueryErrorResetBoundary>
           {({ reset }) => (
-            <ErrorBoundary FallbackComponent={Error} onReset={reset}>
+            <Sentry.ErrorBoundary fallback={<Error resetErrorBoundary={reset} />}>
               <Suspense fallback={renderSkeleton()}>
                 <Outlet />
               </Suspense>
-            </ErrorBoundary>
+            </Sentry.ErrorBoundary>
           )}
         </QueryErrorResetBoundary>
       </InnerWrapper>
