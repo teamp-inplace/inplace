@@ -1,9 +1,8 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import { Suspense } from 'react';
 import styled from 'styled-components';
-
-import { ErrorBoundary } from 'react-error-boundary';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
+import { ErrorBoundary } from 'react-error-boundary';
 import Footer from '@/components/common/layouts/Footer';
 import Header from '@/components/common/layouts/Header';
 import Loading from '@/components/common/layouts/Loading';

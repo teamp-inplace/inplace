@@ -2,10 +2,10 @@ name: Frontend CI/CD for main branches
 on:
   push:
     branches:
-      - '**'
+      - "**"
     paths:
-      - 'frontend/**'
-      - '.github/**'
+      - "frontend/**"
+      - ".github/**"
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
@@ -36,12 +36,26 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '22'
-      
+          node-version: "22"
+
       - name: Install dependencies
         run: npm ci
       - name: Run tests
         run: npm test
+
+      - name: Install Sentry CLI
+        run: npm install -g @sentry/cli
+
+      - name: Create Sentry release
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.VITE_SENTRY_AUTH_TOKEN }}
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+          SENTRY_ORG: inplace-na
+          SENTRY_PROJECT: inplace
+        run: |
+          sentry-cli releases new ${{ github.sha }}
+          sentry-cli releases set-commits --auto
+
       - name: Build project
         run: |
           if [[ ${{ github.ref }} == 'refs/heads/dev' ]]; then
@@ -51,13 +65,24 @@ jobs:
           fi
         env:
           VITE_KAKAO_JS_KEY: ${{ secrets.VITE_KAKAO_JS_KEY }}
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+
+      - name: Upload sourcemaps to Sentry
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.VITE_SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: inplace-na
+          SENTRY_PROJECT: inplace
+        run: |
+          sentry-cli releases files ${{ github.sha }} upload-sourcemaps ./dist
+          sentry-cli releases finalize ${{ github.sha }}
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
-      
+
       - name: Deploy to S3
         run: |
           if [[ ${{ github.ref }} == 'refs/heads/main' ]]; then

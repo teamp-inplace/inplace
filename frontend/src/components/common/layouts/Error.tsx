@@ -6,19 +6,38 @@ import Button from '../Button';
 import { Paragraph } from '../typography/Paragraph';
 
 type FallbackProps = {
+  error?: Error;
   resetErrorBoundary: () => void;
 };
-export default function Error({ resetErrorBoundary }: FallbackProps) {
+export default function Error({ error, resetErrorBoundary }: FallbackProps) {
   const location = useLocation();
   const errorLocation = useRef(location.pathname);
 
   const handleRetry = () => {
     resetErrorBoundary();
   };
-  const message = {
-    title: '앗, 여기는 정보가 없는 것 같아요 🥲',
-    description: `오류가 발생했어요.\n문제를 해결하기 위해 열심히 노력중입니다!\n잠시 후 다시 시도해주세요.`,
+  const getMessage = () => {
+    if (error?.name === 'AxiosError') {
+      return {
+        title: '일시적인 오류가 발생했어요 🥲',
+        description: `서버와의 통신 중 문제가 발생했습니다.\n잠시 후 다시 시도해주세요.`,
+      };
+    }
+    // React Query 에러인 경우
+    if (error?.name === 'QueryError') {
+      return {
+        title: '데이터를 불러오는데 실패했어요 🥲',
+        description: `데이터를 가져오는 중 문제가 발생했습니다.\n잠시 후 다시 시도해주세요.`,
+      };
+    }
+    // 기본 에러 메시지
+    return {
+      title: '앗, 여기는 정보가 없는 것 같아요 🥲',
+      description: `오류가 발생했어요.\n문제를 해결하기 위해 열심히 노력중입니다!\n잠시 후 다시 시도해주세요.`,
+    };
   };
+
+  const message = getMessage();
 
   useEffect(() => {
     if (location.pathname !== errorLocation.current) {
