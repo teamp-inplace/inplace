@@ -53,7 +53,7 @@ jobs:
           SENTRY_ORG: inplace-na
           SENTRY_PROJECT: inplace
         run: |
-          snpm install -g @sentry/cli
+          npm install -g @sentry/cli
           sentry-cli releases new -p $SENTRY_PROJECT ${{ github.sha }}
           sentry-cli releases set-commits --auto ${{ github.sha }}
 
