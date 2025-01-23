@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { MdLocationOn } from 'react-icons/md';
 import { useCallback, useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Paragraph } from '@/components/common/typography/Paragraph';
 import backCard from '@/assets/images/back-card.png';
 import { InfluencerData } from '@/types';
@@ -32,6 +33,7 @@ export default function InfluencerItem({
   const [isLike, setIsLike] = useState(likes);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const { mutate: postLike } = usePostInfluencerLike();
+  const queryClient = useQueryClient();
 
   const handleClickLike = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
@@ -47,6 +49,7 @@ export default function InfluencerItem({
         {
           onSuccess: () => {
             setIsLike(newLikeStatus);
+            queryClient.invalidateQueries({ queryKey: ['myInfluencerVideo'] });
           },
           onError: () => {
             alert('좋아요 등록에 실패했어요. 다시 시도해주세요!');
