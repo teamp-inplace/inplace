@@ -24,7 +24,6 @@ Sentry.init({
   tracesSampleRate: import.meta.env.PROD ? 0.1 : 0,
   // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
   tracePropagationTargets: [
-    /^https:\/\/a7b2c3d4-dev\.inplace\.my/, // 개발 서버 도메인
     /^https:\/\/api\.inplace\.my/, // 배포 서버 도메인
     '!http://localhost', // localhost는 제외
     '!https://localhost',
