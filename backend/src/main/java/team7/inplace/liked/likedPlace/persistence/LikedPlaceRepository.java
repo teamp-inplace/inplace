@@ -11,16 +11,17 @@ import team7.inplace.liked.likedPlace.domain.LikedPlace;
 
 public interface LikedPlaceRepository extends JpaRepository<LikedPlace, Long> {
 
+    @Query("SELECT lp FROM LikedPlace lp WHERE lp.userId = :userId AND lp.placeId = :placeId AND lp.deleteAt IS NULL")
     Optional<LikedPlace> findByUserIdAndPlaceId(Long userId, Long placeId);
 
-    @Query("SELECT l.placeId FROM LikedPlace l WHERE l.userId = :userId AND l.isLiked = true")
+    @Query("SELECT lp.placeId FROM LikedPlace lp WHERE lp.userId = :userId AND lp.isLiked = true AND lp.deleteAt IS NULL")
     Set<Long> findPlaceIdsByUserIdAndIsLikedTrue(@Param("userId") Long userId);
 
-    //
-    @Query("SELECT lp FROM LikedPlace lp JOIN FETCH lp.placeId WHERE lp.userId = :userId AND lp.isLiked = true")
+    @Query("SELECT lp FROM LikedPlace lp JOIN FETCH lp.placeId " +
+        "WHERE lp.userId = :userId AND lp.isLiked = true AND lp.deleteAt IS NULL")
     Page<LikedPlace> findByUserIdAndIsLikedTrueWithPlace(
-            @Param("userId") Long userId,
-            Pageable pageable
+        @Param("userId") Long userId,
+        Pageable pageable
     );
 
 }

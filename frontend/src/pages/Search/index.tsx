@@ -15,20 +15,30 @@ export default function SearchPage() {
   return (
     <Wrapper>
       <SearchBar placeholder="인플루언서, 장소를 검색해주세요!" />
-      <Title>
-        <Paragraph weight="normal" size="m" variant="white">
-          <Text weight="bold" size="m" variant="mint">
-            {`${query} `}
-          </Text>
-          검색 결과
-        </Paragraph>
-      </Title>
-      <SplitLine />
-      <BaseLayout type="influencer" mainText="" SubText="인플루언서" items={influencersData || []} />
-      <SplitLine />
-      <BaseLayout type="spot" mainText="" SubText="바로 그곳" items={VideoData || []} />
-      <SplitLine />
-      <BaseLayout type="place" mainText="" SubText="관련 장소" items={places || []} />
+      <Paragraph weight="normal" size="m" variant="white">
+        <Text weight="bold" size="m" variant="mint">
+          {`${query} `}
+        </Text>
+        검색 결과
+      </Paragraph>
+      {influencersData && influencersData.length > 0 && (
+        <>
+          <SplitLine />
+          <BaseLayout type="influencer" mainText="" SubText="인플루언서" items={influencersData || []} />
+        </>
+      )}
+      {places && places.length > 0 && (
+        <>
+          <SplitLine />
+          <BaseLayout type="place" mainText="" SubText="관련 장소" items={places || []} />
+        </>
+      )}
+      {VideoData && VideoData.length > 0 && (
+        <>
+          <SplitLine />
+          <BaseLayout type="spot" mainText="" SubText="바로 그곳" items={VideoData || []} />
+        </>
+      )}
     </Wrapper>
   );
 }

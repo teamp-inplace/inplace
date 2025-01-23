@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { AiFillDislike, AiFillLike } from 'react-icons/ai';
-import { AddressInfo } from '@/types';
+import { ReviewInfo } from '@/types';
 import { Text } from '@/components/common/typography/Text';
 import FallbackImage from '@/components/common/Items/FallbackImage';
 
@@ -9,14 +9,7 @@ interface CommentStepProps {
   isLiked: boolean | null;
   onBack: () => void;
   onSubmit: (content: string) => void;
-  placeInfo: {
-    placeName: string;
-    address: AddressInfo;
-    influencerName: string;
-    menuInfos: {
-      menuImgUrls?: string[];
-    };
-  };
+  placeInfo: ReviewInfo;
 }
 
 interface RatingDisplayProps {
@@ -48,7 +41,7 @@ export default function CommentStep({ isLiked, onBack, onSubmit, placeInfo }: Co
 
       <PlaceSection>
         <ImageWrapper>
-          <FallbackImage src={placeInfo.menuInfos.menuImgUrls?.[0]} alt="Restaurant Menu" />
+          <FallbackImage src={placeInfo.placeImgUrl} alt="Place Image" />
         </ImageWrapper>
         <PlaceInfo>
           <TextWrapper className="name">
@@ -58,7 +51,7 @@ export default function CommentStep({ isLiked, onBack, onSubmit, placeInfo }: Co
           </TextWrapper>
           <TextWrapper className="address">
             <Text size="xs" weight="normal" style={{ color: '#c6c6c6' }}>
-              {placeInfo.address.address1} {placeInfo.address.address2} {placeInfo.address.address3}
+              {placeInfo.placeAddress}
             </Text>
           </TextWrapper>
           <TextWrapper className="influencer">

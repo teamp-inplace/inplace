@@ -1,20 +1,13 @@
 import styled from 'styled-components';
 import { AiFillLike, AiFillDislike } from 'react-icons/ai';
-import { AddressInfo } from '@/types';
+import { ReviewInfo } from '@/types';
 import { Paragraph } from '@/components/common/typography/Paragraph';
 import { Text } from '@/components/common/typography/Text';
 import FallbackImage from '@/components/common/Items/FallbackImage';
 
 interface RatingStepProps {
   onSubmit: (isLiked: boolean) => void;
-  placeInfo: {
-    placeName: string;
-    address: AddressInfo;
-    influencerName: string;
-    menuInfos: {
-      menuImgUrls?: string[];
-    };
-  };
+  placeInfo: ReviewInfo;
 }
 
 interface RatingButtonProps {
@@ -32,14 +25,14 @@ export default function RatingStep({ onSubmit, placeInfo }: RatingStepProps) {
           {placeInfo.placeName}
         </Paragraph>
         <Paragraph size="l" weight="normal">
-          는 어떠셨나요?
+          , 어떠셨나요?
         </Paragraph>
       </TitleSection>
 
       <PlaceSection>
         <ImageFrame>
           <ImageWrapper>
-            <FallbackImage src={placeInfo.menuInfos.menuImgUrls?.[0]} alt="Restaurant Menu" />
+            <FallbackImage src={placeInfo.placeImgUrl} alt="Place Image" />
           </ImageWrapper>
         </ImageFrame>
         <PlaceInfo>
@@ -50,7 +43,7 @@ export default function RatingStep({ onSubmit, placeInfo }: RatingStepProps) {
           </TextWrapper>
           <TextWrapper className="address">
             <Text size="xs" weight="normal" style={{ color: '#c6c6c6' }}>
-              {placeInfo.address.address1} {placeInfo.address.address2} {placeInfo.address.address3}
+              {placeInfo.placeAddress}
             </Text>
           </TextWrapper>
           <TextWrapper className="influencer">

@@ -1,9 +1,8 @@
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { FaYoutube } from 'react-icons/fa';
 import { RiKakaoTalkFill } from 'react-icons/ri';
-
+import { GrPrevious, GrNext } from 'react-icons/gr';
 import styled from 'styled-components';
-
 import { useParams } from 'react-router-dom';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -12,8 +11,6 @@ import { Text } from '@/components/common/typography/Text';
 import InfoTap from '@/components/Detail/InfoTap';
 import ReviewTap from '@/components/Detail/ReviewTap';
 import VisitModal from '@/components/Detail/VisitModal';
-
-import useExtractYoutubeVideoId from '@/libs/youtube/useExtractYoutube';
 import { useGetPlaceInfo } from '@/api/hooks/useGetPlaceInfo';
 import Loading from '@/components/common/layouts/Loading';
 import Error from '@/components/common/layouts/Error';
@@ -23,19 +20,65 @@ import BasicThumb from '@/assets/images/basic-thumb.png';
 export default function DetailPage() {
   const [activeTab, setActiveTab] = useState<'info' | 'review'>('info');
   const [visitModal, setVisitModal] = useState(false);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const { id } = useParams() as { id: string };
   const { data: infoData } = useGetPlaceInfo(id);
-  const extractedVideoId = useExtractYoutubeVideoId(infoData.videoUrl || '');
-  const thumbnailUrl = infoData.videoUrl
-    ? `https://img.youtube.com/vi/${extractedVideoId}/maxresdefault.jpg`
-    : BasicThumb;
+
+  const currentVideoUrl = infoData?.videoUrl?.[currentVideoIndex] || '';
+  const extractYoutubeId = (url: string) => {
+    const match = url?.match(/(?:https?:\/\/)?(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w-]*)(&(amp;)?[\w?=]*)?/);
+    return match && match[1] ? match[1] : null;
+  };
+
+  const handleBtnPrevClick = () => {
+    setCurrentVideoIndex((prev) => Math.max(prev - 1, 0));
+  };
+
+  const handleBtnNextClick = () => {
+    if (infoData?.videoUrl?.length > 1) {
+      setCurrentVideoIndex((prev) => Math.min(prev + 1, infoData.videoUrl.length - 1));
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (infoData?.videoUrl?.length > 1) {
+        setCurrentVideoIndex((prevIndex) => (prevIndex === infoData.videoUrl.length - 1 ? 0 : prevIndex + 1));
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [infoData?.videoUrl?.length]);
+
   return (
     <Wrapper>
       <ImageContainer>
-        <ImageWrapper>
-          <FallbackImage src={thumbnailUrl} alt="장소 사진" />
-        </ImageWrapper>
+        <CarouselWrapper>
+          <CarouselContainer $currentIndex={currentVideoIndex}>
+            {infoData?.videoUrl?.map((url) => {
+              const videoId = extractYoutubeId(url);
+              return (
+                <ImageWrapper key={`${id}-${videoId}-${url}`}>
+                  <FallbackImage
+                    src={url ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : BasicThumb}
+                    alt="장소 사진"
+                  />
+                </ImageWrapper>
+              );
+            })}
+          </CarouselContainer>
+        </CarouselWrapper>
         <GradientOverlay />
+        {infoData?.videoUrl && infoData.videoUrl.length > 1 && (
+          <>
+            <PrevBtn onClick={handleBtnPrevClick} disabled={currentVideoIndex === 0}>
+              <GrPrevious size={40} color="white" />
+            </PrevBtn>
+            <NextBtn onClick={handleBtnNextClick} disabled={currentVideoIndex === infoData.videoUrl.length - 1}>
+              <GrNext size={40} color="white" />
+            </NextBtn>
+          </>
+        )}
         <TitleContainer>
           <Text size="ll" weight="bold" variant="white">
             {infoData.placeName}
@@ -55,7 +98,7 @@ export default function DetailPage() {
               <RiKakaoTalkFill size={20} color="yellow" />
               방문할래요
             </Button>
-            <a href={infoData.videoUrl}>
+            <a href={currentVideoUrl}>
               <FaYoutube size={46} color="red" style={{ marginTop: '4px' }} />
             </a>
           </ButtonWrapper>
@@ -72,18 +115,18 @@ export default function DetailPage() {
       <InfoContainer>
         {activeTab === 'info' ? (
           <InfoTap
-            facilityInfo={infoData.facilityInfo}
-            openHour={infoData.openHour}
-            menuInfos={infoData.menuInfos}
-            longitude={infoData.longitude}
-            latitude={infoData.latitude}
+            facilityInfo={infoData?.facilityInfo}
+            openHour={infoData?.openHour}
+            menuInfos={infoData?.menuInfos}
+            longitude={infoData?.longitude}
+            latitude={infoData?.latitude}
           />
         ) : (
           <QueryErrorResetBoundary>
             {({ reset }) => (
               <ErrorBoundary FallbackComponent={Error} onReset={reset}>
                 <Suspense fallback={<Loading size={50} />}>
-                  <ReviewTap placeLikes={infoData.placeLikes} id={id} />
+                  <ReviewTap placeLikes={infoData?.placeLikes} id={id} />
                 </Suspense>
               </ErrorBoundary>
             )}
@@ -91,11 +134,12 @@ export default function DetailPage() {
         )}
       </InfoContainer>
       {visitModal && (
-        <VisitModal id={infoData.placeId} placeName={infoData.placeName} onClose={() => setVisitModal(false)} />
+        <VisitModal id={infoData?.placeId} placeName={infoData?.placeName} onClose={() => setVisitModal(false)} />
       )}
     </Wrapper>
   );
 }
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -109,12 +153,25 @@ const Wrapper = styled.div`
     align-items: center;
   }
 `;
+
 const ImageContainer = styled.div`
   position: relative;
   @media screen and (max-width: 768px) {
     width: 90%;
   }
+
+const CarouselWrapper = styled.div`
+  width: 100%;
+  overflow: hidden;
 `;
+
+const CarouselContainer = styled.div<{ $currentIndex: number }>`
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  transform: translateX(-${(props) => props.$currentIndex * 100}%);
+  width: 100%;
+`;
+
 const ImageWrapper = styled.div`
   width: 100%;
   aspect-ratio: 3 / 1;
@@ -126,6 +183,7 @@ const ImageWrapper = styled.div`
     aspect-ratio: 16 / 9;
   }
 `;
+
 const TitleContainer = styled.div`
   position: absolute;
   width: 90%;
@@ -140,6 +198,7 @@ const TitleContainer = styled.div`
     bottom: 4px;
   }
 `;
+
 const Tap = styled.button<{ $active: boolean }>`
   width: 100%;
   height: 60px;
@@ -160,6 +219,7 @@ const Tap = styled.button<{ $active: boolean }>`
     border-bottom: 2px solid ${({ $active }) => ($active ? '#55ebff' : 'white')};
   }
 `;
+
 const TapContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -168,6 +228,7 @@ const TapContainer = styled.div`
     width: 90%;
   }
 `;
+
 const ButtonWrapper = styled.div`
   display: flex;
   gap: 20px;
@@ -180,6 +241,7 @@ const ButtonWrapper = styled.div`
     gap: 10px;
   }
 `;
+
 const InfoContainer = styled.div`
   padding-top: 20px;
 
@@ -187,6 +249,7 @@ const InfoContainer = styled.div`
     width: 90%;
   }
 `;
+
 const GradientOverlay = styled.div`
   position: absolute;
   top: 0;
@@ -196,4 +259,34 @@ const GradientOverlay = styled.div`
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0.9) 100%);
   z-index: 0;
   pointer-events: none;
+`;
+
+const PrevBtn = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const NextBtn = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
