@@ -15,12 +15,14 @@ export default function SearchPage() {
   return (
     <Wrapper>
       <SearchBar placeholder="인플루언서, 장소를 검색해주세요!" />
-      <Paragraph weight="normal" size="m" variant="white">
-        <Text weight="bold" size="m" variant="mint">
-          {`${query} `}
-        </Text>
-        검색 결과
-      </Paragraph>
+      <Title>
+        <Paragraph weight="normal" size="m" variant="white">
+          <Text weight="bold" size="m" variant="mint">
+            {`${query} `}
+          </Text>
+          검색 결과
+        </Paragraph>
+      </Title>
       {influencersData && influencersData.length > 0 && (
         <>
           <SplitLine />

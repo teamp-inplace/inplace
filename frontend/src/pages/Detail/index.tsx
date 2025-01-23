@@ -159,6 +159,7 @@ const ImageContainer = styled.div`
   @media screen and (max-width: 768px) {
     width: 90%;
   }
+`;
 
 const CarouselWrapper = styled.div`
   width: 100%;
@@ -173,6 +174,7 @@ const CarouselContainer = styled.div<{ $currentIndex: number }>`
 `;
 
 const ImageWrapper = styled.div`
+  flex: 0 0 100%;
   width: 100%;
   aspect-ratio: 3 / 1;
   object-fit: cover;
