@@ -40,22 +40,22 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
       - name: Run tests
         run: npm test
 
-      - name: Install Sentry CLI
-        run: npm install -g @sentry/cli
-
-      - name: Create Sentry release
+      - name: Create and Upload Sentry Release
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.VITE_SENTRY_AUTH_TOKEN }}
           VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
           SENTRY_ORG: inplace-na
           SENTRY_PROJECT: inplace
         run: |
-          snpm install -g @sentry/cli
+          npm install -g @sentry/cli
           sentry-cli releases new -p $SENTRY_PROJECT ${{ github.sha }}
           sentry-cli releases set-commits --auto ${{ github.sha }}
+          sentry-cli releases files ${{ github.sha }} upload-sourcemaps ./dist
+          sentry-cli releases finalize ${{ github.sha }}
 
       - name: Build project
         run: |
@@ -67,15 +67,6 @@ jobs:
         env:
           VITE_KAKAO_JS_KEY: ${{ secrets.VITE_KAKAO_JS_KEY }}
           VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
-
-      - name: Upload sourcemaps to Sentry
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.VITE_SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: inplace-na
-          SENTRY_PROJECT: inplace
-        run: |
-          sentry-cli releases files ${{ github.sha }} upload-sourcemaps ./dist
-          sentry-cli releases finalize ${{ github.sha }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
