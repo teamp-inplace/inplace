@@ -3,6 +3,7 @@ import { BASE_URL } from '@/api/instance';
 import { getPlaceInfoPath } from '@/api/hooks/useGetPlaceInfo';
 import { getReviewPath } from '@/api/hooks/useGetReview';
 import { getSendInfoPath } from '@/api/hooks/useGetSendInfo';
+import BasicImage from '@/assets/images/basic-image.png';
 
 let reviews = [
   {
@@ -137,24 +138,20 @@ export const detailHandlers = [
         likes: true,
         facilityInfo: {
           wifi: 'Y',
-          pet: 'N',
+          pet: 'Y',
           parking: 'Y',
-          forDisabled: 'N',
+          forDisabled: 'Y',
           nursery: 'Y',
-          smokingRoom: 'N',
+          smokingRoom: 'Y',
         },
         menuInfos: {
-          menuImgUrls: [
-            'https://via.placeholder.com/500',
-            'https://via.placeholder.com/600',
-            'https://via.placeholder.com/700',
-          ],
+          menuImgUrls: [BasicImage, 'https://via.placeholder.com/600', 'https://via.placeholder.com/700'],
           menuList: [
             {
               price: '14,000',
               recommend: true,
               menuName: '료코카츠',
-              menuImgUrl: 'https://via.placeholder.com/100',
+              menuImgUrl: BasicImage,
               description: '료코만의 감성을 담은',
             },
             {

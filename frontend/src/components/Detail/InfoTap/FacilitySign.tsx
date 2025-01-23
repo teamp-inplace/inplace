@@ -62,7 +62,7 @@ export default function FacilitySign({ facilityInfo }: { facilityInfo: FacilityI
             if (iconElement === null) return null;
 
             return (
-              <SignWrapper key={key}>
+              <SignWrapper key={key} $isParking={key === 'parking'}>
                 {key === 'parking' ? iconElement : <Sign>{iconElement}</Sign>}
                 <Paragraph size="xs" weight="normal" variant="white">
                   {label}
@@ -80,6 +80,12 @@ const Wrapper = styled.div`
   display: flex;
   gap: 18px;
   padding: 0px 20px;
+
+  @media screen and (max-width: 768px) {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0px 6px;
+  }
 `;
 
 const Sign = styled.div`
@@ -91,12 +97,30 @@ const Sign = styled.div`
   align-items: center;
   justify-content: center;
   margin: 4px;
+
+  @media screen and (max-width: 768px) {
+    width: 40px;
+    height: 40px;
+    border: 2px solid white;
+
+    svg {
+      width: 30px;
+    }
+  }
 `;
 
-const SignWrapper = styled.div`
+const SignWrapper = styled.div<{ $isParking: boolean }>`
   display: flex;
   flex-direction: column;
   text-align: center;
   gap: 12px;
   align-items: center;
+
+  @media screen and (max-width: 768px) {
+    gap: ${({ $isParking }) => ($isParking ? '4px' : '8px')};
+    svg {
+      width: ${({ $isParking }) => ($isParking ? '50px' : null)};
+      margin-top: ${({ $isParking }) => ($isParking ? '-4px' : null)};
+    }
+  }
 `;

@@ -37,9 +37,9 @@ export default function Error({ resetErrorBoundary }: FallbackProps) {
           {message.description}
         </Paragraph>
       </TextWrapper>
-      <Button variant="outline" size="large" onClick={handleRetry} style={{ width: '40%' }}>
+      <StyledButton variant="outline" size="large" onClick={handleRetry}>
         다시 시도하기
-      </Button>
+      </StyledButton>
     </Wrapper>
   );
 }
@@ -53,6 +53,11 @@ const Wrapper = styled.div`
   text-align: center;
   padding-bottom: 40px;
   gap: 80px;
+
+  @media screen and (max-width: 768px) {
+    gap: 40px;
+    padding-bottom: 0px;
+  }
 `;
 const TextWrapper = styled.div`
   display: flex;
@@ -61,7 +66,26 @@ const TextWrapper = styled.div`
   gap: 20px;
   white-space: pre-line;
   line-height: 26px;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
 `;
 const LogoImage = styled.img`
   height: 180px;
+
+  @media screen and (max-width: 768px) {
+    height: 100px;
+  }
+`;
+
+const StyledButton = styled(Button)`
+  width: 40%;
+
+  @media screen and (max-width: 768px) {
+    width: fit-content;
+    padding: 20px;
+    height: 46px;
+    font-size: 18px;
+  }
 `;

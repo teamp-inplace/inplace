@@ -31,7 +31,12 @@ export default function InfiniteScrollSection<T>({
     if (!listRef.current) return;
 
     const someWidth = 400;
-    const scrollAmount = direction === 'left' ? -someWidth : someWidth;
+    const { scrollLeft, scrollWidth, clientWidth } = listRef.current;
+    const remainingScroll = direction === 'left' ? scrollLeft : scrollWidth - clientWidth - scrollLeft;
+
+    const scrollAmount =
+      direction === 'left' ? -Math.min(someWidth, remainingScroll) : Math.min(someWidth, remainingScroll);
+
     listRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
 
     if (direction === 'right' && hasNextPage) {
@@ -80,6 +85,8 @@ const SectionContainer = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+  overflow: visible;
+  width: 100%;
 `;
 
 const ListContainer = styled.div`
@@ -93,6 +100,14 @@ const ListContainer = styled.div`
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  & > * {
+    flex-shrink: 0;
+  }
+
+  @media screen and (max-width: 768px) {
+    gap: 18px;
   }
 `;
 
@@ -124,6 +139,12 @@ const ArrowButton = styled.button<{ direction: 'left' | 'right' }>`
 
   &.right-arrow {
     right: 0;
+  }
+
+  @media screen and (max-width: 768px) {
+    svg {
+      height: 20px;
+    }
   }
 `;
 

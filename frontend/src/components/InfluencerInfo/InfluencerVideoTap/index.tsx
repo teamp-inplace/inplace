@@ -47,6 +47,11 @@ const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-row-gap: 60px;
+
+  @media screen and (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+    grid-row-gap: 40px;
+  }
 `;
 const Container = styled.div``;
 const LoadMoreTrigger = styled.div`

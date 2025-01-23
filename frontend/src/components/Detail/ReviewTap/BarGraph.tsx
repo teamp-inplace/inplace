@@ -26,6 +26,11 @@ const GraphContainer = styled.div`
   border-radius: 1000px;
   overflow: hidden;
   position: relative;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    height: 34px;
+  }
 `;
 
 const Bar = styled.div<{ color: string; percentage: number }>`
@@ -43,4 +48,8 @@ const Label = styled.div<{ $isLike: boolean }>`
   font-size: 18px;
   color: white;
   font-weight: bold;
+
+  @media screen and (max-width: 768px) {
+    font-size: 14px;
+  }
 `;

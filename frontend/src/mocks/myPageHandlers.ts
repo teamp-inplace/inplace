@@ -90,9 +90,9 @@ const mockInfluencers = [
 const mockReviews = [
   {
     reviewId: 1,
-    userNickname: '랄라스윗칩',
     place: {
       placeId: '1',
+      placeName: '료코',
       imgUrl: 'https://via.placeholder.com/100',
       address: {
         address1: '대구광역시',
@@ -106,9 +106,9 @@ const mockReviews = [
   },
   {
     reviewId: 2,
-    userNickname: '선장님',
     place: {
       placeId: '2',
+      placeName: '료코',
       imgUrl: 'https://via.placeholder.com/100',
       address: {
         address1: '경상북도',
@@ -122,9 +122,9 @@ const mockReviews = [
   },
   {
     reviewId: 3,
-    userNickname: '선장님',
     place: {
       placeId: '2',
+      placeName: '료코',
       imgUrl: 'https://via.placeholder.com/100',
       address: {
         address1: '경상북도',
@@ -138,9 +138,9 @@ const mockReviews = [
   },
   {
     reviewId: 4,
-    userNickname: '선장님',
     place: {
       placeId: '2',
+      placeName: '료코',
       imgUrl: 'https://via.placeholder.com/100',
       address: {
         address1: '경상북도',
@@ -154,9 +154,9 @@ const mockReviews = [
   },
   {
     reviewId: 5,
-    userNickname: '선장님',
     place: {
       placeId: '2',
+      placeName: '료코',
       imgUrl: 'https://via.placeholder.com/100',
       address: {
         address1: '경상북도',
@@ -170,9 +170,9 @@ const mockReviews = [
   },
   {
     reviewId: 6,
-    userNickname: '선장님',
     place: {
       placeId: '2',
+      placeName: '료코',
       imgUrl: 'https://via.placeholder.com/100',
       address: {
         address1: '경상북도',
@@ -186,9 +186,9 @@ const mockReviews = [
   },
   {
     reviewId: 7,
-    userNickname: '선장님',
     place: {
       placeId: '2',
+      placeName: '료코',
       imgUrl: 'https://via.placeholder.com/100',
       address: {
         address1: '경상북도',
@@ -202,9 +202,9 @@ const mockReviews = [
   },
   {
     reviewId: 8,
-    userNickname: '선장님',
     place: {
       placeId: '2',
+      placeName: '료코',
       imgUrl: 'https://via.placeholder.com/100',
       address: {
         address1: '경상북도',
@@ -218,9 +218,9 @@ const mockReviews = [
   },
   {
     reviewId: 9,
-    userNickname: '9요',
     place: {
       placeId: '2',
+      placeName: '료코',
       imgUrl: 'https://via.placeholder.com/100',
       address: {
         address1: '경상북도',
@@ -234,9 +234,9 @@ const mockReviews = [
   },
   {
     reviewId: 10,
-    userNickname: '10이여',
     place: {
       placeId: '2',
+      placeName: '료코',
       imgUrl: 'https://via.placeholder.com/100',
       address: {
         address1: '경상북도',
@@ -250,9 +250,9 @@ const mockReviews = [
   },
   {
     reviewId: 11,
-    userNickname: '11이야',
     place: {
       placeId: '2',
+      placeName: '료코',
       imgUrl: 'https://via.placeholder.com/100',
       address: {
         address1: '경상북도',

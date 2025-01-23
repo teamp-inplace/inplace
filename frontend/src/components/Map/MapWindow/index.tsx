@@ -4,10 +4,11 @@ import styled from 'styled-components';
 import { TbCurrentLocation } from 'react-icons/tb';
 import Button from '@/components/common/Button';
 import { LocationData, MarkerInfo, PlaceData } from '@/types';
-import BasicImage from '@/assets/images/basic-image.png';
 import { useGetAllMarkers } from '@/api/hooks/useGetAllMarkers';
 import InfoWindow from '@/components/InfluencerInfo/InfluencerMapTap/InfoWindow';
 import { useGetMarkerInfo } from '@/api/hooks/useGetMarkerInfo';
+import OriginMarker from '@/assets/images/OriginMarker.png';
+import SelectedMarker from '@/assets/images/InplaceMarker.png';
 
 interface MapWindowProps {
   onBoundsChange: (bounds: LocationData) => void;
@@ -30,8 +31,6 @@ export default function MapWindow({
   selectedPlaceId,
   onPlaceSelect,
 }: MapWindowProps) {
-  const originSize = 34;
-
   const mapRef = useRef<kakao.maps.Map | null>(null);
   const [mapCenter, setMapCenter] = useState({ lat: 37.5665, lng: 126.978 });
   const [mapBound, setMapBound] = useState<LocationData>({
@@ -44,6 +43,21 @@ export default function MapWindow({
   const [showSearchButton, setShowSearchButton] = useState(false);
   const [markerInfo, setMarkerInfo] = useState<MarkerInfo | PlaceData>();
   const [shouldFetchData, setShouldFetchData] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const originSize = isMobile ? 26 : 34;
+  const userLocationSize = isMobile ? 16 : 24;
 
   const { data: markers = [] } = useGetAllMarkers({
     location: mapBound,
@@ -218,7 +232,7 @@ export default function MapWindow({
             position={userLocation}
             image={{
               src: 'https://i.ibb.co/4gGFjRx/circle.png',
-              size: { width: 24, height: 24 },
+              size: { width: userLocationSize, height: userLocationSize },
             }}
           />
         )}
@@ -234,10 +248,10 @@ export default function MapWindow({
                 lng: place.longitude,
               }}
               image={{
-                src: BasicImage,
+                src: selectedPlaceId === place.placeId ? SelectedMarker : OriginMarker,
                 size: {
-                  width: selectedPlaceId === place.placeId ? originSize + 10 : originSize,
-                  height: selectedPlaceId === place.placeId ? originSize + 10 : originSize,
+                  width: selectedPlaceId === place.placeId ? originSize + 14 : originSize,
+                  height: selectedPlaceId === place.placeId ? originSize + 14 : originSize,
                 },
               }}
             />

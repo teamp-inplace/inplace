@@ -34,4 +34,8 @@ const ListContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 38px;
+
+  @media screen and (max-width: 768px) {
+    gap: 24px;
+  }
 `;

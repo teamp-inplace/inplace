@@ -54,7 +54,19 @@ const MenuImage = styled.img`
   width: 70px;
   height: 70px;
   border-radius: 10px;
+
+  @media screen and (max-width: 768px) {
+    width: 20%;
+    aspect-ratio: 1/1;
+    height: auto;
+    border-radius: 12px;
+  }
 `;
 const MenuContent = styled.div`
   line-height: 140%;
+
+  @media screen and (max-width: 768px) {
+    width: 80%;
+    line-height: 120%;
+  }
 `;

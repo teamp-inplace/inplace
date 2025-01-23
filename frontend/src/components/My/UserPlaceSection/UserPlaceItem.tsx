@@ -74,6 +74,10 @@ const Wrapper = styled(Link)`
   text-align: center;
   text-decoration: none;
   gap: 10px;
+
+  @media screen and (max-width: 768px) {
+    width: 112px;
+  }
 `;
 const ImageContainer = styled.div`
   width: 168px;
@@ -82,6 +86,11 @@ const ImageContainer = styled.div`
   border-radius: 6px;
   overflow: hidden;
   margin-bottom: 4px;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    height: 140px;
+  }
 `;
 const LikeIcon = styled.div`
   position: absolute;
@@ -91,9 +100,21 @@ const LikeIcon = styled.div`
   top: 12px;
   z-index: 100;
   cursor: pointer;
+
+  @media screen and (max-width: 768px) {
+    top: 8px;
+    right: 6px;
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
 `;
 const TextWrapper = styled.div`
   > *:not(:first-child) {
     margin-top: 6px;
+    @media screen and (max-width: 768px) {
+      margin-top: 4px;
+    }
   }
 `;

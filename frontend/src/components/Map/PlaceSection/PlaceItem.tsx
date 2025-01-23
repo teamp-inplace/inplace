@@ -117,6 +117,10 @@ const ImageContainer = styled.div`
   aspect-ratio: 1;
   object-fit: cover;
   border-radius: 30px;
+
+  @media screen and (max-width: 768px) {
+    border-radius: 12px;
+  }
 `;
 
 const CardContent = styled.div`

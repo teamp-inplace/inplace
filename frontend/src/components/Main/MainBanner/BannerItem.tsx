@@ -18,6 +18,13 @@ const Wrapper = styled.div<{ $isFirst: boolean }>`
   align-items: center;
   text-align: center;
   position: relative;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    flex: 0 0 100%;
+    height: auto;
+    aspect-ratio: 1;
+  }
 `;
 
 const Image = styled.img`

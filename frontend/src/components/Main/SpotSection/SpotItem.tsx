@@ -39,9 +39,20 @@ const Wrapper = styled(Link)<{ $isInfluencer: boolean }>`
   flex-direction: column;
   align-content: end;
   line-height: 30px;
+  gap: 4px;
 
   svg {
     margin-right: 2px;
+  }
+
+  @media screen and (max-width: 768px) {
+    line-height: 24px;
+    gap: 4px;
+    svg {
+      height: 14px;
+      margin: 0px;
+    }
+    width: ${({ $isInfluencer }) => ($isInfluencer ? '100%' : '300px')};
   }
 `;
 
@@ -51,4 +62,6 @@ const ImageWrapper = styled.div<{ $isInfluencer?: boolean }>`
   margin-bottom: 10px;
   border-radius: 6px;
   overflow: hidden;
+
+  width: ${({ $isInfluencer }) => ($isInfluencer ? '100%' : '300px')};
 `;
