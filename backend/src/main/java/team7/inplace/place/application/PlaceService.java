@@ -101,7 +101,7 @@ public class PlaceService {
 
         var detailedPlace = placeReadRepository.findDetailedPlaceById(placeId, userId)
             .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
-        var placeVideos = videoReadRepository.findSimpleVideoByPlaceId(placeId);
+        var placeVideos = videoReadRepository.findSimpleVideosByPlaceId(placeId);
         var placeReviewRate = reviewJPARepository.countRateByPlaceId(placeId);
 
         return PlaceQueryInfo.Detail.from(detailedPlace, placeVideos, placeReviewRate);
@@ -131,13 +131,14 @@ public class PlaceService {
     public PlaceMessageCommand getPlaceMessageCommand(Long placeId) {
         var place = placeReadRepository.findSimplePlaceById(placeId)
             .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
-        var video = videoReadRepository.findSimpleVideoByPlaceId(placeId);
+        var video = videoReadRepository.findSimpleVideosByPlaceId(placeId);
 
         return PlaceMessageCommand.from(place, video.get(0));
     }
 
     public Page<LikedPlaceInfo> getLikedPlaceInfo(Long userId, Pageable pageable) {
-        var likedPlaceQueryResult = placeReadRepository.findLikedPlacesByUserIdWithPaging(userId, pageable);
+        var likedPlaceQueryResult = placeReadRepository.findLikedPlacesByUserIdWithPaging(userId,
+            pageable);
 
         var likedPlaceInfos = likedPlaceQueryResult.getContent().stream()
             .map(LikedPlaceInfo::of)
