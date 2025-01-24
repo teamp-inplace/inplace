@@ -19,17 +19,19 @@ const initInstance = (config: AxiosRequestConfig): AxiosInstance => {
     (response) => response,
     async (error) => {
       if (!error.response) {
-        const requestUrl = error.config?.url || 'URL 정보 없음';
-        Sentry.withScope((scope) => {
-          scope.setLevel('error');
-          scope.setTag('error type', 'Network Error');
-          Sentry.captureMessage(`[Network Error] ${requestUrl} \n${error.message ?? `네트워크 오류`}`);
-        });
+        if (import.meta.env.PROD) {
+          const requestUrl = error.config?.url || 'URL 정보 없음';
+          Sentry.withScope((scope) => {
+            scope.setLevel('error');
+            scope.setTag('error type', 'Network Error');
+            Sentry.captureMessage(`[Network Error] ${requestUrl} \n${error.message ?? `네트워크 오류`}`);
+          });
+        }
         return Promise.reject(error);
       }
 
       // 예기치 못한 4~500번대 오류 로깅
-      if (error.response.status >= 400 && ![401, 403, 409].includes(error.response.status)) {
+      if (import.meta.env.PROD && error.response.status >= 400 && ![401, 403, 409].includes(error.response.status)) {
         const isServerError = error.response.status >= 500;
         const errorType = isServerError ? 'Server Error' : 'Api Error';
         Sentry.withScope((scope) => {
