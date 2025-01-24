@@ -56,4 +56,5 @@ public class Video extends BaseEntity {
     public void addPlace(Long placeId) {
         this.placeId = placeId;
     }
+
 }
