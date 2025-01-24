@@ -48,9 +48,11 @@ export default function InfluencerPage() {
 
   return (
     <PageContainer>
-      <Text size="l" weight="bold" variant="white">
-        인플루언서
-      </Text>
+      <Title>
+        <Text size="l" weight="bold" variant="white">
+          인플루언서
+        </Text>
+      </Title>
       <InfluencerSearchBar inputValue={inputValue} setInputValue={setInputValue} />
       <LayoutWrapper>
         <BaseLayout
@@ -91,4 +93,8 @@ const LayoutWrapper = styled.div`
   @media screen and (max-width: 768px) {
     margin-bottom: 60px;
   }
+`;
+
+const Title = styled.div`
+  width: 90%;
 `;
