@@ -69,6 +69,13 @@ public class VideoService {
         return top10Videos.stream().toList();
     }
 
+    @Transactional(readOnly = true)
+    public Page<VideoQueryResult.SimpleVideo> getOneInfluencerVideos(Long influencerId, Pageable pageable) {
+        var videos = videoReadRepository.findSimpleVideosWithOneInfluencerId(influencerId, pageable);
+
+        return videos;
+    }
+
     @Transactional
     public void createVideos(List<Create> videoCommands, Long influencerId) {
         var videos = videoCommands.stream()

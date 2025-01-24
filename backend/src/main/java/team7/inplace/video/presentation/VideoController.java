@@ -59,10 +59,21 @@ public class VideoController implements VideoControllerApiSpec {
     @Override
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/my")
-    public ResponseEntity<List<VideoResponse.Simple>> readByInfluencer() {
+    public ResponseEntity<List<VideoResponse.Simple>> readByMyInfluencer() {
         var myVideos = videoFacade.getMyInfluencerVideos()
                 .stream().map(VideoResponse.Simple::from).toList();
         return new ResponseEntity<>(myVideos, HttpStatus.OK);
+    }
+
+    @Override
+    @GetMapping("/{influencerId}")
+    public ResponseEntity<Page<VideoResponse.Simple>> readByOneInfluencer(
+            @PageableDefault(page = 0, size = 6) Pageable pageable,
+            @PathVariable Long influencerId
+    ) {
+        var videoResponses = videoService.getOneInfluencerVideos(influencerId, pageable)
+                .map(VideoResponse.Simple::from);
+        return new ResponseEntity<>(videoResponses, HttpStatus.OK);
     }
 
     @Override

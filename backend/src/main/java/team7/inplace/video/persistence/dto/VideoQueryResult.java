@@ -7,9 +7,7 @@ public class VideoQueryResult {
     public record SimpleVideo(
             Long videoId,
             String videoUUID,
-
             String influencerName,
-
             Long placeId,
             String placeName,
             Category placeCategory

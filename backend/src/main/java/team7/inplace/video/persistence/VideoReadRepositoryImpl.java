@@ -164,7 +164,7 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
     }
 
     @Override
-    public List<SimpleVideo> findSimpleVideoByPlaceId(Long placeId) {
+    public List<SimpleVideo> findSimpleVideosByPlaceId(Long placeId) {
         var videos = queryFactory
             .select(new QVideoQueryResult_SimpleVideo(
                 QVideo.video.id,
@@ -247,6 +247,34 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
             .from(QVideo.video)
             .where(QVideo.video.placeId.isNull())
             .fetchOne();
+
+        return new PageImpl<>(videos, pageable, total);
+    }
+
+    @Override
+    public Page<VideoQueryResult.SimpleVideo> findSimpleVideosWithOneInfluencerId(Long influencerId, Pageable pageable) {
+        var videos = queryFactory
+                .select(new QVideoQueryResult_SimpleVideo(
+                        QVideo.video.id,
+                        QVideo.video.uuid,
+                        QInfluencer.influencer.name,
+                        QPlace.place.id,
+                        QPlace.place.name,
+                        QPlace.place.category
+                ))
+                .from(QVideo.video)
+                .leftJoin(QPlace.place).on(QVideo.video.placeId.eq(QPlace.place.id))
+                .leftJoin(QInfluencer.influencer).on(QVideo.video.influencerId.eq(QInfluencer.influencer.id))
+                .where(QVideo.video.influencerId.eq(influencerId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        var total = queryFactory
+                .select(QVideo.video.count())
+                .from(QVideo.video)
+                .where(QVideo.video.influencerId.eq(influencerId))
+                .fetchOne();
 
         return new PageImpl<>(videos, pageable, total);
     }
