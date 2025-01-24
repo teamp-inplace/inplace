@@ -202,10 +202,8 @@ export default function MapWindow({
             variant="white"
             size="small"
             style={{
-              height: '36px',
-              fontSize: '16px',
               borderRadius: '20px',
-              padding: '20px',
+              padding: isMobile ? '18px' : '20px',
               boxShadow: '1px 1px 2px #707070',
             }}
           >
@@ -275,14 +273,9 @@ export default function MapWindow({
         )}
       </Map>
       <ResetButtonContainer>
-        <Button
-          onClick={handleResetCenter}
-          variant="white"
-          size="small"
-          style={{ width: '40px', height: '40px', boxShadow: '1px 1px 2px #707070' }}
-        >
+        <StyledBtn onClick={handleResetCenter} variant="white" size="small">
           <TbCurrentLocation size={20} />
-        </Button>
+        </StyledBtn>
       </ResetButtonContainer>
     </MapContainer>
   );
@@ -308,4 +301,25 @@ const ResetButtonContainer = styled.div`
   bottom: 46px;
   right: 30px;
   z-index: 10;
+
+  @media screen and (max-width: 768px) {
+    bottom: 34px;
+    right: 14px;
+  }
+`;
+
+const StyledBtn = styled(Button)`
+  width: 40px;
+  height: 40px;
+  box-shadow: 1px 1px 2px #707070;
+
+  @media screen and (max-width: 768px) {
+    width: 28px;
+    height: 28px;
+    box-shadow: 1px 1px 1px #707070;
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
 `;
