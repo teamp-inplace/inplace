@@ -11,12 +11,23 @@ import useDebounce from '@/hooks/useDebounce';
 export default function InfluencerPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [inputValue, setInputValue] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const debouncedInputValue = useDebounce(inputValue, 300);
 
   const { data: allInfluencersData } = useGetAllInfluencers({
     page: currentPage - 1,
-    size: 10,
+    size: isMobile ? 9 : 10,
   });
 
   const { data: filteredData } = useGetSearchInfluencers({
@@ -66,8 +77,18 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    gap: 20px;
+    align-items: center;
+  }
 `;
 
 const LayoutWrapper = styled.div`
   margin-bottom: 80px;
+
+  @media screen and (max-width: 768px) {
+    margin-bottom: 60px;
+  }
 `;
