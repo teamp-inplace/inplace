@@ -84,7 +84,7 @@ public class PlacesCommand {
             List<String> menuboardphotourlList
     ) {
 
-        public static Create from(JsonNode locationNode, JsonNode placeNode) {
+        public static Create from(JsonNode locationNode, JsonNode placeNode, String category) {
             if (Objects.isNull(locationNode) || Objects.isNull(placeNode)) {
                 return null;
             }
@@ -95,12 +95,8 @@ public class PlacesCommand {
                     basicInfo.has("placenamefull") ? basicInfo.get("placenamefull").asText() : " ";
             String facility = basicInfo.has("facilityInfo")
                     ? basicInfo.get("facilityInfo").toString() : " ";
-
             String menuImgUrl =
                     basicInfo.has("mainphotourl") ? basicInfo.get("mainphotourl").asText() : " ";
-            String category =
-                    basicInfo.has("category") && basicInfo.get("category").has("cate1name")
-                            ? basicInfo.get("category").get("cate1name").asText() : " ";
             String address =
                     basicInfo.has("address") && basicInfo.get("address").has("region") && basicInfo.get(
                                     "address")
