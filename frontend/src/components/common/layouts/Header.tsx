@@ -101,22 +101,27 @@ export default function Header() {
         <MenuContainer variants={itemVariants}>
           {isAuthenticated ? (
             <>
-              <MobileNavItem to="/map">
+              <MobileNavItem to="/map" onClick={() => setIsMenuOpen(false)}>
                 <Text size="xs" variant="white" weight="normal">
                   지도
                 </Text>
               </MobileNavItem>
-              <MobileNavItem to="/influencer">
+              <MobileNavItem to="/influencer" onClick={() => setIsMenuOpen(false)}>
                 <Text size="xs" variant="white" weight="normal">
                   인플루언서
                 </Text>
               </MobileNavItem>
-              <MobileNavItem to="/my">
+              <MobileNavItem to="/my" onClick={() => setIsMenuOpen(false)}>
                 <Text size="xs" variant="white" weight="normal">
                   마이페이지
                 </Text>
               </MobileNavItem>
-              <MobileLoginButton onClick={handleLogout}>
+              <MobileLoginButton
+                onClick={() => {
+                  handleLogout();
+                  setIsMenuOpen(false);
+                }}
+              >
                 <Text size="xs" variant="white" weight="normal">
                   로그아웃
                 </Text>
@@ -124,19 +129,24 @@ export default function Header() {
             </>
           ) : (
             <>
-              <MobileNavItem to="/map">
+              <MobileNavItem to="/map" onClick={() => setIsMenuOpen(false)}>
                 <Text size="xs" variant="white" weight="normal">
                   지도
                 </Text>
               </MobileNavItem>
-              <MobileNavItem to="/influencer">
+              <MobileNavItem to="/influencer" onClick={() => setIsMenuOpen(false)}>
                 <Text size="xs" variant="white" weight="normal">
                   인플루언서
                 </Text>
               </MobileNavItem>
               <LoginModal currentPath={location.pathname}>
                 {(openModal: () => void) => (
-                  <MobileLoginButton onClick={openModal}>
+                  <MobileLoginButton
+                    onClick={() => {
+                      openModal();
+                      setIsMenuOpen(false);
+                    }}
+                  >
                     <Text size="xs" variant="white" weight="normal">
                       로그인
                     </Text>
