@@ -18,14 +18,14 @@ async function startApp() {
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
-  enabled: true,
+  enabled: import.meta.env.PROD,
   integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
   // Tracing
   tracesSampleRate: import.meta.env.PROD ? 0.1 : 0,
   // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
   tracePropagationTargets: [
     /^https:\/\/api\.inplace\.my/, // 배포 서버 도메인
-    '!http://localhost', // localhost는 제외
+    '!http://localhost',
     '!https://localhost',
   ],
   // Session Replay
