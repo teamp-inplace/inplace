@@ -213,7 +213,7 @@ export default function MapWindow({
       )}
       <Map
         center={mapCenter}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '100%', height: 'auto', aspectRatio: '1.4/1' }}
         level={4}
         onCreate={(map) => {
           mapRef.current = map;
@@ -284,7 +284,6 @@ export default function MapWindow({
 const MapContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 570px;
   padding: 20px 0;
 `;
 

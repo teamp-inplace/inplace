@@ -153,16 +153,30 @@ const SectionContainer = styled.div`
   &::-webkit-scrollbar-track {
     background-color: transparent;
   }
+
+  @media screen and (max-width: 768px) {
+    height: 500px;
+    padding-right: 0;
+  }
 `;
 
 const ContentContainer = styled.div`
   width: 100%;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
 `;
 
 const PlacesGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
+
+  @media screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 `;
 
 const LoadMoreTrigger = styled.div`

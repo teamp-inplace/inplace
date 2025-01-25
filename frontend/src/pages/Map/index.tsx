@@ -157,10 +157,21 @@ export default function MapPage() {
 
 const PageContainer = styled.div`
   padding: 6px 0;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    align-items: center;
+  }
 `;
 
 const DropdownContainer = styled.div`
   display: flex;
   gap: 20px;
   padding-top: 16px;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+    gap: 12px;
+    padding-top: 12px;
+    z-index: 20;
+  }
 `;
