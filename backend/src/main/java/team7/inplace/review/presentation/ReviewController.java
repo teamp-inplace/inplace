@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,21 +13,24 @@ import org.springframework.web.bind.annotation.RestController;
 import team7.inplace.review.application.ReviewInvitationService;
 import team7.inplace.review.application.ReviewService;
 import team7.inplace.review.presentation.dto.ReviewRequest;
+import team7.inplace.review.presentation.dto.ReviewResponse;
+import team7.inplace.review.presentation.dto.ReviewResponse.Invitation;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/reviews")
 public class ReviewController implements ReviewControllerApiSpec {
 
-    private final ReviewService reviewService;
     private final ReviewInvitationService reviewInvitationService;
+    private final ReviewService reviewService;
 
-    //    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReview(@PathVariable Long id) {
-        reviewService.deleteReview(id);
+    @Override
+    @GetMapping("/{uuid}")
+    public ResponseEntity<Invitation> getReviewInfo(@PathVariable String uuid) {
+        var invitationInfo = reviewInvitationService.getReviewInvitation(uuid);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        var response = ReviewResponse.Invitation.from(invitationInfo);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Override
@@ -39,4 +43,13 @@ public class ReviewController implements ReviewControllerApiSpec {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Override
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteReview(@PathVariable Long id) {
+        reviewService.deleteReview(id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

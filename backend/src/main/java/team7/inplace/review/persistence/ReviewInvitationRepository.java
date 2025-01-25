@@ -12,6 +12,7 @@ import team7.inplace.review.domain.ReviewInvitation;
 @Repository
 @RequiredArgsConstructor
 public class ReviewInvitationRepository implements RedisRepository<ReviewInvitation> {
+
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
 
@@ -32,8 +33,10 @@ public class ReviewInvitationRepository implements RedisRepository<ReviewInvitat
         redisTemplate.opsForValue().set(UUID_PREFIX + key, value, timeout, timeoutUnit);
 
         // userId, placeId로도 조회할 수 있도록 UUID 저장
-        redisTemplate.opsForSet().add(USER_ID_PREFIX + value.getUserId(), key, timeout, timeoutUnit);
-        redisTemplate.opsForSet().add(PLACE_ID_PREFIX + value.getPlaceId(), key, timeout, timeoutUnit);
+        redisTemplate.opsForSet()
+            .add(USER_ID_PREFIX + value.getUserId(), key, timeout, timeoutUnit);
+        redisTemplate.opsForSet()
+            .add(PLACE_ID_PREFIX + value.getPlaceId(), key, timeout, timeoutUnit);
     }
 
     @Override
@@ -45,12 +48,19 @@ public class ReviewInvitationRepository implements RedisRepository<ReviewInvitat
 
     @Override
     public void delete(String key) {
+        var value = this.get(key);
+        if (value.isEmpty()) {
+            return;
+        }
+
         redisTemplate.delete(UUID_PREFIX + key);
+        redisTemplate.delete(USER_ID_PREFIX + value.get().getUserId());
+        redisTemplate.delete(PLACE_ID_PREFIX + value.get().getPlaceId());
     }
 
     public Optional<String> findUUIDByUserIdAndPlaceId(Long userId, Long placeId) {
         var uuids = redisTemplate.opsForSet()
-                .intersect(USER_ID_PREFIX + userId, PLACE_ID_PREFIX + placeId);
+            .intersect(USER_ID_PREFIX + userId, PLACE_ID_PREFIX + placeId);
         if (uuids == null || uuids.isEmpty()) {
             return Optional.empty();
         }

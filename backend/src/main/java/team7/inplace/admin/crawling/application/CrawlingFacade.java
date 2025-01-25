@@ -3,9 +3,11 @@ package team7.inplace.admin.crawling.application;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
+import team7.inplace.admin.crawling.application.command.PlaceRegistrationCommand;
 import team7.inplace.admin.crawling.application.dto.CrawlingInfo;
 import team7.inplace.global.annotation.Facade;
 import team7.inplace.place.application.command.PlacesCommand;
+import team7.inplace.place.domain.Category;
 import team7.inplace.video.application.VideoFacade;
 
 @Facade
@@ -38,9 +40,10 @@ public class CrawlingFacade {
         videoFacade.updateVideoViews(videoCommands);
     }
 
-    public void addPlaceInfo(Long videoId, Long placeId) {
-        var placeInfo = kakaoCrawlingService.searchPlaceWithPlaceId(placeId);
-        var placeCommand = PlacesCommand.Create.from(placeInfo.locationNode(), placeInfo.placeNode());
-        videoFacade.addPlaceInfo(videoId, placeCommand);
+    public void addPlaceInfo(PlaceRegistrationCommand placeRegistrationCommand) {
+        var placeInfo = kakaoCrawlingService.searchPlaceWithPlaceId(placeRegistrationCommand.placeUUID());
+        var placeCommand = PlacesCommand.Create.from(placeInfo.locationNode(), placeInfo.placeNode(),
+            placeRegistrationCommand.category());
+        videoFacade.addPlaceInfo(placeRegistrationCommand.videoId(), placeCommand);
     }
 }

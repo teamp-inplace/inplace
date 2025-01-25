@@ -55,9 +55,20 @@ function searchPlaces() {
 // 장소 등록 및 API 호출
 function registerPlace(placeId) {
     const videoId = window.selectedVideoId;
+    const category = document.getElementById('category').value;
+    if (!category) {
+        alert("카테고리를 선택해주세요.")
+        return;
+    }
     $.ajax({
-        url: `/crawling/video/${videoId}/place/${placeId}`,
+        url: `/crawling/video/place/register`,
         method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            videoId: videoId,
+            placeUUID: placeId,
+            category: category
+        }),
         success: function () {
             alert("장소가 등록되었습니다.");
             closeModal();

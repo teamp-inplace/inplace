@@ -30,13 +30,13 @@
         <td>
             <img alt="Video Thumbnail"
                  onclick="openModal(this)" style="cursor:pointer;width:100px;"
-                 th:attr="data-video-url=${video.videoUUID}, data-video-id=${video.id}"
-                 th:src="'https://img.youtube.com/vi/' + ${video.videoUUID} + '/0.jpg'"/>
+                 th:attr="data-video-url=${video.uuid}, data-video-id=${video.id}"
+                 th:src="'https://img.youtube.com/vi/' + ${video.uuid} + '/0.jpg'"/>
         </td>
         <td>
             <button
                     onclick="openModal(this)"
-                    th:attr="data-video-url=${video.videoUUID}, data-video-id=${video.id}">
+                    th:attr="data-video-url=${video.uuid}, data-video-id=${video.id}">
                 장소 등록
             </button>
         </td>
@@ -75,10 +75,20 @@
                 width="560"></iframe>
 
         <!-- Place search form -->
-        <form onsubmit="searchPlaces(); return false;">
-            키워드: <input id="keyword" placeholder="장소를 입력하세요" type="text"/>
-            <button type="submit">검색하기</button>
-        </form>
+
+        <div class="category-container">
+            <form onsubmit="searchPlaces(); return false;">
+                키워드: <input id="keyword" placeholder="장소를 입력하세요" type="text"/>
+                <button type="submit">검색하기</button>
+            </form>
+
+            <select id="category" required>
+                <option value="" disabled selected>카테고리</option>
+                <option value="cafe">카페</option>
+                <option value="restaurant">음식점</option>
+                <option value="none">없음</option>
+            </select>
+        </div>
 
         <table id="search-results">
             <thead>

@@ -52,6 +52,12 @@ img {
     border-radius: 10px;
     object-fit: cover;
 }
+.category-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 10px; /* 버튼 오른쪽에 위치하게 설정 */
+}
 .form-inline {
     display: flex;
     flex-wrap: wrap;
