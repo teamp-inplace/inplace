@@ -17,7 +17,7 @@ async function startApp() {
 }
 
 Sentry.init({
-  dsn: import.meta.env.VITE_SENTRY_DSN,
+  dsn: import.meta.env.PROD ? import.meta.env.VITE_SENTRY_DSN : '',
   enabled: import.meta.env.PROD,
   integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
   // Tracing
