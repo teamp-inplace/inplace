@@ -97,7 +97,13 @@ export default function Header() {
           </>
         )}
       </DesktopNav>
-      <MobileNav as={motion.nav} initial="closed" animate={isMenuOpen ? 'open' : 'closed'} variants={navVariants}>
+      <MobileNav
+        as={motion.nav}
+        initial="closed"
+        animate={isMenuOpen ? 'open' : 'closed'}
+        variants={navVariants}
+        $isOpen={isMenuOpen}
+      >
         <MenuContainer variants={itemVariants}>
           {isAuthenticated ? (
             <>
@@ -202,7 +208,7 @@ const DesktopNav = styled.nav`
   }
 `;
 
-const MobileNav = styled.nav`
+const MobileNav = styled(motion.nav)<{ $isOpen: boolean }>`
   display: none;
 
   @media screen and (max-width: 768px) {
@@ -216,6 +222,7 @@ const MobileNav = styled.nav`
     padding: 20px 0;
     gap: 20px;
     z-index: 10;
+    pointer-events: ${({ $isOpen }) => ($isOpen ? 'auto' : 'none')};
   }
 `;
 
