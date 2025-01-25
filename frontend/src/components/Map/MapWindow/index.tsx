@@ -112,22 +112,39 @@ export default function MapWindow({
   }, [fetchMarkers]);
 
   // 마커나 장소 선택시 지도 중심으로 이동
-  const moveMapToMarker = useCallback((latitude: number, longitude: number) => {
-    if (mapRef.current) {
-      const position = new kakao.maps.LatLng(latitude, longitude);
-      if (mapRef.current.getLevel() > 10) {
-        mapRef.current.setLevel(9, {
-          anchor: position,
-          animate: true,
-        });
-      }
-      setTimeout(() => {
-        if (mapRef.current) {
-          mapRef.current.panTo(position);
+  const moveMapToMarker = useCallback(
+    (latitude: number, longitude: number) => {
+      if (mapRef.current) {
+        const currentLevel = mapRef.current.getLevel();
+        const baseOffset = -0.007;
+
+        let levelMultiplier;
+        if (currentLevel <= 5) {
+          levelMultiplier = 1;
+        } else if (currentLevel <= 8) {
+          levelMultiplier = currentLevel * 1.05;
+        } else {
+          levelMultiplier = currentLevel * 2;
         }
-      }, 100);
-    }
-  }, []);
+
+        const offsetY = isMobile ? (baseOffset * levelMultiplier) / 5 : 0;
+        const position = new kakao.maps.LatLng(latitude - offsetY, longitude);
+
+        if (mapRef.current.getLevel() > 10) {
+          mapRef.current.setLevel(9, {
+            anchor: position,
+            animate: true,
+          });
+        }
+        setTimeout(() => {
+          if (mapRef.current) {
+            mapRef.current.panTo(position);
+          }
+        }, 100);
+      }
+    },
+    [isMobile],
+  );
 
   useEffect(() => {
     if (selectedPlaceId && selectedMarker) {
