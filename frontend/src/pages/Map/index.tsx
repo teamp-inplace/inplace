@@ -19,6 +19,7 @@ type SelectedOption = {
 
 export default function MapPage() {
   const { data: influencerOptions } = useGetDropdownName();
+  const [isListExpanded, setIsListExpanded] = useState(false);
   const [selectedInfluencers, setSelectedInfluencers] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<SelectedOption[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -107,6 +108,10 @@ export default function MapPage() {
     setSelectedPlaceId((prevId) => (prevId === placeId ? null : placeId));
   }, []);
 
+  const handleListExpand = useCallback(() => {
+    setIsListExpanded((prev) => !prev);
+  }, []);
+
   return (
     <PageContainer>
       <Text size="l" weight="bold" variant="white">
@@ -142,15 +147,30 @@ export default function MapPage() {
         placeData={placeData}
         selectedPlaceId={selectedPlaceId}
         onPlaceSelect={handlePlaceSelect}
+        isListExpanded={isListExpanded}
+        onListExpand={handleListExpand}
       />
-      <PlaceSection
-        mapBounds={mapBounds}
-        filters={filters}
-        center={center}
-        onGetPlaceData={handleGetPlaceData}
-        onPlaceSelect={handlePlaceSelect}
-        selectedPlaceId={selectedPlaceId}
-      />
+      <PlaceSectionDesktop>
+        <PlaceSection
+          mapBounds={mapBounds}
+          filters={filters}
+          center={center}
+          onGetPlaceData={handleGetPlaceData}
+          onPlaceSelect={handlePlaceSelect}
+          selectedPlaceId={selectedPlaceId}
+        />
+      </PlaceSectionDesktop>
+      <MobilePlaceSection $isExpanded={isListExpanded} onClick={() => isListExpanded && setIsListExpanded(false)}>
+        <DragHandle />
+        <PlaceSection
+          mapBounds={mapBounds}
+          filters={filters}
+          center={center}
+          onGetPlaceData={handleGetPlaceData}
+          onPlaceSelect={handlePlaceSelect}
+          selectedPlaceId={selectedPlaceId}
+        />
+      </MobilePlaceSection>
     </PageContainer>
   );
 }
@@ -174,4 +194,37 @@ const DropdownContainer = styled.div`
     padding-top: 12px;
     z-index: 20;
   }
+`;
+
+const PlaceSectionDesktop = styled.div`
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const MobilePlaceSection = styled.div<{ $isExpanded: boolean }>`
+  display: none;
+
+  @media screen and (max-width: 768px) {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80%;
+    background-color: #292929;
+    transform: translateY(${(props) => (props.$isExpanded ? '0' : '100%')});
+    transition: transform 0.3s ease-in-out;
+    z-index: 90;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+  }
+`;
+
+const DragHandle = styled.div`
+  width: 40px;
+  height: 4px;
+  background-color: #666;
+  border-radius: 2px;
+  margin: 12px auto;
 `;

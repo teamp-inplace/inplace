@@ -155,7 +155,7 @@ const SectionContainer = styled.div`
   }
 
   @media screen and (max-width: 768px) {
-    height: 500px;
+    height: 100%;
     padding-right: 0;
   }
 `;
@@ -165,6 +165,7 @@ const ContentContainer = styled.div`
 
   @media screen and (max-width: 768px) {
     width: 90%;
+    padding-bottom: 40px;
   }
 `;
 
