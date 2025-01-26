@@ -2,7 +2,6 @@ package team7.inplace.video.application;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import team7.inplace.video.persistence.dto.VideoQueryResult;
 import team7.inplace.video.presentation.dto.VideoSearchParams;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class VideoService {
 
@@ -85,11 +83,6 @@ public class VideoService {
         var videos = videoCommands.stream()
             .map(Create::toEntity)
             .toList();
-        for (int i = 0; i < videoCommands.size(); i++) {
-            if (videos.get(i).getVideoUrl() == null) {
-                log.info(videoCommands.get(i).toString());
-            }
-        }
         videoRepository.saveAll(videos);
     }
 
