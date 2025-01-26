@@ -12,6 +12,7 @@ import team7.inplace.admin.banner.persistence.BannerRepository;
 import team7.inplace.global.properties.KakaoApiProperties;
 import team7.inplace.global.properties.YoutubeApiProperties;
 import team7.inplace.influencer.persistence.InfluencerRepository;
+import team7.inplace.place.domain.Category;
 import team7.inplace.video.domain.Video;
 import team7.inplace.video.persistence.VideoRepository;
 
@@ -35,6 +36,9 @@ public class AdminPageController {
         model.addAttribute("isFirst", videoPage.isFirst());
         model.addAttribute("isLast", videoPage.isLast());
         model.addAttribute("kakaoApiKey", kakaoApiProperties.jsKey());
+
+        var categories = Category.values();
+        model.addAttribute("categories", categories);
         return "admin/video.html";
     }
 

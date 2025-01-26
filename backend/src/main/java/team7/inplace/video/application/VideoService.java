@@ -21,14 +21,15 @@ import team7.inplace.video.presentation.dto.VideoSearchParams;
 @Service
 @RequiredArgsConstructor
 public class VideoService {
+
     private final VideoReadRepository videoReadRepository;
     private final VideoRepository videoRepository;
 
     //TODO: Facade에서 호출로 변경해야함.
     @Transactional(readOnly = true)
     public List<VideoQueryResult.SimpleVideo> getVideosBySurround(
-            VideoSearchParams videoSearchParams,
-            Pageable pageable
+        VideoSearchParams videoSearchParams,
+        Pageable pageable
     ) {
         // 토큰 정보에 대한 검증
         if (AuthorizationUtil.isNotLoginUser()) {
@@ -36,13 +37,13 @@ public class VideoService {
         }
 
         var surroundVideos = videoReadRepository.findSimpleVideosInSurround(
-                Double.valueOf(videoSearchParams.topLeftLongitude()),
-                Double.valueOf(videoSearchParams.topLeftLatitude()),
-                Double.valueOf(videoSearchParams.bottomRightLongitude()),
-                Double.valueOf(videoSearchParams.bottomRightLatitude()),
-                Double.valueOf(videoSearchParams.longitude()),
-                Double.valueOf(videoSearchParams.latitude()),
-                pageable
+            Double.valueOf(videoSearchParams.topLeftLongitude()),
+            Double.valueOf(videoSearchParams.topLeftLatitude()),
+            Double.valueOf(videoSearchParams.bottomRightLongitude()),
+            Double.valueOf(videoSearchParams.bottomRightLatitude()),
+            Double.valueOf(videoSearchParams.longitude()),
+            Double.valueOf(videoSearchParams.latitude()),
+            pageable
         );
 
         return surroundVideos.getContent();
@@ -70,18 +71,18 @@ public class VideoService {
     }
 
     @Transactional(readOnly = true)
-    public Page<VideoQueryResult.SimpleVideo> getOneInfluencerVideos(Long influencerId, Pageable pageable) {
-        var videos = videoReadRepository.findSimpleVideosWithOneInfluencerId(influencerId, pageable);
-
+    public Page<VideoQueryResult.SimpleVideo> getOneInfluencerVideos(
+        Long influencerId, Pageable pageable) {
+        var videos = videoReadRepository.findSimpleVideosWithOneInfluencerId(influencerId,
+            pageable);
         return videos;
     }
 
     @Transactional
     public void createVideos(List<Create> videoCommands, Long influencerId) {
         var videos = videoCommands.stream()
-                .map(Create::toEntity)
-                .toList();
-
+            .map(Create::toEntity)
+            .toList();
         videoRepository.saveAll(videos);
     }
 
@@ -94,7 +95,7 @@ public class VideoService {
     public void updateVideoViews(List<VideoCommand.UpdateViewCount> videoCommands) {
         for (VideoCommand.UpdateViewCount videoCommand : videoCommands) {
             Video video = videoRepository.findById(videoCommand.videoId())
-                    .orElseThrow(() -> InplaceException.of(VideoErrorCode.NOT_FOUND));
+                .orElseThrow(() -> InplaceException.of(VideoErrorCode.NOT_FOUND));
             video.updateViewCount(videoCommand.viewCount());
         }
     }
@@ -102,7 +103,7 @@ public class VideoService {
     @Transactional
     public void addPlaceInfo(Long videoId, Long placeId) {
         var video = videoRepository.findById(videoId)
-                .orElseThrow(() -> InplaceException.of(VideoErrorCode.NOT_FOUND));
+            .orElseThrow(() -> InplaceException.of(VideoErrorCode.NOT_FOUND));
 
         video.addPlace(placeId);
     }
