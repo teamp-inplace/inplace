@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { RiMenuLine } from 'react-icons/ri';
@@ -35,9 +35,21 @@ export default function Header() {
   const { isAuthenticated, handleLogout } = useAuth();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const headerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
-    <HeaderContainer>
+    <HeaderContainer ref={headerRef}>
       <MobileMenuButton onClick={() => setIsMenuOpen(!isMenuOpen)}>
         <RiMenuLine size={24} color="white" />
       </MobileMenuButton>
