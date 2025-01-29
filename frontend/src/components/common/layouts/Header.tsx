@@ -186,7 +186,7 @@ const HeaderContainer = styled.header`
   justify-content: space-between;
   align-items: center;
   padding: 20px 0px;
-  height: 80px;
+  min-height: 80px;
   box-sizing: border-box;
 `;
 
@@ -226,7 +226,7 @@ const MobileNav = styled(motion.nav)<{ $isOpen: boolean }>`
   @media screen and (max-width: 768px) {
     display: flex;
     position: absolute;
-    top: 40px;
+    top: 52px;
     left: 0;
     width: 100%;
     flex-direction: column;
