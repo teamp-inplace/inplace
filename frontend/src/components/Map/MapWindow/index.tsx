@@ -235,7 +235,7 @@ export default function MapWindow({
       )}
       <Map
         center={mapCenter}
-        style={{ width: '100%', height: 'auto', aspectRatio: '1.4/1' }}
+        style={{ width: '100%', height: 'auto', aspectRatio: '1' }}
         level={4}
         onCreate={(map) => {
           mapRef.current = map;

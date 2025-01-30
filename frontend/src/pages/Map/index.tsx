@@ -114,32 +114,37 @@ export default function MapPage() {
 
   return (
     <PageContainer>
-      <Text size="l" weight="bold" variant="white">
-        지도
-      </Text>
-      <DropdownContainer>
-        <DropdownMenu
-          options={locationOptions}
-          multiLevel
-          onChange={handleLocationChange}
-          placeholder="위치"
-          type="location"
+      <Wrapper>
+        <Text size="l" weight="bold" variant="white">
+          지도
+        </Text>
+        <DropdownContainer>
+          <DropdownMenu
+            options={locationOptions}
+            multiLevel
+            onChange={handleLocationChange}
+            placeholder="위치"
+            type="location"
+          />
+          <DropdownMenu
+            options={influencerOptions}
+            onChange={handleInfluencerChange}
+            placeholder="인플루언서"
+            type="influencer"
+            defaultValue={undefined}
+          />
+        </DropdownContainer>
+        <ToggleButton
+          options={['CAFE', 'JAPANESE', 'KOREAN', 'RESTAURANT', 'WESTERN']}
+          onSelect={handleCategorySelect}
         />
-        <DropdownMenu
-          options={influencerOptions}
-          onChange={handleInfluencerChange}
-          placeholder="인플루언서"
-          type="influencer"
-          defaultValue={undefined}
+        <Chip
+          selectedLocations={selectedLocations}
+          selectedInfluencers={selectedInfluencers}
+          onClearLocation={handleClearLocation}
+          onClearInfluencer={handleClearInfluencer}
         />
-      </DropdownContainer>
-      <ToggleButton options={['CAFE', 'JAPANESE', 'KOREAN', 'RESTAURANT', 'WESTERN']} onSelect={handleCategorySelect} />
-      <Chip
-        selectedLocations={selectedLocations}
-        selectedInfluencers={selectedInfluencers}
-        onClearLocation={handleClearLocation}
-        onClearInfluencer={handleClearInfluencer}
-      />
+      </Wrapper>
       <MapWindow
         onBoundsChange={handleBoundsChange}
         onCenterChange={handleCenterChange}
@@ -184,6 +189,17 @@ const PageContainer = styled.div`
   }
 `;
 
+const Wrapper = styled.div`
+  @media screen and (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    > * {
+      width: 90%;
+    }
+  }
+`;
+
 const DropdownContainer = styled.div`
   display: flex;
   gap: 20px;
@@ -193,7 +209,7 @@ const DropdownContainer = styled.div`
     width: 90%;
     gap: 12px;
     padding-top: 12px;
-    z-index: 20;
+    z-index: 9;
   }
 `;
 
