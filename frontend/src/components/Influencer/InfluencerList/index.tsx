@@ -57,4 +57,8 @@ const GridContainer = styled.div`
     gap: 20px;
     justify-content: center;
   }
+
+  @media screen and (max-width: 400px) {
+    gap: 0.8rem;
+  }
 `;
