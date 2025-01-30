@@ -167,6 +167,7 @@ const KakaoLoginButton = styled.button`
   }
 
   @media screen and (max-width: 768px) {
+    color: black;
     height: 46px;
 
     svg {
