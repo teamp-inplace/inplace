@@ -91,7 +91,10 @@ const LayoutWrapper = styled.div`
   margin-bottom: 80px;
 
   @media screen and (max-width: 768px) {
+    width: 100%;
     margin-bottom: 60px;
+    display: flex;
+    justify-content: center;
   }
 `;
 

@@ -50,15 +50,17 @@ const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 26px;
+  width: 100%;
 
   @media screen and (max-width: 768px) {
     margin: 0 auto;
-    grid-template-columns: repeat(3, 110px);
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
     gap: 20px;
     justify-content: center;
   }
 
-  @media screen and (max-width: 400px) {
+  @media screen and (max-width: 425px) {
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.8rem;
   }
 `;
