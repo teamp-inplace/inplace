@@ -11,7 +11,7 @@ import useAuth from '@/hooks/useAuth';
 import LoginModal from '../common/modals/LoginModal';
 
 export default function VisitModal({ id, placeName, onClose }: { id: number; placeName: string; onClose: () => void }) {
-  const isAuthenticated = useAuth();
+  const { isAuthenticated } = useAuth();
   const location = useLocation();
   const [isSend, setIsSend] = useState(false);
   const { refetch } = useGetSendInfo(String(id), isSend);
