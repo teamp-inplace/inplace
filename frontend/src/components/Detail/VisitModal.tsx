@@ -55,7 +55,7 @@ export default function VisitModal({ id, placeName, onClose }: { id: number; pla
   };
   const buttonStyle = {
     fontWeight: 'bold',
-    width: isMobile ? '140px' : '170px',
+    width: isMobile ? '46%' : '170px',
     height: isMobile ? '40px' : '46px',
     fontSize: isMobile ? '16px' : '18px',
   };
