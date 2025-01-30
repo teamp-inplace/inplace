@@ -169,6 +169,7 @@ export default function MapPage() {
           onGetPlaceData={handleGetPlaceData}
           onPlaceSelect={handlePlaceSelect}
           selectedPlaceId={selectedPlaceId}
+          onScrollTop={() => isListExpanded && setIsListExpanded(false)}
         />
       </MobilePlaceSection>
     </PageContainer>

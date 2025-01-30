@@ -18,6 +18,7 @@ interface PlaceSectionProps {
   onGetPlaceData: (data: PlaceData[]) => void;
   onPlaceSelect: (placeId: number) => void;
   selectedPlaceId: number | null;
+  onScrollTop?: () => void;
 }
 
 export default function PlaceSection({
@@ -27,6 +28,7 @@ export default function PlaceSection({
   onGetPlaceData,
   onPlaceSelect,
   selectedPlaceId,
+  onScrollTop,
 }: PlaceSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null); // 무한 스크롤을 위한 ref와 observer 설정
   const previousPlacesRef = useRef<PlaceData[]>([]);
@@ -83,6 +85,18 @@ export default function PlaceSection({
     [onPlaceSelect],
   );
 
+  const handleScroll = useCallback(
+    (e: React.UIEvent<HTMLDivElement>) => {
+      const { scrollTop } = e.currentTarget;
+      if (scrollTop === 0 && onScrollTop) {
+        setTimeout(() => {
+          onScrollTop();
+        }, 300);
+      }
+    },
+    [onScrollTop],
+  );
+
   if (isLoading && !isFetchingNextPage && previousPlacesRef.current.length === 0) {
     return (
       <SectionContainer>
@@ -102,7 +116,7 @@ export default function PlaceSection({
   }
 
   return (
-    <SectionContainer ref={sectionRef}>
+    <SectionContainer ref={sectionRef} onScroll={handleScroll}>
       {filteredPlaces.length === 0 ? (
         <NoItem message="장소 정보가 없어요!" height={400} />
       ) : (
