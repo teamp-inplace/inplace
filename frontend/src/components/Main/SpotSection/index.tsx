@@ -27,7 +27,7 @@ export default function SpotSection({ items = [] }: { items: SpotData[] }) {
         <NoItem message="그곳 정보가 없어요!" height={200} />
       ) : (
         <>
-          <ArrowButton onClick={() => scrollList('left')} className="left-arrow" direction="left">
+          <ArrowButton aria-label="left_btn" onClick={() => scrollList('left')} className="left-arrow" direction="left">
             <GrPrevious size={40} />
           </ArrowButton>
           <ListContainer ref={listRef}>
@@ -44,7 +44,12 @@ export default function SpotSection({ items = [] }: { items: SpotData[] }) {
             })}
           </ListContainer>
           {items.length > 3 && (
-            <ArrowButton onClick={() => scrollList('right')} className="right-arrow" direction="right">
+            <ArrowButton
+              aria-label="right_btn"
+              onClick={() => scrollList('right')}
+              className="right-arrow"
+              direction="right"
+            >
               <GrNext size={40} />
             </ArrowButton>
           )}

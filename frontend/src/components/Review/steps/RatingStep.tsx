@@ -55,12 +55,12 @@ export default function RatingStep({ onSubmit, placeInfo }: RatingStepProps) {
       </PlaceSection>
 
       <RatingSection>
-        <RatingButton onClick={() => onSubmit(true)} buttonType="like">
+        <RatingButton aria-label="like_btn" onClick={() => onSubmit(true)} buttonType="like">
           <AiFillLike size={54} />
           <ButtonText>좋았어요</ButtonText>
         </RatingButton>
 
-        <RatingButton onClick={() => onSubmit(false)} buttonType="dislike">
+        <RatingButton aria-label="dislike_btn" onClick={() => onSubmit(false)} buttonType="dislike">
           <AiFillDislike size={54} />
           <ButtonText>아쉬워요</ButtonText>
         </RatingButton>

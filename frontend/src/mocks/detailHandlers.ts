@@ -3,7 +3,7 @@ import { BASE_URL } from '@/api/instance';
 import { getPlaceInfoPath } from '@/api/hooks/useGetPlaceInfo';
 import { getReviewPath } from '@/api/hooks/useGetReview';
 import { getSendInfoPath } from '@/api/hooks/useGetSendInfo';
-import BasicImage from '@/assets/images/basic-image.png';
+import BasicImage from '@/assets/images/basic-image.webp';
 
 let reviews = [
   {

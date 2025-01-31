@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import BasicImage from '@/assets/images/basic-image.png';
+import BasicImage from '@/assets/images/basic-image.webp';
 
 interface FallbackImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   fallbackSrc?: string;
@@ -30,4 +30,6 @@ const StyledImage = styled.img`
   height: 100%;
   object-fit: cover;
   border-radius: inherit;
+  transition: opacity 0.3s ease-in-out;
+  opacity: ${(props) => (props.loading ? '0' : '1')};
 `;

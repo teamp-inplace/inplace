@@ -8,7 +8,7 @@ import { Paragraph } from '@/components/common/typography/Paragraph';
 import useExtractYoutubeVideoId from '@/libs/youtube/useExtractYoutube';
 import { SpotData } from '@/types';
 import FallbackImage from '@/components/common/Items/FallbackImage';
-import BasicImage from '@/assets/images/basic-image.png';
+import BasicImage from '@/assets/images/basic-image.webp';
 
 interface SpotItemProps extends SpotData {
   isInfluencer?: boolean;
@@ -16,7 +16,7 @@ interface SpotItemProps extends SpotData {
 
 export default function SpotItem({ videoId, videoAlias, videoUrl, place, isInfluencer = false }: SpotItemProps) {
   const extractedVideoId = useExtractYoutubeVideoId(videoUrl || '');
-  const thumbnailUrl = videoUrl ? `https://img.youtube.com/vi/${extractedVideoId}/maxresdefault.jpg` : BasicImage;
+  const thumbnailUrl = videoUrl ? `https://img.youtube.com/vi/${extractedVideoId}/hqdefault.jpg` : BasicImage;
 
   return (
     <Wrapper to={`/detail/${place.placeId}`} $isInfluencer={isInfluencer}>
@@ -63,5 +63,7 @@ const ImageWrapper = styled.div<{ $isInfluencer?: boolean }>`
   border-radius: 6px;
   overflow: hidden;
 
-  width: ${({ $isInfluencer }) => ($isInfluencer ? '100%' : '300px')};
+  @media screen and (max-width: 768px) {
+    width: ${({ $isInfluencer }) => ($isInfluencer ? '100%' : '300px')};
+  }
 `;

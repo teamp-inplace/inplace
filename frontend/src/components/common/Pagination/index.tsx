@@ -54,15 +54,20 @@ export default function Pagination({
 
   return (
     <PaginationContainer>
-      <ArrowButton onClick={() => handlePageChange(currentPage - 1)} disabled={isFirstPage}>
+      <ArrowButton aria-label="left_btn" onClick={() => handlePageChange(currentPage - 1)} disabled={isFirstPage}>
         <IoChevronBack size={20} />
       </ArrowButton>
       {pageNumbers.map((pageNum) => (
-        <PageNumber key={pageNum} onClick={() => handlePageChange(pageNum)} $active={pageNum === currentPage}>
+        <PageNumber
+          key={pageNum}
+          aria-label={`page_number_${pageNum}`}
+          onClick={() => handlePageChange(pageNum)}
+          $active={pageNum === currentPage}
+        >
           {pageNum}
         </PageNumber>
       ))}
-      <ArrowButton onClick={() => handlePageChange(currentPage + 1)} disabled={isLastPage}>
+      <ArrowButton aria-label="right_btn" onClick={() => handlePageChange(currentPage + 1)} disabled={isLastPage}>
         <IoChevronForward size={20} />
       </ArrowButton>
     </PaginationContainer>

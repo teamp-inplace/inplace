@@ -134,10 +134,10 @@ export default function ChoicePage() {
         itemsPerPage={pageableData?.pageable.pageSize}
       />
       <ButtonWrapper>
-        <Button variant="white" style={buttonStyle} onClick={handleSkip}>
+        <Button aria-label="skip_btn" variant="white" style={buttonStyle} onClick={handleSkip}>
           건너뛰기
         </Button>
-        <Button variant="mint" style={buttonStyle} onClick={handleStart}>
+        <Button aria-label="start_btn" variant="mint" style={buttonStyle} onClick={handleStart}>
           시작하기
         </Button>
       </ButtonWrapper>

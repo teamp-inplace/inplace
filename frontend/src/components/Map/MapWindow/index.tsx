@@ -220,6 +220,7 @@ export default function MapWindow({
       {showSearchButton && (
         <ButtonContainer>
           <Button
+            aria-label="around_btn"
             onClick={handleSearchNearby}
             variant="white"
             size="small"
@@ -295,7 +296,7 @@ export default function MapWindow({
         )}
       </Map>
       <ResetButtonContainer>
-        <StyledBtn onClick={handleResetCenter} variant="white" size="small">
+        <StyledBtn aria-label="reset_btn" onClick={handleResetCenter} variant="white" size="small">
           <TbCurrentLocation size={20} />
         </StyledBtn>
       </ResetButtonContainer>

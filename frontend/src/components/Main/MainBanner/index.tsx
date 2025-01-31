@@ -64,10 +64,11 @@ export default function MainBanner({ items = [] }: { items: BannerData[] }) {
         <NoItem message="배너 정보가 없어요!" height={400} />
       ) : (
         <>
-          <PrevBtn onClick={handleBtnPrevClick} disabled={currentIndex === 0}>
+          <PrevBtn aria-label="prev_btn" onClick={handleBtnPrevClick} disabled={currentIndex === 0}>
             <GrPrevious size={40} />
           </PrevBtn>
           <NextBtn
+            aria-label="next_btn"
             onClick={handleBtnNextClick}
             disabled={currentIndex === (isMobile ? items.length - 1 : items.length - 2)}
           >

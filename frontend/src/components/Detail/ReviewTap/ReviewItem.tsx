@@ -48,7 +48,11 @@ export default function ReviewItem({
         <Paragraph size="xs" weight="normal" variant="white">
           {comment}
         </Paragraph>
-        {mine ? <DeleteBtn onClick={handleDeleteReview}>삭제</DeleteBtn> : null}
+        {mine ? (
+          <DeleteBtn aria-label="delete_btn" onClick={handleDeleteReview}>
+            삭제
+          </DeleteBtn>
+        ) : null}
       </Comment>
     </Wrapper>
   );
