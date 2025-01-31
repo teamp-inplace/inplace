@@ -1,6 +1,6 @@
-import styled from '@emotion/styled';
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import styled from 'styled-components';
 import Logo from '@/assets/images/Logo.svg';
 import Button from '../Button';
 import { Paragraph } from '../typography/Paragraph';
@@ -92,9 +92,11 @@ const TextWrapper = styled.div`
 `;
 const LogoImage = styled.img`
   height: 180px;
+  width: 150px;
 
   @media screen and (max-width: 768px) {
     height: 100px;
+    width: 100px;
   }
 `;
 

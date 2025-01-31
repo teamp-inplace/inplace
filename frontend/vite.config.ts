@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 import react from '@vitejs/plugin-react';
 
@@ -21,9 +22,13 @@ export default defineConfig(({ mode }) => {
           filesToDeleteAfterUpload: '**/*.map',
         },
       }),
+      visualizer({ open: true }),
     ],
     build: {
       minify: 'esbuild',
+      rollupOptions: {
+        treeshake: true,
+      },
       sourcemap: mode === 'production',
     },
   };
