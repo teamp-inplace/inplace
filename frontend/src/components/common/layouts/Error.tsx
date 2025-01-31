@@ -92,9 +92,11 @@ const TextWrapper = styled.div`
 `;
 const LogoImage = styled.img`
   height: 180px;
+  width: 150px;
 
   @media screen and (max-width: 768px) {
     height: 100px;
+    width: 100px;
   }
 `;
 
