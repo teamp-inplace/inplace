@@ -16,7 +16,7 @@ interface SpotItemProps extends SpotData {
 
 export default function SpotItem({ videoId, videoAlias, videoUrl, place, isInfluencer = false }: SpotItemProps) {
   const extractedVideoId = useExtractYoutubeVideoId(videoUrl || '');
-  const thumbnailUrl = videoUrl ? `https://img.youtube.com/vi/${extractedVideoId}/maxresdefault.jpg` : BasicImage;
+  const thumbnailUrl = videoUrl ? `https://img.youtube.com/vi/${extractedVideoId}/hqdefault.jpg` : BasicImage;
 
   return (
     <Wrapper to={`/detail/${place.placeId}`} $isInfluencer={isInfluencer}>

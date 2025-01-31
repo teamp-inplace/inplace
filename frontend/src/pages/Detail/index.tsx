@@ -60,7 +60,7 @@ export default function DetailPage() {
               return (
                 <ImageWrapper key={`${id}-${videoId}-${url}`}>
                   <FallbackImage
-                    src={url ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : BasicThumb}
+                    src={url ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : BasicThumb}
                     alt="장소 사진"
                   />
                 </ImageWrapper>
