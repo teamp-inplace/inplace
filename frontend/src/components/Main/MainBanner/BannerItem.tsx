@@ -5,7 +5,7 @@ import { BannerData } from '@/types';
 export default function BannerItem({ id, imageUrl, isFirst }: BannerData & { isFirst: boolean }) {
   return (
     <Wrapper $isFirst={isFirst}>
-      <Image src={imageUrl} alt={`배너-${id}번`} loading="eager" {...{ fetchpriority: 'high' }} />
+      <Image src={imageUrl} alt={`배너-${id}번`} loading="eager" />
     </Wrapper>
   );
 }
