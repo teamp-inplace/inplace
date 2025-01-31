@@ -60,7 +60,7 @@ export default function Pagination({
       {pageNumbers.map((pageNum) => (
         <PageNumber
           key={pageNum}
-          aria-label="page_number"
+          aria-label={`page_number_${pageNum}`}
           onClick={() => handlePageChange(pageNum)}
           $active={pageNum === currentPage}
         >
