@@ -54,6 +54,7 @@ export default function VisitModal({ id, placeName, onClose }: { id: number; pla
           <BtnContainer $hasMessage={!!message}>
             {message ? (
               <Button
+                aria-label="complete_btn"
                 variant="kakao"
                 style={{ fontWeight: 'bold', width: '170px', height: '46px', fontSize: '18px' }}
                 onClick={() => onClose()}
@@ -63,6 +64,7 @@ export default function VisitModal({ id, placeName, onClose }: { id: number; pla
             ) : (
               <>
                 <Button
+                  aria-label="cancel_btn"
                   variant="blackOutline"
                   style={{ fontWeight: 'bold', width: '170px', height: '46px', fontSize: '18px' }}
                   onClick={() => onClose()}
@@ -70,6 +72,7 @@ export default function VisitModal({ id, placeName, onClose }: { id: number; pla
                   취소
                 </Button>
                 <Button
+                  aria-label="check_btn"
                   variant="kakao"
                   style={{ fontWeight: 'bold', width: '170px', height: '46px', fontSize: '18px' }}
                   onClick={handleSendInfo}

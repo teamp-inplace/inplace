@@ -76,7 +76,9 @@ export default function BaseLayout({
           {SubText}
         </Paragraph>
         {type === 'influencer' && showMoreButton ? (
-          <MoreBtn onClick={() => navigate('/influencer')}>더보기</MoreBtn>
+          <MoreBtn aria-label="more_btn" onClick={() => navigate('/influencer')}>
+            더보기
+          </MoreBtn>
         ) : null}
       </TitleContainer>
       {renderSection()}

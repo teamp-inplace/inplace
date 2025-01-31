@@ -57,14 +57,16 @@ export default function LoginModal({
         ReactDOM.createPortal(
           <ModalOverlay>
             <ModalContainer>
-              <CloseButton onClick={closeModal}>X</CloseButton>
+              <CloseButton aria-label="close_btn" onClick={closeModal}>
+                X
+              </CloseButton>
               <TitleWrapper>
                 <LogoImage src={Logo} alt="인플레이스 로고" />
                 <Paragraph size="l" weight="bold">
                   인플레이스
                 </Paragraph>
               </TitleWrapper>
-              <KakaoLoginButton onClick={handleKakaoLogin}>
+              <KakaoLoginButton aria-label="kakao_login_btn" onClick={handleKakaoLogin}>
                 <FaComment />
                 <Text size="s" weight="normal">
                   카카오 로그인

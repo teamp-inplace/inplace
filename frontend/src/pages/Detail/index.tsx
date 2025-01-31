@@ -71,10 +71,14 @@ export default function DetailPage() {
         <GradientOverlay />
         {infoData?.videoUrl && infoData.videoUrl.length > 1 && (
           <>
-            <PrevBtn onClick={handleBtnPrevClick} disabled={currentVideoIndex === 0}>
+            <PrevBtn aria-label="prev_btn" onClick={handleBtnPrevClick} disabled={currentVideoIndex === 0}>
               <GrPrevious size={40} color="white" />
             </PrevBtn>
-            <NextBtn onClick={handleBtnNextClick} disabled={currentVideoIndex === infoData.videoUrl.length - 1}>
+            <NextBtn
+              aria-label="next_btn"
+              onClick={handleBtnNextClick}
+              disabled={currentVideoIndex === infoData.videoUrl.length - 1}
+            >
               <GrNext size={40} color="white" />
             </NextBtn>
           </>
@@ -85,6 +89,7 @@ export default function DetailPage() {
           </Text>
           <ButtonWrapper>
             <Button
+              aria-label="visit_btn"
               variant="visit"
               style={{
                 width: '120px',
@@ -105,10 +110,10 @@ export default function DetailPage() {
         </TitleContainer>
       </ImageContainer>
       <TapContainer>
-        <Tap $active={activeTab === 'info'} onClick={() => setActiveTab('info')}>
+        <Tap aria-label="info_tap" $active={activeTab === 'info'} onClick={() => setActiveTab('info')}>
           정보
         </Tap>
-        <Tap $active={activeTab === 'review'} onClick={() => setActiveTab('review')}>
+        <Tap aria-label="review_tap" $active={activeTab === 'review'} onClick={() => setActiveTab('review')}>
           리뷰
         </Tap>
       </TapContainer>

@@ -78,8 +78,12 @@ export default function CommentStep({ isLiked, onBack, onSubmit, placeInfo }: Co
       <CharCount>{content.length} / 200</CharCount>
 
       <ButtonSection>
-        <CancelButton onClick={onBack}>취소</CancelButton>
-        <SubmitButton onClick={() => onSubmit(content)}>등록</SubmitButton>
+        <CancelButton aria-label="cancel_btn" onClick={onBack}>
+          취소
+        </CancelButton>
+        <SubmitButton aria-label="submit_btn" onClick={() => onSubmit(content)}>
+          등록
+        </SubmitButton>
       </ButtonSection>
     </StepContainer>
   );

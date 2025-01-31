@@ -52,7 +52,9 @@ export default function InfoTap({ facilityInfo, openHour, menuInfos, longitude, 
           {menuInfos.menuImgUrls && <MenuModal images={menuInfos.menuImgUrls} />}
           <MenuList lists={menuInfos.menuList.slice(0, moreMenu ? menuInfos.menuList.length : 4)} />
           {menuInfos.menuList.length > 4 && (
-            <MoreMenuBtn onClick={() => setMoreMenu(!moreMenu)}>{moreMenu ? '메뉴 접기' : '메뉴 더보기'}</MoreMenuBtn>
+            <MoreMenuBtn aria-label="more_menu_btn" onClick={() => setMoreMenu(!moreMenu)}>
+              {moreMenu ? '메뉴 접기' : '메뉴 더보기'}
+            </MoreMenuBtn>
           )}
         </MenuContainer>
       </MenuWrapper>

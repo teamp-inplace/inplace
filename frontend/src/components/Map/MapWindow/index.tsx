@@ -198,6 +198,7 @@ export default function MapWindow({
       {showSearchButton && (
         <ButtonContainer>
           <Button
+            aria-label="around_btn"
             onClick={handleSearchNearby}
             variant="white"
             size="small"
@@ -276,6 +277,7 @@ export default function MapWindow({
       </Map>
       <ResetButtonContainer>
         <Button
+          aria-label="reset_btn"
           onClick={handleResetCenter}
           variant="white"
           size="small"

@@ -82,7 +82,11 @@ export default function InfluencerInfoPage() {
             {influencerInfoData.influencerJob}
           </Text>
         </TextInfo>
-        <LikeIcon role="button" onClick={(e: React.MouseEvent<HTMLDivElement>) => handleClickLike(e)}>
+        <LikeIcon
+          aria-label="like_btn"
+          role="button"
+          onClick={(e: React.MouseEvent<HTMLDivElement>) => handleClickLike(e)}
+        >
           {isLike ? (
             <PiHeartFill color="#fe7373" size={32} data-testid="PiHeartFill" />
           ) : (
@@ -91,10 +95,10 @@ export default function InfluencerInfoPage() {
         </LikeIcon>
       </InfluencerInfoSection>
       <TapContainer>
-        <Tap $active={activeTab === 'video'} onClick={() => setActiveTab('video')}>
+        <Tap aria-label="spot_tap" $active={activeTab === 'video'} onClick={() => setActiveTab('video')}>
           쿨한 그곳
         </Tap>
-        <Tap $active={activeTab === 'map'} onClick={() => setActiveTab('map')}>
+        <Tap aria-label="place_tap" $active={activeTab === 'map'} onClick={() => setActiveTab('map')}>
           쿨 플레이스
         </Tap>
       </TapContainer>

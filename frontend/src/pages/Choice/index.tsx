@@ -115,6 +115,7 @@ export default function ChoicePage() {
       />
       <ButtonWrapper>
         <Button
+          aria-label="skip_btn"
           variant="white"
           style={{ fontWeight: 'bold', width: '170px', height: '46px', fontSize: '18px' }}
           onClick={handleSkip}
@@ -122,6 +123,7 @@ export default function ChoicePage() {
           건너뛰기
         </Button>
         <Button
+          aria-label="start_btn"
           variant="mint"
           style={{ fontWeight: 'bold', width: '170px', height: '46px', fontSize: '18px' }}
           onClick={handleStart}

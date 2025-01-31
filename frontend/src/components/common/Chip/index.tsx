@@ -36,7 +36,7 @@ export default function Chip({ selectedLocations, selectedInfluencers, onClearLo
           <Text size="xs" weight="bold" variant="#36617f">
             {location.sub ? `${location.main} > ${location.sub}` : location.main}
           </Text>
-          <ClearButton onClick={() => onClearLocation(location)}>
+          <ClearButton aria-label="loca-clear_btn" onClick={() => onClearLocation(location)}>
             <IoClose size={14} />
           </ClearButton>
         </FilterChip>
@@ -47,7 +47,7 @@ export default function Chip({ selectedLocations, selectedInfluencers, onClearLo
           <Text size="xs" weight="bold" variant="#36617f">
             {influencer}
           </Text>
-          <ClearButton onClick={() => onClearInfluencer(influencer)}>
+          <ClearButton aria-label="infl-clear_btn" onClick={() => onClearInfluencer(influencer)}>
             <IoClose size={14} />
           </ClearButton>
         </FilterChip>

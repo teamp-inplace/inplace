@@ -68,7 +68,11 @@ export default function InfluencerItem({
     <>
       <Wrapper to={`/influencer/${influencerId}`}>
         <ImageContainer>
-          <LikeIcon role="button" onClick={(e: React.MouseEvent<HTMLDivElement>) => handleClickLike(e)}>
+          <LikeIcon
+            role="button"
+            aria-label="like_btn"
+            onClick={(e: React.MouseEvent<HTMLDivElement>) => handleClickLike(e)}
+          >
             {isLike ? (
               <PiHeartFill color="#fe7373" size={32} data-testid="PiHeartFill" />
             ) : (

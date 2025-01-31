@@ -56,7 +56,7 @@ export default function Error({ error, resetErrorBoundary }: FallbackProps) {
           {message.description}
         </Paragraph>
       </TextWrapper>
-      <StyledButton variant="outline" size="large" onClick={handleRetry}>
+      <StyledButton aria-label="retry-btn" variant="outline" size="large" onClick={handleRetry}>
         다시 시도하기
       </StyledButton>
     </Wrapper>

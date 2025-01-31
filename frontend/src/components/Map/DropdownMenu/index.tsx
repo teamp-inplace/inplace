@@ -141,7 +141,7 @@ export default function DropdownMenu({
 
   return (
     <DropdownContainer ref={ref} type={type}>
-      <DropdownButton $isOpen={isOpen} onClick={() => setIsOpen(!isOpen)}>
+      <DropdownButton aria-label="dropdown_btn" $isOpen={isOpen} onClick={() => setIsOpen(!isOpen)}>
         {displayValue}
         {isOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
       </DropdownButton>
