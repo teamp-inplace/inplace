@@ -23,6 +23,7 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     build: {
+      minify: 'esbuild',
       sourcemap: mode === 'production',
     },
   };
