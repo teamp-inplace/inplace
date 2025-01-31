@@ -110,6 +110,13 @@ const PlaceCard = styled.div<{ $isSelected: boolean }>`
   &:hover {
     background-color: #1b1a1a;
   }
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    height: 100px;
+    gap: 12px;
+    padding: 8px;
+  }
 `;
 
 const ImageContainer = styled.div`
@@ -119,6 +126,7 @@ const ImageContainer = styled.div`
   border-radius: 30px;
 
   @media screen and (max-width: 768px) {
+    width: 25%;
     border-radius: 12px;
   }
 `;
@@ -133,10 +141,19 @@ const CardContent = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  @media screen and (max-width: 768px) {
+    width: 65%;
+    gap: 4px;
+  }
 `;
 
 const InfluencerName = styled.div`
   padding-top: 6px;
+
+  @media screen and (max-width: 768px) {
+    padding-top: 4px;
+  }
 `;
 
 const LikeIcon = styled.div`
@@ -147,4 +164,16 @@ const LikeIcon = styled.div`
   top: 20px;
   z-index: 100;
   cursor: pointer;
+
+  @media screen and (max-width: 768px) {
+    width: 24px;
+    height: 24px;
+    right: 8px;
+    top: 16px;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
 `;

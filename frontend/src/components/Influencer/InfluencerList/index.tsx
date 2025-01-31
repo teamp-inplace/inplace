@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import InfluencerItem from '@/components/common/Items/InfluencerItem';
 import { InfluencerData } from '@/types';
@@ -10,11 +11,25 @@ interface InfluencerListProps {
 }
 
 export default function InfluencerList({ items, useBackCard = true, useNav = true }: InfluencerListProps) {
-  return items.length === 0 ? (
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const displayItems = isMobile ? items.slice(0, 9) : items;
+
+  return displayItems.length === 0 ? (
     <NoItem message="인플루언서 정보가 없어요!" alignItems="center" />
   ) : (
     <GridContainer>
-      {items.map((influencer) => {
+      {displayItems.map((influencer) => {
         return (
           <InfluencerItem
             key={influencer.influencerId}
@@ -35,4 +50,17 @@ const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 26px;
+  width: 100%;
+
+  @media screen and (max-width: 768px) {
+    margin: 0 auto;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 20px;
+    justify-content: center;
+  }
+
+  @media screen and (max-width: 425px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+  }
 `;

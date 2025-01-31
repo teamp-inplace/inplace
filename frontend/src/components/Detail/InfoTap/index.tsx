@@ -17,7 +17,7 @@ type Props = {
   menuInfos: {
     menuImgUrls: string[];
     menuList: Menu[];
-    timeExp: Date;
+    menuUpdatedAt: Date;
   };
   longitude: string;
   latitude: string;
@@ -45,7 +45,7 @@ export default function InfoTap({ facilityInfo, openHour, menuInfos, longitude, 
             메뉴
           </Text>
           <Text size="xxs" weight="normal" variant="grey">
-            업데이트 {new Date(menuInfos.timeExp).toLocaleDateString()}
+            업데이트 {new Date(menuInfos.menuUpdatedAt).toLocaleDateString()}
           </Text>
         </TitleContainer>
         <MenuContainer>
