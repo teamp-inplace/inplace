@@ -6,7 +6,7 @@ import { GrPowerCycle } from 'react-icons/gr';
 import Button from '@/components/common/Button';
 import { LocationData, MarkerData, MarkerInfo, PlaceData } from '@/types';
 import InfoWindow from './InfoWindow';
-import BasicImage from '@/assets/images/basic-image.png';
+import BasicImage from '@/assets/images/basic-image.webp';
 import { useGetMarkerInfo } from '@/api/hooks/useGetMarkerInfo';
 
 interface MapWindowProps {

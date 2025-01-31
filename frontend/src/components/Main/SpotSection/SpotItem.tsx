@@ -8,7 +8,7 @@ import { Paragraph } from '@/components/common/typography/Paragraph';
 import useExtractYoutubeVideoId from '@/libs/youtube/useExtractYoutube';
 import { SpotData } from '@/types';
 import FallbackImage from '@/components/common/Items/FallbackImage';
-import BasicImage from '@/assets/images/basic-image.png';
+import BasicImage from '@/assets/images/basic-image.webp';
 
 interface SpotItemProps extends SpotData {
   isInfluencer?: boolean;

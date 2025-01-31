@@ -7,7 +7,7 @@ import { MdLocationOn } from 'react-icons/md';
 import { useCallback, useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Paragraph } from '@/components/common/typography/Paragraph';
-import backCard from '@/assets/images/back-card.png';
+import backCard from '@/assets/images/back-card.webp';
 import { InfluencerData } from '@/types';
 import { usePostInfluencerLike } from '@/api/hooks/usePostInfluencerLike';
 import useAuth from '@/hooks/useAuth';
