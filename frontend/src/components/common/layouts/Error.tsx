@@ -1,6 +1,6 @@
-import styled from '@emotion/styled';
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import styled from 'styled-components';
 import Logo from '@/assets/images/Logo.svg';
 import Button from '../Button';
 import { Paragraph } from '../typography/Paragraph';
