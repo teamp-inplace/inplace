@@ -167,7 +167,7 @@ const SearchInputWrapper = styled.div<{ $isOpen: boolean }>`
 `;
 
 const SearchInput = styled.input`
-  font-size: 14px;
+  font-size: 16px;
   flex: 1;
   color: #ffffff;
   background: transparent;

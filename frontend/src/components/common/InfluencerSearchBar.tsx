@@ -42,7 +42,7 @@ const SearchInputWrapper = styled.div`
 `;
 
 const SearchInput = styled.input`
-  font-size: 14px;
+  font-size: 16px;
   flex: 1;
   color: #ffffff;
   background: transparent;
