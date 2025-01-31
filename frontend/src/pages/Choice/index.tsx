@@ -29,6 +29,19 @@ export default function ChoicePage() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  useEffect(() => {
+    const isFirstUser = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('is_first_user='))
+      ?.split('=')[1];
+
+    if (isFirstUser !== 'true') {
+      navigate('/', { replace: true });
+      return;
+    }
+    document.cookie = 'is_first_user=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=.inplace.my; Secure';
+  }, [navigate]);
+
   const debouncedInputValue = useDebounce(inputValue, 300);
 
   const { data: allInfluencersData } = useGetAllInfluencers({
