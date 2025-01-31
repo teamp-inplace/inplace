@@ -50,7 +50,7 @@ export default function Header() {
 
   return (
     <HeaderContainer ref={headerRef}>
-      <MobileMenuButton onClick={() => setIsMenuOpen(!isMenuOpen)}>
+      <MobileMenuButton aria-label="side_bar" onClick={() => setIsMenuOpen(!isMenuOpen)}>
         <RiMenuLine size={24} color="white" />
       </MobileMenuButton>
       <LogoLink to="/">

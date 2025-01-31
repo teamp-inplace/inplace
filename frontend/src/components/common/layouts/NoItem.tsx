@@ -42,9 +42,11 @@ const TextWrapper = styled.div<{ alignItems?: string }>`
 `;
 const LogoImage = styled.img`
   height: 80px;
+  width: 70px;
 
   @media screen and (max-width: 768px) {
     height: 60px;
+    width: 50px;
   }
 `;
 export default NoItem;

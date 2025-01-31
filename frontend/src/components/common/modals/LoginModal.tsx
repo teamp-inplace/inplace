@@ -131,9 +131,11 @@ const CloseButton = styled.button`
 
 const LogoImage = styled.img`
   height: 100px;
+  width: 90px;
 
   @media screen and (max-width: 768px) {
     height: 80px;
+    width: 80px;
   }
 `;
 

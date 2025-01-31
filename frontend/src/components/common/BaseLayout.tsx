@@ -116,7 +116,7 @@ const MoreBtn = styled.button`
   cursor: pointer;
 
   @media screen and (max-width: 768px) {
-    font-size: 10px;
+    font-size: 12px;
     text-align: end;
     padding-block: 0;
     padding-inline: 0;

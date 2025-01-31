@@ -26,7 +26,7 @@ export default function Pagination({
 
   const pageNumbers = useMemo(() => {
     if (totalPages <= 5) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1);
+      return [...new Array(totalPages)].map((_, i) => i + 1);
     }
 
     let start = Math.max(currentPage - 2, 1);
@@ -36,7 +36,7 @@ export default function Pagination({
       start = Math.max(totalPages - 4, 1);
     }
 
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+    return [...new Array(end - start + 1)].map((_, i) => start + i);
   }, [currentPage, totalPages]);
 
   const isFirstPage = currentPage === 1;

@@ -271,7 +271,7 @@ export const detailHandlers = [
   }),
   rest.delete(`${BASE_URL}/reviews/:id`, (req, res, ctx) => {
     const { id } = req.params;
-    const normalizedId = Array.isArray(id) ? id[0] : id;
+    const normalizedId = id instanceof Array ? id[0] : id;
     reviews = reviews.filter((review) => review.reviewId !== parseInt(normalizedId, 10));
     return res(ctx.status(200), ctx.json({ message: '리뷰가 삭제되었습니다.' }));
   }),

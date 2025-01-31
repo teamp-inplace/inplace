@@ -72,7 +72,7 @@ export default function ChoicePage() {
     try {
       if (selectedInfluencers.size > 0) {
         await postMultipleLikes({
-          influencerIds: Array.from(selectedInfluencers),
+          influencerIds: [...selectedInfluencers],
           likes: true,
         });
       }
