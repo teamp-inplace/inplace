@@ -296,13 +296,7 @@ export default function MapWindow({
         )}
       </Map>
       <ResetButtonContainer>
-        <Button
-          aria-label="reset_btn"
-          onClick={handleResetCenter}
-          variant="white"
-          size="small"
-          style={{ width: '40px', height: '40px', boxShadow: '1px 1px 2px #707070' }}
-        >
+        <StyledBtn aria-label="reset_btn" onClick={handleResetCenter} variant="white" size="small">
           <TbCurrentLocation size={20} />
         </StyledBtn>
       </ResetButtonContainer>
