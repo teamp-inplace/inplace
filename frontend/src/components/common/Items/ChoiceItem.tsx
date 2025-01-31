@@ -66,12 +66,18 @@ export default function ChoiceItem({
 
 const Wrapper = styled.div`
   width: 170px;
-  height: 278px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  line-height: 30px;
+  text-decoration: none;
+  gap: 10px;
+
+  @media screen and (max-width: 768px) {
+    height: 100%;
+    aspect-ratio: 1.2 / 2;
+    width: auto;
+  }
 `;
 
 const ImageContainer = styled.div`
@@ -80,7 +86,11 @@ const ImageContainer = styled.div`
   position: relative;
   border-radius: 6px;
   overflow: hidden;
-  margin-bottom: auto;
+  margin-bottom: 4px;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const LikeIcon = styled.div`
@@ -91,4 +101,13 @@ const LikeIcon = styled.div`
   top: 12px;
   z-index: 100;
   cursor: pointer;
+
+  @media screen and (max-width: 768px) {
+    top: 8px;
+    right: 6px;
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
 `;

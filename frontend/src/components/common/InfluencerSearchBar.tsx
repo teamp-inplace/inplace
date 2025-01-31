@@ -29,6 +29,11 @@ export default function InfluencerSearchBar({
 const SearchBarContainer = styled.div`
   width: 100%;
   height: 44px;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+    height: 36px;
+  }
 `;
 
 const SearchInputWrapper = styled.div`

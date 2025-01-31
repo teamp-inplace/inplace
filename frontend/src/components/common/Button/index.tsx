@@ -18,17 +18,26 @@ const baseButtonStyle = {
   cursor: 'pointer',
   transition: 'background-color 200ms',
   border: 'none',
+  whiteSpace: 'nowrap',
 };
 
 const sizeStyles = (size: Props['size'] = 'responsive') => {
   const largeStyle = {
     height: '60px',
     fontSize: '22px',
+    '@media screen and (max-width: 768px)': {
+      height: '46px',
+      fontSize: '18px',
+    },
   };
 
   const smallStyle = {
-    height: '46px',
-    fontSize: '18px',
+    height: '36px',
+    fontSize: '16px',
+    '@media screen and (max-width: 768px)': {
+      height: '32px',
+      fontSize: '14px',
+    },
   };
 
   if (size === 'large') {

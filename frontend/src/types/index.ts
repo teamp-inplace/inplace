@@ -95,7 +95,7 @@ export type PlaceInfo = {
   menuInfos: {
     menuImgUrls: string[];
     menuList: Menu[];
-    timeExp: Date;
+    menuUpdatedAt: Date;
   };
   openHour: OpenHourData;
   placeLikes: PlaceLikes;

@@ -2,7 +2,7 @@ import { FcInfo } from 'react-icons/fc';
 
 import styled from 'styled-components';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Button from '@/components/common/Button';
 import { Paragraph } from '@/components/common/typography/Paragraph';
@@ -11,12 +11,24 @@ import useAuth from '@/hooks/useAuth';
 import LoginModal from '../common/modals/LoginModal';
 
 export default function VisitModal({ id, placeName, onClose }: { id: number; placeName: string; onClose: () => void }) {
-  const isAuthenticated = useAuth();
+  const { isAuthenticated } = useAuth();
   const location = useLocation();
   const [isSend, setIsSend] = useState(false);
   const { refetch } = useGetSendInfo(String(id), isSend);
   const [message, setMessage] = useState<string>('');
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleModalClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
@@ -40,6 +52,12 @@ export default function VisitModal({ id, placeName, onClose }: { id: number; pla
     } finally {
       setIsSend(false);
     }
+  };
+  const buttonStyle = {
+    fontWeight: 'bold',
+    width: isMobile ? '46%' : '170px',
+    height: isMobile ? '40px' : '46px',
+    fontSize: isMobile ? '16px' : '18px',
   };
   return (
     <>
@@ -114,6 +132,12 @@ const Wrapper = styled.div`
   text-align: center;
   align-items: center;
   gap: 60px;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+    height: 450px;
+    gap: 50px;
+  }
 `;
 const DescriptionSection = styled.div`
   display: flex;
@@ -125,9 +149,22 @@ const DescriptionSection = styled.div`
     line-height: 180%;
     white-space: pre-line;
   }
+
+  @media screen and (max-width: 768px) {
+    svg {
+      width: 130px;
+      height: 130px;
+    }
+    p {
+      font-size: 14px;
+    }
+  }
 `;
 const BtnContainer = styled.div<{ $hasMessage: boolean }>`
   display: flex;
   justify-content: ${({ $hasMessage }) => ($hasMessage ? 'center' : 'space-between')};
   width: 382px;
+  @media screen and (max-width: 768px) {
+    width: 80%;
+  }
 `;

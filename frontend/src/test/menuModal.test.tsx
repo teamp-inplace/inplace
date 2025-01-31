@@ -37,7 +37,7 @@ test('메뉴 이미지 클릭시 모달창이 뜨는지 확인', async () => {
         description: '국내산 돼지 안심을 료코만의 방식으로 숙성 및 조리하여 육즙과 부드러움의 특징을 살린 메뉴',
       },
     ],
-    timeExp: new Date('2024-10-01T12:00:00Z'),
+    menuUpdatedAt: new Date('2024-10-01T12:00:00Z'),
   };
   const mockLongitude = '126.570667';
   const mockLatitude = '33.450701';

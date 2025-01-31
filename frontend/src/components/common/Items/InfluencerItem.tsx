@@ -115,7 +115,9 @@ const Wrapper = styled(Link)`
   gap: 10px;
 
   @media screen and (max-width: 768px) {
-    width: 112px;
+    height: 100%;
+    aspect-ratio: 1.2 / 2;
+    width: auto;
   }
 `;
 
@@ -139,7 +141,6 @@ const ImageContainer = styled.div`
 
   @media screen and (max-width: 768px) {
     width: 100%;
-    height: 140px;
   }
 `;
 

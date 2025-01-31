@@ -188,7 +188,7 @@ export default function InfluencerMapWindow({
             lat: 36.2683,
             lng: 127.6358,
           }}
-          style={{ width: '100%', height: 'auto', aspectRatio: '1.4/1' }}
+          style={{ width: '100%', height: 'auto', aspectRatio: isMobile ? '1' : '1.4/1' }}
           level={14}
           onCreate={(map) => {
             mapRef.current = map;

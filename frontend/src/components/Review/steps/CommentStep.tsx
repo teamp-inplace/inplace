@@ -107,7 +107,7 @@ const StepContainer = styled.div`
 `;
 
 const TitleSection = styled.div`
-  margin-top: 30%;
+  margin-top: 6%;
 `;
 
 const TextWrapper = styled.div`

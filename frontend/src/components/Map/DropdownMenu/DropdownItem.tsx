@@ -27,4 +27,9 @@ const DropdownItems = styled.div<{ type: 'location' | 'influencer'; $isSelected?
   &:hover {
     background-color: ${(props) => (props.$isSelected ? '#d1e5ff' : '#f0f0f0')};
   }
+
+  @media screen and (max-width: 768px) {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
 `;

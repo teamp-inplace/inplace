@@ -11,12 +11,23 @@ import useDebounce from '@/hooks/useDebounce';
 export default function InfluencerPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [inputValue, setInputValue] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const debouncedInputValue = useDebounce(inputValue, 300);
 
   const { data: allInfluencersData } = useGetAllInfluencers({
     page: currentPage - 1,
-    size: 10,
+    size: isMobile ? 9 : 10,
   });
 
   const { data: filteredData } = useGetSearchInfluencers({
@@ -37,9 +48,11 @@ export default function InfluencerPage() {
 
   return (
     <PageContainer>
-      <Text size="l" weight="bold" variant="white">
-        인플루언서
-      </Text>
+      <Title>
+        <Text size="l" weight="bold" variant="white">
+          인플루언서
+        </Text>
+      </Title>
       <InfluencerSearchBar inputValue={inputValue} setInputValue={setInputValue} />
       <LayoutWrapper>
         <BaseLayout
@@ -66,8 +79,25 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    gap: 20px;
+    align-items: center;
+  }
 `;
 
 const LayoutWrapper = styled.div`
   margin-bottom: 80px;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    margin-bottom: 60px;
+    display: flex;
+    justify-content: center;
+  }
+`;
+
+const Title = styled.div`
+  width: 90%;
 `;

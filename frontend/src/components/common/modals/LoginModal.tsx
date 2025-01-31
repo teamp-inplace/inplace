@@ -105,6 +105,12 @@ const ModalContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 100px;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+    height: 470px;
+    gap: 90px;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -117,17 +123,25 @@ const CloseButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
+
+  @media screen and (max-width: 768px) {
+    font-size: 28px;
+  }
 `;
 
 const LogoImage = styled.img`
   height: 100px;
+
+  @media screen and (max-width: 768px) {
+    height: 80px;
+  }
 `;
 
 const TitleWrapper = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 `;
 
 const KakaoLoginButton = styled.button`
@@ -152,5 +166,15 @@ const KakaoLoginButton = styled.button`
   span {
     flex-grow: 1;
     text-align: center;
+  }
+
+  @media screen and (max-width: 768px) {
+    color: black;
+    height: 46px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
   }
 `;

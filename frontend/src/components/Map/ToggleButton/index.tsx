@@ -56,6 +56,12 @@ const ToggleButtonContainer = styled.div`
   display: flex;
   gap: 20px;
   margin: 14px 0;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
 `;
 
 const Button = styled.button<{ $isActive: boolean }>`
@@ -67,8 +73,14 @@ const Button = styled.button<{ $isActive: boolean }>`
   border-radius: 18px;
   cursor: pointer;
   transition: background-color 0.2s;
+  white-space: nowrap;
   &:hover {
     background: ${(props) => (props.$isActive ? '#DBFBFF' : '#F0F0F0')};
+  }
+
+  @media screen and (max-width: 768px) {
+    padding: 0 44px;
+    height: 34px;
   }
 `;
 
@@ -80,18 +92,32 @@ const ButtonText = styled.span<{ $isActive: boolean }>`
   font-size: 16px;
   color: ${(props) => (props.$isActive ? '#004BFE' : '#202020')};
   ${(props) => (props.$isActive ? 'left: 20%; right: 36%;' : 'left: 0px; right: 0px; text-align: center;')}
+
+  @media screen and (max-width: 768px) {
+    font-size: 14px;
+  }
 `;
 
 const CheckIconWrapper = styled.div`
   position: absolute;
-  left: 66%;
-  right: 6%;
-  top: 20%;
-  bottom: 22%;
+  width: 16px;
+  height: 16px;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   background: #004cff;
   border: 2px solid #ffffff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media screen and (max-width: 768px) {
+    width: 14px;
+    height: 14px;
+    svg {
+      width: 8px;
+      height: 8px;
+    }
+  }
 `;

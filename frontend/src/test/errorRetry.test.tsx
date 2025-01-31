@@ -79,7 +79,7 @@ describe('세부페이지 ErrorBoundary 테스트', () => {
             periodList: [],
             offdayList: [],
           },
-          menuInfos: { menuImgUrls: [], menuList: [], timeExp: new Date() },
+          menuInfos: { menuImgUrls: [], menuList: [], menuUpdatedAt: new Date() },
           longitude: '126.978',
           latitude: '37.5665',
           placeLikes: {
