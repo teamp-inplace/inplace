@@ -70,17 +70,34 @@ const FooterInfo = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    gap: 10px;
+  }
 `;
 
 const CompanyInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+
+    & > *:last-child {
+      display: none;
+    }
+  }
 `;
 
 const SocialLinks = styled.div`
   display: flex;
   gap: 20px;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
 `;
 
 const SocialNavItem = styled.a`

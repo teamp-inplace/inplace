@@ -81,6 +81,7 @@ const ListContainer = styled.div`
 
   @media screen and (max-width: 768px) {
     gap: 18px;
+    height: 190px;
   }
 `;
 const ArrowButton = styled.button<{ direction: 'left' | 'right' }>`

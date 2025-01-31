@@ -104,7 +104,5 @@ const StyledButton = styled(Button)`
   @media screen and (max-width: 768px) {
     width: fit-content;
     padding: 20px;
-    height: 46px;
-    font-size: 18px;
   }
 `;

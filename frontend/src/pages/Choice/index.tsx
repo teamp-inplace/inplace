@@ -17,6 +17,17 @@ export default function ChoicePage() {
   const [selectedInfluencers, setSelectedInfluencers] = useState<Set<number>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [inputValue, setInputValue] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const isFirstUser = document.cookie
@@ -35,7 +46,7 @@ export default function ChoicePage() {
 
   const { data: allInfluencersData } = useGetAllInfluencers({
     page: currentPage - 1,
-    size: 10,
+    size: isMobile ? 9 : 10,
   });
 
   const { data: filteredData } = useGetSearchInfluencers({
@@ -84,15 +95,24 @@ export default function ChoicePage() {
     });
   };
 
+  const buttonStyle = {
+    fontWeight: 'bold',
+    width: isMobile ? '140px' : '170px',
+    height: isMobile ? '40px' : '46px',
+    fontSize: isMobile ? '16px' : '18px',
+  };
+
   return (
     <PageContainer>
-      <Text size="l" weight="bold" variant="white">
-        관심 있는{' '}
-        <Text size="28px" weight="bold" variant="mint">
-          인플루언서
+      <Title>
+        <Text size="l" weight="bold" variant="white">
+          관심 있는{' '}
+          <Text size="ll" weight="bold" variant="mint">
+            인플루언서
+          </Text>
+          를 선택하세요!
         </Text>
-        를 선택하세요!
-      </Text>
+      </Title>
       <InfluencerSearchBar inputValue={inputValue} setInputValue={setInputValue} />
       <LayoutWrapper>
         <BaseLayout
@@ -114,18 +134,10 @@ export default function ChoicePage() {
         itemsPerPage={pageableData?.pageable.pageSize}
       />
       <ButtonWrapper>
-        <Button
-          variant="white"
-          style={{ fontWeight: 'bold', width: '170px', height: '46px', fontSize: '18px' }}
-          onClick={handleSkip}
-        >
+        <Button variant="white" style={buttonStyle} onClick={handleSkip}>
           건너뛰기
         </Button>
-        <Button
-          variant="mint"
-          style={{ fontWeight: 'bold', width: '170px', height: '46px', fontSize: '18px' }}
-          onClick={handleStart}
-        >
+        <Button variant="mint" style={buttonStyle} onClick={handleStart}>
           시작하기
         </Button>
       </ButtonWrapper>
@@ -138,10 +150,23 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    gap: 20px;
+    align-items: center;
+  }
 `;
 
 const LayoutWrapper = styled.div`
   margin-bottom: 60px;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+  }
 `;
 
 const ButtonWrapper = styled.div`
@@ -149,4 +174,13 @@ const ButtonWrapper = styled.div`
   justify-content: space-between;
   width: 960px;
   margin-bottom: 30px;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+    margin-bottom: 20px;
+  }
+`;
+
+const Title = styled.div`
+  width: 90%;
 `;

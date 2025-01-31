@@ -165,6 +165,11 @@ const DropdownContainer = styled.div<{ type: 'location' | 'influencer' }>`
   position: relative;
   min-width: ${(props) => (props.type === 'location' ? '130px' : '200px')};
   max-width: ${(props) => (props.type === 'location' ? '400px' : '300px')};
+
+  @media screen and (max-width: 768px) {
+    min-width: ${(props) => (props.type === 'location' ? '100px' : '160px')};
+    max-width: ${(props) => (props.type === 'location' ? '200px' : '240px')};
+  }
 `;
 
 const DropdownButton = styled.button<{ $isOpen: boolean }>`
@@ -187,6 +192,11 @@ const DropdownButton = styled.button<{ $isOpen: boolean }>`
   &:hover {
     background-color: #f8f8f8;
   }
+
+  @media screen and (max-width: 768px) {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
 `;
 
 const DropdownMenuContainer = styled.div<{ $multiLevel: boolean; $hasSubOptions: boolean }>`
@@ -199,12 +209,23 @@ const DropdownMenuContainer = styled.div<{ $multiLevel: boolean; $hasSubOptions:
   border-radius: 8px;
   margin-top: 4px;
   max-height: 300px;
-  z-index: 1000;
+  z-index: 100;
+
+  @media screen and (max-width: 768px) {
+    max-height: 200px;
+    margin-top: 2px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
 `;
 
 const SearchInputContainer = styled.div`
   position: relative;
   width: 100%;
+
+  @media screen and (max-width: 768px) {
+    padding: 4px;
+  }
 `;
 
 const SearchInput = styled.input`
@@ -216,6 +237,12 @@ const SearchInput = styled.input`
   outline: none;
   font-size: 14px;
   box-sizing: border-box;
+
+  @media screen and (max-width: 768px) {
+    padding: 6px;
+    padding-right: 24px;
+    font-size: 12px;
+  }
 `;
 
 const SearchIcon = styled(FaSearch)`
@@ -225,18 +252,32 @@ const SearchIcon = styled(FaSearch)`
   transform: translateY(-50%);
   color: #004cff;
   cursor: pointer;
+
+  @media screen and (max-width: 768px) {
+    right: 12px;
+    width: 12px;
+    height: 12px;
+  }
 `;
 
 const OptionsContainer = styled.div`
   display: flex;
   max-height: 250px;
   overflow-y: auto;
+
+  @media screen and (max-width: 768px) {
+    max-height: 150px;
+  }
 `;
 
 const MainOptions = styled.div`
   flex: 1;
   max-height: 250px;
   overflow-y: auto;
+
+  @media screen and (max-width: 768px) {
+    max-height: 150px;
+  }
 `;
 
 const SubOptions = styled.div`
@@ -244,4 +285,8 @@ const SubOptions = styled.div`
   border-left: 1px solid rgba(0, 0, 0, 0.1);
   max-height: 250px;
   overflow-y: auto;
+
+  @media screen and (max-width: 768px) {
+    max-height: 150px;
+  }
 `;

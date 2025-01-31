@@ -9,6 +9,7 @@ import InfoWindow from '@/components/InfluencerInfo/InfluencerMapTap/InfoWindow'
 import { useGetMarkerInfo } from '@/api/hooks/useGetMarkerInfo';
 import OriginMarker from '@/assets/images/OriginMarker.png';
 import SelectedMarker from '@/assets/images/InplaceMarker.png';
+import { Text } from '@/components/common/typography/Text';
 
 interface MapWindowProps {
   onBoundsChange: (bounds: LocationData) => void;
@@ -21,6 +22,8 @@ interface MapWindowProps {
   placeData: PlaceData[];
   selectedPlaceId: number | null;
   onPlaceSelect: (placeId: number | null) => void;
+  isListExpanded?: boolean;
+  onListExpand?: () => void;
 }
 
 export default function MapWindow({
@@ -30,6 +33,8 @@ export default function MapWindow({
   placeData,
   selectedPlaceId,
   onPlaceSelect,
+  isListExpanded,
+  onListExpand,
 }: MapWindowProps) {
   const mapRef = useRef<kakao.maps.Map | null>(null);
   const [mapCenter, setMapCenter] = useState({ lat: 37.5665, lng: 126.978 });
@@ -112,22 +117,39 @@ export default function MapWindow({
   }, [fetchMarkers]);
 
   // 마커나 장소 선택시 지도 중심으로 이동
-  const moveMapToMarker = useCallback((latitude: number, longitude: number) => {
-    if (mapRef.current) {
-      const position = new kakao.maps.LatLng(latitude, longitude);
-      if (mapRef.current.getLevel() > 10) {
-        mapRef.current.setLevel(9, {
-          anchor: position,
-          animate: true,
-        });
-      }
-      setTimeout(() => {
-        if (mapRef.current) {
-          mapRef.current.panTo(position);
+  const moveMapToMarker = useCallback(
+    (latitude: number, longitude: number) => {
+      if (mapRef.current) {
+        const currentLevel = mapRef.current.getLevel();
+        const baseOffset = -0.007;
+
+        let levelMultiplier;
+        if (currentLevel <= 5) {
+          levelMultiplier = 1;
+        } else if (currentLevel <= 8) {
+          levelMultiplier = currentLevel * 1.05;
+        } else {
+          levelMultiplier = currentLevel * 2;
         }
-      }, 100);
-    }
-  }, []);
+
+        const offsetY = isMobile ? (baseOffset * levelMultiplier) / 5 : 0;
+        const position = new kakao.maps.LatLng(latitude - offsetY, longitude);
+
+        if (mapRef.current.getLevel() > 10) {
+          mapRef.current.setLevel(9, {
+            anchor: position,
+            animate: true,
+          });
+        }
+        setTimeout(() => {
+          if (mapRef.current) {
+            mapRef.current.panTo(position);
+          }
+        }, 100);
+      }
+    },
+    [isMobile],
+  );
 
   useEffect(() => {
     if (selectedPlaceId && selectedMarker) {
@@ -202,10 +224,8 @@ export default function MapWindow({
             variant="white"
             size="small"
             style={{
-              height: '36px',
-              fontSize: '16px',
               borderRadius: '20px',
-              padding: '20px',
+              padding: isMobile ? '18px' : '20px',
               boxShadow: '1px 1px 2px #707070',
             }}
           >
@@ -215,7 +235,7 @@ export default function MapWindow({
       )}
       <Map
         center={mapCenter}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '100%', height: isMobile ? 'auto' : '570px', aspectRatio: isMobile ? '1' : 'auto' }}
         level={4}
         onCreate={(map) => {
           mapRef.current = map;
@@ -275,15 +295,15 @@ export default function MapWindow({
         )}
       </Map>
       <ResetButtonContainer>
-        <Button
-          onClick={handleResetCenter}
-          variant="white"
-          size="small"
-          style={{ width: '40px', height: '40px', boxShadow: '1px 1px 2px #707070' }}
-        >
+        <StyledBtn onClick={handleResetCenter} variant="white" size="small">
           <TbCurrentLocation size={20} />
-        </Button>
+        </StyledBtn>
       </ResetButtonContainer>
+      <ListViewButton onClick={onListExpand}>
+        <Text size="xs" variant="white" weight="normal">
+          {isListExpanded ? '지도 보기' : '목록 보기'}
+        </Text>
+      </ListViewButton>
     </MapContainer>
   );
 }
@@ -291,7 +311,6 @@ export default function MapWindow({
 const MapContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 570px;
   padding: 20px 0;
 `;
 
@@ -308,4 +327,45 @@ const ResetButtonContainer = styled.div`
   bottom: 46px;
   right: 30px;
   z-index: 10;
+
+  @media screen and (max-width: 768px) {
+    bottom: 34px;
+    right: 14px;
+  }
+`;
+
+const StyledBtn = styled(Button)`
+  width: 40px;
+  height: 40px;
+  box-shadow: 1px 1px 2px #707070;
+
+  @media screen and (max-width: 768px) {
+    width: 28px;
+    height: 28px;
+    box-shadow: 1px 1px 1px #707070;
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+`;
+
+const ListViewButton = styled.button`
+  display: none;
+
+  @media screen and (max-width: 768px) {
+    display: flex;
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    z-index: 10;
+    align-items: center;
+    gap: 4px;
+  }
 `;

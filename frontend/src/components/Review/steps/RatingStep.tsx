@@ -86,7 +86,7 @@ const TitleSection = styled.div`
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  margin-top: 30%;
+  margin-top: 6%;
   margin-bottom: 1rem;
 `;
 

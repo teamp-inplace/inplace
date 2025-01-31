@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { RequestPlaceReview } from '@/types';
 import RatingStep from '@/components/Review/steps/RatingStep';
 import CommentStep from '@/components/Review/steps/CommentStep';
 import { usePostPlaceReview } from '@/api/hooks/usePostPlaceReview';
 import { useGetReviewInfo } from '@/api/hooks/useGetReviewInfo';
+import Header from '@/components/common/layouts/Header';
+import Button from '@/components/common/Button';
 
 export default function ReviewPage() {
   const { uuid } = useParams() as { uuid: string };
@@ -43,11 +45,17 @@ export default function ReviewPage() {
   if (isCompleted) {
     return (
       <Container>
+        <Header />
         <MainContent>
           <CompletionMessage>
             <h2>완료되었습니다</h2>
             <p>리뷰가 성공적으로 등록되었습니다.</p>
           </CompletionMessage>
+          <Link to="/">
+            <StyledButton variant="outline" size="large">
+              홈으로 이동하기
+            </StyledButton>
+          </Link>
         </MainContent>
       </Container>
     );
@@ -55,6 +63,7 @@ export default function ReviewPage() {
 
   return (
     <Container>
+      <Header />
       <MainContent>
         {currentStep === 1 && <RatingStep onSubmit={handleRatingSubmit} placeInfo={reviewInfo} />}
         {currentStep === 2 && (
@@ -87,7 +96,7 @@ const MainContent = styled.main`
 `;
 
 const CompletionMessage = styled.div`
-  margin-top: 20rem;
+  margin-top: 12rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -103,4 +112,10 @@ const CompletionMessage = styled.div`
   p {
     color: #9e9e9e;
   }
+`;
+
+const StyledButton = styled(Button)`
+  width: 40%;
+  padding: 20px;
+  margin: 20px auto;
 `;
