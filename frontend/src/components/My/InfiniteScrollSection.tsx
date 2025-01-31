@@ -59,7 +59,7 @@ export default function InfiniteScrollSection<T>({
         <NoItem message={noItemMessage} height={200} />
       ) : (
         <>
-          <ArrowButton onClick={() => scrollList('left')} className="left-arrow" direction="left">
+          <ArrowButton aria-label="left_btn" onClick={() => scrollList('left')} className="left-arrow" direction="left">
             <GrPrevious size={40} />
           </ArrowButton>
           <ListContainer ref={listRef}>
@@ -71,7 +71,12 @@ export default function InfiniteScrollSection<T>({
             )}
           </ListContainer>
           {items.length > 5 && (
-            <ArrowButton onClick={() => scrollList('right')} className="right-arrow" direction="right">
+            <ArrowButton
+              aria-label="right_btn"
+              onClick={() => scrollList('right')}
+              className="right-arrow"
+              direction="right"
+            >
               <GrNext size={40} />
             </ArrowButton>
           )}

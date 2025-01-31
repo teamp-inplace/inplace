@@ -6,7 +6,7 @@ import { GrPowerCycle } from 'react-icons/gr';
 import Button from '@/components/common/Button';
 import { LocationData, MarkerData, MarkerInfo, PlaceData } from '@/types';
 import InfoWindow from './InfoWindow';
-import BasicImage from '@/assets/images/basic-image.png';
+import BasicImage from '@/assets/images/basic-image.webp';
 import { useGetMarkerInfo } from '@/api/hooks/useGetMarkerInfo';
 
 interface MapWindowProps {
@@ -243,7 +243,7 @@ export default function InfluencerMapWindow({
           )}
         </Map>
         <ResetButtonContainer>
-          <StyledBtn onClick={handleResetCenter} variant="white" size="small">
+          <StyledBtn aria-label="reset_btn" onClick={handleResetCenter} variant="white" size="small">
             <TbCurrentLocation size={20} />
           </StyledBtn>
         </ResetButtonContainer>

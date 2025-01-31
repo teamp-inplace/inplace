@@ -60,6 +60,7 @@ export default function MenuModal({ images }: { images: string[] }) {
           </ModalHeader>
           <ModalCloseButton
             position="absolute"
+            aria-label="modal-close-btn"
             right={20}
             top={20}
             background="none"
@@ -69,7 +70,7 @@ export default function MenuModal({ images }: { images: string[] }) {
             cursor="pointer"
           />
           <StyledModalBody display="flex" justifyContent="center" width={{ base: '90%', md: '100%' }} height="auto">
-            <Button onClick={prevImage}>
+            <Button aria-label="prev_btn" onClick={prevImage}>
               <GrFormPrevious size={30} color="grey" />
             </Button>
             <Image
@@ -80,7 +81,7 @@ export default function MenuModal({ images }: { images: string[] }) {
               aspectRatio="1.2 / 1"
               objectFit="cover"
             />
-            <Button onClick={nextImage}>
+            <Button aria-label="next_btn" onClick={nextImage}>
               <GrFormNext size={30} color="grey" />
             </Button>
           </StyledModalBody>

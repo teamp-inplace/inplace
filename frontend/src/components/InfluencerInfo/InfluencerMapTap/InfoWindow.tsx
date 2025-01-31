@@ -42,7 +42,9 @@ export default function InfoWindow({ data, onClose }: Props) {
           <Link to={`/detail/${data.placeId}`}>상세보기</Link>
         </TextInfo>
       </Info>
-      <CloseBtn onClick={() => onClose()}>x</CloseBtn>
+      <CloseBtn aria-label="close_btn" onClick={() => onClose()}>
+        x
+      </CloseBtn>
     </Wrapper>
   );
 }

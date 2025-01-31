@@ -154,7 +154,7 @@ describe('인플루언서 페이지 페이지네이션 기능 테스트', () => 
 
     expect(screen.getByText('Influencer 1')).toBeInTheDocument();
 
-    const nextPageButton = screen.getByRole('button', { name: '2' });
+    const nextPageButton = screen.getByRole('button', { name: 'page_number_2' });
     fireEvent.click(nextPageButton);
 
     expect(screen.getByText('Influencer 11')).toBeInTheDocument();

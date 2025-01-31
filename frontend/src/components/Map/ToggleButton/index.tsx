@@ -34,7 +34,12 @@ export default function ToggleButton({ options, onSelect }: ToggleButtonProps) {
   return (
     <ToggleButtonContainer>
       {options.map((option) => (
-        <Button key={option} $isActive={selectedOptions.includes(option)} onClick={() => handleClick(option)}>
+        <Button
+          key={option}
+          aria-label="check_btn"
+          $isActive={selectedOptions.includes(option)}
+          onClick={() => handleClick(option)}
+        >
           <ButtonText $isActive={selectedOptions.includes(option)}>{categoryMapping[option]}</ButtonText>
           {selectedOptions.includes(option) && (
             <CheckIconWrapper>

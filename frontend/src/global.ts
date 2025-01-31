@@ -3,16 +3,18 @@ import { createGlobalStyle } from 'styled-components';
 const GlobalStyle = createGlobalStyle`
 	@font-face {
 		font-family: "Noto Sans";
-		font-weight: bold;
+		font-weight: 700;
 		src: url("./assets/fonts/noto-sans-v38-latin-700.woff2") format("woff2"),
 		url("./assets/fonts/Noto-Sans-700.woff") format('woff'),;
+		font-display: swap;
 	}
 
 	@font-face {
 		font-family: "Noto Sans";
-		font-weight: normal;
+		font-weight: 400;
 		src: url("./assets/fonts/noto-sans-v38-latin-regular.woff2") format("woff2"),
 		url("./assets/fonts/Noto-Sans-regular.woff") format('woff'),;
+		font-display: swap;
 	}
 
 	html {
@@ -35,7 +37,6 @@ const GlobalStyle = createGlobalStyle`
 	padding: 0;
 	border: 0;
 	font-size: 100%;
-	font: inherit;
 	vertical-align: baseline;
 	text-decoration: none;
 }

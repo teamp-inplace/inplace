@@ -7,7 +7,7 @@ import { MdLocationOn } from 'react-icons/md';
 import { useCallback, useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Paragraph } from '@/components/common/typography/Paragraph';
-import backCard from '@/assets/images/back-card.png';
+import backCard from '@/assets/images/back-card.webp';
 import { InfluencerData } from '@/types';
 import { usePostInfluencerLike } from '@/api/hooks/usePostInfluencerLike';
 import useAuth from '@/hooks/useAuth';
@@ -68,7 +68,11 @@ export default function InfluencerItem({
     <>
       <Wrapper to={`/influencer/${influencerId}`}>
         <ImageContainer>
-          <LikeIcon role="button" onClick={(e: React.MouseEvent<HTMLDivElement>) => handleClickLike(e)}>
+          <LikeIcon
+            role="button"
+            aria-label="like_btn"
+            onClick={(e: React.MouseEvent<HTMLDivElement>) => handleClickLike(e)}
+          >
             {isLike ? (
               <PiHeartFill color="#fe7373" size={32} data-testid="PiHeartFill" />
             ) : (

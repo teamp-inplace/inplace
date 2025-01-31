@@ -71,15 +71,15 @@ export default function VisitModal({ id, placeName, onClose }: { id: number; pla
           </DescriptionSection>
           <BtnContainer $hasMessage={!!message}>
             {message ? (
-              <Button variant="kakao" style={buttonStyle} onClick={() => onClose()}>
+              <Button aria-label="complete_btn" variant="kakao" style={buttonStyle} onClick={() => onClose()}>
                 완료
               </Button>
             ) : (
               <>
-                <Button variant="blackOutline" style={buttonStyle} onClick={() => onClose()}>
+                <Button aria-label="cancel_btn" variant="blackOutline" style={buttonStyle} onClick={() => onClose()}>
                   취소
                 </Button>
-                <Button variant="kakao" style={buttonStyle} onClick={handleSendInfo}>
+                <Button aria-label="check_btn" variant="kakao" style={buttonStyle} onClick={handleSendInfo}>
                   확인
                 </Button>
               </>

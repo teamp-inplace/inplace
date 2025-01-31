@@ -71,7 +71,7 @@ export default function MyPage() {
               <Text size="xl" weight="bold" variant="mint">
                 {userNickname}
               </Text>
-              <CustomButton onClick={() => setIsVisible(false)}>
+              <CustomButton aria-label="rename_btn" onClick={() => setIsVisible(false)}>
                 <MdOutlineDriveFileRenameOutline size={24} color="#55EBFF" />
               </CustomButton>
               님, 안녕하세요!
@@ -80,7 +80,7 @@ export default function MyPage() {
         ) : (
           <Form onSubmit={handleSubmit}>
             <Input type="text" value={nickname} onChange={(e) => setNickname(e.target.value)} />
-            <CustomButton type="submit">
+            <CustomButton aria-label="rename_btn" type="submit">
               <MdOutlineDriveFileRenameOutline size={24} color="#55EBFF" />
             </CustomButton>
           </Form>

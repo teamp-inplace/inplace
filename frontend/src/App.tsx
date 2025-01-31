@@ -1,19 +1,21 @@
 import { Route, Routes } from 'react-router-dom';
+import { lazy } from 'react';
 import AuthProvider from '@/provider/Auth';
 import MainLayout from '@/components/common/layouts/MainLayout';
-import AuthPage from '@/pages/Auth';
-import DetailPage from '@/pages/Detail';
-import InfluencerPage from '@/pages/Influencer';
-import MainPage from '@/pages/Main';
-import MapPage from '@/pages/Map';
-import MyPage from '@/pages/My';
-import ChoicePage from '@/pages/Choice';
 import PrivatedRoute from '@/routes/component/PrivatedRoute';
 
 import GlobalStyle from './global';
-import SearchPage from './pages/Search';
-import ReviewPage from './pages/Review';
-import InfluencerInfoPage from './pages/InfluencerInfo';
+import MainPage from './pages/Main';
+
+const AuthPage = lazy(() => import('@/pages/Auth'));
+const DetailPage = lazy(() => import('@/pages/Detail'));
+const InfluencerPage = lazy(() => import('@/pages/Influencer'));
+const MapPage = lazy(() => import('@/pages/Map'));
+const MyPage = lazy(() => import('@/pages/My'));
+const ChoicePage = lazy(() => import('@/pages/Choice'));
+const SearchPage = lazy(() => import('@/pages/Search'));
+const ReviewPage = lazy(() => import('@/pages/Review'));
+const InfluencerInfoPage = lazy(() => import('@/pages/InfluencerInfo'));
 
 function App() {
   return (

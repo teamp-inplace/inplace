@@ -11,6 +11,7 @@ const initInstance = (config: AxiosRequestConfig): AxiosInstance => {
     ...config,
     headers: {
       'Content-Type': 'application/json',
+      referrerPolicy: 'no-referrer',
       ...config.headers,
     },
   });

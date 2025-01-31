@@ -62,7 +62,7 @@ test('리뷰 삭제가 반영되는지 확인', async () => {
 
   expect(screen.getByText('정말 좋았어요! 다음에 또 오고 싶습니다')).toBeInTheDocument();
 
-  const deleteButton = screen.getAllByRole('button', { name: /삭제/i });
+  const deleteButton = screen.getAllByRole('button', { name: 'delete_btn' });
   fireEvent.click(deleteButton[0]);
 
   await waitFor(() => {

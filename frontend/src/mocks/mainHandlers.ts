@@ -4,9 +4,9 @@ import { BASE_URL } from '@/api/instance';
 import { getMyInfluencerVideoPath } from '@/api/hooks/useGetMyInfluencerVideo';
 import { getAroundVideoPath } from '@/api/hooks/useGetAroundVideo';
 import { getCoolVideoPath, getNewVideoPath } from '@/api/hooks/useGetLogoutVideo';
-import BannerImg from '@/assets/images/bannerImg.png';
-import Back from '@/assets/images/back-card.png';
-import Basic from '@/assets/images/basic-image.png';
+import BannerImg from '@/assets/images/bannerImg.webp';
+import Back from '@/assets/images/back-card.webp';
+import Basic from '@/assets/images/basic-image.webp';
 
 export const mainHandlers = [
   rest.get(`${BASE_URL}${getBannerPath()}`, (_, res, ctx) => {
