@@ -81,8 +81,10 @@ public class VideoService {
     @Transactional
     public void createVideos(List<Create> videoCommands, Long influencerId) {
         var videos = videoCommands.stream()
+            .filter(command -> !videoRepository.existsByUuid(command.videoId()))
             .map(Create::toEntity)
             .toList();
+
         videoRepository.saveAll(videos);
     }
 
