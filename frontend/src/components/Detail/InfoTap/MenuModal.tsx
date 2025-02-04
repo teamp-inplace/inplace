@@ -47,7 +47,7 @@ export default function MenuModal({ images }: { images: string[] }) {
             src={src}
             alt={`Menu Image ${index + 1}`}
             onClick={() => openModal(index)}
-            style={{ width: '100%' }}
+            style={{ width: isMobile ? '100%' : '50%' }}
             cursor="pointer"
           />
         ))}
