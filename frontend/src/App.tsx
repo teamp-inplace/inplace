@@ -3,11 +3,11 @@ import { lazy } from 'react';
 import AuthProvider from '@/provider/Auth';
 import MainLayout from '@/components/common/layouts/MainLayout';
 import PrivatedRoute from '@/routes/component/PrivatedRoute';
+import AuthPage from '@/pages/Auth';
 
 import GlobalStyle from './global';
 import MainPage from './pages/Main';
 
-const AuthPage = lazy(() => import('@/pages/Auth'));
 const DetailPage = lazy(() => import('@/pages/Detail'));
 const InfluencerPage = lazy(() => import('@/pages/Influencer'));
 const MapPage = lazy(() => import('@/pages/Map'));
@@ -55,7 +55,7 @@ function App() {
               </PrivatedRoute>
             }
           />
-          <Route path="/review/:uuid" element={<ReviewPage />} />
+          <Route path="/reviews/:uuid" element={<ReviewPage />} />
         </Routes>
       </AuthProvider>
     </>
