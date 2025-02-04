@@ -223,20 +223,21 @@ public class PlacesResponse {
     }
 
     public record PlaceLikes(
-        String like,
-        String dislike
+        Long like,
+        Long dislike
     ) {
 
         public static PlaceLikes from(ReviewQueryResult.LikeRate likeRate) {
-            return new PlaceLikes(likeRate.likes().toString(), likeRate.dislikes().toString());
+            return new PlaceLikes(likeRate.likes(), likeRate.dislikes());
         }
     }
 
-    public record Location (
-            Long placeId,
-            Double longitude,
-            Double latitude
+    public record Location(
+        Long placeId,
+        Double longitude,
+        Double latitude
     ) {
+
         public static List<Location> from(List<PlaceQueryResult.Location> locations) {
             return locations.stream()
                 .map(PlacesResponse.Location::from)
