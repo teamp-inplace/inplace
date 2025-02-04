@@ -1,6 +1,7 @@
 import { styled } from 'styled-components';
 import { useRef, useState } from 'react';
 import { MdOutlineDriveFileRenameOutline } from 'react-icons/md';
+import { useQueryClient } from '@tanstack/react-query';
 import { Paragraph } from '@/components/common/typography/Paragraph';
 import { useGetUserInfluencer } from '@/api/hooks/useGetUserInfluencer';
 import { useGetUserPlace } from '@/api/hooks/useGetUserPlace';
@@ -10,6 +11,7 @@ import MyReview from '@/components/My/UserReview';
 import InfiniteBaseLayout from '@/components/My/infiniteBaseLayout';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import { usePatchNickname } from '@/api/hooks/usePatchNickname';
+import { useGetUserInfo } from '@/api/hooks/useGetUserInfo';
 
 export default function MyPage() {
   const influencerRef = useRef<HTMLDivElement>(null);
@@ -45,10 +47,11 @@ export default function MyPage() {
     hasNextPage,
     isFetchingNextPage,
   });
-  const userNickname = localStorage.getItem('nickname');
-  const [nickname, setNickname] = useState(userNickname || '');
+  const { data: userNickname } = useGetUserInfo();
+  const [nickname, setNickname] = useState(userNickname?.nickname || '');
   const [isVisible, setIsVisible] = useState(true);
   const { mutate: patchNickname } = usePatchNickname();
+  const queryClient = useQueryClient();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -56,6 +59,7 @@ export default function MyPage() {
       onSuccess: () => {
         localStorage.setItem('nickname', nickname);
         setIsVisible(true);
+        queryClient.invalidateQueries({ queryKey: ['UserInfo'] });
       },
       onError: () => {
         alert('닉네임 변경에 실패했습니다. 다시 시도해주세요!');
@@ -69,7 +73,7 @@ export default function MyPage() {
           <NickNameWrapper>
             <Text size="l" weight="bold" variant="white">
               <Text size="xl" weight="bold" variant="mint">
-                {userNickname}
+                {userNickname?.nickname}
               </Text>
               <CustomButton aria-label="rename_btn" onClick={() => setIsVisible(false)}>
                 <MdOutlineDriveFileRenameOutline size={24} color="#55EBFF" />
