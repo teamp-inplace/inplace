@@ -22,6 +22,7 @@ import team7.inplace.place.application.command.PlacesCommand.FilterParams;
 import team7.inplace.place.application.dto.LikedPlaceInfo;
 import team7.inplace.place.application.dto.PlaceQueryInfo;
 import team7.inplace.place.domain.Category;
+import team7.inplace.place.persistence.PlaceJpaRepository;
 import team7.inplace.place.persistence.PlaceReadRepository;
 import team7.inplace.place.persistence.PlaceSaveRepository;
 import team7.inplace.place.persistence.dto.PlaceQueryResult;
@@ -36,6 +37,7 @@ public class PlaceService {
 
     private final PlaceReadRepository placeReadRepository;
     private final PlaceSaveRepository placeSaveRepository;
+    private final PlaceJpaRepository placeJpaRepository;
 
     private final ReviewJPARepository reviewJPARepository;
     private final LikedPlaceRepository likedPlaceRepository;
@@ -123,6 +125,10 @@ public class PlaceService {
     }
 
     public Long createPlace(Create placeCommand) {
+        var existPlace = placeJpaRepository.findPlaceByName(placeCommand.placeName());
+        if (existPlace.isPresent()) {
+            return existPlace.get().getId();
+        }
         var placeBulk = placeCommand.toEntity();
         return placeSaveRepository.save(placeBulk);
     }
