@@ -16,15 +16,21 @@ import team7.inplace.admin.banner.application.BannerService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/banners")
-@PreAuthorize("hasRole('ADMIN')")
 public class BannerController {
 
     private final BannerService bannerService;
 
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public void saveBanner(BannerRequest.Create request) {
 
         bannerService.uploadBanner(request.toCommand());
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteBanner(@PathVariable Long id) {
+        bannerService.deleteBanner(id);
     }
 
     @GetMapping()
@@ -35,10 +41,5 @@ public class BannerController {
             .map(BannerResponse.Info::from)
             .toList();
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteBanner(@PathVariable Long id) {
-        bannerService.deleteBanner(id);
     }
 }
