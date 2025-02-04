@@ -6,10 +6,10 @@ import { ErrorBoundary } from 'react-error-boundary';
 import Footer from '@/components/common/layouts/Footer';
 import Header from '@/components/common/layouts/Header';
 import Loading from '@/components/common/layouts/Loading';
-import Error from '@/components/common/layouts/Error';
 import MainSkeleton from '@/components/Main/MainSkeleton';
 import DetailSkeleton from '@/components/Detail/DetailSkeleton';
 import useScrollToTop from '@/hooks/useScrollToTop';
+import ErrorComponent from '@/components/common/layouts/Error';
 
 export default function MainLayout() {
   const location = useLocation();
@@ -29,7 +29,7 @@ export default function MainLayout() {
       <InnerWrapper>
         <QueryErrorResetBoundary>
           {({ reset }) => (
-            <ErrorBoundary FallbackComponent={Error} onReset={reset}>
+            <ErrorBoundary FallbackComponent={ErrorComponent} onReset={reset}>
               <Suspense fallback={renderSkeleton()}>
                 <Outlet />
               </Suspense>
