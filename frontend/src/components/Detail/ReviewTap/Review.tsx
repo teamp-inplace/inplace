@@ -3,7 +3,7 @@ import ReviewItem from './ReviewItem';
 import { ReviewData } from '@/types';
 import NoItem from '@/components/common/layouts/NoItem';
 
-export default function Review({ items, onDelete }: { items: ReviewData[]; onDelete: (id: number) => void }) {
+export default function Review({ items }: { items: ReviewData[] }) {
   return (
     <ListContainer>
       {items.length === 0 ? (
@@ -20,7 +20,6 @@ export default function Review({ items, onDelete }: { items: ReviewData[]; onDel
                 userNickname={review.userNickname}
                 createdDate={review.createdDate}
                 mine={review.mine}
-                handleDelete={() => onDelete(review.reviewId)}
               />
             );
           })}
