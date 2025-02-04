@@ -14,10 +14,10 @@ export default function NotFound() {
       <TextWrapper>
         <LogoImage src={Logo} alt="인플레이스 로고" />
         <Paragraph size="xl" weight="bold" variant="white">
-          없는 페이지입니다 🥲
+          페이지를 찾을 수 없어요 🥲
         </Paragraph>
         <Paragraph size="m" weight="normal" variant="#bdbdbd">
-          {'요청하신 페이지를 찾을 수 없습니다.\n 다시 시도해주세요.'}
+          요청한 페이지가 존재하지 않거나 삭제되었어요.
         </Paragraph>
       </TextWrapper>
       <StyledButton aria-label="home-btn" variant="outline" onClick={handleHome}>
