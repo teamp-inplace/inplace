@@ -35,7 +35,7 @@ export default function InfluencerInfoPage() {
     fetchNextPage: videoFetchNextPage,
     hasNextPage: videoHasNextPage,
     isFetchingNextPage: videoIsFetchingNextPage,
-  } = useGetInfluencerVideo(6);
+  } = useGetInfluencerVideo(id, 6);
 
   const handleClickLike = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {

@@ -207,7 +207,7 @@ export const InfluencerHandlers = [
       }),
     );
   }),
-  rest.get(`${BASE_URL}${getInfluencerVideoPath()}`, (req, res, ctx) => {
+  rest.get(`${BASE_URL}${getInfluencerVideoPath('1')}`, (req, res, ctx) => {
     const url = new URL(req.url);
     const page = parseInt(url.searchParams.get('page') ?? '0', 10);
     const size = parseInt(url.searchParams.get('size') ?? '10', 10);
