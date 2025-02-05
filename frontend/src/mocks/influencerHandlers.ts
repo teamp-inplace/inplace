@@ -1,9 +1,37 @@
 import { rest } from 'msw';
 import { BASE_URL } from '@/api/instance';
 import { getInfluencerPath } from '@/api/hooks/useGetMain';
-import { getInfluencerInfoPath } from '@/api/hooks/useGetInfluencerInfo';
-import { getInfluencerVideoPath } from '@/api/hooks/useGetInfluencerVideo';
+import { InfluencerInfoData } from '@/types';
 
+const dummyInfluencerInfo: Record<string, InfluencerInfoData> = {
+  '1': {
+    influencerId: 1,
+    influencerName: '성시경',
+    influencerImgUrl: '',
+    influencerJob: '가수',
+    likes: false,
+    follower: 200,
+    placeCount: 200,
+  },
+  '2': {
+    influencerId: 2,
+    influencerName: '풍자',
+    influencerImgUrl: '',
+    influencerJob: '가수',
+    likes: false,
+    follower: 20,
+    placeCount: 200,
+  },
+  '3': {
+    influencerId: 3,
+    influencerName: '경경',
+    influencerImgUrl: '',
+    influencerJob: '가수',
+    likes: false,
+    follower: 200,
+    placeCount: 10,
+  },
+};
 const mockVideos = [
   {
     videoId: 1,
@@ -193,21 +221,13 @@ export const InfluencerHandlers = [
       }),
     );
   }),
-  rest.get(`${BASE_URL}${getInfluencerInfoPath('1')}`, (_, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({
-        influencerId: 1,
-        influencerName: '성시경',
-        influencerImgUrl: '',
-        influencerJob: '가수',
-        likes: false,
-        follower: 200,
-        placeCount: 200,
-      }),
-    );
+  rest.get(`${BASE_URL}/influencers/:id`, (req, res, ctx) => {
+    const { id } = req.params;
+    const data = dummyInfluencerInfo[id.toString()];
+
+    return res(ctx.status(200), ctx.json(data));
   }),
-  rest.get(`${BASE_URL}${getInfluencerVideoPath('1')}`, (req, res, ctx) => {
+  rest.get(`${BASE_URL}/influencers/:id/videos`, (req, res, ctx) => {
     const url = new URL(req.url);
     const page = parseInt(url.searchParams.get('page') ?? '0', 10);
     const size = parseInt(url.searchParams.get('size') ?? '10', 10);
