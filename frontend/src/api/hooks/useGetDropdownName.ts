@@ -7,7 +7,7 @@ interface Influencer {
 
 const useGetDropdownName = () => {
   return useSuspenseQuery({
-    queryKey: ['influencers'],
+    queryKey: ['influencersName'],
     queryFn: async () => {
       const { data } = await fetchInstance.get<Influencer[]>('/influencers/names');
       return data.map((influencer) => ({
