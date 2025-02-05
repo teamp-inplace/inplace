@@ -100,23 +100,24 @@ export default function PlaceItem({
 
 const PlaceCard = styled.div<{ $isSelected: boolean }>`
   position: relative;
-  width: 460px;
+  width: 100%;
   height: 120px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   border-radius: 8px;
   gap: 20px;
+  padding: 16px;
   cursor: pointer;
   background-color: ${({ $isSelected }) => ($isSelected ? '#1b1a1a' : 'none')};
   transition: background-color 0.2s ease;
+  box-sizing: border-box;
 
   &:hover {
     background-color: #1b1a1a;
   }
 
   @media screen and (max-width: 768px) {
-    width: 100%;
     height: 100px;
     gap: 12px;
     padding: 8px;
@@ -130,6 +131,11 @@ const ImageContainer = styled.div`
   border-radius: 30px;
 
   @media screen and (max-width: 768px) {
+    width: 15%;
+    border-radius: 12px;
+  }
+
+  @media screen and (max-width: 430px) {
     width: 25%;
     border-radius: 12px;
   }
@@ -147,7 +153,7 @@ const CardContent = styled.div`
   }
 
   @media screen and (max-width: 768px) {
-    width: 65%;
+    width: 55%;
     gap: 4px;
   }
 `;
@@ -172,7 +178,7 @@ const LikeIcon = styled.div`
   @media screen and (max-width: 768px) {
     width: 24px;
     height: 24px;
-    right: 8px;
+    right: 2px;
     top: 16px;
 
     svg {
