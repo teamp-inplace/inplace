@@ -137,6 +137,13 @@ public class InfluencerService {
         likedInfluencer.unlike();
     }
 
+    @Transactional()
+    public void updateLastVideo(Long influencerId, String lastVideo) {
+        var influencer = influencerRepository.findById(influencerId)
+            .orElseThrow();
+        influencer.updateLastVideo(lastVideo);
+    }
+    
     //TODO: 추후 쿼리 한번으로 변경
     @Transactional(readOnly = true)
     public Page<InfluencerInfo> getFavoriteInfluencers(Long userId, Pageable pageable) {
@@ -155,13 +162,6 @@ public class InfluencerService {
         return new PageImpl<>(infos, pageable, influencerPage.getTotalElements());
     }
 
-    @Transactional()
-    public void updateLastVideo(Long influencerId, String lastVideo) {
-        var influencer = influencerRepository.findById(influencerId)
-            .orElseThrow();
-        influencer.updateLastVideo(lastVideo);
-    }
-
     @Transactional(readOnly = true)
     public Detail getInfluencerDetail(Long influencerId) {
         Long userId = AuthorizationUtil.getUserId();
@@ -170,7 +170,7 @@ public class InfluencerService {
             .orElseThrow(() -> InplaceException.of(InfluencerErrorCode.NOT_FOUND));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<String> getInfluencerNamesByPlaceId(Long placeId) {
         return influencerReadRepositoryImpl.getInfluencerNamesByPlaceId(placeId);
     }

@@ -43,6 +43,31 @@ public class PlaceService {
     private final LikedPlaceRepository likedPlaceRepository;
     private final VideoReadRepository videoReadRepository;
 
+    public Long createPlace(Create placeCommand) {
+        var existPlace = placeJpaRepository.findPlaceByName(placeCommand.placeName());
+        if (existPlace.isPresent()) {
+            return existPlace.get().getId();
+        }
+        var placeBulk = placeCommand.toEntity();
+        return placeSaveRepository.save(placeBulk);
+    }
+
+    @Transactional
+    public void updateLikedPlace(PlaceLikeCommand command) {
+        Long userId = AuthorizationUtil.getUserId();
+        if (Objects.isNull(userId)) {
+            throw InplaceException.of(AuthorizationErrorCode.NOT_AUTHENTICATION);
+        }
+
+        Long placeId = command.placeId();
+        LikedPlace likedPlace = likedPlaceRepository.findByUserIdAndPlaceId(userId, placeId)
+            .orElseGet(() -> LikedPlace.from(userId, placeId));
+
+        likedPlace.updateLike(command.likes());
+        likedPlaceRepository.save(likedPlace);
+    }
+
+    @Transactional(readOnly = true)
     public Page<PlaceQueryInfo.Simple> getPlacesInMapRange(
         Coordinate coordinateCommand,
         FilterParams filterParamsCommand,
@@ -109,31 +134,8 @@ public class PlaceService {
         return PlaceQueryInfo.Detail.from(detailedPlace, placeVideos, placeReviewRate);
     }
 
-    @Transactional
-    public void updateLikedPlace(PlaceLikeCommand command) {
-        Long userId = AuthorizationUtil.getUserId();
-        if (Objects.isNull(userId)) {
-            throw InplaceException.of(AuthorizationErrorCode.NOT_AUTHENTICATION);
-        }
-
-        Long placeId = command.placeId();
-        LikedPlace likedPlace = likedPlaceRepository.findByUserIdAndPlaceId(userId, placeId)
-            .orElseGet(() -> LikedPlace.from(userId, placeId));
-
-        likedPlace.updateLike(command.likes());
-        likedPlaceRepository.save(likedPlace);
-    }
-
-    public Long createPlace(Create placeCommand) {
-        var existPlace = placeJpaRepository.findPlaceByName(placeCommand.placeName());
-        if (existPlace.isPresent()) {
-            return existPlace.get().getId();
-        }
-        var placeBulk = placeCommand.toEntity();
-        return placeSaveRepository.save(placeBulk);
-    }
-
     //TODO: 한 장소에 비디오가 여러개일 수 있으니 수정 필요
+    @Transactional(readOnly = true)
     public PlaceMessageCommand getPlaceMessageCommand(Long placeId) {
         var place = placeReadRepository.findSimplePlaceById(placeId)
             .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
@@ -142,6 +144,7 @@ public class PlaceService {
         return PlaceMessageCommand.from(place, video.get(0));
     }
 
+    @Transactional(readOnly = true)
     public Page<LikedPlaceInfo> getLikedPlaceInfo(Long userId, Pageable pageable) {
         var likedPlaceQueryResult = placeReadRepository.findLikedPlacesByUserIdWithPaging(userId,
             pageable);
@@ -152,6 +155,7 @@ public class PlaceService {
         return new PageImpl<>(likedPlaceInfos, pageable, likedPlaceQueryResult.getTotalElements());
     }
 
+    @Transactional(readOnly = true)
     public List<PlaceQueryResult.Location> getPlaceLocations(
         Coordinate coordinateCommand,
         FilterParams filterParamsCommand
@@ -169,6 +173,7 @@ public class PlaceService {
         );
     }
 
+    @Transactional(readOnly = true)
     public PlaceQueryResult.Marker getMarkerInfo(Long placeId) {
         return placeReadRepository.findPlaceMarkerById(placeId);
     }
