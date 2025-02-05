@@ -334,12 +334,13 @@ const mockPlaces = [
     influencer: '풍자',
   },
 ];
+let nickName = '랄라스윗칩';
 export const myHandlers = [
   rest.get(`${BASE_URL}${getUserInfoPath()}`, (_, res, ctx) => {
     return res(
       ctx.status(200),
       ctx.json({
-        nickname: '랄라스윗칩',
+        nickname: nickName,
       }),
     );
   }),
@@ -476,10 +477,10 @@ export const myHandlers = [
     return res(ctx.status(200), ctx.json({ message: 'send successfully.' }));
   }),
   rest.patch(`${BASE_URL}${patchNicknamePath()}`, async (req, res, ctx) => {
-    const params = req.url.searchParams;
-    const nickname = params.get('nickname');
+    const params = req.url.searchParams.get('nickname') || '';
+    nickName = params;
 
-    return res(ctx.status(200), ctx.json({ message: 'Nickname updated successfully.', nickname }));
+    return res(ctx.status(200), ctx.json({ message: 'Nickname updated successfully.', params }));
   }),
 ];
 export default myHandlers;

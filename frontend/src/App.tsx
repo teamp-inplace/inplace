@@ -16,6 +16,7 @@ const ChoicePage = lazy(() => import('@/pages/Choice'));
 const SearchPage = lazy(() => import('@/pages/Search'));
 const ReviewPage = lazy(() => import('@/pages/Review'));
 const InfluencerInfoPage = lazy(() => import('@/pages/InfluencerInfo'));
+const NotFoundPage = lazy(() => import('@/pages/NotFound'));
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
                 </PrivatedRoute>
               }
             />
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
           <Route
             path="/auth"
