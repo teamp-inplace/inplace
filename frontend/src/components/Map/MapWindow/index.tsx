@@ -9,7 +9,6 @@ import InfoWindow from '@/components/InfluencerInfo/InfluencerMapTap/InfoWindow'
 import { useGetMarkerInfo } from '@/api/hooks/useGetMarkerInfo';
 import OriginMarker from '@/assets/images/OriginMarker.png';
 import SelectedMarker from '@/assets/images/InplaceMarker.png';
-import { Text } from '@/components/common/typography/Text';
 
 interface MapWindowProps {
   onBoundsChange: (bounds: LocationData) => void;
@@ -22,8 +21,6 @@ interface MapWindowProps {
   placeData: PlaceData[];
   selectedPlaceId: number | null;
   onPlaceSelect: (placeId: number | null) => void;
-  isListExpanded?: boolean;
-  onListExpand?: () => void;
 }
 
 export default function MapWindow({
@@ -33,8 +30,6 @@ export default function MapWindow({
   placeData,
   selectedPlaceId,
   onPlaceSelect,
-  isListExpanded,
-  onListExpand,
 }: MapWindowProps) {
   const mapRef = useRef<kakao.maps.Map | null>(null);
   const [mapCenter, setMapCenter] = useState({ lat: 37.5665, lng: 126.978 });
@@ -300,11 +295,6 @@ export default function MapWindow({
           <TbCurrentLocation size={20} />
         </StyledBtn>
       </ResetButtonContainer>
-      <ListViewButton onClick={onListExpand}>
-        <Text size="xs" variant="white" weight="normal">
-          {isListExpanded ? '지도 보기' : '목록 보기'}
-        </Text>
-      </ListViewButton>
     </MapContainer>
   );
 }
@@ -312,7 +302,7 @@ export default function MapWindow({
 const MapContainer = styled.div`
   position: relative;
   width: 100%;
-  padding: 20px 0;
+  padding-bottom: 20px;
 `;
 
 const ButtonContainer = styled.div`
@@ -348,25 +338,5 @@ const StyledBtn = styled(Button)`
       width: 16px;
       height: 16px;
     }
-  }
-`;
-
-const ListViewButton = styled.button`
-  display: none;
-
-  @media screen and (max-width: 768px) {
-    display: flex;
-    position: absolute;
-    bottom: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.7);
-    border: none;
-    border-radius: 20px;
-    padding: 8px 16px;
-    cursor: pointer;
-    z-index: 10;
-    align-items: center;
-    gap: 4px;
   }
 `;

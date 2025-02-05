@@ -178,8 +178,9 @@ const ContentContainer = styled.div`
   width: 100%;
 
   @media screen and (max-width: 768px) {
-    width: 90%;
-    padding-bottom: 40px;
+    width: 100%;
+    padding: 0 16px 40px 16px;
+    box-sizing: border-box;
   }
 `;
 
@@ -190,6 +191,9 @@ const PlacesGrid = styled.div`
 
   @media screen and (max-width: 768px) {
     grid-template-columns: 1fr;
+  }
+
+  @media screen and (max-width: 430px) {
     gap: 12px;
   }
 `;

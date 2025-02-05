@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { fetchInstance } from '../instance';
 import { RequestPlaceReview } from '@/types';
 
-export const postPlaceReviewPath = (uuid: string) => `/review/${uuid}`;
+export const postPlaceReviewPath = (uuid: string) => `/reviews/${uuid}`;
 const postPlaceReview = async (uuid: string, { likes, comments }: RequestPlaceReview) => {
   const response = await fetchInstance.post(
     postPlaceReviewPath(uuid),

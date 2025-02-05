@@ -1,23 +1,26 @@
 import styled from 'styled-components';
+import { categoryMapping } from '@/utils/constants/CategoryOptions';
 
 interface DropdownItemProps {
   label: string;
   onClick: () => void;
-  type: 'location' | 'influencer';
+  type: 'location' | 'influencer' | 'category';
   isSelected?: boolean;
   children?: React.ReactNode;
 }
 
 export default function DropdownItem({ label, onClick, children, type, isSelected }: DropdownItemProps) {
+  const displayLabel = type === 'category' ? categoryMapping[label as keyof typeof categoryMapping] : label;
+
   return (
     <DropdownItems onClick={onClick} type={type} $isSelected={isSelected}>
-      {label}
+      {displayLabel}
       {children}
     </DropdownItems>
   );
 }
 
-const DropdownItems = styled.div<{ type: 'location' | 'influencer'; $isSelected?: boolean }>`
+const DropdownItems = styled.div<{ type: 'location' | 'influencer' | 'category'; $isSelected?: boolean }>`
   padding: 10px 16px;
   cursor: pointer;
   overflow: hidden;
