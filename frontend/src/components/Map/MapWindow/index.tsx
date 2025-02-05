@@ -312,7 +312,7 @@ export default function MapWindow({
 const MapContainer = styled.div`
   position: relative;
   width: 100%;
-  padding: 20px 0;
+  padding-bottom: 20px;
 `;
 
 const ButtonContainer = styled.div`

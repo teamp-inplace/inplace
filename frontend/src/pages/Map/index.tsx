@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import DropdownMenu from '@/components/Map/DropdownMenu';
 import MapWindow from '@/components/Map/MapWindow';
 import PlaceSection from '@/components/Map/PlaceSection';
-import ToggleButton from '@/components/Map/ToggleButton';
 import Chip from '@/components/common/Chip';
 import { Text } from '@/components/common/typography/Text';
 import locationOptions from '@/utils/constants/LocationOptions';
+import { categoryOptions } from '@/utils/constants/CategoryOptions';
 import { LocationData, PlaceData } from '@/types';
 import useGetDropdownName from '@/api/hooks/useGetDropdownName';
 
@@ -42,14 +42,6 @@ export default function MapPage() {
     [selectedCategories, selectedInfluencers, selectedLocations],
   );
 
-  const handleInfluencerChange = useCallback((value: { main: string }) => {
-    setSelectedInfluencers((prev) => {
-      // 이미 선택된 인플루언서인 경우 추가하지 않음
-      if (prev.includes(value.main)) return prev;
-      return [...prev, value.main];
-    });
-  }, []);
-
   const handleLocationChange = useCallback((value: SelectedOption) => {
     setSelectedLocations((prev) => {
       // 중복 생성 방지
@@ -73,8 +65,19 @@ export default function MapPage() {
     }
   }, []);
 
-  const handleCategorySelect = useCallback((selected: string[]) => {
-    setSelectedCategories(selected);
+  const handleInfluencerChange = useCallback((value: { main: string }) => {
+    setSelectedInfluencers((prev) => {
+      // 이미 선택된 인플루언서인 경우 추가하지 않음
+      if (prev.includes(value.main)) return prev;
+      return [...prev, value.main];
+    });
+  }, []);
+
+  const handleCategoryChange = useCallback((value: { main: string }) => {
+    setSelectedCategories((prev) => {
+      if (prev.includes(value.main)) return prev;
+      return [...prev, value.main];
+    });
   }, []);
 
   const handleClearLocation = useCallback((locationToRemove: SelectedOption) => {
@@ -85,6 +88,10 @@ export default function MapPage() {
 
   const handleClearInfluencer = useCallback((influencerToRemove: string) => {
     setSelectedInfluencers((prev) => prev.filter((influencer) => influencer !== influencerToRemove));
+  }, []);
+
+  const handleClearCategory = useCallback((categoryToRemove: string) => {
+    setSelectedCategories((prev) => prev.filter((category) => category !== categoryToRemove));
   }, []);
 
   const handleBoundsChange = useCallback((bounds: LocationData) => {
@@ -133,16 +140,20 @@ export default function MapPage() {
             type="influencer"
             defaultValue={undefined}
           />
+          <DropdownMenu
+            options={categoryOptions}
+            onChange={handleCategoryChange}
+            placeholder="카테고리"
+            type="category"
+          />
         </DropdownContainer>
-        <ToggleButton
-          options={['CAFE', 'JAPANESE', 'KOREAN', 'RESTAURANT', 'WESTERN']}
-          onSelect={handleCategorySelect}
-        />
         <Chip
           selectedLocations={selectedLocations}
           selectedInfluencers={selectedInfluencers}
+          selectedCategories={selectedCategories}
           onClearLocation={handleClearLocation}
           onClearInfluencer={handleClearInfluencer}
+          onClearCategory={handleClearCategory}
         />
       </Wrapper>
       <MapWindow

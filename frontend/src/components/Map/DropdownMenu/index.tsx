@@ -17,7 +17,7 @@ interface DropdownMenuProps {
   multiLevel?: boolean;
   onChange: (value: { main: string; sub?: string; lat?: number; lng?: number }) => void;
   placeholder?: string;
-  type: 'location' | 'influencer';
+  type: 'location' | 'influencer' | 'category';
   defaultValue?: { main: string; sub?: string };
 }
 
@@ -161,14 +161,14 @@ export default function DropdownMenu({
   );
 }
 
-const DropdownContainer = styled.div<{ type: 'location' | 'influencer' }>`
+const DropdownContainer = styled.div<{ type: 'location' | 'influencer' | 'category' }>`
   position: relative;
-  min-width: ${(props) => (props.type === 'location' ? '130px' : '200px')};
-  max-width: ${(props) => (props.type === 'location' ? '400px' : '300px')};
+  min-width: ${(props) => (props.type === 'influencer' ? '180px' : '130px')};
+  max-width: ${(props) => (props.type === 'influencer' ? '300px' : '400px')};
 
   @media screen and (max-width: 768px) {
-    min-width: ${(props) => (props.type === 'location' ? '100px' : '160px')};
-    max-width: ${(props) => (props.type === 'location' ? '200px' : '240px')};
+    min-width: ${(props) => (props.type === 'influencer' ? '160px' : '100px')};
+    max-width: ${(props) => (props.type === 'influencer' ? '240px' : '200px')};
   }
 `;
 

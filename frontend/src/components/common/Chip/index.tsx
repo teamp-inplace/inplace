@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { IoClose } from 'react-icons/io5';
 import { Text } from '@/components/common/typography/Text';
+import { categoryMapping } from '@/utils/constants/CategoryOptions';
 
 type SelectedOption = {
   main: string;
@@ -12,23 +13,20 @@ type SelectedOption = {
 type Props = {
   selectedLocations: SelectedOption[];
   selectedInfluencers: string[];
+  selectedCategories: string[];
   onClearLocation: (option: SelectedOption) => void;
   onClearInfluencer: (influencer: string) => void;
+  onClearCategory: (category: string) => void;
 };
 
-export default function Chip({ selectedLocations, selectedInfluencers, onClearLocation, onClearInfluencer }: Props) {
-  // if (selectedLocations.length === 0 && selectedInfluencers.length === 0) {
-  //   return (
-  //     <Container>
-  //       <FilterChip hasButton={false}>
-  //         <Text size="xs" weight="bold" variant="#36617f">
-  //           전체 보기
-  //         </Text>
-  //       </FilterChip>
-  //     </Container>
-  //   );
-  // }
-
+export default function Chip({
+  selectedLocations,
+  selectedInfluencers,
+  selectedCategories,
+  onClearLocation,
+  onClearInfluencer,
+  onClearCategory,
+}: Props) {
   return (
     <Container>
       {selectedLocations.map((location) => (
@@ -52,6 +50,17 @@ export default function Chip({ selectedLocations, selectedInfluencers, onClearLo
           </ClearButton>
         </FilterChip>
       ))}
+
+      {selectedCategories.map((category) => (
+        <FilterChip $hasButton key={category}>
+          <Text size="xs" weight="bold" variant="#36617f">
+            {categoryMapping[category as keyof typeof categoryMapping]}
+          </Text>
+          <ClearButton aria-label="cate-clear_btn" onClick={() => onClearCategory(category)}>
+            <IoClose size={14} />
+          </ClearButton>
+        </FilterChip>
+      ))}
     </Container>
   );
 }
@@ -59,7 +68,8 @@ export default function Chip({ selectedLocations, selectedInfluencers, onClearLo
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 12px;
+  margin: 20px 0;
 `;
 
 const FilterChip = styled.div<{ $hasButton: boolean }>`
