@@ -48,7 +48,7 @@ export default function ErrorComponent({ error, resetErrorBoundary }: FallbackPr
         default:
           return {
             title: `오류 발생 🥲`,
-            description: '예기치 않은 오류가 발생했어요다.\n 다시 시도해주세요.',
+            description: '예기치 않은 오류가 발생했어요.\n 다시 시도해주세요.',
           };
       }
     }

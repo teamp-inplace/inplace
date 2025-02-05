@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
 import { AuthContext } from '@/provider/Auth';
 import { PlaceInfo, SpotData } from '@/types';
-import Error from '@/components/common/layouts/Error';
+import ErrorComponent from '@/components/common/layouts/Error';
 
 export function renderWithQueryClient(children: React.ReactNode) {
   const queryClient = new QueryClient();
@@ -17,7 +17,7 @@ export function renderWithQueryClient(children: React.ReactNode) {
       }}
     >
       <MemoryRouter future={{ v7_relativeSplatPath: true }}>
-        <ErrorBoundary FallbackComponent={Error}>
+        <ErrorBoundary FallbackComponent={ErrorComponent}>
           <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
         </ErrorBoundary>
       </MemoryRouter>
@@ -38,13 +38,13 @@ export async function testErrorBoundaryBehavior({
 
   renderWithQueryClient(renderComponent());
   await waitFor(() => {
-    expect(screen.getByText(/앗, 여기는 정보가 없는 것 같아요/)).toBeInTheDocument();
+    expect(screen.getByText(/데이터 로딩 실패/)).toBeInTheDocument();
   });
   mockFunction.mockReturnValueOnce(mockSuccessData);
 
   fireEvent.click(screen.getByText('다시 시도하기'));
 
   await waitFor(() => {
-    expect(screen.queryByText(/앗, 여기는 정보가 없는 것 같아요/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/데이터 로딩 실패/)).not.toBeInTheDocument();
   });
 }
