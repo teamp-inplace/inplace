@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,4 +40,13 @@ public interface InfluencerControllerApiSpec {
 
     @Operation(summary = "특정 인플루언서의 정보 조회", description = "특정 인플루언서의 정보를 조회합니다.")
     ResponseEntity<InfluencerResponse.Detail> getInfluencer(@PathVariable Long id);
+
+    @Operation(
+        summary = "특정 인플루언서의 비디오 반환",
+        description = "특정 인플루언서의 Video 정보를 조회합니다."
+    )
+    ResponseEntity<Page<InfluencerResponse.Video>> getInfluencerVideos(
+        @PageableDefault(page = 0, size = 6) Pageable pageable,
+        @PathVariable Long influencerId
+    );
 }

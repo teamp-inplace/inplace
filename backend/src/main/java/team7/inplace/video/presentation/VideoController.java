@@ -67,17 +67,6 @@ public class VideoController implements VideoControllerApiSpec {
     }
 
     @Override
-    @GetMapping("/{influencerId}")
-    public ResponseEntity<Page<VideoResponse.Simple>> readByOneInfluencer(
-        @PageableDefault(page = 0, size = 6) Pageable pageable,
-        @PathVariable Long influencerId
-    ) {
-        var videoResponses = videoService.getOneInfluencerVideos(influencerId, pageable)
-            .map(VideoResponse.Simple::from);
-        return new ResponseEntity<>(videoResponses, HttpStatus.OK);
-    }
-
-    @Override
     @GetMapping("/null")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<VideoResponse.Simple>> readPlaceNullVideo(
