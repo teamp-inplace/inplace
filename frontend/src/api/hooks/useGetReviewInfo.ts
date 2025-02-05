@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { fetchInstance } from '../instance';
 
-export const getReviewInfoPath = (uuid: string) => `/review/${uuid}`;
+export const getReviewInfoPath = (uuid: string) => `/reviews/${uuid}`;
 
 export const getReviewInfo = async (uuid: string) => {
   const response = await fetchInstance.get(getReviewInfoPath(uuid), { withCredentials: true });

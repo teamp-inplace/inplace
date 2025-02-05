@@ -13,7 +13,7 @@ const dummyInfluencers = [
   { influencerName: '히밥' },
   { influencerName: '백종원' },
   { influencerName: '안성재' },
-  { influencerName: '임영웅' },
+  { influencerName: '카페랩 모디 Cafe Lab. Maudie' },
 ];
 const dummyAllMarkers = [
   { placeId: 1, longitude: '128.59691803894955', latitude: '35.879135694467514' },
@@ -73,7 +73,7 @@ const dummyPlaces: PlaceData[] = [
       address3: '서교동',
     },
     category: 'KOREAN',
-    influencerName: '임영웅',
+    influencerName: '카페랩 모디 Cafe Lab. Maudie',
     longitude: '126.9314925',
     latitude: '37.5666478',
     likes: true,

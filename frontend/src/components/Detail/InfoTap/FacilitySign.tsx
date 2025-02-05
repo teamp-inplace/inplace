@@ -38,10 +38,17 @@ const facilities = {
 };
 
 export default function FacilitySign({ facilityInfo }: { facilityInfo: FacilityInfo }) {
+  if (!facilityInfo) {
+    return (
+      <Wrapper>
+        <NoItem message="시설 정보가 없습니다." height={0} logo={false} alignItems="start" />
+      </Wrapper>
+    );
+  }
   return (
     <Wrapper>
       {Object.keys(facilityInfo).includes('message') ? (
-        <NoItem message="정보가 없습니다." height={0} logo={false} alignItems="start" />
+        <NoItem message="시설 정보가 없습니다." height={0} logo={false} alignItems="start" />
       ) : (
         <>
           {Object.entries(facilities).map(([key, { icon, label }]) => {
