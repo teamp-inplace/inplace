@@ -30,7 +30,7 @@ export default function Chip({
   return (
     <Container>
       {selectedLocations.map((location) => (
-        <FilterChip $hasButton key={`${location.main}-${location.sub}`}>
+        <FilterChip key={`${location.main}-${location.sub}`}>
           <Text size="xs" weight="bold" variant="#36617f">
             {location.sub ? `${location.main} > ${location.sub}` : location.main}
           </Text>
@@ -41,7 +41,7 @@ export default function Chip({
       ))}
 
       {selectedInfluencers.map((influencer) => (
-        <FilterChip $hasButton key={influencer}>
+        <FilterChip key={influencer}>
           <Text size="xs" weight="bold" variant="#36617f">
             {influencer}
           </Text>
@@ -52,7 +52,7 @@ export default function Chip({
       ))}
 
       {selectedCategories.map((category) => (
-        <FilterChip $hasButton key={category}>
+        <FilterChip key={category}>
           <Text size="xs" weight="bold" variant="#36617f">
             {categoryMapping[category as keyof typeof categoryMapping]}
           </Text>
@@ -70,16 +70,24 @@ const Container = styled.div`
   flex-wrap: wrap;
   gap: 12px;
   margin: 20px 0;
+  @media screen and (max-width: 768px) {
+    margin: 14px 0;
+  }
 `;
 
-const FilterChip = styled.div<{ $hasButton: boolean }>`
+const FilterChip = styled.div`
   display: flex;
   align-items: center;
-  justify-content: ${(props) => (props.$hasButton ? 'space-between' : 'center')};
-  padding: ${(props) => (props.$hasButton ? '8px 12px 8px 20px' : '8px 20px')};
+  justify-content: 'space-between';
+  padding: 6px 10px 6px 18px;
   height: 24px;
   border-radius: 18px;
   background-color: #e8f9ff;
+
+  @media screen and (max-width: 768px) {
+    padding: 4px 10px 4px 14px;
+    font-size: 14px;
+  }
 `;
 
 const ClearButton = styled.button`

@@ -59,6 +59,16 @@ export default function MapPage() {
 
   const handleTouchEnd = () => {
     dragStartRef.current.isDragging = false;
+
+    const threshold = 30;
+
+    if (translateY < threshold) {
+      setTranslateY(0);
+    } else if (translateY > 500 - threshold) {
+      setTranslateY(500);
+    } else {
+      setTranslateY(translateY < 250 ? 0 : 500);
+    }
   };
 
   const filters = useMemo(
@@ -274,7 +284,7 @@ const MobilePlaceSection = styled.div<{ $translateY: number }>`
     z-index: 90;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
-    transition: none;
+    transition: transform 0.3s ease-out;
     touch-action: none;
   }
 `;

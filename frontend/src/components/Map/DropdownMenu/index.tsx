@@ -167,7 +167,7 @@ const DropdownContainer = styled.div<{ type: 'location' | 'influencer' | 'catego
   max-width: ${(props) => (props.type === 'influencer' ? '300px' : '400px')};
 
   @media screen and (max-width: 768px) {
-    min-width: ${(props) => (props.type === 'influencer' ? '160px' : '100px')};
+    min-width: ${(props) => (props.type === 'influencer' ? '130px' : '90px')};
     max-width: ${(props) => (props.type === 'influencer' ? '240px' : '200px')};
   }
 `;
@@ -194,7 +194,7 @@ const DropdownButton = styled.button<{ $isOpen: boolean }>`
   }
 
   @media screen and (max-width: 768px) {
-    padding: 8px 10px;
+    padding: 6px 8px;
     font-size: 14px;
   }
 `;
@@ -206,6 +206,7 @@ const DropdownMenuContainer = styled.div<{ $multiLevel: boolean; $hasSubOptions:
   width: ${(props) => (props.$multiLevel && props.$hasSubOptions ? '200%' : '100%')};
   background: #ffffff;
   border: 2px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
   border-radius: 8px;
   margin-top: 4px;
   max-height: 300px;
@@ -233,15 +234,15 @@ const SearchInput = styled.input`
   padding: 10px;
   padding-right: 30px;
   border: none;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   outline: none;
-  font-size: 14px;
+  font-size: 16px;
   box-sizing: border-box;
 
   @media screen and (max-width: 768px) {
     padding: 6px;
     padding-right: 24px;
-    font-size: 12px;
+    font-size: 16px;
   }
 `;
 
