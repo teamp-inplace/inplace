@@ -9,6 +9,7 @@ import InfoWindow from '@/components/InfluencerInfo/InfluencerMapTap/InfoWindow'
 import { useGetMarkerInfo } from '@/api/hooks/useGetMarkerInfo';
 import OriginMarker from '@/assets/images/OriginMarker.png';
 import SelectedMarker from '@/assets/images/InplaceMarker.png';
+import { Text } from '@/components/common/typography/Text';
 
 interface MapWindowProps {
   onBoundsChange: (bounds: LocationData) => void;
@@ -21,6 +22,8 @@ interface MapWindowProps {
   placeData: PlaceData[];
   selectedPlaceId: number | null;
   onPlaceSelect: (placeId: number | null) => void;
+  isListExpanded?: boolean;
+  onListExpand?: () => void;
 }
 
 export default function MapWindow({
@@ -30,6 +33,8 @@ export default function MapWindow({
   placeData,
   selectedPlaceId,
   onPlaceSelect,
+  isListExpanded,
+  onListExpand,
 }: MapWindowProps) {
   const mapRef = useRef<kakao.maps.Map | null>(null);
   const [mapCenter, setMapCenter] = useState({ lat: 37.5665, lng: 126.978 });
@@ -43,17 +48,15 @@ export default function MapWindow({
   const [showSearchButton, setShowSearchButton] = useState(false);
   const [markerInfo, setMarkerInfo] = useState<MarkerInfo | PlaceData>();
   const [shouldFetchData, setShouldFetchData] = useState<boolean>(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
-    const checkMobile = () => {
+    const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
 
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const originSize = isMobile ? 26 : 34;
@@ -295,6 +298,13 @@ export default function MapWindow({
           <TbCurrentLocation size={20} />
         </StyledBtn>
       </ResetButtonContainer>
+      {!isListExpanded && (
+        <ListViewButton onClick={onListExpand}>
+          <Text size="xs" variant="white" weight="normal">
+            목록 보기
+          </Text>
+        </ListViewButton>
+      )}
     </MapContainer>
   );
 }
@@ -338,5 +348,25 @@ const StyledBtn = styled(Button)`
       width: 16px;
       height: 16px;
     }
+  }
+`;
+
+const ListViewButton = styled.button`
+  display: none;
+
+  @media screen and (max-width: 768px) {
+    display: flex;
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    z-index: 10;
+    align-items: center;
+    gap: 4px;
   }
 `;

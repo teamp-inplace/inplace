@@ -19,18 +19,20 @@ type SelectedOption = {
 
 export default function MapPage() {
   const { data: influencerOptions } = useGetDropdownName();
+  const [isListExpanded, setIsListExpanded] = useState(false);
   const [selectedInfluencers, setSelectedInfluencers] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<SelectedOption[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
   const [selectedPlaceId, setSelectedPlaceId] = useState<number | null>(null);
   const [placeData, setPlaceData] = useState<PlaceData[]>([]);
-  const [translateY, setTranslateY] = useState(500);
+  const [translateY, setTranslateY] = useState(window.innerHeight);
   const dragStartRef = useRef<{
     isDragging: boolean;
     startY: number;
     startTranslate: number;
   }>({ isDragging: false, startY: 0, startTranslate: 500 });
+
   const [mapBounds, setMapBounds] = useState<LocationData>({
     topLeftLatitude: 0,
     topLeftLongitude: 0,
@@ -48,12 +50,11 @@ export default function MapPage() {
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!dragStartRef.current.isDragging) return;
-    e.preventDefault();
 
     const delta = e.touches[0].clientY - dragStartRef.current.startY;
     const newTranslate = dragStartRef.current.startTranslate + delta;
 
-    const clampedTranslate = Math.max(0, Math.min(500, newTranslate));
+    const clampedTranslate = Math.max(0, Math.min(window.innerHeight, newTranslate));
     setTranslateY(clampedTranslate);
   };
 
@@ -64,10 +65,13 @@ export default function MapPage() {
 
     if (translateY < threshold) {
       setTranslateY(0);
-    } else if (translateY > 500 - threshold) {
-      setTranslateY(500);
+      setIsListExpanded(true);
+    } else if (translateY > window.innerHeight - threshold) {
+      setTranslateY(window.innerHeight);
+      setIsListExpanded(false);
     } else {
-      setTranslateY(translateY < 250 ? 0 : 500);
+      setTranslateY(translateY < window.innerHeight / 2 ? 0 : window.innerHeight);
+      setIsListExpanded(translateY < window.innerHeight / 2);
     }
   };
 
@@ -153,6 +157,11 @@ export default function MapPage() {
     setSelectedPlaceId((prevId) => (prevId === placeId ? null : placeId));
   }, []);
 
+  const handleListExpand = useCallback(() => {
+    setIsListExpanded((prev) => !prev);
+    setTranslateY(isListExpanded ? window.innerHeight : 0);
+  }, []);
+
   return (
     <PageContainer>
       <Wrapper>
@@ -197,6 +206,8 @@ export default function MapPage() {
         placeData={placeData}
         selectedPlaceId={selectedPlaceId}
         onPlaceSelect={handlePlaceSelect}
+        isListExpanded={isListExpanded}
+        onListExpand={handleListExpand}
       />
       <PlaceSectionDesktop>
         <PlaceSection
@@ -209,6 +220,8 @@ export default function MapPage() {
         />
       </PlaceSectionDesktop>
       <MobilePlaceSection
+        $isExpanded={isListExpanded}
+        onClick={() => isListExpanded && setIsListExpanded(false)}
         $translateY={translateY}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -269,8 +282,8 @@ const PlaceSectionDesktop = styled.div`
   }
 `;
 
-const MobilePlaceSection = styled.div<{ $translateY: number }>`
-  display: none;
+const MobilePlaceSection = styled.div<{ $translateY: number; $isExpanded: boolean }>`
+  display: ${({ $isExpanded }) => ($isExpanded ? 'block' : 'none')};
 
   @media screen and (max-width: 768px) {
     display: block;
@@ -278,9 +291,9 @@ const MobilePlaceSection = styled.div<{ $translateY: number }>`
     bottom: 0;
     left: 0;
     width: 100%;
+    transform: translateY(${(props) => props.$translateY}px);
     height: 80vh;
     background-color: #3c3c3c;
-    transform: translateY(${(props) => `${props.$translateY}px`});
     z-index: 90;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
