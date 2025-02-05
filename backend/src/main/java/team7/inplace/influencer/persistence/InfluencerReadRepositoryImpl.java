@@ -22,6 +22,15 @@ public class InfluencerReadRepositoryImpl implements InfluencerReadRepository {
         Long influencerId,
         Long userId
     ) {
+        boolean exists = queryFactory
+            .selectFrom(QInfluencer.influencer)
+            .where(QInfluencer.influencer.id.eq(influencerId))
+            .fetchFirst() != null;
+
+        if (!exists) {
+            return Optional.empty();
+        }
+
         return Optional.ofNullable(
             queryFactory
                 .select(
@@ -33,7 +42,7 @@ public class InfluencerReadRepositoryImpl implements InfluencerReadRepository {
                         userId == null ?
                             Expressions.constant(false) :
                             QLikedInfluencer.likedInfluencer.id.in(userId).isNotNull(),
-                        QLikedInfluencer.likedInfluencer.id.count(),
+                        QLikedInfluencer.likedInfluencer.id.countDistinct(),
                         QVideo.video.id.count()
                     )
                 ).distinct()
@@ -41,8 +50,9 @@ public class InfluencerReadRepositoryImpl implements InfluencerReadRepository {
                 .leftJoin(QLikedInfluencer.likedInfluencer)
                 .on(QInfluencer.influencer.id.eq(QLikedInfluencer.likedInfluencer.influencerId)
                     .and(QLikedInfluencer.likedInfluencer.isLiked.isTrue()))
-                .join(QVideo.video).on(QInfluencer.influencer.id.eq(QVideo.video.influencerId))
+                .leftJoin(QVideo.video).on(QInfluencer.influencer.id.eq(QVideo.video.influencerId))
                 .where(QInfluencer.influencer.id.eq(influencerId),
+                    QVideo.video.placeId.isNotNull(),
                     QInfluencer.influencer.deleteAt.isNull(),
                     QVideo.video.deleteAt.isNull(),
                     QLikedInfluencer.likedInfluencer.deleteAt.isNull())

@@ -24,6 +24,8 @@ import team7.inplace.influencer.presentation.dto.InfluencerRequest.Like;
 import team7.inplace.influencer.presentation.dto.InfluencerRequest.Upsert;
 import team7.inplace.influencer.presentation.dto.InfluencerResponse;
 import team7.inplace.influencer.presentation.dto.InfluencerResponse.Detail;
+import team7.inplace.influencer.presentation.dto.InfluencerResponse.Video;
+import team7.inplace.video.application.VideoService;
 
 @RequiredArgsConstructor
 @RestController
@@ -31,6 +33,7 @@ import team7.inplace.influencer.presentation.dto.InfluencerResponse.Detail;
 public class InfluencerController implements InfluencerControllerApiSpec {
 
     private final InfluencerService influencerService;
+    private final VideoService videoService;
 
     @Override
     @GetMapping()
@@ -119,5 +122,17 @@ public class InfluencerController implements InfluencerControllerApiSpec {
 
         var response = InfluencerResponse.Detail.from(influencer);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Override
+    @GetMapping("/{influencerId}/videos")
+    public ResponseEntity<Page<Video>> getInfluencerVideos(
+        Pageable pageable,
+        @PathVariable Long influencerId
+    ) {
+        var videos = videoService.getOneInfluencerVideos(influencerId, pageable)
+            .map(InfluencerResponse.Video::from);
+
+        return new ResponseEntity<>(videos, HttpStatus.OK);
     }
 }
