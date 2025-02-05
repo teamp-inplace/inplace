@@ -12,54 +12,48 @@ import team7.inplace.video.presentation.dto.VideoResponse;
 import team7.inplace.video.presentation.dto.VideoResponse.Simple;
 
 public interface VideoControllerApiSpec {
+
     @Operation(
-            summary = "내 주변 그곳 ",
-            description = "Parameter로 입력받은 위치의 주변 장소 Video를 조회합니다."
+        summary = "내 주변 그곳 ",
+        description = "Parameter로 입력받은 위치의 주변 장소 Video를 조회합니다."
     )
     ResponseEntity<List<VideoResponse.Simple>> readVideos(
-            @RequestParam String longitude,
-            @RequestParam String latitude,
-            @PageableDefault(page = 0, size = 10) Pageable pageable
+        @RequestParam String longitude,
+        @RequestParam String latitude,
+        @PageableDefault(page = 0, size = 10) Pageable pageable
     );
 
     @Operation(
-            summary = "새로 등록된 그 곳",
-            description = "id를 기준으로 내림차순 정렬한 Video 정보를 조회합니다."
+        summary = "새로 등록된 그 곳",
+        description = "id를 기준으로 내림차순 정렬한 Video 정보를 조회합니다."
     )
     ResponseEntity<List<VideoResponse.Simple>> readByNew();
 
     @Operation(
-            summary = "쿨한 그 곳",
-            description = "조회수 증가량을 기준으로 내림차순 정렬한 Video 정보를 조회합니다."
+        summary = "쿨한 그 곳",
+        description = "조회수 증가량을 기준으로 내림차순 정렬한 Video 정보를 조회합니다."
     )
     ResponseEntity<List<VideoResponse.Simple>> readByCool();
 
     @Operation(
-            summary = "내 인플루언서의 비디오 반환",
-            description = "내가 좋아요를 누른 인플루언서의 Video 정보를 조회합니다."
+        summary = "내 인플루언서의 비디오 반환",
+        description = "내가 좋아요를 누른 인플루언서의 Video 정보를 조회합니다."
     )
     ResponseEntity<List<VideoResponse.Simple>> readByMyInfluencer();
 
     @Operation(
-            summary = "특정 인플루언서의 비디오 반환",
-            description = "특정 인플루언서의 Video 정보를 조회합니다."
-    )
-    ResponseEntity<Page<VideoResponse.Simple>> readByOneInfluencer(
-            @PageableDefault(page = 0, size = 6) Pageable pageable,
-            @PathVariable Long influencerId
-    );
-
-    @Operation(
-            summary = "비디오 삭제",
-            description = "비디오를 삭제합니다."
+        summary = "비디오 삭제",
+        description = "비디오를 삭제합니다."
     )
     ResponseEntity<Void> deleteVideo(
-            @PathVariable Long videoId
+        @PathVariable Long videoId
     );
 
     @Operation(
-            summary = "장소가 없는 비디오 조회(ADMIN)",
-            description = "비디오를 조회합니다."
+        summary = "장소가 없는 비디오 조회(ADMIN)",
+        description = "비디오를 조회합니다."
     )
-    ResponseEntity<Page<Simple>> readPlaceNullVideo(@PageableDefault(page = 0, size = 10) Pageable pageable);
+    ResponseEntity<Page<Simple>> readPlaceNullVideo(
+        @PageableDefault(page = 0, size = 10) Pageable pageable
+    );
 }
