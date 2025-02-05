@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { useQueryClient } from '@tanstack/react-query';
 import { RequestPlaceReview } from '@/types';
 import RatingStep from '@/components/Review/steps/RatingStep';
 import CommentStep from '@/components/Review/steps/CommentStep';
@@ -13,6 +14,7 @@ export default function ReviewPage() {
   const { uuid } = useParams() as { uuid: string };
   const { data: reviewInfo } = useGetReviewInfo(uuid);
   const { mutate: postReview } = usePostPlaceReview(uuid);
+  const queryClient = useQueryClient();
 
   const [reviewData, setReviewData] = useState<RequestPlaceReview>({
     likes: null,
@@ -35,6 +37,8 @@ export default function ReviewPage() {
     postReview(finalReviewData, {
       onSuccess: () => {
         setIsCompleted(true);
+        queryClient.invalidateQueries({ queryKey: ['placeInfo'] });
+        queryClient.invalidateQueries({ queryKey: ['review'] });
       },
       onError: (error) => {
         console.error('리뷰 등록 중 오류가 발생했습니다:', error);
