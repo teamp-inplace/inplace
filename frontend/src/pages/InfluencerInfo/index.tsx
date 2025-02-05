@@ -20,6 +20,13 @@ import { useGetInfluencerVideo } from '@/api/hooks/useGetInfluencerVideo';
 export default function InfluencerInfoPage() {
   const { id } = useParams() as { id: string };
   const { data: influencerInfoData } = useGetInfluencerInfo(id);
+  const {
+    data: videos,
+    fetchNextPage: videoFetchNextPage,
+    hasNextPage: videoHasNextPage,
+    isFetchingNextPage: videoIsFetchingNextPage,
+  } = useGetInfluencerVideo(id, 6);
+
   const influencerId = Number(id);
 
   const { isAuthenticated } = useAuth();
@@ -30,12 +37,6 @@ export default function InfluencerInfoPage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   const { mutate: postLike } = usePostInfluencerLike();
-  const {
-    data: videos,
-    fetchNextPage: videoFetchNextPage,
-    hasNextPage: videoHasNextPage,
-    isFetchingNextPage: videoIsFetchingNextPage,
-  } = useGetInfluencerVideo(id, 6);
 
   const handleClickLike = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {

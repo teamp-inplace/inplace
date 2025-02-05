@@ -13,7 +13,7 @@ export const getInfluencerVideo = async (id: string, page: number, size: number)
 };
 export const useGetInfluencerVideo = (id: string, size: number) => {
   return useSuspenseInfiniteQuery({
-    queryKey: ['influencerVideo', size],
+    queryKey: ['influencerVideo', id, size],
     queryFn: ({ pageParam = 0 }) => getInfluencerVideo(id, pageParam, size),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {
