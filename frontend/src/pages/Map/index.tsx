@@ -248,6 +248,9 @@ const DropdownContainer = styled.div`
     padding-top: 12px;
     z-index: 9;
   }
+  @media screen and (max-width: 400px) {
+    flex-wrap: wrap;
+  }
 `;
 
 const PlaceSectionDesktop = styled.div`
