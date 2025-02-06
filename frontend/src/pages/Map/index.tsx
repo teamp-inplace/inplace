@@ -53,7 +53,7 @@ export default function MapPage() {
     if (!dragStartRef.current.isDragging) return;
 
     const now = Date.now();
-    if (now - lastMoveTimeRef.current < 50) return; // 50ms 이내 연속 호출 방지
+    if (now - lastMoveTimeRef.current < 50) return;
 
     lastMoveTimeRef.current = now;
 
