@@ -8,6 +8,7 @@ import { LocationData, MarkerData, MarkerInfo, PlaceData } from '@/types';
 import InfoWindow from './InfoWindow';
 import BasicImage from '@/assets/images/basic-image.webp';
 import { useGetMarkerInfo } from '@/api/hooks/useGetMarkerInfo';
+import { Text } from '@/components/common/typography/Text';
 
 interface MapWindowProps {
   influencerImg: string;
@@ -19,6 +20,8 @@ interface MapWindowProps {
   shouldFetchPlaces: boolean;
   onCompleteFetch: (value: boolean) => void;
   onPlaceSelect: (placeId: number | null) => void;
+  isListExpanded?: boolean;
+  onListExpand?: () => void;
 }
 
 export default function InfluencerMapWindow({
@@ -31,6 +34,8 @@ export default function InfluencerMapWindow({
   shouldFetchPlaces,
   onCompleteFetch,
   onPlaceSelect,
+  isListExpanded,
+  onListExpand,
 }: MapWindowProps) {
   const mapRef = useRef<kakao.maps.Map | null>(null);
 
@@ -59,15 +64,22 @@ export default function InfluencerMapWindow({
   const moveMapToMarker = useCallback((latitude: number, longitude: number) => {
     if (mapRef.current) {
       const position = new kakao.maps.LatLng(latitude, longitude);
+
       if (mapRef.current.getLevel() > 10) {
         mapRef.current.setLevel(9, {
           anchor: position,
           animate: true,
         });
       }
+      const mapHeight = mapRef.current.getNode().clientHeight;
+      const offsetRatio = isMobile ? 0.3 : 0.2;
+
+      const offsetLat = position.getLat() + (offsetRatio * mapHeight) / 100000;
+      const offsetPosition = new kakao.maps.LatLng(offsetLat, position.getLng());
+
       setTimeout(() => {
         if (mapRef.current) {
-          mapRef.current.panTo(position);
+          mapRef.current.panTo(offsetPosition);
         }
       }, 100);
     }
@@ -211,6 +223,7 @@ export default function InfluencerMapWindow({
                 onClick={(marker) => {
                   handleMarkerClick(place.placeId, marker);
                 }}
+                zIndex={selectedPlaceId === place.placeId ? 999 : 1}
                 position={{
                   lat: place.latitude,
                   lng: place.longitude,
@@ -247,6 +260,13 @@ export default function InfluencerMapWindow({
             <TbCurrentLocation size={20} />
           </StyledBtn>
         </ResetButtonContainer>
+        {!isListExpanded && (
+          <ListViewButton onClick={onListExpand}>
+            <Text size="xs" variant="white" weight="normal">
+              목록 보기
+            </Text>
+          </ListViewButton>
+        )}
       </MapContainer>
       <Btn onClick={handleSearchNearby}>
         <GrPowerCycle />
@@ -301,5 +321,24 @@ const Btn = styled.div`
 
   @media screen and (max-width: 768px) {
     font-size: 14px;
+  }
+`;
+const ListViewButton = styled.button`
+  display: none;
+
+  @media screen and (max-width: 768px) {
+    display: flex;
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    z-index: 10;
+    align-items: center;
+    gap: 4px;
   }
 `;
