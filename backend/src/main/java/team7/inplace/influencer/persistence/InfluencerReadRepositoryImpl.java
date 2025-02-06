@@ -17,7 +17,6 @@ import team7.inplace.video.domain.QVideo;
 public class InfluencerReadRepositoryImpl implements InfluencerReadRepository {
 
     private final JPAQueryFactory queryFactory;
-    private final JPAQueryFactory jpaQueryFactory;
 
     @Override
     public Optional<InfluencerQueryResult.Detail> getInfluencerDetail(
@@ -64,7 +63,7 @@ public class InfluencerReadRepositoryImpl implements InfluencerReadRepository {
 
     @Override
     public List<String> getInfluencerNamesByPlaceId(Long placeId) {
-        return jpaQueryFactory
+        return queryFactory
             .select(QInfluencer.influencer.name)
             .from(QInfluencer.influencer)
             .leftJoin(QVideo.video).on(QInfluencer.influencer.id.eq(QVideo.video.influencerId))
