@@ -252,29 +252,33 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
     }
 
     @Override
-    public Page<VideoQueryResult.SimpleVideo> findSimpleVideosWithOneInfluencerId(Long influencerId, Pageable pageable) {
+    public Page<VideoQueryResult.SimpleVideo> findSimpleVideosWithOneInfluencerId(
+        Long influencerId, Pageable pageable) {
         var videos = queryFactory
-                .select(new QVideoQueryResult_SimpleVideo(
-                        QVideo.video.id,
-                        QVideo.video.uuid,
-                        QInfluencer.influencer.name,
-                        QPlace.place.id,
-                        QPlace.place.name,
-                        QPlace.place.category
-                ))
-                .from(QVideo.video)
-                .leftJoin(QPlace.place).on(QVideo.video.placeId.eq(QPlace.place.id))
-                .leftJoin(QInfluencer.influencer).on(QVideo.video.influencerId.eq(QInfluencer.influencer.id))
-                .where(QVideo.video.influencerId.eq(influencerId))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+            .select(new QVideoQueryResult_SimpleVideo(
+                QVideo.video.id,
+                QVideo.video.uuid,
+                QInfluencer.influencer.name,
+                QPlace.place.id,
+                QPlace.place.name,
+                QPlace.place.category
+            ))
+            .from(QVideo.video)
+            .innerJoin(QPlace.place).on(QVideo.video.placeId.eq(QPlace.place.id))
+            .leftJoin(QInfluencer.influencer)
+            .on(QVideo.video.influencerId.eq(QInfluencer.influencer.id))
+            .where(QVideo.video.influencerId.eq(influencerId))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
 
         var total = queryFactory
-                .select(QVideo.video.count())
-                .from(QVideo.video)
-                .where(QVideo.video.influencerId.eq(influencerId))
-                .fetchOne();
+            .select(QVideo.video.countDistinct())
+            .from(QVideo.video)
+            .where(QVideo.video.influencerId.eq(influencerId)
+                .and(QVideo.video.placeId.isNotNull())
+                .and(QVideo.video.deleteAt.isNull()))
+            .fetchOne();
 
         return new PageImpl<>(videos, pageable, total);
     }
