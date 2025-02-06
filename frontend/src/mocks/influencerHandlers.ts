@@ -221,7 +221,7 @@ export const InfluencerHandlers = [
       }),
     );
   }),
-  rest.get(`${BASE_URL}/influencers/:id`, (req, res, ctx) => {
+  rest.get(`${BASE_URL}/influencers/:id([0-9]+)`, (req, res, ctx) => {
     const { id } = req.params;
     const data = dummyInfluencerInfo[id.toString()];
 
