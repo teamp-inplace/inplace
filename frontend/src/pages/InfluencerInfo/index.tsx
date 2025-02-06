@@ -3,7 +3,7 @@ import { PiHeartFill, PiHeartLight } from 'react-icons/pi';
 import styled from 'styled-components';
 import { useLocation, useParams } from 'react-router-dom';
 import { Suspense, useCallback, useEffect, useState } from 'react';
-import { QueryErrorResetBoundary } from '@tanstack/react-query';
+import { QueryErrorResetBoundary, useQueryClient } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
 import Error from '@/components/common/layouts/Error';
 import { Text } from '@/components/common/typography/Text';
@@ -35,6 +35,7 @@ export default function InfluencerInfoPage() {
   const [activeTab, setActiveTab] = useState<'video' | 'map'>('video');
   const [isLike, setIsLike] = useState(influencerInfoData.likes);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const queryClient = useQueryClient();
 
   const { mutate: postLike } = usePostInfluencerLike();
 
@@ -52,6 +53,7 @@ export default function InfluencerInfoPage() {
         {
           onSuccess: () => {
             setIsLike(newLikeStatus);
+            queryClient.invalidateQueries({ queryKey: ['influencerInfo'] });
           },
           onError: () => {
             alert('좋아요 등록에 실패했어요. 다시 시도해주세요!');

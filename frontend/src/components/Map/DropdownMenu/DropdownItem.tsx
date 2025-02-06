@@ -33,6 +33,6 @@ const DropdownItems = styled.div<{ type: 'location' | 'influencer' | 'category';
 
   @media screen and (max-width: 768px) {
     padding: 8px 12px;
-    font-size: 12px;
+    font-size: 14px;
   }
 `;
