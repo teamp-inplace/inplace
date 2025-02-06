@@ -1,6 +1,10 @@
 package team7.inplace.influencer.persistence;
 
+import static com.querydsl.core.types.ExpressionUtils.count;
+import static com.querydsl.jpa.JPAExpressions.select;
+
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +21,6 @@ import team7.inplace.video.domain.QVideo;
 public class InfluencerReadRepositoryImpl implements InfluencerReadRepository {
 
     private final JPAQueryFactory queryFactory;
-    private final JPAQueryFactory jpaQueryFactory;
 
     @Override
     public Optional<InfluencerQueryResult.Detail> getInfluencerDetail(
@@ -41,30 +44,37 @@ public class InfluencerReadRepositoryImpl implements InfluencerReadRepository {
                         QInfluencer.influencer.name,
                         QInfluencer.influencer.imgUrl,
                         QInfluencer.influencer.job,
-                        userId == null ?
+                        userId == null ? //유저의 좋아요 여부
                             Expressions.constant(false) :
-                            QLikedInfluencer.likedInfluencer.id.in(userId).isNotNull(),
-                        QLikedInfluencer.likedInfluencer.id.countDistinct(),
-                        QVideo.video.id.count()
+                            JPAExpressions
+                                .selectOne()
+                                .from(QLikedInfluencer.likedInfluencer)
+                                .where(QLikedInfluencer.likedInfluencer.influencerId.eq(
+                                        QInfluencer.influencer.id)
+                                    .and(QLikedInfluencer.likedInfluencer.userId.eq(userId))
+                                    .and(QLikedInfluencer.likedInfluencer.isLiked.isTrue()))
+                                .exists(),
+                        select(count(QLikedInfluencer.likedInfluencer.id)) // 팔로워 수
+                            .from(QLikedInfluencer.likedInfluencer)
+                            .where(QLikedInfluencer.likedInfluencer.influencerId.eq(
+                                    QInfluencer.influencer.id)
+                                .and(QLikedInfluencer.likedInfluencer.isLiked.isTrue())),
+                        select(count(QVideo.video.id)) // 비디오 수
+                            .from(QVideo.video)
+                            .where(QVideo.video.influencerId.eq(QInfluencer.influencer.id)
+                                .and(QVideo.video.placeId.isNotNull())
+                                .and(QVideo.video.deleteAt.isNull()))
                     )
-                ).distinct()
+                )
                 .from(QInfluencer.influencer)
-                .leftJoin(QLikedInfluencer.likedInfluencer)
-                .on(QInfluencer.influencer.id.eq(QLikedInfluencer.likedInfluencer.influencerId)
-                    .and(QLikedInfluencer.likedInfluencer.isLiked.isTrue()))
-                .leftJoin(QVideo.video).on(QInfluencer.influencer.id.eq(QVideo.video.influencerId))
-                .where(QInfluencer.influencer.id.eq(influencerId),
-                    QVideo.video.placeId.isNotNull(),
-                    QInfluencer.influencer.deleteAt.isNull(),
-                    QVideo.video.deleteAt.isNull(),
-                    QLikedInfluencer.likedInfluencer.deleteAt.isNull())
+                .where(QInfluencer.influencer.id.eq(influencerId))
                 .fetchOne()
         );
     }
 
     @Override
     public List<String> getInfluencerNamesByPlaceId(Long placeId) {
-        return jpaQueryFactory
+        return queryFactory
             .select(QInfluencer.influencer.name)
             .from(QInfluencer.influencer)
             .leftJoin(QVideo.video).on(QInfluencer.influencer.id.eq(QVideo.video.influencerId))
