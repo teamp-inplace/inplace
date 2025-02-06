@@ -29,7 +29,7 @@ public class ReviewReadRepositoryImpl implements ReviewReadRepository {
         Long userId,
         Pageable pageable
     ) {
-        jpaQueryFactory
+        var contents = jpaQueryFactory
             .select(new QReviewQueryResult_Detail(
                 QReview.review.id,
                 QReview.review.isLiked,
@@ -48,9 +48,18 @@ public class ReviewReadRepositoryImpl implements ReviewReadRepository {
                 QReview.review.userId.eq(userId),
                 QReview.review.deleteAt.isNull(),
                 QPlace.place.deleteAt.isNull()
-            );
+            ).fetchOne();
 
-        return null;
+        var total = jpaQueryFactory
+            .select(count(QReview.review.id))
+            .from(QReview.review)
+            .where(
+                QReview.review.userId.eq(userId),
+                QReview.review.deleteAt.isNull()
+            )
+            .fetchOne();
+
+        return new PageImpl<>(Collections.singletonList(contents), pageable, total);
     }
 
     @Override
