@@ -4,16 +4,16 @@ const GlobalStyle = createGlobalStyle`
 	@font-face {
 		font-family: "Noto Sans";
 		font-weight: 700;
-		src: url("./assets/fonts/noto-sans-v38-latin-700.woff2") format("woff2"),
-		url("./assets/fonts/Noto-Sans-700.woff") format('woff'),;
+		src: url("./assets/fonts/noto-sans-v38-latin-700.woff2") format("font-woff2"),
+		url("./assets/fonts/Noto-Sans-700.woff") format("font-woff"),;
 		font-display: swap;
 	}
 
 	@font-face {
 		font-family: "Noto Sans";
 		font-weight: 400;
-		src: url("./assets/fonts/noto-sans-v38-latin-regular.woff2") format("woff2"),
-		url("./assets/fonts/Noto-Sans-regular.woff") format('woff'),;
+		src: url("./assets/fonts/noto-sans-v38-latin-regular.woff2") format("font-woff2"),
+		url("./assets/fonts/Noto-Sans-regular.woff") format("font-woff"),;
 		font-display: swap;
 	}
 
