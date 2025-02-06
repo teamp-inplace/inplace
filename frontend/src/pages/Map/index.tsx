@@ -31,7 +31,7 @@ export default function MapPage() {
     isDragging: boolean;
     startY: number;
     startTranslate: number;
-  }>({ isDragging: false, startY: 0, startTranslate: 500 });
+  }>({ isDragging: false, startY: 0, startTranslate: window.innerHeight });
 
   const [mapBounds, setMapBounds] = useState<LocationData>({
     topLeftLatitude: 0,
@@ -62,21 +62,18 @@ export default function MapPage() {
     const clampedTranslate = Math.max(0, Math.min(window.innerHeight, newTranslate));
     setTranslateY(clampedTranslate);
   };
+  const autoCloseThreshold = window.innerHeight * 0.65;
 
   const handleTouchEnd = () => {
     dragStartRef.current.isDragging = false;
 
-    const threshold = 10;
+    const threshold = 50;
 
-    if (translateY < threshold) {
-      setTranslateY(0);
-      setIsListExpanded(true);
-    } else if (translateY > window.innerHeight - threshold) {
+    if (Math.abs(translateY - dragStartRef.current.startTranslate) < threshold) {
+      setTranslateY(dragStartRef.current.startTranslate);
+    } else if (translateY > autoCloseThreshold) {
       setTranslateY(window.innerHeight);
       setIsListExpanded(false);
-    } else {
-      setTranslateY(translateY < window.innerHeight / 2 ? 0 : window.innerHeight);
-      setIsListExpanded(translateY < window.innerHeight / 2);
     }
   };
 
@@ -163,8 +160,11 @@ export default function MapPage() {
   }, []);
 
   const handleListExpand = useCallback(() => {
-    setIsListExpanded((prev) => !prev);
-    setTranslateY(isListExpanded ? window.innerHeight : 0);
+    setIsListExpanded((prev) => {
+      const newExpandedState = !prev;
+      setTranslateY(newExpandedState ? 0 : window.innerHeight);
+      return newExpandedState;
+    });
   }, []);
 
   return (

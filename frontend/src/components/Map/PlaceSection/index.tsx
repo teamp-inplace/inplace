@@ -18,7 +18,6 @@ interface PlaceSectionProps {
   onGetPlaceData: (data: PlaceData[]) => void;
   onPlaceSelect: (placeId: number) => void;
   selectedPlaceId: number | null;
-  onScrollTop?: () => void;
 }
 
 export default function PlaceSection({
@@ -28,7 +27,6 @@ export default function PlaceSection({
   onGetPlaceData,
   onPlaceSelect,
   selectedPlaceId,
-  onScrollTop,
 }: PlaceSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null); // 무한 스크롤을 위한 ref와 observer 설정
   const previousPlacesRef = useRef<PlaceData[]>([]);
@@ -85,18 +83,6 @@ export default function PlaceSection({
     [onPlaceSelect],
   );
 
-  const handleScroll = useCallback(
-    (e: React.UIEvent<HTMLDivElement>) => {
-      const { scrollTop } = e.currentTarget;
-      if (scrollTop === 0 && onScrollTop) {
-        setTimeout(() => {
-          onScrollTop();
-        }, 300);
-      }
-    },
-    [onScrollTop],
-  );
-
   if (isLoading && !isFetchingNextPage && previousPlacesRef.current.length === 0) {
     return (
       <SectionContainer>
@@ -116,7 +102,7 @@ export default function PlaceSection({
   }
 
   return (
-    <SectionContainer ref={sectionRef} onScroll={handleScroll}>
+    <SectionContainer ref={sectionRef}>
       {filteredPlaces.length === 0 ? (
         <NoItem message="장소 정보가 없어요!" height={400} />
       ) : (
@@ -179,7 +165,7 @@ const ContentContainer = styled.div`
 
   @media screen and (max-width: 768px) {
     width: 100%;
-    padding: 0 16px 40px 16px;
+    padding: 0 10px 40px 16px;
     box-sizing: border-box;
   }
 `;
@@ -191,10 +177,11 @@ const PlacesGrid = styled.div`
 
   @media screen and (max-width: 768px) {
     grid-template-columns: 1fr;
+    gap: 10px;
   }
 
   @media screen and (max-width: 430px) {
-    gap: 12px;
+    gap: 8px;
   }
 `;
 
