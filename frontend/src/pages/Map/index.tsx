@@ -47,13 +47,18 @@ export default function MapPage() {
       startTranslate: translateY,
     };
   };
+  const lastMoveTimeRef = useRef(0);
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!dragStartRef.current.isDragging) return;
 
+    const now = Date.now();
+    if (now - lastMoveTimeRef.current < 50) return; // 50ms 이내 연속 호출 방지
+
+    lastMoveTimeRef.current = now;
+
     const delta = e.touches[0].clientY - dragStartRef.current.startY;
     const newTranslate = dragStartRef.current.startTranslate + delta;
-
     const clampedTranslate = Math.max(0, Math.min(window.innerHeight, newTranslate));
     setTranslateY(clampedTranslate);
   };
@@ -61,7 +66,7 @@ export default function MapPage() {
   const handleTouchEnd = () => {
     dragStartRef.current.isDragging = false;
 
-    const threshold = 30;
+    const threshold = 10;
 
     if (translateY < threshold) {
       setTranslateY(0);
