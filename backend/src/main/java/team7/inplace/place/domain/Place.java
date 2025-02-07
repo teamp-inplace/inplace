@@ -15,14 +15,9 @@ import team7.inplace.global.baseEntity.BaseEntity;
 @Entity(name = "places")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Place extends BaseEntity {
+
     @Column(nullable = false, length = 50)
     private String name;
-
-    //@Column(columnDefinition = "json")
-    private String facility;
-
-    @Column(columnDefinition = "TEXT")
-    private String menuImgUrl;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -34,12 +29,23 @@ public class Place extends BaseEntity {
     @Embedded
     private Coordinate coordinate;
 
+    @Deprecated
+    //@Column(columnDefinition = "json")
+    private String facility;
+
+    @Deprecated
+    @Column(columnDefinition = "TEXT")
+    private String menuImgUrl;
+
+    @Deprecated
     private LocalDateTime menuUpdatedAt;
 
+    private String googlePlaceId;
+
     public Place(
-            String name, String facility, String menuImgsUrl, String category,
-            String address, String x, String y,
-            LocalDateTime menuUpdatedAt
+        String name, String facility, String menuImgsUrl, String category,
+        String address, String x, String y,
+        LocalDateTime menuUpdatedAt
     ) {
         this.name = name;
         this.facility = facility;
