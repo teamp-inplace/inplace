@@ -225,8 +225,8 @@ export default function MapWindow({
             style={{
               fontSize: isMobile ? '12px' : '14px',
               borderRadius: '20px',
-              padding: isMobile ? '16px' : '20px',
-              boxShadow: '1px 1px 2px #707070',
+              padding: isMobile ? '16px' : '18px',
+              boxShadow: '1px 1px 1px #707070',
             }}
           >
             주변 찾기

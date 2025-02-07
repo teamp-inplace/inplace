@@ -68,8 +68,8 @@ export default function Chip({
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin: 20px 0;
+  gap: 10px;
+  margin: 16px 0;
   @media screen and (max-width: 768px) {
     padding: 0;
     gap: 8px;
@@ -97,7 +97,7 @@ const FilterChip = styled.div`
   display: flex;
   align-items: center;
   justify-content: 'space-between';
-  padding: 6px 10px 6px 18px;
+  padding: 4px 10px 4px 18px;
   height: 24px;
   border-radius: 18px;
   background-color: #e8f9ff;

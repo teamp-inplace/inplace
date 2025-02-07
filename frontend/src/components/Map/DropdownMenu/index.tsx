@@ -164,7 +164,7 @@ export default function DropdownMenu({
 
 const DropdownContainer = styled.div<{ type: 'location' | 'influencer' | 'category' }>`
   position: relative;
-  min-width: ${(props) => (props.type === 'influencer' ? '180px' : '130px')};
+  min-width: ${(props) => (props.type === 'influencer' ? '170px' : '130px')};
   max-width: ${(props) => (props.type === 'influencer' ? '300px' : '400px')};
 
   @media screen and (max-width: 768px) {
@@ -175,7 +175,7 @@ const DropdownContainer = styled.div<{ type: 'location' | 'influencer' | 'catego
 
 const DropdownButton = styled.button<{ $isOpen: boolean }>`
   width: 100%;
-  padding: 10px 14px;
+  padding: 8px 10px;
   background: #ffffff;
   border: 2px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;

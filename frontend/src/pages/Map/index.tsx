@@ -267,7 +267,7 @@ const Wrapper = styled.div`
 
 const DropdownContainer = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 14px;
   padding-top: 16px;
 
   @media screen and (max-width: 768px) {
@@ -275,9 +275,19 @@ const DropdownContainer = styled.div`
     gap: 12px;
     padding-top: 12px;
     z-index: 9;
-  }
-  @media screen and (max-width: 400px) {
-    flex-wrap: wrap;
+
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    & > * {
+      flex-shrink: 0;
+    }
   }
 `;
 
