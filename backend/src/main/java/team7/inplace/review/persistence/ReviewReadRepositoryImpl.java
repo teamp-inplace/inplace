@@ -6,6 +6,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import team7.inplace.review.persistence.dto.ReviewQueryResult;
 import team7.inplace.user.domain.QUser;
 
 @Repository
+@Slf4j
 @RequiredArgsConstructor
 public class ReviewReadRepositoryImpl implements ReviewReadRepository {
 
@@ -29,6 +31,18 @@ public class ReviewReadRepositoryImpl implements ReviewReadRepository {
         Long userId,
         Pageable pageable
     ) {
+        var total = jpaQueryFactory
+            .select(count(QReview.review.id))
+            .from(QReview.review)
+            .where(
+                QReview.review.userId.eq(userId),
+                QReview.review.deleteAt.isNull()
+            )
+            .fetchOne();
+
+//        if (total == null || total == 0) {
+//            return new PageImpl<>(Collections.emptyList(), pageable, 0);
+//        }
         var contents = jpaQueryFactory
             .select(new QReviewQueryResult_Detail(
                 QReview.review.id,
@@ -48,18 +62,9 @@ public class ReviewReadRepositoryImpl implements ReviewReadRepository {
                 QReview.review.userId.eq(userId),
                 QReview.review.deleteAt.isNull(),
                 QPlace.place.deleteAt.isNull()
-            ).fetchOne();
-
-        var total = jpaQueryFactory
-            .select(count(QReview.review.id))
-            .from(QReview.review)
-            .where(
-                QReview.review.userId.eq(userId),
-                QReview.review.deleteAt.isNull()
-            )
-            .fetchOne();
-
-        return new PageImpl<>(Collections.singletonList(contents), pageable, total);
+            ).fetch();
+        log.info("contents: {}", contents);
+        return new PageImpl<>(contents, pageable, total);
     }
 
     @Override
