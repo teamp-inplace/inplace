@@ -223,8 +223,9 @@ export default function MapWindow({
             variant="white"
             size="small"
             style={{
+              fontSize: isMobile ? '12px' : '14px',
               borderRadius: '20px',
-              padding: isMobile ? '18px' : '20px',
+              padding: isMobile ? '16px' : '20px',
               boxShadow: '1px 1px 2px #707070',
             }}
           >
@@ -259,6 +260,7 @@ export default function MapWindow({
           {markers.map((place) => (
             <MapMarker
               key={place.placeId}
+              zIndex={selectedPlaceId === place.placeId ? 999 : 1}
               onClick={(marker) => {
                 handleMarkerClick(place.placeId, marker);
               }}
@@ -317,7 +319,7 @@ const MapContainer = styled.div`
 
 const ButtonContainer = styled.div`
   position: absolute;
-  top: 8%;
+  top: 5%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 5;
