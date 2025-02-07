@@ -477,10 +477,9 @@ export const myHandlers = [
     return res(ctx.status(200), ctx.json({ message: 'send successfully.' }));
   }),
   rest.patch(`${BASE_URL}${patchNicknamePath()}`, async (req, res, ctx) => {
-    const params = req.url.searchParams.get('nickname') || '';
-    nickName = params;
-
-    return res(ctx.status(200), ctx.json({ message: 'Nickname updated successfully.', params }));
+    const { nickname } = req.body as { nickname: string };
+    nickName = nickname;
+    return res(ctx.status(200), ctx.json({ message: 'Nickname updated successfully.', nickName }));
   }),
 ];
 export default myHandlers;

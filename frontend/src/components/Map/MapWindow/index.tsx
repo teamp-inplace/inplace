@@ -223,9 +223,10 @@ export default function MapWindow({
             variant="white"
             size="small"
             style={{
+              fontSize: isMobile ? '12px' : '14px',
               borderRadius: '20px',
-              padding: isMobile ? '18px' : '20px',
-              boxShadow: '1px 1px 2px #707070',
+              padding: isMobile ? '16px' : '18px',
+              boxShadow: '1px 1px 1px #707070',
             }}
           >
             주변 찾기
@@ -259,6 +260,7 @@ export default function MapWindow({
           {markers.map((place) => (
             <MapMarker
               key={place.placeId}
+              zIndex={selectedPlaceId === place.placeId ? 999 : 1}
               onClick={(marker) => {
                 handleMarkerClick(place.placeId, marker);
               }}
@@ -317,10 +319,10 @@ const MapContainer = styled.div`
 
 const ButtonContainer = styled.div`
   position: absolute;
-  top: 8%;
+  top: 5%;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 10;
+  z-index: 5;
 `;
 
 const ResetButtonContainer = styled.div`

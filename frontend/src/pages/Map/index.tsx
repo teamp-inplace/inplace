@@ -31,7 +31,7 @@ export default function MapPage() {
     isDragging: boolean;
     startY: number;
     startTranslate: number;
-  }>({ isDragging: false, startY: 0, startTranslate: 500 });
+  }>({ isDragging: false, startY: 0, startTranslate: window.innerHeight });
 
   const [mapBounds, setMapBounds] = useState<LocationData>({
     topLeftLatitude: 0,
@@ -41,6 +41,7 @@ export default function MapPage() {
   });
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
     dragStartRef.current = {
       isDragging: true,
       startY: e.touches[0].clientY,
@@ -52,6 +53,7 @@ export default function MapPage() {
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!dragStartRef.current.isDragging) return;
 
+    e.preventDefault();
     const now = Date.now();
     if (now - lastMoveTimeRef.current < 50) return;
 
@@ -62,21 +64,18 @@ export default function MapPage() {
     const clampedTranslate = Math.max(0, Math.min(window.innerHeight, newTranslate));
     setTranslateY(clampedTranslate);
   };
+  const autoCloseThreshold = window.innerHeight * 0.75;
 
   const handleTouchEnd = () => {
     dragStartRef.current.isDragging = false;
 
-    const threshold = 10;
+    const threshold = 50;
 
-    if (translateY < threshold) {
-      setTranslateY(0);
-      setIsListExpanded(true);
-    } else if (translateY > window.innerHeight - threshold) {
+    if (Math.abs(translateY - dragStartRef.current.startTranslate) < threshold) {
+      setTranslateY(dragStartRef.current.startTranslate);
+    } else if (translateY > autoCloseThreshold) {
       setTranslateY(window.innerHeight);
       setIsListExpanded(false);
-    } else {
-      setTranslateY(translateY < window.innerHeight / 2 ? 0 : window.innerHeight);
-      setIsListExpanded(translateY < window.innerHeight / 2);
     }
   };
 
@@ -163,8 +162,11 @@ export default function MapPage() {
   }, []);
 
   const handleListExpand = useCallback(() => {
-    setIsListExpanded((prev) => !prev);
-    setTranslateY(isListExpanded ? window.innerHeight : 0);
+    setIsListExpanded((prev) => {
+      const newExpandedState = !prev;
+      setTranslateY(newExpandedState ? 0 : window.innerHeight);
+      return newExpandedState;
+    });
   }, []);
 
   return (
@@ -267,7 +269,7 @@ const Wrapper = styled.div`
 
 const DropdownContainer = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 14px;
   padding-top: 16px;
 
   @media screen and (max-width: 768px) {
@@ -275,8 +277,7 @@ const DropdownContainer = styled.div`
     gap: 12px;
     padding-top: 12px;
     z-index: 9;
-  }
-  @media screen and (max-width: 400px) {
+
     flex-wrap: wrap;
   }
 `;

@@ -63,4 +63,7 @@ const LoadMoreTrigger = styled.div`
 `;
 const GridItem = styled.div<{ column: number }>`
   justify-self: ${({ column }) => (column === 1 ? 'start' : 'end')};
+  @media screen and (max-width: 768px) {
+    justify-self: center;
+  }
 `;
