@@ -41,6 +41,7 @@ export default function MapPage() {
   });
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
     dragStartRef.current = {
       isDragging: true,
       startY: e.touches[0].clientY,
@@ -52,6 +53,7 @@ export default function MapPage() {
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!dragStartRef.current.isDragging) return;
 
+    e.preventDefault();
     const now = Date.now();
     if (now - lastMoveTimeRef.current < 50) return;
 
@@ -62,7 +64,7 @@ export default function MapPage() {
     const clampedTranslate = Math.max(0, Math.min(window.innerHeight, newTranslate));
     setTranslateY(clampedTranslate);
   };
-  const autoCloseThreshold = window.innerHeight * 0.65;
+  const autoCloseThreshold = window.innerHeight * 0.75;
 
   const handleTouchEnd = () => {
     dragStartRef.current.isDragging = false;
