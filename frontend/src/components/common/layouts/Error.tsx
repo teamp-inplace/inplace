@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AxiosError } from 'axios';
 import Logo from '@/assets/images/Logo.svg';
@@ -12,11 +12,20 @@ type FallbackProps = {
 };
 export default function ErrorComponent({ error, resetErrorBoundary }: FallbackProps) {
   const location = useLocation();
+  const navigate = useNavigate();
   const errorLocation = useRef(location.pathname);
 
   const handleRetry = () => {
-    resetErrorBoundary();
+    const isRetriableError =
+      error instanceof AxiosError && error.response?.status !== 401 && error.response?.status !== 403;
+
+    if (isRetriableError) {
+      resetErrorBoundary();
+    } else {
+      navigate('/');
+    }
   };
+
   const getMessage = () => {
     if (error instanceof AxiosError) {
       switch (error.response?.status) {
@@ -56,7 +65,7 @@ export default function ErrorComponent({ error, resetErrorBoundary }: FallbackPr
     if (error instanceof Error) {
       return {
         title: '데이터 로딩 실패 🥲',
-        description: '오류가 발생했어요. 잠시 후 다시 시도해주세요.',
+        description: '데이터를 불러오는 중 오류가 발생했어요.\n잠시 후 다시 시도해주세요.',
       };
     }
     return {
@@ -71,7 +80,7 @@ export default function ErrorComponent({ error, resetErrorBoundary }: FallbackPr
     if (location.pathname !== errorLocation.current) {
       resetErrorBoundary();
     }
-  }, [location.pathname]);
+  }, [location.pathname, resetErrorBoundary]);
 
   return (
     <Wrapper>
@@ -85,7 +94,9 @@ export default function ErrorComponent({ error, resetErrorBoundary }: FallbackPr
         </Paragraph>
       </TextWrapper>
       <StyledButton aria-label="retry-btn" variant="outline" size="large" onClick={handleRetry}>
-        다시 시도하기
+        {error instanceof AxiosError && error.response?.status !== 401 && error.response?.status !== 403
+          ? '다시 시도하기'
+          : '홈으로 가기'}
       </StyledButton>
     </Wrapper>
   );

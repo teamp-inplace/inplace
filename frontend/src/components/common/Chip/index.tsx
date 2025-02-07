@@ -68,10 +68,28 @@ export default function Chip({
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin: 20px 0;
+  gap: 10px;
+  margin: 16px 0;
   @media screen and (max-width: 768px) {
+    padding: 0;
+    gap: 8px;
     margin: 14px 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    & > * {
+      flex-shrink: 0;
+    }
+  }
+  x & > * {
+    flex-shrink: 0;
   }
 `;
 
@@ -79,7 +97,7 @@ const FilterChip = styled.div`
   display: flex;
   align-items: center;
   justify-content: 'space-between';
-  padding: 6px 10px 6px 18px;
+  padding: 4px 10px 4px 18px;
   height: 24px;
   border-radius: 18px;
   background-color: #e8f9ff;
@@ -87,6 +105,7 @@ const FilterChip = styled.div`
   @media screen and (max-width: 768px) {
     padding: 4px 10px 4px 14px;
     font-size: 14px;
+    height: 20px;
   }
 `;
 

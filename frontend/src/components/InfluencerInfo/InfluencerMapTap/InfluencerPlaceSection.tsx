@@ -152,16 +152,33 @@ const SectionContainer = styled.div`
   &::-webkit-scrollbar-track {
     background-color: transparent;
   }
+  @media screen and (max-width: 768px) {
+    height: 100%;
+    padding-right: 0;
+  }
 `;
 
 const ContentContainer = styled.div`
   width: 100%;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    padding: 0 10px 40px 16px;
+    box-sizing: border-box;
+  }
 `;
 
 const PlacesGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
+  @media screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  @media screen and (max-width: 430px) {
+    gap: 8px;
+  }
 `;
 
 const LoadMoreTrigger = styled.div`

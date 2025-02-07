@@ -105,7 +105,7 @@ const PlaceCard = styled.div<{ $isSelected: boolean }>`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  border-radius: 8px;
+  border-radius: 6px;
   gap: 20px;
   padding: 16px;
   cursor: pointer;
@@ -118,7 +118,7 @@ const PlaceCard = styled.div<{ $isSelected: boolean }>`
   }
 
   @media screen and (max-width: 768px) {
-    height: 100px;
+    height: 100%;
     gap: 12px;
     padding: 8px;
   }
@@ -131,12 +131,12 @@ const ImageContainer = styled.div`
   border-radius: 30px;
 
   @media screen and (max-width: 768px) {
-    width: 15%;
+    width: 10%;
     border-radius: 12px;
   }
 
   @media screen and (max-width: 430px) {
-    width: 25%;
+    width: 20%;
     border-radius: 12px;
   }
 `;
@@ -178,7 +178,7 @@ const LikeIcon = styled.div`
   @media screen and (max-width: 768px) {
     width: 24px;
     height: 24px;
-    right: 2px;
+    right: 10px;
     top: 16px;
 
     svg {
