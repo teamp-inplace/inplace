@@ -9,30 +9,32 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import team7.inplace.user.application.UserFacade;
 import team7.inplace.user.application.UserService;
+import team7.inplace.user.presentation.dto.UserRequest;
 import team7.inplace.user.presentation.dto.UserResponse;
 
-//TODO: RequestMapping적용 -> /users
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/uesrs")
 @PreAuthorize("isAuthenticated()")
 public class UserController implements UserControllerApiSepc {
 
     public final UserService userService;
     public final UserFacade userFacade;
 
-    @PatchMapping("/user/nickname")
+    @PatchMapping("/nickname")
     public ResponseEntity<Void> updateNickname(
-        @PathVariable("nickname") String nickname
+        @RequestBody UserRequest.UpdateNickname request
     ) {
-        userService.updateNickname(nickname);
+        userService.updateNickname(request.nickname());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/users/influencers")
+    @GetMapping("/influencers")
     public ResponseEntity<Page<UserResponse.LikedInfluencer>> getMyFavoriteInfluencers(
         @PageableDefault(page = 0, size = 10) Pageable pageable
     ) {
@@ -41,7 +43,7 @@ public class UserController implements UserControllerApiSepc {
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
-    @GetMapping("/users/places")
+    @GetMapping("/places")
     public ResponseEntity<Page<UserResponse.LikedPlace>> getMyFavoritePlaces(
         @PageableDefault(page = 0, size = 10) Pageable pageable
     ) {
@@ -51,7 +53,7 @@ public class UserController implements UserControllerApiSepc {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/users/reviews")
+    @GetMapping("/reviews")
     public ResponseEntity<Page<UserResponse.Review>> getMyReviews(
         @PageableDefault(page = 0, size = 10) Pageable pageable
     ) {
@@ -61,7 +63,7 @@ public class UserController implements UserControllerApiSepc {
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
-    @GetMapping("/users/info")
+    @GetMapping("/info")
     public ResponseEntity<UserResponse.Info> getUserInfo() {
         var userInfo = userService.getUserInfo();
 
