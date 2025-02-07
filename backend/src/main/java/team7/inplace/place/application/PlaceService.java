@@ -20,7 +20,9 @@ import team7.inplace.place.application.command.PlacesCommand.Coordinate;
 import team7.inplace.place.application.command.PlacesCommand.Create;
 import team7.inplace.place.application.command.PlacesCommand.FilterParams;
 import team7.inplace.place.application.dto.LikedPlaceInfo;
+import team7.inplace.place.application.dto.PlaceInfo;
 import team7.inplace.place.application.dto.PlaceQueryInfo;
+import team7.inplace.place.client.GooglePlaceClient;
 import team7.inplace.place.domain.Category;
 import team7.inplace.place.persistence.PlaceJpaRepository;
 import team7.inplace.place.persistence.PlaceReadRepository;
@@ -38,7 +40,7 @@ public class PlaceService {
     private final PlaceReadRepository placeReadRepository;
     private final PlaceSaveRepository placeSaveRepository;
     private final PlaceJpaRepository placeJpaRepository;
-
+    private final GooglePlaceClient googlePlaceClient;
     private final ReviewJPARepository reviewJPARepository;
     private final LikedPlaceRepository likedPlaceRepository;
     private final VideoReadRepository videoReadRepository;
@@ -176,5 +178,21 @@ public class PlaceService {
     @Transactional(readOnly = true)
     public PlaceQueryResult.Marker getMarkerInfo(Long placeId) {
         return placeReadRepository.findPlaceMarkerById(placeId);
+    }
+
+    @Transactional(readOnly = true)
+    public PlaceInfo.Detail getGooglePlaceInfo(Long placeId) {
+        var userId = AuthorizationUtil.getUserId();
+
+        var place = placeJpaRepository.findById(placeId)
+            .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
+        if (place.getGooglePlaceId() == null) {
+            throw InplaceException.of(PlaceErrorCode.PLACE_GOOGLE_ID_NOT_SUPPORTED);
+        }
+        var googlePlace = googlePlaceClient.requestForPlaceDetail(place.getGooglePlaceId());
+        var videos = videoReadRepository.findSimpleVideosByPlaceId(placeId);
+        var reviewLikeRate = reviewJPARepository.countRateByPlaceId(placeId);
+
+        return PlaceInfo.Detail.of(place, googlePlace, videos, reviewLikeRate);
     }
 }
