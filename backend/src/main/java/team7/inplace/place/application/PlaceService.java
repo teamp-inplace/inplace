@@ -186,6 +186,9 @@ public class PlaceService {
 
         var place = placeJpaRepository.findById(placeId)
             .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
+        if (place.getGooglePlaceId() == null) {
+            throw InplaceException.of(PlaceErrorCode.PLACE_GOOGLE_ID_NOT_SUPPORTED);
+        }
         var googlePlace = googlePlaceClient.requestForPlaceDetail(place.getGooglePlaceId());
         var videos = videoReadRepository.findSimpleVideosByPlaceId(placeId);
         var reviewLikeRate = reviewJPARepository.countRateByPlaceId(placeId);
