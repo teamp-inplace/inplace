@@ -2,12 +2,20 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
+import { AxiosError } from 'axios';
 import { AuthContext } from '@/provider/Auth';
 import { PlaceInfo, SpotData } from '@/types';
 import ErrorComponent from '@/components/common/layouts/Error';
 
 export function renderWithQueryClient(children: React.ReactNode) {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        staleTime: 0,
+      },
+    },
+  });
   return render(
     <AuthContext.Provider
       value={{
@@ -34,17 +42,31 @@ export async function testErrorBoundaryBehavior({
   mockFunction: jest.Mock;
   mockSuccessData: { data: SpotData[]; error: null }[] | { data: PlaceInfo; error: null };
 }) {
-  mockFunction.mockReturnValueOnce({ error: new ErrorEvent('Intentional Error'), data: [] });
+  mockFunction.mockImplementation(() => {
+    const error = new AxiosError();
+    error.response = {
+      status: 500,
+      statusText: 'Internal Server Error',
+      headers: {},
+      config: {
+        headers: {},
+        method: 'GET',
+        url: '/api/test',
+      } as never,
+      data: { message: 'Internal Server Error' },
+    };
+    throw error;
+  });
 
   renderWithQueryClient(renderComponent());
   await waitFor(() => {
-    expect(screen.getByText(/데이터 로딩 실패/)).toBeInTheDocument();
+    expect(screen.getByText(/서버 오류 발생/)).toBeInTheDocument();
   });
   mockFunction.mockReturnValueOnce(mockSuccessData);
 
   fireEvent.click(screen.getByText('다시 시도하기'));
 
   await waitFor(() => {
-    expect(screen.queryByText(/데이터 로딩 실패/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/서버 오류 발생/)).not.toBeInTheDocument();
   });
 }
