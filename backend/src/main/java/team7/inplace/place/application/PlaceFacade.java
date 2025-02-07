@@ -11,6 +11,7 @@ import team7.inplace.place.persistence.dto.PlaceQueryResult;
 @Facade
 @RequiredArgsConstructor
 public class PlaceFacade {
+
     private final PlaceService placeService;
     private final InfluencerService influencerService;
 

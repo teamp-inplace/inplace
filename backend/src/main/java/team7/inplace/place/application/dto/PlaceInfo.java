@@ -1,48 +1,40 @@
 package team7.inplace.place.application.dto;
 
+import java.util.List;
+import team7.inplace.place.client.GooglePlaceClientResponse;
+import team7.inplace.place.domain.Place;
+import team7.inplace.review.persistence.dto.ReviewQueryResult;
+import team7.inplace.video.persistence.dto.VideoQueryResult;
 
-import team7.inplace.place.domain.Address;
-import team7.inplace.place.domain.PlaceBulk;
+public class PlaceInfo {
 
-public record PlaceInfo(
+    public record Detail(
         Long placeId,
         String placeName,
-        AddressInfo address,
+        String address1,
+        String address2,
+        String address3,
         String category,
-        String influencerName,
-        String menuImgUrl,
-        String longitude,
-        String latitude,
-        Boolean likes
-) {
 
-
-    public static PlaceInfo of(PlaceBulk place, String influencerName, boolean likes) {
-        return new PlaceInfo(
-                place.getPlace().getId(),
-                place.getPlace().getName(),
-                AddressInfo.of(place.getPlace().getAddress()),
-                place.getPlace().getCategory().toString(),
-                influencerName,
-                place.getPlace().getMenuImgUrl(),
-                place.getPlace().getCoordinate().getLongitude().toString(),
-                place.getPlace().getCoordinate().getLatitude().toString(),
-                likes
-        );
-    }
-
-    // influencer, likes 추가 예정
-    public record AddressInfo(
-            String address1,
-            String address2,
-            String address3
+        GooglePlaceClientResponse.Place googlePlace,
+        List<VideoQueryResult.SimpleVideo> videos,
+        ReviewQueryResult.LikeRate reviewLikeRate
     ) {
 
-        public static AddressInfo of(Address address) {
-            return new PlaceInfo.AddressInfo(
-                    address.getAddress1(),
-                    address.getAddress2(),
-                    address.getAddress3()
+        public static Detail of(
+            Place place, GooglePlaceClientResponse.Place googlePlace,
+            List<VideoQueryResult.SimpleVideo> videos, ReviewQueryResult.LikeRate reviewLikeRate
+        ) {
+            return new Detail(
+                place.getId(),
+                place.getName(),
+                place.getAddress().getAddress1(),
+                place.getAddress().getAddress2(),
+                place.getAddress().getAddress3(),
+                place.getCategory().name(),
+                googlePlace,
+                videos,
+                reviewLikeRate
             );
         }
     }

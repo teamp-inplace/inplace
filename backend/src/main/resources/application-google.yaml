@@ -1,0 +1,6 @@
+google:
+  api:
+    crawling-key: ${GOOGLE_API_KEY_YOUTUBE}
+    place-key1: ${GOOGLE_API_KEY_PLACE_1}
+    place-key2: ${GOOGLE_API_KEY_PLACE_2}
+    place-key3: ${GOOGLE_API_KEY_PLACE_3}
