@@ -85,6 +85,7 @@ export default function DropdownMenu({
         lng: option.lng,
       });
       setIsOpen(false);
+      setSelectedMainOption(null);
     }
   };
 

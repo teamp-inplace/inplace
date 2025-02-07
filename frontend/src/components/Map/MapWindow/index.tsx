@@ -320,7 +320,7 @@ const ButtonContainer = styled.div`
   top: 8%;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 10;
+  z-index: 5;
 `;
 
 const ResetButtonContainer = styled.div`
