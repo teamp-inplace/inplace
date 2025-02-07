@@ -6,7 +6,6 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +19,6 @@ import team7.inplace.review.persistence.dto.ReviewQueryResult;
 import team7.inplace.user.domain.QUser;
 
 @Repository
-@Slf4j
 @RequiredArgsConstructor
 public class ReviewReadRepositoryImpl implements ReviewReadRepository {
 
@@ -40,9 +38,9 @@ public class ReviewReadRepositoryImpl implements ReviewReadRepository {
             )
             .fetchOne();
 
-//        if (total == null || total == 0) {
-//            return new PageImpl<>(Collections.emptyList(), pageable, 0);
-//        }
+        if (total == null || total == 0) {
+            return new PageImpl<>(Collections.emptyList(), pageable, 0);
+        }
         var contents = jpaQueryFactory
             .select(new QReviewQueryResult_Detail(
                 QReview.review.id,
@@ -63,7 +61,6 @@ public class ReviewReadRepositoryImpl implements ReviewReadRepository {
                 QReview.review.deleteAt.isNull(),
                 QPlace.place.deleteAt.isNull()
             ).fetch();
-        log.info("contents: {}", contents);
         return new PageImpl<>(contents, pageable, total);
     }
 
