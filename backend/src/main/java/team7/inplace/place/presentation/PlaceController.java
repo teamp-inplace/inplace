@@ -2,6 +2,7 @@ package team7.inplace.place.presentation;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import team7.inplace.kakao.application.PlaceMessageFacade;
 import team7.inplace.place.application.CategoryService;
 import team7.inplace.place.application.PlaceFacade;
 import team7.inplace.place.application.PlaceService;
@@ -27,16 +27,17 @@ import team7.inplace.place.application.dto.PlaceQueryInfo;
 import team7.inplace.place.persistence.dto.PlaceQueryResult;
 import team7.inplace.place.presentation.dto.CategoriesResponse;
 import team7.inplace.place.presentation.dto.PlaceLikeRequest;
+import team7.inplace.place.presentation.dto.PlaceNewResponse;
 import team7.inplace.place.presentation.dto.PlacesResponse;
 import team7.inplace.place.presentation.dto.ReviewResponse;
 import team7.inplace.review.application.ReviewService;
 
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/places")
 public class PlaceController implements PlaceControllerApiSpec {
 
-    private final PlaceMessageFacade placeMessageFacade;
     private final PlaceService placeService;
     private final CategoryService categoryService;
     private final ReviewService reviewService;
@@ -107,7 +108,9 @@ public class PlaceController implements PlaceControllerApiSpec {
     }
 
     @GetMapping("/{id}/marker")
-    public ResponseEntity<PlacesResponse.Marker> getPlaceForMarker(@PathVariable("id") Long placeId) {
+    public ResponseEntity<PlacesResponse.Marker> getPlaceForMarker(
+        @PathVariable("id") Long placeId
+    ) {
         PlaceQueryInfo.Marker marker = placeFacade.getMarkerInfo(placeId);
         PlacesResponse.Marker markerResponse = PlacesResponse.Marker.from(marker);
         return new ResponseEntity<>(markerResponse, HttpStatus.OK);
@@ -138,4 +141,15 @@ public class PlaceController implements PlaceControllerApiSpec {
 
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
+
+    @Override
+    @GetMapping("/new/{placeId}")
+    public ResponseEntity<PlaceNewResponse.Place> getGooglePlaceDetail(Long placeId) {
+        var placeInfo = placeService.getGooglePlaceInfo(placeId);
+        log.info("placeInfo: {}", placeInfo);
+        var response = PlaceNewResponse.Place.from(placeInfo);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
 }
