@@ -19,7 +19,7 @@ import team7.inplace.user.presentation.dto.UserResponse;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/uesrs")
+@RequestMapping("/users")
 @PreAuthorize("isAuthenticated()")
 public class UserController implements UserControllerApiSepc {
 
