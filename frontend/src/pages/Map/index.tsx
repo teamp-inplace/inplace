@@ -276,18 +276,7 @@ const DropdownContainer = styled.div`
     padding-top: 12px;
     z-index: 9;
 
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    &::-webkit-scrollbar {
-      display: none;
-    }
-
-    & > * {
-      flex-shrink: 0;
-    }
+    flex-wrap: wrap;
   }
 `;
 
