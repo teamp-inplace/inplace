@@ -4,28 +4,27 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import team7.inplace.global.properties.GoogleApiProperties;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class YoutubeClient {
+
     private static final String VIDEO_SEARCH_URL = "https://www.googleapis.com/youtube/v3/search";
     private static final String VIDEO_SEARCH_PARAMS = "?part=snippet&channelId=%s&maxResults=50&key=%s&order=date&type=video";
     private static final String VIDEO_DETAIL_URL = "https://www.googleapis.com/youtube/v3/videos";
     private static final String VIDEO_DETAIL_PARAMS = "?part=statistics&id=%s&key=%s";
     private final RestTemplate restTemplate;
-    private final String apiKey;
-
-    public YoutubeClient(@Value("${youtube.api.key}") String apiKey, RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-        this.apiKey = apiKey;
-    }
+    private final GoogleApiProperties googleApiProperties;
 
     public JsonNode getVideoDetail(String videoId) {
-        String url = VIDEO_DETAIL_URL + String.format(VIDEO_DETAIL_PARAMS, videoId, apiKey);
+        String url = VIDEO_DETAIL_URL + String.format(VIDEO_DETAIL_PARAMS, videoId,
+            googleApiProperties.crawlingKey());
 
         JsonNode response = null;
         try {
@@ -43,7 +42,8 @@ public class YoutubeClient {
         List<JsonNode> videoItems = new ArrayList<>();
         String nextPageToken = null;
         while (true) {
-            String url = VIDEO_SEARCH_URL + String.format(VIDEO_SEARCH_PARAMS, chanelId, apiKey);
+            String url = VIDEO_SEARCH_URL + String.format(VIDEO_SEARCH_PARAMS, chanelId,
+                googleApiProperties.crawlingKey());
 
             JsonNode response = null;
             if (Objects.nonNull(nextPageToken)) {
@@ -60,7 +60,8 @@ public class YoutubeClient {
                 break;
             }
 
-            var containsLastVideo = extractSnippets(videoItems, response.path("items"), finalVideoUUID);
+            var containsLastVideo = extractSnippets(videoItems, response.path("items"),
+                finalVideoUUID);
             if (containsLastVideo) {
                 break;
             }
@@ -76,7 +77,8 @@ public class YoutubeClient {
         return Objects.isNull(nextPageToken) || nextPageToken.isEmpty();
     }
 
-    private boolean extractSnippets(List<JsonNode> videoItems, JsonNode items, String finalVideoUUID) {
+    private boolean extractSnippets(
+        List<JsonNode> videoItems, JsonNode items, String finalVideoUUID) {
 
         for (JsonNode item : items) {
             if (!item.get("id").has("videoId")) {

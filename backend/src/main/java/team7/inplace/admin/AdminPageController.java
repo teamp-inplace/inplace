@@ -9,8 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import team7.inplace.admin.banner.persistence.BannerRepository;
+import team7.inplace.global.properties.GoogleApiProperties;
 import team7.inplace.global.properties.KakaoApiProperties;
-import team7.inplace.global.properties.YoutubeApiProperties;
 import team7.inplace.influencer.persistence.InfluencerRepository;
 import team7.inplace.place.domain.Category;
 import team7.inplace.video.domain.Video;
@@ -22,7 +22,7 @@ import team7.inplace.video.persistence.VideoRepository;
 public class AdminPageController {
 
     private final KakaoApiProperties kakaoApiProperties;
-    private final YoutubeApiProperties youtubeApiProperties;
+    private final GoogleApiProperties googleApiProperties;
     private final VideoRepository videoRepository;
     private final BannerRepository bannerRepository;
     private final InfluencerRepository influencerRepository;
@@ -52,7 +52,7 @@ public class AdminPageController {
 
     @GetMapping("/influencer/new")
     public String getIncluencers(Model model) {
-        model.addAttribute("youtubeApiKey", youtubeApiProperties.key());
+        model.addAttribute("youtubeApiKey", googleApiProperties.crawlingKey());
         return "admin/influencer/new.html";
     }
 
