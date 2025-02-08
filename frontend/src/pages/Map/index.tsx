@@ -6,7 +6,7 @@ import PlaceSection from '@/components/Map/PlaceSection';
 import Chip from '@/components/common/Chip';
 import { Text } from '@/components/common/typography/Text';
 import locationOptions from '@/utils/constants/LocationOptions';
-import { categoryOptions } from '@/utils/constants/CategoryOptions';
+import categoryOptions from '@/utils/constants/CategoryOptions';
 import { LocationData, PlaceData } from '@/types';
 import useGetDropdownName from '@/api/hooks/useGetDropdownName';
 

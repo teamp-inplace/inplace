@@ -1,16 +1,14 @@
-export const categoryMapping = {
-  RESTAURANT: '음식점',
-  CAFE: '카페',
-  JAPANESE: '일식',
-  KOREAN: '한식',
-  WESTERN: '양식',
-  CHINESE: '중식',
-  CHICKEN: '치킨',
-  VIETNAMESE: '베트남식',
-  THAI: '태국식',
-  INDIAN: '인도식',
-} as const;
+const categoryOptions = [
+  { label: '음식점' },
+  { label: '카페' },
+  { label: '일식' },
+  { label: '한식' },
+  { label: '양식' },
+  { label: '중식' },
+  { label: '치킨' },
+  { label: '베트남식' },
+  { label: '태국식' },
+  { label: '인도식' },
+];
 
-export const categoryOptions = Object.keys(categoryMapping).map((key) => ({
-  label: key,
-}));
+export default categoryOptions;

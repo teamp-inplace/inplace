@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { IoClose } from 'react-icons/io5';
 import { Text } from '@/components/common/typography/Text';
-import { categoryMapping } from '@/utils/constants/CategoryOptions';
 
 type SelectedOption = {
   main: string;
@@ -54,7 +53,7 @@ export default function Chip({
       {selectedCategories.map((category) => (
         <FilterChip key={category}>
           <Text size="xs" weight="bold" variant="#36617f">
-            {categoryMapping[category as keyof typeof categoryMapping]}
+            {category}
           </Text>
           <ClearButton aria-label="cate-clear_btn" onClick={() => onClearCategory(category)}>
             <IoClose size={14} />
