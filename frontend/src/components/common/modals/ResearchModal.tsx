@@ -82,10 +82,12 @@ const ModalContainer = styled.div`
   display: flex;
   flex-direction: column;
   z-index: 999;
+  border: 2px solid black;
 
   @media screen and (max-width: 768px) {
     width: 80%;
-    height: 470px;
+    height: 28rem;
+    border: 1.6px solid black;
   }
 `;
 
@@ -141,7 +143,7 @@ const Title = styled.div`
 
   @media screen and (max-width: 768px) {
     line-height: 1.1;
-    font-size: 28px;
+    font-size: 26px;
   }
 `;
 
@@ -199,9 +201,17 @@ const CheckboxWrapper = styled.div`
   align-items: center;
   gap: 2px;
   background-color: #383838;
+
+  @media screen and (max-width: 768px) {
+    padding: 4px 2px;
+  }
 `;
 
 const CheckboxLabel = styled.label`
   font-size: 14px;
   color: #f6f6f6;
+
+  @media screen and (max-width: 768px) {
+    font-size: 12px;
+  }
 `;

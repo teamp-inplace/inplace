@@ -1,10 +1,9 @@
-import { FcInfo } from 'react-icons/fc';
-
 import styled from 'styled-components';
 
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Button from '@/components/common/Button';
+import InfoTalkIcon from '@/assets/images/infotalk.png';
 import { Paragraph } from '@/components/common/typography/Paragraph';
 import { useGetSendInfo } from '@/api/hooks/useGetSendInfo';
 import useAuth from '@/hooks/useAuth';
@@ -64,7 +63,7 @@ export default function VisitModal({ id, placeName, onClose }: { id: number; pla
       <Overlay onClick={() => onClose()}>
         <Wrapper onClick={handleModalClick}>
           <DescriptionSection>
-            <FcInfo size={180} />
+            <img src={InfoTalkIcon} alt="정보 카카오톡 아이콘" />
             <Paragraph size="l" weight="normal">
               {message || `${placeName}에 대한 정보를\n 카카오톡으로 보내드릴까요?`}
             </Paragraph>
@@ -107,10 +106,11 @@ const Wrapper = styled.div`
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  width: 500px;
-  height: 600px;
+  width: 440px;
+  height: 540px;
   border-radius: 8px;
   background-color: white;
+  border: 30px solid #e8f9ff;
 
   display: flex;
   flex-direction: column;
@@ -119,9 +119,9 @@ const Wrapper = styled.div`
   gap: 60px;
 
   @media screen and (max-width: 768px) {
-    width: 90%;
-    height: 450px;
-    gap: 50px;
+    width: calc(90% - 48px);
+    height: 402px;
+    border: 24px solid #e8f9ff;
   }
 `;
 const DescriptionSection = styled.div`
@@ -129,14 +129,20 @@ const DescriptionSection = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  margin-top: 20%;
+  margin-top: 16%;
+
+  img {
+    width: 180px;
+    height: 180px;
+  }
+
   p {
     line-height: 180%;
     white-space: pre-line;
   }
 
   @media screen and (max-width: 768px) {
-    svg {
+    img {
       width: 130px;
       height: 130px;
     }

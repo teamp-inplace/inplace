@@ -61,10 +61,12 @@ export default function LoginModal({
                 X
               </CloseButton>
               <TitleWrapper>
-                <LogoImage src={Logo} alt="인플레이스 로고" />
-                <Paragraph size="l" weight="bold">
-                  인플레이스
-                </Paragraph>
+                <IconBackground>
+                  <LogoImage src={Logo} alt="인플레이스 로고" />
+                  <Paragraph size="xl" weight="bold">
+                    인플레이스
+                  </Paragraph>
+                </IconBackground>
               </TitleWrapper>
               <KakaoLoginButton aria-label="kakao_login_btn" onClick={handleKakaoLogin}>
                 <FaComment />
@@ -97,19 +99,19 @@ const ModalContainer = styled.div`
   position: relative;
   width: 500px;
   height: 600px;
-  background-color: white;
+  background-color: #e8f9ff;
   border-radius: 8px;
 
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 100px;
+  gap: 70px;
 
   @media screen and (max-width: 768px) {
     width: 90%;
     height: 470px;
-    gap: 90px;
+    gap: 50px;
   }
 `;
 
@@ -129,13 +131,33 @@ const CloseButton = styled.button`
   }
 `;
 
-const LogoImage = styled.img`
-  height: 100px;
-  width: 90px;
+const IconBackground = styled.div`
+  background-color: white;
+  border-radius: 50%;
+  padding: 16px;
+  width: 280px;
+  height: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   @media screen and (max-width: 768px) {
-    height: 80px;
-    width: 80px;
+    padding: 12px;
+    width: 210px;
+    height: 180px;
+  }
+`;
+
+const LogoImage = styled.img`
+  height: 130px;
+  width: 130px;
+  margin-bottom: 30px;
+
+  @media screen and (max-width: 768px) {
+    height: 98px;
+    width: 98px;
+    margin-bottom: 23px;
   }
 `;
 
