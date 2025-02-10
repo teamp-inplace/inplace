@@ -221,7 +221,7 @@ export default function InfluencerMapWindow({
             <MapMarker
               position={userLocation}
               image={{
-                src: 'https://i.ibb.co/4gGFjRx/circle.png',
+                src: 'https://i.ibb.co/4gGFjRx/circle.webp',
                 size: { width: userLocationSize, height: userLocationSize },
               }}
             />
