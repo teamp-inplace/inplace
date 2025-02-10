@@ -49,7 +49,8 @@ export default function InfluencerItem({
         {
           onSuccess: () => {
             setIsLike(newLikeStatus);
-            queryClient.invalidateQueries({ queryKey: ['myInfluencerVideo'] });
+            queryClient.invalidateQueries({ queryKey: ['myInfluencerVideo'] }); // 내 인플루언서가 좋아한 그곳
+            queryClient.invalidateQueries({ queryKey: ['UserInfluencer'] }); // 내가 좋아요 한 인플루언서
           },
           onError: () => {
             alert('좋아요 등록에 실패했어요. 다시 시도해주세요!');
