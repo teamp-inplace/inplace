@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Button from '@/components/common/Button';
-import InfoTalkIcon from '@/assets/images/infotalk.png';
+import InfoTalkIcon from '@/assets/images/infotalk.webp';
 import { Paragraph } from '@/components/common/typography/Paragraph';
 import { useGetSendInfo } from '@/api/hooks/useGetSendInfo';
 import useAuth from '@/hooks/useAuth';
