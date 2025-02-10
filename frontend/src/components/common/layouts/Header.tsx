@@ -64,6 +64,17 @@ export default function Header() {
       <DesktopNav>
         {isAuthenticated ? (
           <>
+            {location.pathname === '/' && (
+              <NavItem
+                to="https://docs.google.com/forms/d/e/1FAIpQLSeBJcQg0gcVv2au5oFZ1aCLF9O_qbEiJCvnLEd0d1SSLLpDUA/viewform?pli=1"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text size="xs" variant="white" weight="normal">
+                  설문조사
+                </Text>
+              </NavItem>
+            )}
             <NavItem to="/map">
               <Text size="xs" variant="white" weight="normal">
                 지도
@@ -87,6 +98,17 @@ export default function Header() {
           </>
         ) : (
           <>
+            {location.pathname === '/' && (
+              <NavItem
+                to="https://docs.google.com/forms/d/e/1FAIpQLSeBJcQg0gcVv2au5oFZ1aCLF9O_qbEiJCvnLEd0d1SSLLpDUA/viewform?pli=1"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text size="xs" variant="white" weight="normal">
+                  설문조사
+                </Text>
+              </NavItem>
+            )}
             <NavItem to="/map">
               <Text size="xs" variant="white" weight="normal">
                 지도
@@ -119,6 +141,18 @@ export default function Header() {
         <MenuContainer variants={itemVariants}>
           {isAuthenticated ? (
             <>
+              {location.pathname === '/' && (
+                <MobileNavItem
+                  to="https://docs.google.com/forms/d/e/1FAIpQLSeBJcQg0gcVv2au5oFZ1aCLF9O_qbEiJCvnLEd0d1SSLLpDUA/viewform?pli=1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Text size="xs" variant="white" weight="normal">
+                    설문조사
+                  </Text>
+                </MobileNavItem>
+              )}
               <MobileNavItem to="/map" onClick={() => setIsMenuOpen(false)}>
                 <Text size="xs" variant="white" weight="normal">
                   지도
@@ -147,6 +181,18 @@ export default function Header() {
             </>
           ) : (
             <>
+              {location.pathname === '/' && (
+                <MobileNavItem
+                  to="https://docs.google.com/forms/d/e/1FAIpQLSeBJcQg0gcVv2au5oFZ1aCLF9O_qbEiJCvnLEd0d1SSLLpDUA/viewform?pli=1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Text size="xs" variant="white" weight="normal">
+                    설문조사
+                  </Text>
+                </MobileNavItem>
+              )}
               <MobileNavItem to="/map" onClick={() => setIsMenuOpen(false)}>
                 <Text size="xs" variant="white" weight="normal">
                   지도

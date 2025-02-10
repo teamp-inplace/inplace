@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { categoryMapping } from '@/utils/constants/CategoryOptions';
 
 interface DropdownItemProps {
   label: string;
@@ -10,11 +9,9 @@ interface DropdownItemProps {
 }
 
 export default function DropdownItem({ label, onClick, children, type, isSelected }: DropdownItemProps) {
-  const displayLabel = type === 'category' ? categoryMapping[label as keyof typeof categoryMapping] : label;
-
   return (
     <DropdownItems onClick={onClick} type={type} $isSelected={isSelected}>
-      {displayLabel}
+      {label}
       {children}
     </DropdownItems>
   );
