@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import FallbackImage from '@/components/common/Items/FallbackImage';
+// import FallbackImage from '@/components/common/Items/FallbackImage';
 import { Text } from '@/components/common/typography/Text';
 import { AddressInfo, MarkerInfo, PlaceData } from '@/types';
 
@@ -29,9 +29,9 @@ export default function InfoWindow({ data, onClose }: Props) {
         )}
       </Title>
       <Info>
-        <Img>
+        {/* <Img>
           <FallbackImage src={data.menuImgUrl} alt={data.placeName} />
-        </Img>
+        </Img> */}
         <TextInfo>
           <Text size="xs" weight="normal">
             {data.address ? getFullAddress(data.address) : '주소 정보가 없습니다'}
@@ -104,23 +104,23 @@ const Info = styled.div`
   width: 100%;
   display: flex;
   gap: 12px;
-  padding: 6px;
+  padding: 16px 10px;
   box-sizing: border-box;
   justify-content: space-between;
   align-items: center;
 
   @media screen and (max-width: 768px) {
-    padding: 4px;
+    padding: 6px 10px;
     gap: 0px;
   }
 `;
-const Img = styled.div`
-  width: 30%;
-  aspect-ratio: 1;
-  height: auto;
-`;
+// const Img = styled.div`
+//   width: 30%;
+//   aspect-ratio: 1;
+//   height: auto;
+// `;
 const TextInfo = styled.div`
-  width: 65%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 6px;

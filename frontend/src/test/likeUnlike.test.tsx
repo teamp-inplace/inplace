@@ -75,7 +75,6 @@ describe('좋아요/취소 기능 테스트', () => {
         latitude="33.450701"
         likes={false}
         onClick={() => {}}
-        menuImgUrl="https://via.placeholder.com/500"
       />,
     );
 

@@ -7,7 +7,7 @@ import { PlaceData } from '@/types';
 import { usePostPlaceLike } from '@/api/hooks/usePostPlaceLike';
 import useAuth from '@/hooks/useAuth';
 import LoginModal from '@/components/common/modals/LoginModal';
-import FallbackImage from '@/components/common/Items/FallbackImage';
+// import FallbackImage from '@/components/common/Items/FallbackImage';
 
 interface PlaceItemProps extends PlaceData {
   onClick: () => void;
@@ -23,7 +23,7 @@ export default function PlaceItem({
   address,
   influencerName,
   likes,
-  menuImgUrl,
+  // menuImgUrl,
   onClick,
   isSelected = false,
 }: PlaceItemProps) {
@@ -63,10 +63,10 @@ export default function PlaceItem({
   return (
     <>
       <PlaceCard key={placeId} onClick={onClick} $isSelected={isSelected}>
-        <ImageContainer>
-          <FallbackImage src={menuImgUrl} alt={placeName} />
-        </ImageContainer>
         <CardContent>
+          {/* <ImageContainer>
+          <FallbackImage src={menuImgUrl} alt={placeName} />
+        </ImageContainer> */}
           <Text size="m" weight="bold" variant="white">
             {placeName}
           </Text>
@@ -78,18 +78,18 @@ export default function PlaceItem({
               {influencerName}
             </Text>
           </InfluencerName>
-          <LikeIcon
-            role="button"
-            aria-label="like_btn"
-            onClick={(e: React.MouseEvent<HTMLDivElement>) => handleClickLike(e)}
-          >
-            {isLike ? (
-              <PiHeartFill color="#fe7373" size={30} data-testid="PiHeartFill" />
-            ) : (
-              <PiHeartLight color="white" size={30} data-testid="PiHeartLight" />
-            )}
-          </LikeIcon>
         </CardContent>
+        <LikeIcon
+          role="button"
+          aria-label="like_btn"
+          onClick={(e: React.MouseEvent<HTMLDivElement>) => handleClickLike(e)}
+        >
+          {isLike ? (
+            <PiHeartFill color="#fe7373" size={30} data-testid="PiHeartFill" />
+          ) : (
+            <PiHeartLight color="white" size={30} data-testid="PiHeartLight" />
+          )}
+        </LikeIcon>
       </PlaceCard>
       {showLoginModal && (
         <LoginModal immediateOpen currentPath={location.pathname} onClose={() => setShowLoginModal(false)} />
@@ -100,13 +100,12 @@ export default function PlaceItem({
 
 const PlaceCard = styled.div<{ $isSelected: boolean }>`
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   width: 100%;
   height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
   border-radius: 6px;
-  gap: 20px;
   padding: 16px;
   cursor: pointer;
   background-color: ${({ $isSelected }) => ($isSelected ? '#1b1a1a' : 'none')};
@@ -124,33 +123,29 @@ const PlaceCard = styled.div<{ $isSelected: boolean }>`
   }
 `;
 
-const ImageContainer = styled.div`
-  width: 20%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  border-radius: 30px;
+// const ImageContainer = styled.div`
+//   width: 20%;
+//   aspect-ratio: 1;
+//   object-fit: cover;
+//   border-radius: 30px;
 
-  @media screen and (max-width: 768px) {
-    width: 10%;
-    border-radius: 12px;
-  }
+//   @media screen and (max-width: 768px) {
+//     width: 10%;
+//     border-radius: 12px;
+//   }
 
-  @media screen and (max-width: 430px) {
-    width: 20%;
-    border-radius: 12px;
-  }
-`;
+//   @media screen and (max-width: 430px) {
+//     width: 20%;
+//     border-radius: 12px;
+//   }
+// `;
 
 const CardContent = styled.div`
-  width: 60%;
+  position: relative;
+  width: 90%;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  span {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
   @media screen and (max-width: 768px) {
     width: 55%;

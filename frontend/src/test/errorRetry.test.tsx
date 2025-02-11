@@ -73,27 +73,28 @@ describe('세부페이지 ErrorBoundary 테스트', () => {
         data: {
           placeName: 'Test Place',
           placeId: 123,
-          videoUrl: ['https://test.video'],
-          facilityInfo: {},
-          openHour: {
-            periodList: [],
-            offdayList: [],
-          },
-          menuInfos: { menuImgUrls: [], menuList: [], menuUpdatedAt: new Date() },
+          videos: [{ influencerName: '성시경', videoUrl: 'https://test.video' }],
+          facility: {},
           longitude: '126.978',
           latitude: '37.5665',
           placeLikes: {
             like: 0,
             dislike: 0,
           },
+          googleReviews: [
+            {
+              like: true,
+              text: '',
+              name: '',
+              publishTime: new Date(),
+            },
+          ],
           address: {
             address1: '',
             address2: '',
             address3: '',
           },
           category: '',
-          influencerName: '',
-          likes: true,
         },
         error: null,
       },

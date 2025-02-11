@@ -144,7 +144,7 @@ export type UserInfoData = {
 export type UserPlaceData = {
   placeId: number;
   placeName: string;
-  imageUrl: string;
+  imageUrl?: string | null;
   influencer?: string;
   likes: boolean;
 };
