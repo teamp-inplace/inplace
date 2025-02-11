@@ -27,6 +27,7 @@ export default function MapPage() {
   const [selectedPlaceId, setSelectedPlaceId] = useState<number | null>(null);
   const [placeData, setPlaceData] = useState<PlaceData[]>([]);
   const [translateY, setTranslateY] = useState(window.innerHeight);
+  const lastMoveTimeRef = useRef(0);
   const dragStartRef = useRef<{
     isDragging: boolean;
     startY: number;
@@ -41,19 +42,16 @@ export default function MapPage() {
   });
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    e.preventDefault();
     dragStartRef.current = {
       isDragging: true,
       startY: e.touches[0].clientY,
       startTranslate: translateY,
     };
   };
-  const lastMoveTimeRef = useRef(0);
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!dragStartRef.current.isDragging) return;
 
-    e.preventDefault();
     const now = Date.now();
     if (now - lastMoveTimeRef.current < 50) return;
 
@@ -253,6 +251,7 @@ const PageContainer = styled.div`
   @media screen and (max-width: 768px) {
     width: 100%;
     align-items: center;
+    touch-action: none;
   }
 `;
 

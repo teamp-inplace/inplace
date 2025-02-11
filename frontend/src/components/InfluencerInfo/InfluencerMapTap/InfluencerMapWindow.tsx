@@ -38,21 +38,18 @@ export default function InfluencerMapWindow({
   onListExpand,
 }: MapWindowProps) {
   const mapRef = useRef<kakao.maps.Map | null>(null);
-
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [markerInfo, setMarkerInfo] = useState<MarkerInfo | PlaceData>();
   const [shouldFetchData, setShouldFetchData] = useState<boolean>(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
-    const checkMobile = () => {
+    const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
 
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const originSize = isMobile ? 26 : 34;
