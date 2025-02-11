@@ -49,6 +49,7 @@ const Wrapper = styled.div`
   }
 
   @media screen and (max-width: 768px) {
+    align-items: center;
     svg {
       margin-left: 10px;
       width: 20px;
