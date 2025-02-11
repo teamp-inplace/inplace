@@ -143,23 +143,50 @@ export const searchHandlers = [
       {
         placeId: 1,
         placeName: '료코',
-        imageUrl: 'https://via.placeholder.com/100',
-        likes: false,
+        imageUrl: null,
+        influencerName: '성시경',
+        likes: true,
+        address: {
+          address1: '대구광역시',
+          address2: '북구',
+          address3: '대현로',
+        },
       },
       {
         placeId: 2,
         placeName: '이선장네',
-        imageUrl: 'https://via.placeholder.com/100',
+        imageUrl: null,
+        likes: true,
+        address: {
+          address1: '대구광역시',
+          address2: '북구',
+          address3: '대현로',
+        },
+        influencerName: '성시경',
       },
       {
         placeId: 3,
         placeName: '풍자또가',
-        imageUrl: 'https://via.placeholder.com/100',
+        imageUrl: null,
+        likes: true,
+        address: {
+          address1: '대구광역시',
+          address2: '북구',
+          address3: '대현로',
+        },
+        influencerName: '성시경',
       },
       {
         placeId: 4,
         placeName: '풍',
-        imageUrl: 'https://via.placeholder.com/100',
+        imageUrl: null,
+        likes: true,
+        address: {
+          address1: '대구광역시',
+          address2: '북구',
+          address3: '대현로',
+        },
+        influencerName: '성시경',
       },
     ];
     const filteredData = data.filter((item) => {
