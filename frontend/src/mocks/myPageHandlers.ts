@@ -270,8 +270,9 @@ const mockPlaces = [
   {
     placeId: 1,
     placeName: '료코',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '성시경',
+    imageUrl: null,
+    likes: true,
+    influencerName: '성시경',
     address: {
       address1: '대구광역시',
       address2: '북구',
@@ -281,8 +282,9 @@ const mockPlaces = [
   {
     placeId: 2,
     placeName: '이선장네',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '임영웅',
+    likes: true,
+    imageUrl: null,
+    influencerName: '임영웅',
     address: {
       address1: '대구광역시',
       address2: '북구',
@@ -292,8 +294,9 @@ const mockPlaces = [
   {
     placeId: 3,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    likes: true,
+    influencerName: '풍자',
     address: {
       address1: '대구광역시',
       address2: '북구',
@@ -303,8 +306,8 @@ const mockPlaces = [
   {
     placeId: 4,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    influencerName: '풍자',
     address: {
       address1: '대구광역시',
       address2: '북구',
@@ -314,8 +317,8 @@ const mockPlaces = [
   {
     placeId: 5,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    influencerName: '풍자',
     address: {
       address1: '대구광역시',
       address2: '북구',
@@ -325,8 +328,8 @@ const mockPlaces = [
   {
     placeId: 6,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    influencerName: '풍자',
     address: {
       address1: '대구광역시',
       address2: '북구',
@@ -336,8 +339,8 @@ const mockPlaces = [
   {
     placeId: 7,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    influencerName: '풍자',
     address: {
       address1: '대구광역시',
       address2: '북구',
@@ -347,8 +350,8 @@ const mockPlaces = [
   {
     placeId: 8,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    influencerName: '풍자',
     address: {
       address1: '대구광역시',
       address2: '북구',
@@ -358,8 +361,8 @@ const mockPlaces = [
   {
     placeId: 9,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    influencerName: '풍자',
     address: {
       address1: '대구광역시',
       address2: '북구',
@@ -369,8 +372,8 @@ const mockPlaces = [
   {
     placeId: 10,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    influencerName: '풍자',
     address: {
       address1: '대구광역시',
       address2: '북구',
@@ -380,8 +383,8 @@ const mockPlaces = [
   {
     placeId: 11,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    influencerName: '풍자',
     address: {
       address1: '대구광역시',
       address2: '북구',

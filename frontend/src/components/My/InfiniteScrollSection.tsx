@@ -13,6 +13,7 @@ type Props<T> = {
   renderItem: (item: T) => JSX.Element;
   noItemMessage: string;
   dataAttr: string;
+  type: string;
 };
 
 export default function InfiniteScrollSection<T>({
@@ -24,6 +25,7 @@ export default function InfiniteScrollSection<T>({
   renderItem,
   noItemMessage,
   dataAttr,
+  type,
 }: Props<T>) {
   const listRef = useRef<HTMLDivElement | null>(null);
 
@@ -62,7 +64,7 @@ export default function InfiniteScrollSection<T>({
           <ArrowButton aria-label="left_btn" onClick={() => scrollList('left')} className="left-arrow" direction="left">
             <GrPrevious size={40} />
           </ArrowButton>
-          <ListContainer ref={listRef}>
+          <ListContainer ref={listRef} $type={type}>
             {items.map((item) => renderItem(item))}
             {(hasNextPage || isFetchingNextPage) && (
               <LoadMoreTrigger ref={loadMoreRef}>
@@ -94,7 +96,7 @@ const SectionContainer = styled.div`
   width: 100%;
 `;
 
-const ListContainer = styled.div`
+const ListContainer = styled.div<{ $type: string }>`
   overflow: hidden;
   display: flex;
   gap: 30px;
@@ -113,7 +115,7 @@ const ListContainer = styled.div`
 
   @media screen and (max-width: 768px) {
     gap: 18px;
-    height: 190px;
+    height: ${({ $type }) => ($type === 'influencer' ? '190px' : null)};
   }
 `;
 

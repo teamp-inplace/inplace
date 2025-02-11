@@ -142,7 +142,7 @@ export type UserPlaceData = {
   placeId: number;
   placeName: string;
   imageUrl?: string | null;
-  influencer?: string;
+  influencerName: string;
   address: AddressInfo;
   likes: boolean;
 };

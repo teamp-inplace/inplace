@@ -11,9 +11,12 @@ import { UserPlaceData } from '@/types';
 import { usePostPlaceLike } from '@/api/hooks/usePostPlaceLike';
 import useAuth from '@/hooks/useAuth';
 import LoginModal from '@/components/common/modals/LoginModal';
-import FallbackImage from '@/components/common/Items/FallbackImage';
 
-export default function UserPlaceItem({ placeId, placeName, influencer, likes }: UserPlaceData) {
+const getFullAddress = (addr: UserPlaceData['address']) => {
+  return [addr.address1, addr.address2, addr.address3].filter(Boolean).join(' ');
+};
+
+export default function UserPlaceItem({ placeId, placeName, influencerName, likes, address }: UserPlaceData) {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
   const [isLike, setIsLike] = useState(likes);
@@ -48,20 +51,20 @@ export default function UserPlaceItem({ placeId, placeName, influencer, likes }:
   return (
     <>
       <Wrapper to={`/detail/${placeId}`}>
-        <ImageContainer>
-          <LikeIcon onClick={(e: React.MouseEvent<HTMLDivElement>) => handleClickLike(e)}>
-            {isLike ? <PiHeartFill color="#fe7373" size={32} /> : <PiHeartLight color="white" size={32} />}
-          </LikeIcon>
-          <FallbackImage alt={String(placeId)} />
-        </ImageContainer>
         <TextWrapper>
           <Paragraph size="m" weight="bold" variant="white">
             {placeName}
           </Paragraph>
           <Paragraph size="xs" weight="normal" variant="white">
-            {influencer}
+            {getFullAddress(address)}
+          </Paragraph>
+          <Paragraph size="xs" weight="normal" variant="white">
+            {influencerName}
           </Paragraph>
         </TextWrapper>
+        <LikeIcon onClick={(e: React.MouseEvent<HTMLDivElement>) => handleClickLike(e)}>
+          {isLike ? <PiHeartFill color="#fe7373" size={26} /> : <PiHeartLight color="white" size={30} />}
+        </LikeIcon>
       </Wrapper>
       {showLoginModal && (
         <LoginModal immediateOpen currentPath={location.pathname} onClose={() => setShowLoginModal(false)} />
@@ -70,53 +73,52 @@ export default function UserPlaceItem({ placeId, placeName, influencer, likes }:
   );
 }
 const Wrapper = styled(Link)`
-  width: 170px;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
   text-decoration: none;
   gap: 10px;
+  height: 100px;
+  border-radius: 4px;
+  padding: 10px;
 
+  &:hover {
+    background-color: #1b1a1a;
+  }
   @media screen and (max-width: 768px) {
-    height: 100%;
-    aspect-ratio: 1.2 / 2;
-    width: auto;
+    height: 80px;
   }
 `;
-const ImageContainer = styled.div`
-  width: 168px;
-  height: 208px;
-  position: relative;
-  border-radius: 6px;
-  overflow: hidden;
-  margin-bottom: 4px;
 
-  @media screen and (max-width: 768px) {
-    width: 100%;
-  }
-`;
 const LikeIcon = styled.div`
   position: absolute;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 24px;
   right: 10px;
   top: 12px;
   z-index: 100;
   cursor: pointer;
 
   @media screen and (max-width: 768px) {
-    top: 8px;
+    top: 14px;
     right: 6px;
     svg {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
     }
   }
 `;
 const TextWrapper = styled.div`
-  > *:not(:first-child) {
-    margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  padding: 8px 10px;
+  gap: 4px;
+  > *:nth-child(3) {
+    margin-top: 12px;
     @media screen and (max-width: 768px) {
       margin-top: 4px;
     }
