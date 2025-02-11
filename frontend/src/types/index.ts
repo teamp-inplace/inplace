@@ -60,7 +60,7 @@ export type PlaceData = {
   address: AddressInfo;
   category: string;
   influencerName: string;
-  menuImgUrl: string;
+  menuImgUrl?: string | null;
   longitude: string;
   latitude: string;
   likes: boolean;
@@ -87,19 +87,26 @@ export type PlaceInfo = {
   placeName: string;
   address: AddressInfo;
   category: string;
-  influencerName: string;
+  videos: [
+    {
+      videoUrl: string;
+      influencerName: string;
+    },
+  ];
+  openHour: OpenHourData[];
+  googleUrl: string;
+  googleReviews: GoogleReview[];
+  rating: number;
   longitude: string;
   latitude: string;
-  likes: boolean;
-  facilityInfo: FacilityInfo;
-  menuInfos: {
-    menuImgUrls: string[];
-    menuList: Menu[];
-    menuUpdatedAt: Date;
-  };
-  openHour: OpenHourData;
+  facility: FacilityInfo;
   placeLikes: PlaceLikes;
-  videoUrl: [string];
+};
+export type GoogleReview = {
+  like: boolean;
+  text: string;
+  name: string;
+  publishTime: Date;
 };
 
 export type PlaceLikes = {
@@ -108,21 +115,11 @@ export type PlaceLikes = {
 };
 
 export type FacilityInfo = {
-  wifi?: string;
-  pet?: string;
-  parking?: string;
-  forDisabled?: string;
-  nursery?: string;
-  smokingRoom?: string;
-  message?: string;
-};
-
-export type Menu = {
-  price: string;
-  recommend: boolean;
-  menuName: string;
-  menuImgUrl: string;
-  description: string;
+  wheelchairAccessibleSeating?: boolean;
+  freeParkingLot?: boolean;
+  paidParkingLot?: boolean;
+  acceptsCreditCards?: boolean;
+  acceptsCashOnly?: boolean;
 };
 
 export type ReviewData = {
@@ -135,16 +132,7 @@ export type ReviewData = {
 };
 
 export type OpenHourData = {
-  periodList: {
-    timeName: string;
-    timeSE: string;
-    dayOfWeek: string;
-  }[];
-  offdayList: {
-    holidayName: string;
-    weekAndDay: string;
-    temporaryHolidays: string;
-  }[];
+  timeName: string;
 };
 export type RequestInfluencerLike = {
   influencerId: number;
@@ -215,7 +203,7 @@ export type MarkerInfo = {
   category: string;
   influencerName: string;
   address: AddressInfo;
-  menuImgUrl: string;
+  menuImgUrl?: string | null;
 };
 
 export interface ReviewInfo {

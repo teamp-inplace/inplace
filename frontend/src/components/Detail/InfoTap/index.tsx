@@ -1,29 +1,24 @@
-import { useState } from 'react';
-
 import styled from 'styled-components';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
+import { FcGoogle } from 'react-icons/fc';
+import { IoMdStar } from 'react-icons/io';
 import { Paragraph } from '@/components/common/typography/Paragraph';
-
 import FacilitySign from './FacilitySign';
-import MenuList from './MenuList';
-import MenuModal from './MenuModal';
+import { FacilityInfo, GoogleReview, OpenHourData } from '@/types';
 import OpenHour from './OpenHour';
-import { FacilityInfo, Menu, OpenHourData } from '@/types';
 import { Text } from '@/components/common/typography/Text';
+import GoogleReviewList from './GoogleReviewList';
 
 type Props = {
-  facilityInfo: FacilityInfo;
-  openHour: OpenHourData;
-  menuInfos: {
-    menuImgUrls: string[];
-    menuList: Menu[];
-    menuUpdatedAt: Date;
-  };
+  facility: FacilityInfo;
+  openHour: OpenHourData[];
+  googleUrl: string;
+  googleReviews: GoogleReview[];
   longitude: string;
   latitude: string;
+  rating: number;
 };
-export default function InfoTap({ facilityInfo, openHour, menuInfos, longitude, latitude }: Props) {
-  const [moreMenu, setMoreMenu] = useState(false);
+export default function InfoTap({ facility, openHour, googleUrl, googleReviews, longitude, latitude, rating }: Props) {
   const lat = Number(latitude);
   const lng = Number(longitude);
 
@@ -32,32 +27,35 @@ export default function InfoTap({ facilityInfo, openHour, menuInfos, longitude, 
       <Paragraph size="s" weight="bold" variant="white">
         시설 정보
       </Paragraph>
-      <FacilitySign facilityInfo={facilityInfo} />
-      <PeriodWrapper>
-        <Paragraph size="s" weight="bold" variant="white">
-          운영 시간
-        </Paragraph>
-        <OpenHour openHour={openHour} />
-      </PeriodWrapper>
-      <MenuWrapper>
-        <TitleContainer>
-          <Text size="s" weight="bold" variant="white">
-            메뉴
+      <FacilitySign facilityInfo={facility} />
+      <Paragraph size="s" weight="bold" variant="white">
+        운영 시간
+      </Paragraph>
+      <OpenHour openHour={openHour} />
+      <GoogleReviewTitle>
+        <StyledText size="s" weight="bold" variant="white">
+          Google 리뷰
+          <IoMdStar size={20} color="#FBBC04" />
+          <Text size="xs" weight="normal" variant="white">
+            {rating}
           </Text>
-          <Text size="xxs" weight="normal" variant="grey">
-            업데이트 {new Date(menuInfos.menuUpdatedAt).toLocaleDateString()}
+        </StyledText>
+        <GoogleDescription>
+          <Text size="xs" weight="normal" variant="grey">
+            구글 평점 3점 이상일 경우, 좋아요로 표시됩니다.
           </Text>
-        </TitleContainer>
-        <MenuContainer>
-          {menuInfos.menuImgUrls.length > 0 && <MenuModal images={menuInfos.menuImgUrls} />}
-          <MenuList lists={menuInfos.menuList.slice(0, moreMenu ? menuInfos.menuList.length : 4)} />
-          {menuInfos.menuList.length > 4 && (
-            <MoreMenuBtn aria-label="more_menu_btn" onClick={() => setMoreMenu(!moreMenu)}>
-              {moreMenu ? '메뉴 접기' : '메뉴 더보기'}
-            </MoreMenuBtn>
-          )}
-        </MenuContainer>
-      </MenuWrapper>
+          <Text size="xs" weight="normal" variant="grey">
+            Google 제공
+          </Text>
+        </GoogleDescription>
+      </GoogleReviewTitle>
+      <GoogleReviewContainer>
+        <GoogleReviewList lists={googleReviews} />
+        <MoreReviewBtn href={googleUrl}>
+          <FcGoogle size={20} />
+          구글 리뷰 보러가기
+        </MoreReviewBtn>
+      </GoogleReviewContainer>
       <Paragraph size="s" weight="bold" variant="white">
         지도 보기
       </Paragraph>
@@ -94,37 +92,34 @@ const Wrapper = styled.div`
     gap: 30px;
   }
 `;
-const MenuWrapper = styled.div``;
-const PeriodWrapper = styled.div``;
-const MenuContainer = styled.div`
-  padding: 20px;
+const GoogleReviewContainer = styled.div`
+  padding: 0px 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 
   @media screen and (max-width: 768px) {
     width: 100%;
-    padding: 20px 0px;
+    padding: 0px;
   }
 `;
-const MoreMenuBtn = styled.button`
+const MoreReviewBtn = styled.a`
   cursor: pointer;
   background: none;
   border: none;
   color: white;
   font-size: 16px;
   padding-top: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
   &:hover {
     text-decoration: underline;
   }
   @media screen and (max-width: 768px) {
     font-size: 14px;
   }
-`;
-const TitleContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
 `;
 
 const MapContainer = styled.div`
@@ -140,4 +135,26 @@ const MapContainer = styled.div`
     height: 300px;
     margin-bottom: 60px;
   }
+`;
+
+const GoogleReviewTitle = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+`;
+const StyledText = styled(Text)`
+  display: flex;
+  gap: 3px;
+  color: white;
+  align-items: end;
+  svg {
+    margin-left: 10px;
+  }
+`;
+
+const GoogleDescription = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
 `;

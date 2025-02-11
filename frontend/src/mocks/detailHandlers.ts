@@ -131,98 +131,75 @@ export const detailHandlers = [
           address2: '북구',
           address3: '대학로',
         },
+        videos: [
+          {
+            influencerName: '성시경',
+            videoUrl: 'https://www.youtube.com/watch?v=nCEtQ7dP8zY',
+          },
+          {
+            influencerName: '',
+            videoUrl: BasicImage,
+          },
+        ],
         category: '맛집',
-        influencerName: '성시경',
         longitude: '126.570667',
         latitude: '33.450701',
-        likes: true,
-        facilityInfo: {
-          wifi: 'Y',
-          pet: 'Y',
-          parking: 'Y',
-          forDisabled: 'Y',
-          nursery: 'Y',
-          smokingRoom: 'Y',
+        facility: {
+          acceptsCreditCards: false,
+          acceptsCashOnly: false,
+          freeParkingLot: false,
+          paidParkingLot: true,
+          wheelchairAccessibleSeating: true,
         },
-        menuInfos: {
-          menuImgUrls: [BasicImage, 'https://via.placeholder.com/600', 'https://via.placeholder.com/700'],
-          menuList: [
-            {
-              price: '14,000',
-              recommend: true,
-              menuName: '료코카츠',
-              menuImgUrl: BasicImage,
-              description: '료코만의 감성을 담은',
-            },
-            {
-              price: '3,000',
-              recommend: false,
-              menuName: '료코츠카',
-              menuImgUrl: 'https://via.placeholder.com/100',
-              description: '료코만의 감성을 담은',
-            },
-            {
-              price: '14,000',
-              recommend: false,
-              menuName: '료고카츠',
-              menuImgUrl: 'https://via.placeholder.com/100',
-              description: '국내산 돼지 안심을 료코만의 방식으로 숙성 및 조리하여 육즙과 부드러움의 특징을 살린 메뉴',
-            },
-            {
-              price: '3,020',
-              recommend: false,
-              menuName: '리조또',
-              menuImgUrl: '',
-              description: '국내산 돼지 안심을 료코만의 방식으로 숙성 및 조리하여 육즙과 부드러움의 특징을 살린 메뉴',
-            },
-          ],
-          menuUpdatedAt: new Date('2024-10-01T12:00:00Z'),
-        },
-        openHour: {
-          periodList: [
-            {
-              timeName: '영업시간',
-              timeSE: '10:00 ~ 20:00',
-              dayOfWeek: '매일',
-            },
-            {
-              timeName: '휴게시간',
-              timeSE: '10:00 - 12:00',
-              dayOfWeek: '월~금',
-            },
-            {
-              timeName: '라스트오더',
-              timeSE: '- 12:00',
-              dayOfWeek: '월~금',
-            },
-            {
-              timeName: '휴게시간',
-              timeSE: '13:10 - 13:40',
-              dayOfWeek: '토, 일',
-            },
-            {
-              timeName: '라스트오더',
-              timeSE: '- 11:20',
-              dayOfWeek: '토, 일',
-            },
-          ],
-          offdayList: [
-            {
-              holidayName: '휴무일',
-              weekAndDay: '토',
-              temporaryHolidays: 'Y',
-            },
-          ],
-        },
+        rating: 2.5,
+        googleUrl: 'https://google.com',
+        googleReviews: [
+          {
+            like: true,
+            text: '정말 좋았어요! 다음에 또 오고 싶습니다정말 좋았어요! 다음에 또 오고 싶습니',
+            name: '효은',
+            publishTime: new Date('2024-10-03T11:45:00Z'),
+          },
+          {
+            like: false,
+            text: '정말 좋았어요! 다음에 또 오고 싶습니다정말',
+            name: '효f은',
+            publishTime: new Date('2024-10-03T11:45:00Z'),
+          },
+          {
+            like: true,
+            text: '맛잇었어요',
+            name: '효a은',
+            publishTime: new Date('2024-10-03T11:45:00Z'),
+          },
+          {
+            like: true,
+            text: '정말 좋았어요! 다음에 또 니다정말 좋았어요! 다음에 또 오고 싶습니다정말 좋았어요! 다음에 또 오고 싶습니다',
+            name: '효q은',
+            publishTime: new Date('2024-10-03T11:45:00Z'),
+          },
+          {
+            like: false,
+            text: '별롭니다',
+            name: '효b은',
+            publishTime: new Date('2024-10-03T11:45:00Z'),
+          },
+        ],
+        openHour: [
+          {
+            timeName: '월~금 10:00 - 12:00',
+          },
+          {
+            timeName: '월~금 10:00 - 12:00',
+          },
+          {
+            timeName: '월~금 10:00 - 12:00',
+          },
+        ],
         placeLikes: {
           like: 240,
           dislike: 100,
         },
-        videoUrl: [
-          'https://youtu.be/qbqquv_8wM0?si=j7LiU5DSfTVpKa1I',
-          'https://www.youtube.com/watch?v=nCEtQ7dP8zY',
-          '',
-        ],
       }),
     );
   }),

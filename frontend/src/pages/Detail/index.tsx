@@ -23,11 +23,27 @@ export default function DetailPage() {
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const { id } = useParams() as { id: string };
   const { data: infoData } = useGetPlaceInfo(id);
+  const [isMobile, setIsMobile] = useState(false);
 
-  const currentVideoUrl = infoData?.videoUrl?.[currentVideoIndex] || '';
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const currentVideoUrl = infoData?.videos[currentVideoIndex]?.videoUrl || '';
+
   const extractYoutubeId = (url: string) => {
     const match = url?.match(/(?:https?:\/\/)?(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w-]*)(&(amp;)?[\w?=]*)?/);
-    return match && match[1] ? match[1] : null;
+    const youtubeId = match && match[1] ? match[1] : null;
+    const youtubeUrl = isMobile
+      ? `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`
+      : `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`;
+    return youtubeUrl;
   };
 
   const handleBtnPrevClick = () => {
@@ -35,41 +51,38 @@ export default function DetailPage() {
   };
 
   const handleBtnNextClick = () => {
-    if (infoData?.videoUrl?.length > 1) {
-      setCurrentVideoIndex((prev) => Math.min(prev + 1, infoData.videoUrl.length - 1));
+    if (infoData?.videos?.length > 1) {
+      setCurrentVideoIndex((prev) => Math.min(prev + 1, infoData.videos.length - 1));
     }
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (infoData?.videoUrl?.length > 1) {
-        setCurrentVideoIndex((prevIndex) => (prevIndex === infoData.videoUrl.length - 1 ? 0 : prevIndex + 1));
+      if (infoData?.videos?.length > 1) {
+        setCurrentVideoIndex((prevIndex) => (prevIndex === infoData.videos.length - 1 ? 0 : prevIndex + 1));
       }
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [infoData?.videoUrl?.length]);
+  }, [infoData?.videos?.length]);
 
   return (
     <Wrapper>
       <ImageContainer>
         <CarouselWrapper>
           <CarouselContainer $currentIndex={currentVideoIndex}>
-            {infoData?.videoUrl?.map((url) => {
-              const videoId = extractYoutubeId(url);
+            {infoData?.videos?.map((url) => {
+              const youtubeUrl = extractYoutubeId(url.videoUrl);
               return (
-                <ImageWrapper key={`${id}-${videoId}-${url}`}>
-                  <FallbackImage
-                    src={url ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : BasicThumb}
-                    alt="장소 사진"
-                  />
+                <ImageWrapper key={`${id}-${url.videoUrl}`}>
+                  <FallbackImage src={url.videoUrl ? youtubeUrl : BasicThumb} alt="장소 사진" />
                 </ImageWrapper>
               );
             })}
           </CarouselContainer>
         </CarouselWrapper>
         <GradientOverlay />
-        {infoData?.videoUrl && infoData.videoUrl.length > 1 && (
+        {infoData?.videos && infoData.videos.length > 1 && (
           <>
             <PrevBtn aria-label="prev_btn" onClick={handleBtnPrevClick} disabled={currentVideoIndex === 0}>
               <GrPrevious size={40} color="white" />
@@ -77,7 +90,7 @@ export default function DetailPage() {
             <NextBtn
               aria-label="next_btn"
               onClick={handleBtnNextClick}
-              disabled={currentVideoIndex === infoData.videoUrl.length - 1}
+              disabled={currentVideoIndex === infoData.videos.length - 1}
             >
               <GrNext size={40} color="white" />
             </NextBtn>
@@ -120,11 +133,13 @@ export default function DetailPage() {
       <InfoContainer>
         {activeTab === 'info' ? (
           <InfoTap
-            facilityInfo={infoData?.facilityInfo}
+            facility={infoData?.facility}
             openHour={infoData?.openHour}
-            menuInfos={infoData?.menuInfos}
+            googleUrl={infoData?.googleUrl}
+            googleReviews={infoData?.googleReviews}
             longitude={infoData?.longitude}
             latitude={infoData?.latitude}
+            rating={infoData?.rating}
           />
         ) : (
           <QueryErrorResetBoundary>
