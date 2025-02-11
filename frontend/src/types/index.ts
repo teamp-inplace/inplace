@@ -143,6 +143,7 @@ export type UserPlaceData = {
   placeName: string;
   imageUrl?: string | null;
   influencer?: string;
+  address: AddressInfo;
   likes: boolean;
 };
 export type RequestPlaceLike = {
@@ -154,7 +155,7 @@ export type UserReviewData = {
   place: {
     placeId: number;
     placeName: string;
-    imgUrl: string;
+    imgUrl?: string | null;
     address: {
       address1: string;
       address2: string;

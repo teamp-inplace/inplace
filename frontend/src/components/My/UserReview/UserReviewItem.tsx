@@ -5,15 +5,15 @@ import { Link } from 'react-router-dom';
 import { UserReviewData } from '@/types';
 import { Text } from '@/components/common/typography/Text';
 import { Paragraph } from '@/components/common/typography/Paragraph';
-import FallbackImage from '@/components/common/Items/FallbackImage';
+// import FallbackImage from '@/components/common/Items/FallbackImage';
 
 export default function UserReviewItem({ likes, comment, place, createdDate }: UserReviewData) {
   const address = `${place.address.address1} ${place.address.address2} ${place.address.address3}`;
   return (
     <Wrapper to={`/detail/${place.placeId}`}>
-      <ImageContainer>
+      {/* <ImageContainer>
         <FallbackImage src={place.imgUrl} alt={place.placeName} />
-      </ImageContainer>
+      </ImageContainer> */}
       <TextContainer>
         <Title>
           <Text size="s" weight="bold" variant="white">
@@ -58,16 +58,16 @@ const TextContainer = styled.div`
     gap: 4px;
   }
 `;
-const ImageContainer = styled.div`
-  width: 90px;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 30px;
+// const ImageContainer = styled.div`
+//   width: 90px;
+//   aspect-ratio: 1 / 1;
+//   object-fit: cover;
+//   border-radius: 30px;
 
-  @media screen and (max-width: 768px) {
-    border-radius: 12px;
-  }
-`;
+//   @media screen and (max-width: 768px) {
+//     border-radius: 12px;
+//   }
+// `;
 
 const Title = styled.div`
   display: flex;
