@@ -109,7 +109,7 @@ const PlaceCard = styled.div<{ $isSelected: boolean }>`
   padding: 16px;
   cursor: pointer;
   background-color: ${({ $isSelected }) => ($isSelected ? '#1b1a1a' : 'none')};
-  transition: background-color 0.2s ease;
+  transition: background-color 0.1s ease;
   box-sizing: border-box;
 
   &:hover {
@@ -119,7 +119,7 @@ const PlaceCard = styled.div<{ $isSelected: boolean }>`
   @media screen and (max-width: 768px) {
     height: 100%;
     gap: 12px;
-    padding: 8px;
+    padding: 10px 8px;
   }
 `;
 
@@ -148,8 +148,8 @@ const CardContent = styled.div`
   gap: 8px;
 
   @media screen and (max-width: 768px) {
-    width: 55%;
-    gap: 4px;
+    width: 90%;
+    gap: 8px;
   }
 `;
 
@@ -157,7 +157,7 @@ const InfluencerName = styled.div`
   padding-top: 6px;
 
   @media screen and (max-width: 768px) {
-    padding-top: 4px;
+    padding-top: 2px;
   }
 `;
 
