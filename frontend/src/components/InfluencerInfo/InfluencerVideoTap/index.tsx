@@ -23,7 +23,7 @@ export default function InfluencerVideoTap({ items, fetchNextPage, hasNextPage, 
           {items.map((item, index) => {
             const column = (index % 2) + 1;
             return (
-              <GridItem key={item.videoId} column={column}>
+              <GridItem key={item.videoId} $column={column}>
                 <SpotItem
                   key={item.videoId}
                   videoId={item.videoId}
@@ -61,8 +61,8 @@ const LoadMoreTrigger = styled.div`
   height: 60px;
   margin-top: 20px;
 `;
-const GridItem = styled.div<{ column: number }>`
-  justify-self: ${({ column }) => (column === 1 ? 'start' : 'end')};
+const GridItem = styled.div<{ $column: number }>`
+  justify-self: ${({ $column }) => ($column === 1 ? 'start' : 'end')};
   @media screen and (max-width: 768px) {
     justify-self: center;
   }
