@@ -1,39 +1,40 @@
-import { LuParkingCircle, LuParkingCircleOff, LuBaby } from 'react-icons/lu';
-import { MdOutlinePets, MdSmokeFree, MdSmokingRooms } from 'react-icons/md';
-import { TbDisabled } from 'react-icons/tb';
+import { LuParkingCircle, LuParkingCircleOff, LuParkingSquare, LuParkingSquareOff } from 'react-icons/lu';
+import { TbDisabled, TbCurrencyDollar, TbCurrencyDollarOff } from 'react-icons/tb';
 import styled from 'styled-components';
-import { CiWifiOn, CiWifiOff } from 'react-icons/ci';
+import { CiCreditCard1, CiCreditCardOff } from 'react-icons/ci';
 import { Paragraph } from '@/components/common/typography/Paragraph';
 import { FacilityInfo } from '@/types';
 import NoItem from '@/components/common/layouts/NoItem';
 
 const facilities = {
-  wifi: {
-    icon: { Y: <CiWifiOn size={34} color="white" />, N: <CiWifiOff size={46} color="white" /> },
-    label: 'WIFI',
+  acceptsCreditCards: {
+    icon: { true: <CiCreditCard1 size={34} color="white" />, false: <CiCreditCardOff size={36} color="white" /> },
+    label: '카드결제',
   },
-  parking: {
+  acceptsCashOnly: {
     icon: {
-      Y: <LuParkingCircle size={60} color="white" strokeWidth={1} />,
-      N: <LuParkingCircleOff size={60} color="white" strokeWidth={1} />,
+      true: <TbCurrencyDollar size={34} color="white" strokeWidth={1} />,
+      false: <TbCurrencyDollarOff size={34} color="white" strokeWidth={1} />,
     },
-    label: '주차',
+    label: '현금결제',
   },
-  pet: {
-    icon: { Y: <MdOutlinePets size={34} color="white" />, N: null },
-    label: '동물출입',
+  freeParkingLot: {
+    icon: {
+      true: <LuParkingCircle size={60} color="white" strokeWidth={1} />,
+      false: <LuParkingCircleOff size={60} color="white" strokeWidth={1} />,
+    },
+    label: '무료주차',
   },
-  forDisabled: {
-    icon: { Y: <TbDisabled size={34} color="white" strokeWidth={1} />, N: null },
-    label: '휠체어사용',
+  paidParkingLot: {
+    icon: {
+      true: <LuParkingSquare size={60} color="white" strokeWidth={1} />,
+      false: <LuParkingSquareOff size={60} color="white" strokeWidth={1} />,
+    },
+    label: '유료주차',
   },
-  nursery: {
-    icon: { Y: <LuBaby size={34} color="white" strokeWidth={1} />, N: null },
-    label: '유아시설',
-  },
-  smokingRoom: {
-    icon: { Y: <MdSmokingRooms size={34} color="white" />, N: <MdSmokeFree size={34} color="white" /> },
-    label: '흡연실',
+  wheelchairAccessibleSeating: {
+    icon: { true: <TbDisabled size={34} color="white" strokeWidth={1} />, false: null },
+    label: '휠체어좌석',
   },
 };
 
@@ -55,22 +56,17 @@ export default function FacilitySign({ facilityInfo }: { facilityInfo: FacilityI
             const facilityStatus = facilityInfo[key as keyof FacilityInfo];
 
             let iconElement = null;
-            switch (facilityStatus) {
-              case 'Y':
-                iconElement = icon.Y;
-                break;
-              case 'N':
-                iconElement = icon.N;
-                break;
-              default:
-                iconElement = null;
+            if (facilityStatus === true) {
+              iconElement = icon.true;
+            } else if (facilityStatus === false) {
+              iconElement = icon.false;
             }
 
             if (iconElement === null) return null;
 
             return (
-              <SignWrapper key={key} $isParking={key === 'parking'}>
-                {key === 'parking' ? iconElement : <Sign>{iconElement}</Sign>}
+              <SignWrapper key={key} $isParking={key.includes('Parking')}>
+                {key.includes('Parking') ? iconElement : <Sign>{iconElement}</Sign>}
                 <Paragraph size="xs" weight="normal" variant="white">
                   {label}
                 </Paragraph>
