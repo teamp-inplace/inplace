@@ -15,7 +15,8 @@ public class PlaceInfo {
         String address2,
         String address3,
         String category,
-
+        Double longitude,
+        Double latitude,
         GooglePlaceClientResponse.Place googlePlace,
         List<VideoQueryResult.SimpleVideo> videos,
         ReviewQueryResult.LikeRate reviewLikeRate
@@ -32,6 +33,8 @@ public class PlaceInfo {
                 place.getAddress().getAddress2(),
                 place.getAddress().getAddress3(),
                 place.getCategory().name(),
+                place.getCoordinate().getLongitude(),
+                place.getCoordinate().getLatitude(),
                 googlePlace,
                 videos,
                 reviewLikeRate

@@ -17,7 +17,7 @@ public class GooglePlaceClient {
     private final String FIELD_HEADER = "X-Goog-FieldMask";
     private final String API_KEY_HEADER = "X-Goog-Api-Key";
     private final String PLACE_DETAIL_URL = "https://places.googleapis.com/v1/places/%s?languageCode=ko";
-    private final String FIELD = "id,rating,reservable,regularOpeningHours,reviews,googleMapsUri,accessibilityOptions,parkingOptions";
+    private final String FIELD = "id,rating,reservable,regularOpeningHours,reviews,googleMapsUri,accessibilityOptions,parkingOptions,paymentOptions";
     private final RestTemplate restTemplate;
     private final GoogleApiProperties googleApiProperties;
 

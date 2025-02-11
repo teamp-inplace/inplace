@@ -1,10 +1,17 @@
 package team7.inplace.place.presentation.dto;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import team7.inplace.place.application.dto.PlaceInfo;
 import team7.inplace.place.client.GooglePlaceClientResponse;
+import team7.inplace.place.client.GooglePlaceClientResponse.AccessibilityOptions;
+import team7.inplace.place.client.GooglePlaceClientResponse.ParkingOptions;
+import team7.inplace.place.client.GooglePlaceClientResponse.PaymentOptions;
+import team7.inplace.place.client.GooglePlaceClientResponse.RegularOpeningHours;
 import team7.inplace.review.persistence.dto.ReviewQueryResult;
 import team7.inplace.video.persistence.dto.VideoQueryResult;
 
@@ -15,10 +22,13 @@ public class PlaceNewResponse {
         String placeName,
         Address address,
         String category,
+        Double longitude,
+        Double latitude,
         Facility facility,
         List<Video> videos,
         List<GoogleReview> googleReviews,
-        List<Review> reviews,
+        String googlePlaceUrl,
+        List<String> openingHours,
         PlaceLike placeLike
     ) {
 
@@ -32,9 +42,12 @@ public class PlaceNewResponse {
                     place.address3()
                 ),
                 place.category(),
+                place.longitude(),
+                place.latitude(),
                 PlaceNewResponse.Facility.of(
-                    place.googlePlace().accessibilityOptions(),
-                    place.googlePlace().parkingOptions()
+                    place.googlePlace().accessibilityOptions().orElse(null),
+                    place.googlePlace().parkingOptions().orElse(null),
+                    place.googlePlace().paymentOptions().orElse(null)
                 ),
                 place.videos().stream()
                     .map(Video::from)
@@ -43,7 +56,10 @@ public class PlaceNewResponse {
                     .stream()
                     .map(GoogleReview::from)
                     .toList(),
-                new ArrayList<>(),
+                place.googlePlace().googleMapsUri(),
+                place.googlePlace().regularOpeningHours()
+                    .map(RegularOpeningHours::weekdayDescriptions)
+                    .orElse(List.of()),
                 PlaceNewResponse.PlaceLike.from(place.reviewLikeRate())
             );
         }
@@ -57,65 +73,36 @@ public class PlaceNewResponse {
 
     }
 
+    @JsonInclude(Include.NON_NULL)
     public record Facility(
-        Boolean wheelchairAccessibleParking,
-        Boolean wheelchairAccessibleEntrance,
-        Boolean wheelchairAccessibleRestroom,
         Boolean wheelchairAccessibleSeating,
         Boolean freeParkingLot,
         Boolean paidParkingLot,
-        Boolean freeStreetParking,
-        Boolean paidStreetParking,
-        Boolean valetParking,
-        Boolean freeGarageParking,
-        Boolean paidGarageParking
+        Boolean acceptsCreditCards,
+        Boolean acceptsCashOnly
     ) {
 
         public static Facility of(
             GooglePlaceClientResponse.AccessibilityOptions accessibilityOptions,
-            GooglePlaceClientResponse.ParkingOptions parkingOptions
+            GooglePlaceClientResponse.ParkingOptions parkingOptions,
+            GooglePlaceClientResponse.PaymentOptions paymentOptions
         ) {
-            if (accessibilityOptions == null && parkingOptions == null) {
-                return new Facility(
-                    false, false, false, false,
-                    false, false, false, false, false, false, false
-                );
-            }
-
-            if (accessibilityOptions == null) {
-                return new Facility(
-                    false, false, false, false,
-                    parkingOptions.freeParkingLot(),
-                    parkingOptions.paidParkingLot(),
-                    parkingOptions.freeStreetParking(),
-                    parkingOptions.paidStreetParking(),
-                    parkingOptions.valetParking(),
-                    parkingOptions.freeGarageParking(),
-                    parkingOptions.paidGarageParking()
-                );
-            }
-
-            if (parkingOptions == null) {
-                return new Facility(
-                    accessibilityOptions.wheelchairAccessibleParking(),
-                    accessibilityOptions.wheelchairAccessibleEntrance(),
-                    accessibilityOptions.wheelchairAccessibleRestroom(),
-                    accessibilityOptions.wheelchairAccessibleSeating(),
-                    false, false, false, false, false, false, false
-                );
-            }
             return new Facility(
-                accessibilityOptions.wheelchairAccessibleParking(),
-                accessibilityOptions.wheelchairAccessibleEntrance(),
-                accessibilityOptions.wheelchairAccessibleRestroom(),
-                accessibilityOptions.wheelchairAccessibleSeating(),
-                parkingOptions.freeParkingLot(),
-                parkingOptions.paidParkingLot(),
-                parkingOptions.freeStreetParking(),
-                parkingOptions.paidStreetParking(),
-                parkingOptions.valetParking(),
-                parkingOptions.freeGarageParking(),
-                parkingOptions.paidGarageParking()
+                Optional.ofNullable(accessibilityOptions)
+                    .flatMap(AccessibilityOptions::wheelchairAccessibleSeating)
+                    .orElse(null),
+                Optional.ofNullable(parkingOptions)
+                    .flatMap(ParkingOptions::freeParkingLot)
+                    .orElse(null),
+                Optional.ofNullable(parkingOptions)
+                    .flatMap(ParkingOptions::paidParkingLot)
+                    .orElse(null),
+                Optional.ofNullable(paymentOptions)
+                    .flatMap(PaymentOptions::acceptsCreditCards)
+                    .orElse(null),
+                Optional.ofNullable(paymentOptions)
+                    .flatMap(PaymentOptions::acceptsCashOnly)
+                    .orElse(null)
             );
         }
     }
