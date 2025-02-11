@@ -71,6 +71,9 @@ public class UserResponse {
         String placeName,
         String imageUrl,
         String influencerName,
+        String address1,
+        String address2,
+        String address3,
         boolean likes
     ) {
 
@@ -80,6 +83,9 @@ public class UserResponse {
                 likedPlaceInfo.placeName(),
                 likedPlaceInfo.imageUrl(),
                 likedPlaceInfo.influencerName(),
+                likedPlaceInfo.address1(),
+                likedPlaceInfo.address2(),
+                likedPlaceInfo.address3(),
                 likedPlaceInfo.likes()
             );
         }
