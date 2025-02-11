@@ -75,8 +75,11 @@ describe('세부페이지 ErrorBoundary 테스트', () => {
           placeId: 123,
           videos: [{ influencerName: '성시경', videoUrl: 'https://test.video' }],
           facility: {},
+          googlePlaceUrl: 'https://google.com',
           longitude: '126.978',
           latitude: '37.5665',
+          openingHours: ['월~금 10:00 - 12:00', '월~금 10:00 - 12:00', '월~금 10:00 - 12:00'],
+          rating: 4.1,
           placeLikes: {
             like: 0,
             dislike: 0,
