@@ -2,10 +2,9 @@ import styled from 'styled-components';
 
 import { Text } from '@/components/common/typography/Text';
 
-import { OpenHourData } from '@/types';
 import NoItem from '@/components/common/layouts/NoItem';
 
-export default function OpenHour({ openHour }: { openHour: OpenHourData[] }) {
+export default function OpenHour({ openHour }: { openHour: string[] }) {
   return (
     <Wrapper>
       {openHour.length === 0 && openHour.length === 0 ? (
@@ -13,9 +12,9 @@ export default function OpenHour({ openHour }: { openHour: OpenHourData[] }) {
       ) : (
         <HourItem>
           {openHour.map((period) => (
-            <TimeItem key={period.timeName}>
+            <TimeItem key={period}>
               <Text size="xs" weight="normal" variant="white">
-                {period.timeName}
+                {period}
               </Text>
             </TimeItem>
           ))}

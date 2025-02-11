@@ -4,21 +4,29 @@ import { FcGoogle } from 'react-icons/fc';
 import { IoMdStar } from 'react-icons/io';
 import { Paragraph } from '@/components/common/typography/Paragraph';
 import FacilitySign from './FacilitySign';
-import { FacilityInfo, GoogleReview, OpenHourData } from '@/types';
+import { FacilityInfo, GoogleReview } from '@/types';
 import OpenHour from './OpenHour';
 import { Text } from '@/components/common/typography/Text';
 import GoogleReviewList from './GoogleReviewList';
 
 type Props = {
   facility: FacilityInfo;
-  openHour: OpenHourData[];
-  googleUrl: string;
+  openingHours: string[];
+  googlePlaceUrl: string;
   googleReviews: GoogleReview[];
   longitude: string;
   latitude: string;
   rating: number;
 };
-export default function InfoTap({ facility, openHour, googleUrl, googleReviews, longitude, latitude, rating }: Props) {
+export default function InfoTap({
+  facility,
+  openingHours,
+  googlePlaceUrl,
+  googleReviews,
+  longitude,
+  latitude,
+  rating,
+}: Props) {
   const lat = Number(latitude);
   const lng = Number(longitude);
 
@@ -31,7 +39,7 @@ export default function InfoTap({ facility, openHour, googleUrl, googleReviews, 
       <Paragraph size="s" weight="bold" variant="white">
         운영 시간
       </Paragraph>
-      <OpenHour openHour={openHour} />
+      <OpenHour openHour={openingHours} />
       <GoogleReviewTitle>
         <StyledText size="s" weight="bold" variant="white">
           Google 리뷰
@@ -51,7 +59,7 @@ export default function InfoTap({ facility, openHour, googleUrl, googleReviews, 
       </GoogleReviewTitle>
       <GoogleReviewContainer>
         <GoogleReviewList lists={googleReviews} />
-        <MoreReviewBtn href={googleUrl}>
+        <MoreReviewBtn href={googlePlaceUrl}>
           <FcGoogle size={20} />
           구글 리뷰 보러가기
         </MoreReviewBtn>
@@ -94,6 +102,7 @@ const Wrapper = styled.div`
 `;
 const GoogleReviewContainer = styled.div`
   padding: 0px 20px;
+  margin-bottom: 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;

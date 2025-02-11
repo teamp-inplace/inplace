@@ -134,8 +134,8 @@ export default function DetailPage() {
         {activeTab === 'info' ? (
           <InfoTap
             facility={infoData?.facility}
-            openHour={infoData?.openHour}
-            googleUrl={infoData?.googleUrl}
+            openingHours={infoData?.openingHours}
+            googlePlaceUrl={infoData?.googlePlaceUrl}
             googleReviews={infoData?.googleReviews}
             longitude={infoData?.longitude}
             latitude={infoData?.latitude}

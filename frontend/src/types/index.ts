@@ -93,8 +93,8 @@ export type PlaceInfo = {
       influencerName: string;
     },
   ];
-  openHour: OpenHourData[];
-  googleUrl: string;
+  openingHours: string[];
+  googlePlaceUrl: string;
   googleReviews: GoogleReview[];
   rating: number;
   longitude: string;
@@ -131,9 +131,6 @@ export type ReviewData = {
   mine: boolean;
 };
 
-export type OpenHourData = {
-  timeName: string;
-};
 export type RequestInfluencerLike = {
   influencerId: number;
   likes: boolean;

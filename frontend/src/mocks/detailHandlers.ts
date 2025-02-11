@@ -152,7 +152,7 @@ export const detailHandlers = [
           wheelchairAccessibleSeating: true,
         },
         rating: 2.5,
-        googleUrl: 'https://google.com',
+        googlePlaceUrl: 'https://google.com',
         googleReviews: [
           {
             like: true,
@@ -185,17 +185,7 @@ export const detailHandlers = [
             publishTime: new Date('2024-10-03T11:45:00Z'),
           },
         ],
-        openHour: [
-          {
-            timeName: '월~금 10:00 - 12:00',
-          },
-          {
-            timeName: '월~금 10:00 - 12:00',
-          },
-          {
-            timeName: '월~금 10:00 - 12:00',
-          },
-        ],
+        openingHours: ['월~금 10:00 - 12:00', '월~금 10:00 - 12:00', '월~금 10:00 - 12:00'],
         placeLikes: {
           like: 240,
           dislike: 100,
