@@ -88,7 +88,8 @@ public class UserResponse {
     public record LikedInfluencer(
         Long influencerId,
         String influencerName,
-        String imageUrl,
+        String influencerImgUrl,
+        String influencerJob,
         boolean likes
     ) {
 
@@ -97,6 +98,7 @@ public class UserResponse {
                 influencerInfo.influencerId(),
                 influencerInfo.influencerName(),
                 influencerInfo.influencerImgUrl(),
+                influencerInfo.influencerJob(),
                 influencerInfo.likes()
             );
         }
