@@ -53,10 +53,35 @@ public class ReviewReadRepositoryImplTest {
     }
 
     @Test
-    @DisplayName("장소별 리뷰 조회 테스트")
-    void findSimpleReviewByUserIdAndPlaceId_ReturnsReviews() {
+    @DisplayName("장소별 리뷰 조회 테스트 - 로그인 됨")
+    void findSimpleReviewByUserIdAndPlaceId_LoggedIn() {
         // given
         Long userId = 1L;
+        Long placeId = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // when
+        Page<ReviewQueryResult.Simple> reviews = reviewReadRepository.findSimpleReviewByUserIdAndPlaceId(placeId, userId, pageable);
+        System.out.println("REVIEWS: " + reviews.getContent());
+
+        // then
+        assertThat(reviews.getContent())
+            .hasSize(5)
+            .extracting("userNickname", "mine")
+            .containsExactly(
+                tuple("user1", true),
+                tuple("user2", false),
+                tuple("user3", false),
+                tuple("user4", false),
+                tuple("user5", false)
+            );
+    }
+
+    @Test
+    @DisplayName("장소별 리뷰 조회 테스트 - 로그인 안됨")
+    void findSimpleReviewByUserIdAndPlaceId_NotLoggedIn() {
+        // given
+        Long userId = null;  // 로그인되지 않은 상태
         Long placeId = 1L;
         Pageable pageable = PageRequest.of(0, 10);
 
@@ -66,13 +91,13 @@ public class ReviewReadRepositoryImplTest {
         // then
         assertThat(reviews.getContent())
             .hasSize(5)
-            .extracting("userNickname", "reviewId")
+            .extracting("userNickname", "mine")
             .containsExactly(
-                tuple("user1", 1L),
-                tuple("user2", 2L),
-                tuple("user3", 3L),
-                tuple("user4", 4L),
-                tuple("user5", 5L)
+                tuple("user1", false),
+                tuple("user2", false),
+                tuple("user3", false),
+                tuple("user4", false),
+                tuple("user5", false)
             );
     }
 
