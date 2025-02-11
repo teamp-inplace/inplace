@@ -28,7 +28,7 @@ import team7.inplace.place.persistence.PlaceJpaRepository;
 import team7.inplace.place.persistence.PlaceReadRepository;
 import team7.inplace.place.persistence.PlaceSaveRepository;
 import team7.inplace.place.persistence.dto.PlaceQueryResult;
-import team7.inplace.review.persistence.ReviewJPARepository;
+import team7.inplace.review.persistence.ReviewReadRepository;
 import team7.inplace.security.util.AuthorizationUtil;
 import team7.inplace.video.persistence.VideoReadRepository;
 
@@ -41,7 +41,7 @@ public class PlaceService {
     private final PlaceSaveRepository placeSaveRepository;
     private final PlaceJpaRepository placeJpaRepository;
     private final GooglePlaceClient googlePlaceClient;
-    private final ReviewJPARepository reviewJPARepository;
+    private final ReviewReadRepository reviewReadRepository;
     private final LikedPlaceRepository likedPlaceRepository;
     private final VideoReadRepository videoReadRepository;
 
@@ -131,7 +131,7 @@ public class PlaceService {
         var detailedPlace = placeReadRepository.findDetailedPlaceById(placeId, userId)
             .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
         var placeVideos = videoReadRepository.findSimpleVideosByPlaceId(placeId);
-        var placeReviewRate = reviewJPARepository.countRateByPlaceId(placeId);
+        var placeReviewRate = reviewReadRepository.countRateByPlaceId(placeId);
 
         return PlaceQueryInfo.Detail.from(detailedPlace, placeVideos, placeReviewRate);
     }
@@ -191,7 +191,7 @@ public class PlaceService {
         }
         var googlePlace = googlePlaceClient.requestForPlaceDetail(place.getGooglePlaceId());
         var videos = videoReadRepository.findSimpleVideosByPlaceId(placeId);
-        var reviewLikeRate = reviewJPARepository.countRateByPlaceId(placeId);
+        var reviewLikeRate = reviewReadRepository.countRateByPlaceId(placeId);
 
         return PlaceInfo.Detail.of(place, googlePlace, videos, reviewLikeRate);
     }
