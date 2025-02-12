@@ -18,6 +18,7 @@ import team7.inplace.search.persistence.dto.SearchQueryResult.AutoComplete;
 @Repository
 @RequiredArgsConstructor
 public class PlaceSearchRepository implements SearchRepository<SearchQueryResult.Place> {
+
     private final JPAQueryFactory queryFactory;
 
     @Override
@@ -25,22 +26,22 @@ public class PlaceSearchRepository implements SearchRepository<SearchQueryResult
         var matchScore = getMatchScore(keyword);
 
         return queryFactory
-                .select(
-                        QPlace.place.name,
-                        Expressions.constant("place"),
-                        matchScore.as("score")
-                )
-                .from(QPlace.place)
-                .where(matchScore.gt(0))
-                .orderBy(matchScore.desc())
-                .limit(SEARCH_LIMIT)
-                .fetch()
-                .stream()
-                .map(tuple -> new AutoComplete(
-                        tuple.get(0, String.class),
-                        tuple.get(1, String.class),
-                        tuple.get(2, Double.class)
-                )).toList();
+            .select(
+                QPlace.place.name,
+                Expressions.constant("place"),
+                matchScore.as("score")
+            )
+            .from(QPlace.place)
+            .where(matchScore.gt(0))
+            .orderBy(matchScore.desc())
+            .limit(SEARCH_LIMIT)
+            .fetch()
+            .stream()
+            .map(tuple -> new AutoComplete(
+                tuple.get(0, String.class),
+                tuple.get(1, String.class),
+                tuple.get(2, Double.class)
+            )).toList();
     }
 
     @Override
@@ -48,37 +49,36 @@ public class PlaceSearchRepository implements SearchRepository<SearchQueryResult
         var matchScore = getMatchScore(keyword);
 
         var content = queryFactory
-                .select(new QSearchQueryResult_Place(
-                        QPlace.place.id,
-                        QPlace.place.name,
-                        QPlace.place.menuImgUrl,
-                        QLikedPlace.likedPlace.id.isNotNull())
-                )
-                .from(QPlace.place)
-                .leftJoin(QLikedPlace.likedPlace).on(
-                        QLikedPlace.likedPlace.placeId.eq(QPlace.place.id),
-                        userId == null ? QLikedPlace.likedPlace.userId.isNull()
-                                : QLikedPlace.likedPlace.userId.eq(userId)
-                )
-                .where(matchScore.gt(0))
-                .orderBy(matchScore.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+            .select(new QSearchQueryResult_Place(
+                QPlace.place.id,
+                QPlace.place.name,
+                QLikedPlace.likedPlace.id.isNotNull())
+            )
+            .from(QPlace.place)
+            .leftJoin(QLikedPlace.likedPlace).on(
+                QLikedPlace.likedPlace.placeId.eq(QPlace.place.id),
+                userId == null ? QLikedPlace.likedPlace.userId.isNull()
+                    : QLikedPlace.likedPlace.userId.eq(userId)
+            )
+            .where(matchScore.gt(0))
+            .orderBy(matchScore.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
         var total = queryFactory
-                .selectFrom(QPlace.place)
-                .where(matchScore.gt(0))
-                .fetchCount();
+            .selectFrom(QPlace.place)
+            .where(matchScore.gt(0))
+            .fetchCount();
 
         return new PageImpl<>(content, pageable, total);
     }
 
     private NumberTemplate<Double> getMatchScore(String keyword) {
         return Expressions.numberTemplate(
-                Double.class,
-                "function('match_against', {0}, {1})",
-                QPlace.place.name,
-                keyword
+            Double.class,
+            "function('match_against', {0}, {1})",
+            QPlace.place.name,
+            keyword
         );
     }
 }

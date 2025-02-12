@@ -1,6 +1,7 @@
 package team7.inplace.video.application;
 
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import team7.inplace.video.domain.Video;
 import team7.inplace.video.persistence.VideoReadRepository;
 import team7.inplace.video.persistence.VideoRepository;
 import team7.inplace.video.persistence.dto.VideoQueryResult;
+import team7.inplace.video.persistence.dto.VideoQueryResult.SimpleVideo;
 import team7.inplace.video.presentation.dto.VideoSearchParams;
 
 @Service
@@ -76,6 +78,16 @@ public class VideoService {
         var videos = videoReadRepository.findSimpleVideosWithOneInfluencerId(influencerId,
             pageable);
         return videos;
+    }
+
+    @Transactional(readOnly = true)
+    public Map<Long, List<SimpleVideo>> getVideosByPlaceId(List<Long> placeIds) {
+        return videoReadRepository.findSimpleVideosByPlaceIds(placeIds);
+    }
+
+    @Transactional(readOnly = true)
+    public List<SimpleVideo> getVideosByPlaceId(Long placeId) {
+        return videoReadRepository.findSimpleVideosByPlaceId(placeId);
     }
 
     @Transactional

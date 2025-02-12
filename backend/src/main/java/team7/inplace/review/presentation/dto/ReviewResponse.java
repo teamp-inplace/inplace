@@ -16,7 +16,7 @@ public class ReviewResponse {
             return new Invitation(
                 reviewInfo.placeName(),
                 reviewInfo.placeAddress(),
-                reviewInfo.placeImgUrl(),
+                "",
                 reviewInfo.influencerName(),
                 reviewInfo.userNickname()
             );

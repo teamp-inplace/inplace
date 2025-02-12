@@ -1,10 +1,12 @@
 package team7.inplace.user.presentation.dto;
 
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 import team7.inplace.influencer.application.dto.InfluencerInfo;
-import team7.inplace.place.application.dto.LikedPlaceInfo;
+import team7.inplace.place.application.dto.PlaceInfo;
 import team7.inplace.review.persistence.dto.ReviewQueryResult;
 import team7.inplace.user.application.dto.UserInfo;
+import team7.inplace.video.persistence.dto.VideoQueryResult;
 
 public class UserResponse {
 
@@ -36,7 +38,7 @@ public class UserResponse {
             var reviewPlace = new ReviewPlace(
                 review.placeId(),
                 review.placeName(),
-                review.placeImgUrl(),
+                "",
                 reviewPlaceAddress
             );
             return new Review(
@@ -77,16 +79,20 @@ public class UserResponse {
         boolean likes
     ) {
 
-        public static LikedPlace from(LikedPlaceInfo likedPlaceInfo) {
+        public static LikedPlace from(PlaceInfo.Simple likedPlaceInfo) {
             return new LikedPlace(
-                likedPlaceInfo.placeId(),
-                likedPlaceInfo.placeName(),
-                likedPlaceInfo.imageUrl(),
-                likedPlaceInfo.influencerName(),
-                likedPlaceInfo.address1(),
-                likedPlaceInfo.address2(),
-                likedPlaceInfo.address3(),
-                likedPlaceInfo.likes()
+                likedPlaceInfo.place().placeId(),
+                likedPlaceInfo.place().placeName(),
+                "",
+                likedPlaceInfo.video()
+                    .stream()
+                    .map(VideoQueryResult.SimpleVideo::influencerName)
+                    .distinct()
+                    .collect(Collectors.joining(", ")),
+                likedPlaceInfo.place().address1(),
+                likedPlaceInfo.place().address2(),
+                likedPlaceInfo.place().address3(),
+                likedPlaceInfo.place().isLiked()
             );
         }
     }

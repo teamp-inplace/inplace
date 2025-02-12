@@ -19,15 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import team7.inplace.place.application.CategoryService;
 import team7.inplace.place.application.PlaceFacade;
-import team7.inplace.place.application.PlaceService;
 import team7.inplace.place.application.command.PlaceLikeCommand;
 import team7.inplace.place.application.command.PlacesCommand;
 import team7.inplace.place.application.dto.CategoryInfo;
-import team7.inplace.place.application.dto.PlaceQueryInfo;
+import team7.inplace.place.application.dto.PlaceInfo;
 import team7.inplace.place.persistence.dto.PlaceQueryResult;
 import team7.inplace.place.presentation.dto.CategoriesResponse;
 import team7.inplace.place.presentation.dto.PlaceLikeRequest;
-import team7.inplace.place.presentation.dto.PlaceNewResponse;
 import team7.inplace.place.presentation.dto.PlacesResponse;
 import team7.inplace.place.presentation.dto.ReviewResponse;
 import team7.inplace.review.application.ReviewService;
@@ -38,10 +36,9 @@ import team7.inplace.review.application.ReviewService;
 @RequestMapping("/places")
 public class PlaceController implements PlaceControllerApiSpec {
 
-    private final PlaceService placeService;
+    private final PlaceFacade placeFacade;
     private final CategoryService categoryService;
     private final ReviewService reviewService;
-    private final PlaceFacade placeFacade;
 
     @GetMapping
     public ResponseEntity<Page<PlacesResponse.Simple>> getPlaces(
@@ -55,7 +52,7 @@ public class PlaceController implements PlaceControllerApiSpec {
         @RequestParam(required = false) String influencers,
         @PageableDefault(page = 0, size = 10) Pageable pageable
     ) {
-        var placeSimpleInfos = placeService.getPlacesInMapRange(
+        var placeSimpleInfos = placeFacade.getPlacesInMapRange(
             new PlacesCommand.Coordinate(
                 topLeftLongitude, topLeftLatitude,
                 bottomRightLongitude, bottomRightLatitude,
@@ -83,7 +80,7 @@ public class PlaceController implements PlaceControllerApiSpec {
         @RequestParam(required = false, defaultValue = "") String categories,
         @RequestParam(required = false, defaultValue = "") String influencers
     ) {
-        List<PlaceQueryResult.Location> placeLocationInfos = placeService.getPlaceLocations(
+        List<PlaceQueryResult.Location> placeLocationInfos = placeFacade.getPlaceLocations(
             new PlacesCommand.Coordinate(
                 topLeftLongitude, topLeftLatitude,
                 bottomRightLongitude, bottomRightLatitude,
@@ -102,8 +99,9 @@ public class PlaceController implements PlaceControllerApiSpec {
     public ResponseEntity<PlacesResponse.Detail> getPlaceDetail(
         @PathVariable("id") Long placeId
     ) {
-        var placeDetail = placeService.getPlaceDetailInfo(placeId);
-        var response = PlacesResponse.Detail.from(placeDetail);
+        var placeInfo = placeFacade.getDetailedPlaces(placeId);
+        var response = PlacesResponse.Detail.from(placeInfo);
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -111,7 +109,7 @@ public class PlaceController implements PlaceControllerApiSpec {
     public ResponseEntity<PlacesResponse.Marker> getPlaceForMarker(
         @PathVariable("id") Long placeId
     ) {
-        PlaceQueryInfo.Marker marker = placeFacade.getMarkerInfo(placeId);
+        PlaceInfo.Marker marker = placeFacade.getMarkerInfo(placeId);
         PlacesResponse.Marker markerResponse = PlacesResponse.Marker.from(marker);
         return new ResponseEntity<>(markerResponse, HttpStatus.OK);
     }
@@ -127,7 +125,7 @@ public class PlaceController implements PlaceControllerApiSpec {
     @PostMapping("/likes")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> likeToPlace(@RequestBody PlaceLikeRequest param) {
-        placeService.updateLikedPlace(new PlaceLikeCommand(param.placeId(), param.likes()));
+        placeFacade.updateLikedPlace(new PlaceLikeCommand(param.placeId(), param.likes()));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -141,15 +139,4 @@ public class PlaceController implements PlaceControllerApiSpec {
 
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
-
-    @Override
-    @GetMapping("/new/{placeId}")
-    public ResponseEntity<PlaceNewResponse.Place> getGooglePlaceDetail(Long placeId) {
-        var placeInfo = placeService.getGooglePlaceInfo(placeId);
-        log.info("placeInfo: {}", placeInfo);
-        var response = PlaceNewResponse.Place.from(placeInfo);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-
 }

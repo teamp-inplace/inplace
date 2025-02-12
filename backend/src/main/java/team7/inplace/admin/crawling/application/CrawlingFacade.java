@@ -47,7 +47,8 @@ public class CrawlingFacade {
         var placeCommand = PlacesCommand.Create.from(
             placeInfo.locationNode(),
             placeInfo.placeNode(),
-            placeRegistrationCommand.category()
+            placeRegistrationCommand.category(),
+            ""
         );
         videoFacade.addPlaceInfo(placeRegistrationCommand.videoId(), placeCommand);
     }

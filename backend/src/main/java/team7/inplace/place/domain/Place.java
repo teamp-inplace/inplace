@@ -5,7 +5,6 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,30 +28,18 @@ public class Place extends BaseEntity {
     @Embedded
     private Coordinate coordinate;
 
-    @Deprecated
-    //@Column(columnDefinition = "json")
-    private String facility;
-
-    @Deprecated
-    @Column(columnDefinition = "TEXT")
-    private String menuImgUrl;
-
-    @Deprecated
-    private LocalDateTime menuUpdatedAt;
-
     private String googlePlaceId;
+    private Long kakaoPlaceId;
 
     public Place(
-        String name, String facility, String menuImgsUrl, String category,
-        String address, String x, String y,
-        LocalDateTime menuUpdatedAt
+        String name, String category,
+        String address, String x, String y, String googlePlaceId, Long kakaoPlaceId
     ) {
         this.name = name;
-        this.facility = facility;
-        this.menuImgUrl = menuImgsUrl;
         this.category = Category.of(category);
         this.address = Address.of(address);
         this.coordinate = Coordinate.of(x, y);
-        this.menuUpdatedAt = menuUpdatedAt;
+        this.googlePlaceId = googlePlaceId;
+        this.kakaoPlaceId = kakaoPlaceId;
     }
 }
