@@ -72,10 +72,11 @@ export default function DetailPage() {
         <CarouselWrapper>
           <CarouselContainer $currentIndex={currentVideoIndex}>
             {infoData?.videos?.map((url) => {
-              const youtubeUrl = extractYoutubeId(url.videoUrl);
+              const isYoutubeUrl = url.videoUrl?.includes('youtube.com') || url.videoUrl?.includes('youtu.be');
+              const youtubeUrl = isYoutubeUrl ? extractYoutubeId(url.videoUrl) : BasicThumb;
               return (
                 <ImageWrapper key={`${id}-${url.videoUrl}`}>
-                  <FallbackImage src={url.videoUrl ? youtubeUrl : BasicThumb} alt="장소 사진" />
+                  <FallbackImage src={youtubeUrl} alt="장소 사진" />
                 </ImageWrapper>
               );
             })}
