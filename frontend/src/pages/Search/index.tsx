@@ -23,44 +23,60 @@ export default function SearchPage() {
           검색 결과
         </Paragraph>
       </Title>
-      {influencersData && influencersData.length > 0 && (
-        <>
-          <SplitLine />
-          <BaseLayout type="influencer" mainText="" SubText="인플루언서" items={influencersData || []} />
-        </>
-      )}
-      {places && places.length > 0 && (
-        <>
-          <SplitLine />
-          <BaseLayout type="place" mainText="" SubText="관련 장소" items={places || []} />
-        </>
-      )}
-      {VideoData && VideoData.length > 0 && (
-        <>
-          <SplitLine />
-          <BaseLayout type="spot" mainText="" SubText="바로 그곳" items={VideoData || []} />
-        </>
-      )}
+      <Container>
+        {influencersData && influencersData.length > 0 && (
+          <>
+            <SplitLine />
+            <BaseLayout type="influencer" mainText="" SubText="인플루언서" items={influencersData || []} />
+          </>
+        )}
+        {places && places.length > 0 && (
+          <>
+            <SplitLine />
+            <BaseLayout type="place" mainText="" SubText="관련 장소" items={places || []} />
+          </>
+        )}
+        {VideoData && VideoData.length > 0 && (
+          <>
+            <SplitLine />
+            <BaseLayout type="spot" mainText="" SubText="바로 그곳" items={VideoData || []} />
+          </>
+        )}
+      </Container>
     </Wrapper>
   );
 }
 const Wrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 20px;
 
   @media screen and (max-width: 768px) {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
+    gap: 20px;
     align-items: center;
   }
 `;
 const SplitLine = styled.div`
+  width: 100%;
   border-bottom: 1px solid #595959;
+  @media screen and (max-width: 768px) {
+    border: none;
+  }
 `;
 
 const Title = styled.div`
   width: 90%;
+`;
+
+const Container = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center;
+  margin-top: 10px;
+  @media screen and (max-width: 768px) {
+    gap: 20px;
+  }
 `;

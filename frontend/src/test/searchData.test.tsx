@@ -38,7 +38,24 @@ jest.mock('@/api/hooks/useGetSearchData', () => ({
     isLoading: false,
     isError: false,
   },
-  { data: [{ placeId: 1, placeName: '풍자또가', imageUrl: '', likes: true }], isLoading: false, isError: false },
+  {
+    data: [
+      {
+        placeId: 1,
+        placeName: '풍자또가',
+        imageUrl: null,
+        influencerName: '풍자',
+        likes: true,
+        address: {
+          address1: '대구광역시',
+          address2: '북구',
+          address3: '대현로',
+        },
+      },
+    ],
+    isLoading: false,
+    isError: false,
+  },
 ]);
 
 const queryClient = new QueryClient();

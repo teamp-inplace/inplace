@@ -42,7 +42,7 @@ const dummyMarkerInfos: Record<string, MarkerInfo> = {
       address2: '북구',
       address3: '대현동 119-11',
     },
-    menuImgUrl: 'https://via.placeholder.com/500',
+    menuImgUrl: null,
     influencerName: '성시경',
     category: '한식',
   },
@@ -55,14 +55,14 @@ const dummyPlaces: PlaceData[] = [
     address: {
       address1: '대구',
       address2: '북구',
-      address3: '칠성로 70-1',
+      address3: '칠성로 70-1 주소개길면어떻게되너ㅏㅏㄴㅁㄴㅁㅇㄴㄹㅁ렴ㅈ룜ㅈ로ㅑㅁ죠오랴ㅕㅁ조ㅑ려ㅗㅁ쟈ㅕ로ㅑㅕㅁ졸',
     },
     category: '음식점',
     influencerName: '성시경',
     longitude: '128.59691803894955',
     latitude: '35.879135694467514',
     likes: true,
-    menuImgUrl: 'https://via.placeholder.com/500',
+    menuImgUrl: null,
   },
   {
     placeId: 2,
@@ -77,7 +77,7 @@ const dummyPlaces: PlaceData[] = [
     longitude: '126.9314925',
     latitude: '37.5666478',
     likes: true,
-    menuImgUrl: 'https://via.placeholder.com/500',
+    menuImgUrl: null,
   },
   {
     placeId: 3,
@@ -92,7 +92,7 @@ const dummyPlaces: PlaceData[] = [
     longitude: '128.6101069',
     latitude: '35.812447',
     likes: false,
-    menuImgUrl: 'https://via.placeholder.com/500',
+    menuImgUrl: null,
   },
   {
     placeId: 4,
@@ -107,7 +107,7 @@ const dummyPlaces: PlaceData[] = [
     longitude: '128.65037738548736',
     latitude: '35.855300594743575',
     likes: false,
-    menuImgUrl: 'https://via.placeholder.com/500',
+    menuImgUrl: null,
   },
   {
     placeId: 5,
@@ -122,7 +122,7 @@ const dummyPlaces: PlaceData[] = [
     longitude: '127.33301043369335',
     latitude: '36.351477682663756',
     likes: false,
-    menuImgUrl: 'https://via.placeholder.com/500',
+    menuImgUrl: null,
   },
   {
     placeId: 6,
@@ -137,7 +137,7 @@ const dummyPlaces: PlaceData[] = [
     longitude: '126.931851791899',
     latitude: '35.1256604935401',
     likes: false,
-    menuImgUrl: 'https://via.placeholder.com/500',
+    menuImgUrl: null,
   },
   {
     placeId: 7,
@@ -152,7 +152,7 @@ const dummyPlaces: PlaceData[] = [
     longitude: '128.61999608',
     latitude: '35.8857457',
     likes: false,
-    menuImgUrl: 'https://via.placeholder.com/500',
+    menuImgUrl: null,
   },
   {
     placeId: 8,
@@ -167,7 +167,7 @@ const dummyPlaces: PlaceData[] = [
     longitude: '127.753131738285',
     latitude: '37.8763535115171',
     likes: false,
-    menuImgUrl: 'https://via.placeholder.com/500',
+    menuImgUrl: null,
   },
   {
     placeId: 9,
@@ -182,7 +182,7 @@ const dummyPlaces: PlaceData[] = [
     longitude: '127.1436094525637',
     latitude: '37.275820090934495',
     likes: false,
-    menuImgUrl: 'https://via.placeholder.com/500',
+    menuImgUrl: null,
   },
   {
     placeId: 10,
@@ -197,7 +197,7 @@ const dummyPlaces: PlaceData[] = [
     longitude: '129.11483195198562',
     latitude: '35.158494192685914',
     likes: false,
-    menuImgUrl: 'https://via.placeholder.com/500',
+    menuImgUrl: null,
   },
   {
     placeId: 11,
@@ -212,7 +212,7 @@ const dummyPlaces: PlaceData[] = [
     longitude: '128.848643',
     latitude: '35.783343',
     likes: false,
-    menuImgUrl: 'https://via.placeholder.com/500',
+    menuImgUrl: null,
   },
   {
     placeId: 12,
@@ -227,7 +227,7 @@ const dummyPlaces: PlaceData[] = [
     longitude: '128.848642',
     latitude: '35.7834',
     likes: false,
-    menuImgUrl: 'https://via.placeholder.com/500',
+    menuImgUrl: null,
   },
   {
     placeId: 13,
@@ -242,7 +242,7 @@ const dummyPlaces: PlaceData[] = [
     longitude: '128.8483',
     latitude: '35.789',
     likes: false,
-    menuImgUrl: 'https://via.placeholder.com/500',
+    menuImgUrl: null,
   },
   {
     placeId: 14,
@@ -257,7 +257,7 @@ const dummyPlaces: PlaceData[] = [
     longitude: '128.84873',
     latitude: '35.789',
     likes: false,
-    menuImgUrl: 'https://via.placeholder.com/500',
+    menuImgUrl: null,
   },
   {
     placeId: 15,
@@ -272,7 +272,7 @@ const dummyPlaces: PlaceData[] = [
     longitude: '128.8499',
     latitude: '35.71',
     likes: false,
-    menuImgUrl: 'https://via.placeholder.com/500',
+    menuImgUrl: null,
   },
   {
     placeId: 16,
@@ -287,7 +287,7 @@ const dummyPlaces: PlaceData[] = [
     longitude: '128.9',
     latitude: '35.78',
     likes: false,
-    menuImgUrl: 'https://via.placeholder.com/500',
+    menuImgUrl: null,
   },
 ];
 

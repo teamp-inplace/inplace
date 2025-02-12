@@ -38,8 +38,8 @@ export default function UserPlaceSection({ items = [] }: { items: UserPlaceData[
                   key={place.placeId}
                   placeId={place.placeId}
                   placeName={place.placeName}
-                  imageUrl={place.imageUrl}
-                  influencer={place.influencer}
+                  influencerName={place.influencerName}
+                  address={place.address}
                   likes={place.likes}
                 />
               );

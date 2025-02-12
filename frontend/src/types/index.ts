@@ -60,7 +60,7 @@ export type PlaceData = {
   address: AddressInfo;
   category: string;
   influencerName: string;
-  menuImgUrl: string;
+  menuImgUrl?: string | null;
   longitude: string;
   latitude: string;
   likes: boolean;
@@ -87,19 +87,26 @@ export type PlaceInfo = {
   placeName: string;
   address: AddressInfo;
   category: string;
-  influencerName: string;
+  videos: [
+    {
+      videoUrl: string;
+      influencerName: string;
+    },
+  ];
+  openingHours: string[];
+  googlePlaceUrl: string;
+  googleReviews: GoogleReview[];
+  rating: number;
   longitude: string;
   latitude: string;
-  likes: boolean;
-  facilityInfo: FacilityInfo;
-  menuInfos: {
-    menuImgUrls: string[];
-    menuList: Menu[];
-    menuUpdatedAt: Date;
-  };
-  openHour: OpenHourData;
+  facility: FacilityInfo;
   placeLikes: PlaceLikes;
-  videoUrl: [string];
+};
+export type GoogleReview = {
+  like: boolean;
+  text: string;
+  name: string;
+  publishTime: Date;
 };
 
 export type PlaceLikes = {
@@ -108,21 +115,11 @@ export type PlaceLikes = {
 };
 
 export type FacilityInfo = {
-  wifi?: string;
-  pet?: string;
-  parking?: string;
-  forDisabled?: string;
-  nursery?: string;
-  smokingRoom?: string;
-  message?: string;
-};
-
-export type Menu = {
-  price: string;
-  recommend: boolean;
-  menuName: string;
-  menuImgUrl: string;
-  description: string;
+  wheelchairAccessibleSeating?: boolean;
+  freeParkingLot?: boolean;
+  paidParkingLot?: boolean;
+  acceptsCreditCards?: boolean;
+  acceptsCashOnly?: boolean;
 };
 
 export type ReviewData = {
@@ -134,18 +131,6 @@ export type ReviewData = {
   mine: boolean;
 };
 
-export type OpenHourData = {
-  periodList: {
-    timeName: string;
-    timeSE: string;
-    dayOfWeek: string;
-  }[];
-  offdayList: {
-    holidayName: string;
-    weekAndDay: string;
-    temporaryHolidays: string;
-  }[];
-};
 export type RequestInfluencerLike = {
   influencerId: number;
   likes: boolean;
@@ -156,8 +141,9 @@ export type UserInfoData = {
 export type UserPlaceData = {
   placeId: number;
   placeName: string;
-  imageUrl: string;
-  influencer?: string;
+  imageUrl?: string | null;
+  influencerName: string;
+  address: AddressInfo;
   likes: boolean;
 };
 export type RequestPlaceLike = {
@@ -169,7 +155,7 @@ export type UserReviewData = {
   place: {
     placeId: number;
     placeName: string;
-    imgUrl: string;
+    imgUrl?: string | null;
     address: {
       address1: string;
       address2: string;
@@ -215,7 +201,7 @@ export type MarkerInfo = {
   category: string;
   influencerName: string;
   address: AddressInfo;
-  menuImgUrl: string;
+  menuImgUrl?: string | null;
 };
 
 export interface ReviewInfo {

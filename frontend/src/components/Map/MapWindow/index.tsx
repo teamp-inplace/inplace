@@ -12,6 +12,7 @@ import SelectedMarker from '@/assets/images/InplaceMarker.png';
 import { Text } from '@/components/common/typography/Text';
 
 interface MapWindowProps {
+  center: { lat: number; lng: number };
   onBoundsChange: (bounds: LocationData) => void;
   onCenterChange: (center: { lat: number; lng: number }) => void;
   filters: {
@@ -27,6 +28,7 @@ interface MapWindowProps {
 }
 
 export default function MapWindow({
+  center,
   onBoundsChange,
   onCenterChange,
   filters,
@@ -114,6 +116,18 @@ export default function MapWindow({
     }
   }, [fetchMarkers]);
 
+  useEffect(() => {
+    if (mapRef.current && center) {
+      const position = new kakao.maps.LatLng(center.lat, center.lng);
+      setTimeout(
+        () => {
+          mapRef.current?.panTo(position);
+        },
+        selectedPlaceId !== null ? 200 : 0,
+      );
+    }
+  }, [center]);
+
   // 마커나 장소 선택시 지도 중심으로 이동
   const moveMapToMarker = useCallback(
     (latitude: number, longitude: number) => {
@@ -149,11 +163,15 @@ export default function MapWindow({
     [isMobile],
   );
 
+  // 초기 선택 시에만 이동하도록
   useEffect(() => {
-    if (selectedPlaceId && selectedMarker) {
-      moveMapToMarker(selectedMarker.latitude, selectedMarker.longitude);
+    if (selectedPlaceId) {
+      const marker = markers.find((m) => m.placeId === selectedPlaceId);
+      if (marker) {
+        moveMapToMarker(marker.latitude, marker.longitude);
+      }
     }
-  }, [selectedPlaceId, selectedMarker, moveMapToMarker]);
+  }, [selectedPlaceId, moveMapToMarker]);
 
   // 마커 정보를 새로 호출한 후 데이터 업데이트
   useEffect(() => {
@@ -251,7 +269,7 @@ export default function MapWindow({
           <MapMarker
             position={userLocation}
             image={{
-              src: 'https://i.ibb.co/4gGFjRx/circle.png',
+              src: 'https://i.ibb.co/4gGFjRx/circle.webp',
               size: { width: userLocationSize, height: userLocationSize },
             }}
           />

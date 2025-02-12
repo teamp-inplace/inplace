@@ -38,21 +38,18 @@ export default function InfluencerMapWindow({
   onListExpand,
 }: MapWindowProps) {
   const mapRef = useRef<kakao.maps.Map | null>(null);
-
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [markerInfo, setMarkerInfo] = useState<MarkerInfo | PlaceData>();
   const [shouldFetchData, setShouldFetchData] = useState<boolean>(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
-    const checkMobile = () => {
+    const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
 
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const originSize = isMobile ? 26 : 34;
@@ -210,7 +207,7 @@ export default function InfluencerMapWindow({
             lat: 36.2683,
             lng: 127.6358,
           }}
-          style={{ width: '100%', height: 'auto', aspectRatio: isMobile ? '1' : '1.4/1' }}
+          style={{ width: '100%', height: 'auto', aspectRatio: isMobile ? '1' : '1.65/1' }}
           level={14}
           onCreate={(map) => {
             mapRef.current = map;
@@ -221,7 +218,7 @@ export default function InfluencerMapWindow({
             <MapMarker
               position={userLocation}
               image={{
-                src: 'https://i.ibb.co/4gGFjRx/circle.png',
+                src: 'https://i.ibb.co/4gGFjRx/circle.webp',
                 size: { width: userLocationSize, height: userLocationSize },
               }}
             />

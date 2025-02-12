@@ -93,7 +93,7 @@ const mockReviews = [
     place: {
       placeId: '1',
       placeName: '료코',
-      imgUrl: 'https://via.placeholder.com/100',
+      imgUrl: null,
       address: {
         address1: '대구광역시',
         address2: '북구',
@@ -109,7 +109,7 @@ const mockReviews = [
     place: {
       placeId: '2',
       placeName: '료코',
-      imgUrl: 'https://via.placeholder.com/100',
+      imgUrl: null,
       address: {
         address1: '경상북도',
         address2: '경주시',
@@ -125,7 +125,7 @@ const mockReviews = [
     place: {
       placeId: '2',
       placeName: '료코',
-      imgUrl: 'https://via.placeholder.com/100',
+      imgUrl: null,
       address: {
         address1: '경상북도',
         address2: '경주시',
@@ -141,7 +141,7 @@ const mockReviews = [
     place: {
       placeId: '2',
       placeName: '료코',
-      imgUrl: 'https://via.placeholder.com/100',
+      imgUrl: null,
       address: {
         address1: '경상북도',
         address2: '경주시',
@@ -157,7 +157,7 @@ const mockReviews = [
     place: {
       placeId: '2',
       placeName: '료코',
-      imgUrl: 'https://via.placeholder.com/100',
+      imgUrl: null,
       address: {
         address1: '경상북도',
         address2: '경주시',
@@ -173,7 +173,7 @@ const mockReviews = [
     place: {
       placeId: '2',
       placeName: '료코',
-      imgUrl: 'https://via.placeholder.com/100',
+      imgUrl: null,
       address: {
         address1: '경상북도',
         address2: '경주시',
@@ -189,7 +189,7 @@ const mockReviews = [
     place: {
       placeId: '2',
       placeName: '료코',
-      imgUrl: 'https://via.placeholder.com/100',
+      imgUrl: null,
       address: {
         address1: '경상북도',
         address2: '경주시',
@@ -205,7 +205,7 @@ const mockReviews = [
     place: {
       placeId: '2',
       placeName: '료코',
-      imgUrl: 'https://via.placeholder.com/100',
+      imgUrl: null,
       address: {
         address1: '경상북도',
         address2: '경주시',
@@ -221,7 +221,7 @@ const mockReviews = [
     place: {
       placeId: '2',
       placeName: '료코',
-      imgUrl: 'https://via.placeholder.com/100',
+      imgUrl: null,
       address: {
         address1: '경상북도',
         address2: '경주시',
@@ -237,7 +237,7 @@ const mockReviews = [
     place: {
       placeId: '2',
       placeName: '료코',
-      imgUrl: 'https://via.placeholder.com/100',
+      imgUrl: null,
       address: {
         address1: '경상북도',
         address2: '경주시',
@@ -253,7 +253,7 @@ const mockReviews = [
     place: {
       placeId: '2',
       placeName: '료코',
-      imgUrl: 'https://via.placeholder.com/100',
+      imgUrl: null,
       address: {
         address1: '경상북도',
         address2: '경주시',
@@ -270,68 +270,126 @@ const mockPlaces = [
   {
     placeId: 1,
     placeName: '료코',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '성시경',
+    imageUrl: null,
+    likes: true,
+    influencerName: '성시경',
+    address: {
+      address1: '대구광역시',
+      address2: '북구',
+      address3: '대현로',
+    },
   },
   {
     placeId: 2,
     placeName: '이선장네',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '임영웅',
+    likes: true,
+    imageUrl: null,
+    influencerName: '임영웅',
+    address: {
+      address1: '대구광역시',
+      address2: '북구',
+      address3: '대현로',
+    },
   },
   {
     placeId: 3,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    likes: true,
+    influencerName: '풍자',
+    address: {
+      address1: '대구광역시',
+      address2: '북구',
+      address3: '대현로',
+    },
   },
   {
     placeId: 4,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    influencerName: '풍자',
+    address: {
+      address1: '대구광역시',
+      address2: '북구',
+      address3: '대현로',
+    },
   },
   {
     placeId: 5,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    influencerName: '풍자',
+    address: {
+      address1: '대구광역시',
+      address2: '북구',
+      address3: '대현로',
+    },
   },
   {
     placeId: 6,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    influencerName: '풍자',
+    address: {
+      address1: '대구광역시',
+      address2: '북구',
+      address3: '대현로',
+    },
   },
   {
     placeId: 7,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    influencerName: '풍자',
+    address: {
+      address1: '대구광역시',
+      address2: '북구',
+      address3: '대현로',
+    },
   },
   {
     placeId: 8,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    influencerName: '풍자',
+    address: {
+      address1: '대구광역시',
+      address2: '북구',
+      address3: '대현로',
+    },
   },
   {
     placeId: 9,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    influencerName: '풍자',
+    address: {
+      address1: '대구광역시',
+      address2: '북구',
+      address3: '대현로',
+    },
   },
   {
     placeId: 10,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    influencerName: '풍자',
+    address: {
+      address1: '대구광역시',
+      address2: '북구',
+      address3: '대현로',
+    },
   },
   {
     placeId: 11,
     placeName: '풍자또가',
-    imageUrl: 'https://via.placeholder.com/100',
-    influencer: '풍자',
+    imageUrl: null,
+    influencerName: '풍자',
+    address: {
+      address1: '대구광역시',
+      address2: '북구',
+      address3: '대현로',
+    },
   },
 ];
 let nickName = '랄라스윗칩';
