@@ -1,18 +1,22 @@
 package team7.inplace.place.presentation.dto;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import team7.inplace.place.application.dto.PlaceQueryInfo;
-import team7.inplace.place.application.dto.PlaceQueryInfo.Marker;
+import team7.inplace.place.application.dto.PlaceInfo;
+import team7.inplace.place.client.GooglePlaceClientResponse;
+import team7.inplace.place.client.GooglePlaceClientResponse.AccessibilityOptions;
+import team7.inplace.place.client.GooglePlaceClientResponse.ParkingOptions;
+import team7.inplace.place.client.GooglePlaceClientResponse.PaymentOptions;
+import team7.inplace.place.client.GooglePlaceClientResponse.RegularOpeningHours;
 import team7.inplace.place.domain.Category;
 import team7.inplace.place.persistence.dto.PlaceQueryResult;
 import team7.inplace.review.persistence.dto.ReviewQueryResult;
+import team7.inplace.video.persistence.dto.VideoQueryResult;
 import team7.inplace.video.persistence.dto.VideoQueryResult.SimpleVideo;
 
 public class PlacesResponse {
@@ -29,17 +33,17 @@ public class PlacesResponse {
         Boolean likes
     ) {
 
-        public static List<Simple> from(List<PlaceQueryInfo.Simple> placeInfos) {
+        public static List<Simple> from(List<PlaceInfo.Simple> placeInfos) {
             return placeInfos.stream()
                 .map(Simple::from)
                 .toList();
         }
 
-        public static Simple from(PlaceQueryInfo.Simple placeInfo) {
+        public static Simple from(PlaceInfo.Simple placeInfo) {
             return new Simple(
                 placeInfo.place().placeId(),
                 placeInfo.place().placeName(),
-                Address.from(
+                new Address(
                     placeInfo.place().address1(),
                     placeInfo.place().address2(),
                     placeInfo.place().address3()
@@ -49,7 +53,7 @@ public class PlacesResponse {
                     .filter(Objects::nonNull)
                     .distinct()
                     .collect(Collectors.joining(", ")),
-                placeInfo.place().menuImgUrl(),
+                "",
                 placeInfo.place().longitude().toString(),
                 placeInfo.place().latitude().toString(),
                 placeInfo.place().isLiked()
@@ -60,70 +64,48 @@ public class PlacesResponse {
     public record Detail(
         Long placeId,
         String placeName,
-        Address address,
+        PlacesResponse.Address address,
         String category,
-        String influencerName,
-        String longitude,
-        String latitude,
-        Boolean likes,
-        JsonNode facilityInfo,
-        PlacesResponse.MenuInfos menuInfos,
-        PlacesResponse.OpenHour openHour,
-        PlacesResponse.PlaceLikes placeLikes,
-        List<String> videoUrl
+        Double longitude,
+        Double latitude,
+        PlacesResponse.Facility facility,
+        List<PlacesResponse.Video> videos,
+        List<PlacesResponse.GoogleReview> googleReviews,
+        String googlePlaceUrl,
+        List<String> openingHours,
+        PlacesResponse.PlaceLike placeLike
     ) {
 
-        public static Detail from(PlaceQueryInfo.Detail placeDetailInfo) {
-            var placeBulk = placeDetailInfo.placeBulk();
-            var videos = placeDetailInfo.videos();
-            var placeReviewLikeRate = placeDetailInfo.reviewLikeRate();
-
-            var menuInfos = PlacesResponse.MenuInfos.from(
-                placeBulk.menuBordPhotos(),
-                placeBulk.menus(),
-                placeBulk.detailedPlace().menuUpdatedAt()
-            );
-            var openHour = PlacesResponse.OpenHour.from(placeBulk.openTimes(), placeBulk.offDays());
-            var placeLikes = PlacesResponse.PlaceLikes.from(placeReviewLikeRate);
-
-            var influencerNames = videos.stream().map(SimpleVideo::influencerName)
-                .filter(Objects::nonNull)
-                .distinct()
-                .collect(Collectors.joining(", "));
-            var videoUrls = videos.stream()
-                .map(SimpleVideo::videoUrl)
-                .toList();
-
-            return new Detail(
-                placeBulk.detailedPlace().placeId(),
-                placeBulk.detailedPlace().placeName(),
-                Address.from(
-                    placeBulk.detailedPlace().address1(),
-                    placeBulk.detailedPlace().address2(),
-                    placeBulk.detailedPlace().address3()
+        public static PlacesResponse.Detail from(PlaceInfo.Detail place) {
+            return new PlacesResponse.Detail(
+                place.place().placeId(),
+                place.place().placeName(),
+                new PlacesResponse.Address(
+                    place.place().address1(),
+                    place.place().address2(),
+                    place.place().address3()
                 ),
-                Category.valueOf(placeBulk.detailedPlace().category()).getName(),
-                influencerNames,
-                placeBulk.detailedPlace().longitude().toString(),
-                placeBulk.detailedPlace().latitude().toString(),
-                placeBulk.detailedPlace().isLiked(),
-                facilityTree(placeBulk.detailedPlace().facility()),
-                menuInfos,
-                openHour,
-                placeLikes,
-                videoUrls
+                place.place().category(),
+                place.place().longitude(),
+                place.place().latitude(),
+                PlacesResponse.Facility.of(
+                    place.googlePlace().accessibilityOptions().orElse(null),
+                    place.googlePlace().parkingOptions().orElse(null),
+                    place.googlePlace().paymentOptions().orElse(null)
+                ),
+                place.videos().stream()
+                    .map(PlacesResponse.Video::from)
+                    .toList(),
+                place.googlePlace().reviews()
+                    .stream()
+                    .map(PlacesResponse.GoogleReview::from)
+                    .toList(),
+                place.googlePlace().googleMapsUri(),
+                place.googlePlace().regularOpeningHours()
+                    .map(RegularOpeningHours::weekdayDescriptions)
+                    .orElse(List.of()),
+                PlacesResponse.PlaceLike.from(place.reviewLikeRate())
             );
-        }
-
-        private static JsonNode facilityTree(String facility) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            try {
-                return objectMapper.readTree(facility);
-            } catch (Exception e) {
-                var noDataNode = objectMapper.createObjectNode();
-                noDataNode.put("message", "");
-                return noDataNode;
-            }
         }
     }
 
@@ -133,104 +115,87 @@ public class PlacesResponse {
         String address3
     ) {
 
-        public static Address from(String address1, String address2, String address3) {
-            return new Address(address1, address2, address3);
-        }
     }
 
-    public record MenuInfos(
-        List<String> menuImgUrls,
-        List<Menu> menuList,
-        String menuUpdatedAt
+    @JsonInclude(Include.NON_NULL)
+    public record Facility(
+        Boolean wheelchairAccessibleSeating,
+        Boolean freeParkingLot,
+        Boolean paidParkingLot,
+        Boolean acceptsCreditCards,
+        Boolean acceptsCashOnly
     ) {
 
-        public static MenuInfos from(
-            List<PlaceQueryResult.MenuBordPhoto> menuBoardPhotos,
-            List<PlaceQueryResult.Menu> menus,
-            LocalDateTime menuUpdatedAt
+        public static PlacesResponse.Facility of(
+            GooglePlaceClientResponse.AccessibilityOptions accessibilityOptions,
+            GooglePlaceClientResponse.ParkingOptions parkingOptions,
+            GooglePlaceClientResponse.PaymentOptions paymentOptions
         ) {
-            return new MenuInfos(
-                menuBoardPhotos.stream().map(PlaceQueryResult.MenuBordPhoto::imgUrl).toList(),
-                menus.stream().map(PlacesResponse.Menu::from).toList(),
-                Optional.ofNullable(menuUpdatedAt)
-                    .map(dateTime -> dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+            return new PlacesResponse.Facility(
+                Optional.ofNullable(accessibilityOptions)
+                    .flatMap(AccessibilityOptions::wheelchairAccessibleSeating)
+                    .orElse(null),
+                Optional.ofNullable(parkingOptions)
+                    .flatMap(ParkingOptions::freeParkingLot)
+                    .orElse(null),
+                Optional.ofNullable(parkingOptions)
+                    .flatMap(ParkingOptions::paidParkingLot)
+                    .orElse(null),
+                Optional.ofNullable(paymentOptions)
+                    .flatMap(PaymentOptions::acceptsCreditCards)
+                    .orElse(null),
+                Optional.ofNullable(paymentOptions)
+                    .flatMap(PaymentOptions::acceptsCashOnly)
                     .orElse(null)
             );
         }
     }
 
-    public record Menu(
-        String menuName,
-        String price,
-        String menuImgUrl,
-        Boolean recommended,
-        String description
+    public record GoogleReview(
+        Boolean like,
+        String text,
+        String name,
+        String publishTime
     ) {
 
-        public static Menu from(PlaceQueryResult.Menu menu) {
-            return new Menu(
-                menu.name(),
-                menu.price(),
-                menu.imgUrl(),
-                menu.recommend(),
-                menu.description()
+        public static PlacesResponse.GoogleReview from(GooglePlaceClientResponse.Review review) {
+            return new PlacesResponse.GoogleReview(
+                review.rating() >= 3,
+                review.text().text(),
+                review.authorAttribution().displayName(),
+                review.publishTime().toString()
             );
         }
     }
 
-    public record OpenHour(
-        List<OpenTime> periodList,
-        List<OffDay> offdayList
+    public record Review(
+        Long reviewId,
+        boolean likes,
+        String comment,
+        String userNickname,
+        LocalDate createdDate,
+        boolean mine
     ) {
 
-        public static OpenHour from(
-            List<PlaceQueryResult.OpenTime> openTimes,
-            List<PlaceQueryResult.OffDay> closeTimes
-        ) {
-            return new OpenHour(
-                openTimes.stream().map(OpenTime::from).toList(),
-                closeTimes.stream().map(OffDay::from).toList()
-            );
-        }
     }
 
-    public record OpenTime(
-        String timeName,
-        String timeSE,
-        String dayOfWeek
-    ) {
-
-        public static OpenTime from(PlaceQueryResult.OpenTime openTime) {
-            return new OpenTime(
-                openTime.timeName(),
-                openTime.timeSE(),
-                openTime.dayOfWeek()
-            );
-        }
-    }
-
-    public record OffDay(
-        String holidayName,
-        String weekAndDay,
-        String temporaryHolidays
-    ) {
-
-        public static OffDay from(PlaceQueryResult.OffDay offDay) {
-            return new OffDay(
-                offDay.holidayName(),
-                offDay.weekAndDay(),
-                offDay.temporaryHolidays()
-            );
-        }
-    }
-
-    public record PlaceLikes(
+    public record PlaceLike(
         Long like,
         Long dislike
     ) {
 
-        public static PlaceLikes from(ReviewQueryResult.LikeRate likeRate) {
-            return new PlaceLikes(likeRate.likes(), likeRate.dislikes());
+        public static PlacesResponse.PlaceLike from(ReviewQueryResult.LikeRate placeLike) {
+            return new PlacesResponse.PlaceLike(placeLike.likes(), placeLike.dislikes());
+        }
+    }
+
+    public record Video(
+        String videoUrl,
+        String influencerName
+    ) {
+
+        public static PlacesResponse.Video from(VideoQueryResult.SimpleVideo video) {
+            return new PlacesResponse.Video(video.videoUrl(), video.influencerName());
         }
     }
 
@@ -264,18 +229,18 @@ public class PlacesResponse {
         String menuImgUrl
     ) {
 
-        public static Marker from(PlaceQueryInfo.Marker marker) {
+        public static Marker from(PlaceInfo.Marker marker) {
             return new Marker(
                 marker.place().placeId(),
                 marker.place().placeName(),
                 Category.valueOf(marker.place().category()).getName(),
                 marker.influencerNames(),
-                Address.from(
+                new Address(
                     marker.place().address1(),
                     marker.place().address2(),
                     marker.place().address3()
                 ),
-                marker.place().menuImgUrl()
+                ""
             );
         }
     }

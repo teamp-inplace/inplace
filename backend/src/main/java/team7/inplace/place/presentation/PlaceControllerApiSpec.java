@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import team7.inplace.place.presentation.dto.CategoriesResponse;
 import team7.inplace.place.presentation.dto.PlaceLikeRequest;
-import team7.inplace.place.presentation.dto.PlaceNewResponse;
 import team7.inplace.place.presentation.dto.PlacesResponse;
 import team7.inplace.place.presentation.dto.PlacesResponse.Location;
 import team7.inplace.place.presentation.dto.ReviewResponse;
@@ -60,10 +59,5 @@ public interface PlaceControllerApiSpec {
     ResponseEntity<Page<ReviewResponse.Simple>> getReviews(
         @PathVariable("id") Long placeId,
         @PageableDefault(page = 0, size = 10) Pageable pageable
-    );
-
-    @Operation(summary = "구글로 장소 세부 정보 검색 API", description = "구글로 장소 세부 정보를 검색합니다.")
-    ResponseEntity<PlaceNewResponse.Place> getGooglePlaceDetail(
-        @PathVariable Long placeId
     );
 }

@@ -9,33 +9,35 @@ import team7.inplace.place.persistence.dto.PlaceQueryResult;
 import team7.inplace.place.persistence.dto.PlaceQueryResult.DetailedPlace;
 
 public interface PlaceReadRepository {
-    Optional<PlaceQueryResult.DetailedPlaceBulk> findDetailedPlaceById(Long placeId, Long userId);
+
+    Optional<PlaceQueryResult.DetailedPlace> findDetailedPlaceById(Long placeId, Long userId);
 
     Optional<PlaceQueryResult.SimplePlace> findSimplePlaceById(Long placeId);
 
     Page<DetailedPlace> findPlacesInMapRangeWithPaging(
-            Double topLeftLongitude,
-            Double topLeftLatitude,
-            Double bottomRightLongitude,
-            Double bottomRightLatitude,
-            Double longitude,
-            Double latitude,
-            List<Category> categoryFilters,
-            List<String> influencerFilters,
-            Pageable pageable,
-            Long userId
+        Double topLeftLongitude,
+        Double topLeftLatitude,
+        Double bottomRightLongitude,
+        Double bottomRightLatitude,
+        Double longitude,
+        Double latitude,
+        List<Category> categoryFilters,
+        List<String> influencerFilters,
+        Pageable pageable,
+        Long userId
     );
 
     List<PlaceQueryResult.Location> findPlaceLocationsInMapRange(
-            Double topLeftLongitude,
-            Double topLeftLatitude,
-            Double bottomRightLongitude,
-            Double bottomRightLatitude,
-            List<Category> categoryFilters,
-            List<String> influencerFilters
+        Double topLeftLongitude,
+        Double topLeftLatitude,
+        Double bottomRightLongitude,
+        Double bottomRightLatitude,
+        List<Category> categoryFilters,
+        List<String> influencerFilters
     );
 
-    Page<PlaceQueryResult.DetailedPlaceBulk> findLikedPlacesByUserIdWithPaging(Long userId, Pageable pageable);
+    Page<PlaceQueryResult.DetailedPlace> findLikedPlacesByUserIdWithPaging(
+        Long userId, Pageable pageable);
 
     PlaceQueryResult.Marker findPlaceMarkerById(Long placeId);
 }

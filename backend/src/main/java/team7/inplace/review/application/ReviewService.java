@@ -39,6 +39,11 @@ public class ReviewService {
         return reviewPage;
     }
 
+    @Transactional(readOnly = true)
+    public ReviewQueryResult.LikeRate getReviewLikeRate(Long reviewId) {
+        return reviewReadRepository.countRateByPlaceId(reviewId);
+    }
+
     @Transactional
     public void deleteReview(Long reviewId) {
         Long userId = AuthorizationUtil.getUserId();

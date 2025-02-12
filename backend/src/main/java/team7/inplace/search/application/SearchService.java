@@ -81,7 +81,8 @@ public class SearchService {
 
     public List<SearchQueryResult.Place> searchPlace(String keyword) {
         var userId = AuthorizationUtil.getUserId();
-        var placeInfos = placeSearchRepository.search(keyword,
+        var placeInfos = placeSearchRepository.search(
+            keyword,
             Pageable.ofSize(SEARCH_LIMIT),
             userId
         );
