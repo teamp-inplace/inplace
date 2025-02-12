@@ -56,17 +56,15 @@ const Wrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-content: end;
   line-height: 150%;
-  gap: 2px;
+  gap: 4px;
+  padding-bottom: 14px;
+  border-bottom: 0.5px solid #6e6e6e;
 
-  svg {
-    margin-left: 20px;
-  }
   @media screen and (max-width: 768px) {
-    line-height: 130%;
+    padding-bottom: 8px;
+    gap: 2px;
     svg {
-      margin-left: 10px;
       width: 20px;
       height: 16px;
     }
@@ -76,7 +74,14 @@ const Title = styled.div`
   display: flex;
   justify-content: space-between;
 `;
-const Name = styled.div``;
+const Name = styled.div`
+  display: flex;
+  gap: 10px;
+  @media screen and (max-width: 768px) {
+    gap: 4px;
+    align-items: center;
+  }
+`;
 const DeleteBtn = styled.button`
   font-size: 14px;
   color: #b0b0b0;
