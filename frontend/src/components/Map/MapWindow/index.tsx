@@ -163,11 +163,15 @@ export default function MapWindow({
     [isMobile],
   );
 
+  // 초기 선택 시에만 이동하도록
   useEffect(() => {
-    if (selectedPlaceId && selectedMarker) {
-      moveMapToMarker(selectedMarker.latitude, selectedMarker.longitude);
+    if (selectedPlaceId) {
+      const marker = markers.find((m) => m.placeId === selectedPlaceId);
+      if (marker) {
+        moveMapToMarker(marker.latitude, marker.longitude);
+      }
     }
-  }, [selectedPlaceId, selectedMarker, moveMapToMarker]);
+  }, [selectedPlaceId, moveMapToMarker]);
 
   // 마커 정보를 새로 호출한 후 데이터 업데이트
   useEffect(() => {
