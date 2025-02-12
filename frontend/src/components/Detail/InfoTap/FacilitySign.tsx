@@ -1,6 +1,8 @@
 import { LuParkingCircle, LuParkingCircleOff, LuParkingSquare, LuParkingSquareOff } from 'react-icons/lu';
 import { TbDisabled } from 'react-icons/tb';
 import styled from 'styled-components';
+import { ImSpoonKnife } from 'react-icons/im';
+import { IoCafeOutline } from 'react-icons/io5';
 import { CiCreditCard1, CiCreditCardOff } from 'react-icons/ci';
 import { Paragraph } from '@/components/common/typography/Paragraph';
 import { FacilityInfo } from '@/types';
@@ -31,7 +33,7 @@ const facilities = {
   },
 };
 
-export default function FacilitySign({ facilityInfo }: { facilityInfo: FacilityInfo }) {
+export default function FacilitySign({ category, facilityInfo }: { facilityInfo: FacilityInfo; category: string }) {
   if (!facilityInfo) {
     return (
       <Wrapper>
@@ -45,6 +47,20 @@ export default function FacilitySign({ facilityInfo }: { facilityInfo: FacilityI
         <NoItem message="시설 정보가 없습니다." height={0} logo={false} alignItems="start" />
       ) : (
         <>
+          {category && (
+            <SignWrapper>
+              <Sign>
+                {category === '카페' ? (
+                  <IoCafeOutline size={34} color="white" />
+                ) : (
+                  <ImSpoonKnife size={30} color="white" />
+                )}
+              </Sign>
+              <Paragraph size="xs" weight="bold" variant="mint">
+                {category}
+              </Paragraph>
+            </SignWrapper>
+          )}
           {Object.entries(facilities).map(([key, { icon, label }]) => {
             const facilityStatus = facilityInfo[key as keyof FacilityInfo];
 
@@ -106,7 +122,7 @@ const Sign = styled.div`
   }
 `;
 
-const SignWrapper = styled.div<{ $isParking: boolean }>`
+const SignWrapper = styled.div<{ $isParking?: boolean }>`
   display: flex;
   flex-direction: column;
   text-align: center;

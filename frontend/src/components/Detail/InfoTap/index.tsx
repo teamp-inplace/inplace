@@ -10,8 +10,10 @@ import OpenHour from './OpenHour';
 import { Text } from '@/components/common/typography/Text';
 import GoogleReviewList from '../GoogleReviewList';
 import Button from '@/components/common/Button';
+import NoItem from '@/components/common/layouts/NoItem';
 
 type Props = {
+  category: string;
   facility: FacilityInfo;
   openingHours: string[];
   kakaoPlaceUrl: string;
@@ -22,6 +24,7 @@ type Props = {
   rating: number;
 };
 export default function InfoTap({
+  category,
   facility,
   openingHours,
   kakaoPlaceUrl,
@@ -47,45 +50,58 @@ export default function InfoTap({
           <FaComment size={16} color="fee500" />
           카카오맵
         </StyledButton>
-        <StyledButton
-          aria-label="google_btn"
-          variant="outline"
-          onClick={() => {
-            window.location.href = googlePlaceUrl;
-          }}
-        >
-          <FcGoogle size={18} />
-          구글맵
-        </StyledButton>
+        {googlePlaceUrl ? (
+          <StyledButton
+            aria-label="google_btn"
+            variant="outline"
+            onClick={() => {
+              window.location.href = googlePlaceUrl;
+            }}
+          >
+            <FcGoogle size={18} />
+            구글맵
+          </StyledButton>
+        ) : null}
       </ButtonWrapper>
-      <Paragraph size="s" weight="bold" variant="white">
-        시설 정보
-      </Paragraph>
-      <FacilitySign facilityInfo={facility} />
-      <Paragraph size="s" weight="bold" variant="white">
-        운영 시간
-      </Paragraph>
-      <OpenHour openHour={openingHours} />
-      <GoogleReviewTitle>
-        <StyledText size="s" weight="bold" variant="white">
-          Google 리뷰
-          <IoMdStar size={20} color="#FBBC04" />
-          <Text size="xs" weight="normal" variant="white">
-            {rating}
-          </Text>
-        </StyledText>
-        <GoogleDescription>
-          <Text size="xs" weight="normal" variant="grey">
-            구글 평점 3점 이상일 경우, 좋아요로 표시됩니다.
-          </Text>
-          <Text size="xs" weight="normal" variant="grey">
-            Google 제공
-          </Text>
-        </GoogleDescription>
-      </GoogleReviewTitle>
-      <GoogleReviewContainer>
-        <GoogleReviewList lists={googleReviews} />
-      </GoogleReviewContainer>
+      {googlePlaceUrl ? (
+        <>
+          <Paragraph size="s" weight="bold" variant="white">
+            시설 정보
+          </Paragraph>
+          <FacilitySign category={category} facilityInfo={facility} />
+          <Paragraph size="s" weight="bold" variant="white">
+            운영 시간
+          </Paragraph>
+          <OpenHour openHour={openingHours} />
+          <GoogleReviewTitle>
+            <StyledText size="s" weight="bold" variant="white">
+              Google 리뷰
+              <IoMdStar size={20} color="#FBBC04" />
+              <Text size="xs" weight="normal" variant="white">
+                {rating}
+              </Text>
+            </StyledText>
+            <GoogleDescription>
+              <Text size="xs" weight="normal" variant="grey">
+                구글 평점 3점 이상일 경우, 좋아요로 표시됩니다.
+              </Text>
+              <Text size="xs" weight="normal" variant="grey">
+                Google 제공
+              </Text>
+            </GoogleDescription>
+          </GoogleReviewTitle>
+          <GoogleReviewContainer>
+            <GoogleReviewList lists={googleReviews} />
+          </GoogleReviewContainer>
+        </>
+      ) : (
+        <NoItem
+          message={`장소 세부정보를 확인할 수 없어요.\n카카오맵에서 확인해주세요.`}
+          height={200}
+          logo
+          alignItems="center"
+        />
+      )}
       <Paragraph size="s" weight="bold" variant="white">
         지도 보기
       </Paragraph>
