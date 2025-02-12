@@ -19,17 +19,13 @@ import team7.inplace.place.application.command.PlaceLikeCommand;
 import team7.inplace.place.application.command.PlacesCommand.Coordinate;
 import team7.inplace.place.application.command.PlacesCommand.Create;
 import team7.inplace.place.application.command.PlacesCommand.FilterParams;
-import team7.inplace.place.application.dto.LikedPlaceInfo;
-import team7.inplace.place.application.dto.PlaceInfo;
-import team7.inplace.place.application.dto.PlaceQueryInfo;
 import team7.inplace.place.client.GooglePlaceClient;
+import team7.inplace.place.client.GooglePlaceClientResponse;
 import team7.inplace.place.domain.Category;
 import team7.inplace.place.persistence.PlaceJpaRepository;
 import team7.inplace.place.persistence.PlaceReadRepository;
-import team7.inplace.place.persistence.PlaceSaveRepository;
 import team7.inplace.place.persistence.dto.PlaceQueryResult;
-import team7.inplace.review.persistence.ReviewReadRepository;
-import team7.inplace.security.util.AuthorizationUtil;
+import team7.inplace.review.persistence.ReviewJPARepository;
 import team7.inplace.video.persistence.VideoReadRepository;
 
 @Slf4j
@@ -37,12 +33,12 @@ import team7.inplace.video.persistence.VideoReadRepository;
 @RequiredArgsConstructor
 public class PlaceService {
 
+    private final LikedPlaceRepository likedPlaceRepository;
     private final PlaceReadRepository placeReadRepository;
-    private final PlaceSaveRepository placeSaveRepository;
     private final PlaceJpaRepository placeJpaRepository;
     private final GooglePlaceClient googlePlaceClient;
-    private final ReviewReadRepository reviewReadRepository;
-    private final LikedPlaceRepository likedPlaceRepository;
+
+    private final ReviewJPARepository reviewJPARepository;
     private final VideoReadRepository videoReadRepository;
 
     public Long createPlace(Create placeCommand) {
@@ -51,12 +47,12 @@ public class PlaceService {
             return existPlace.get().getId();
         }
         var placeBulk = placeCommand.toEntity();
-        return placeSaveRepository.save(placeBulk);
+        placeJpaRepository.save(placeBulk);
+        return placeBulk.getId();
     }
 
     @Transactional
-    public void updateLikedPlace(PlaceLikeCommand command) {
-        Long userId = AuthorizationUtil.getUserId();
+    public void updateLikedPlace(Long userId, PlaceLikeCommand command) {
         if (Objects.isNull(userId)) {
             throw InplaceException.of(AuthorizationErrorCode.NOT_AUTHENTICATION);
         }
@@ -70,7 +66,8 @@ public class PlaceService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PlaceQueryInfo.Simple> getPlacesInMapRange(
+    public Page<PlaceQueryResult.DetailedPlace> getPlacesInMapRange(
+        Long userId,
         Coordinate coordinateCommand,
         FilterParams filterParamsCommand,
         Pageable pageable
@@ -79,28 +76,14 @@ public class PlaceService {
         var influencerFilters = filterParamsCommand.getInfluencerFilters();
 
         // 위치와 필터링으로 Place 조회
-        var userId = AuthorizationUtil.getUserId();
         var placesPage = getPlacesByDistance(
-            coordinateCommand,
-            categoryFilters,
-            influencerFilters,
-            pageable,
-            userId
-        );
+            coordinateCommand, categoryFilters, influencerFilters,
+            pageable, userId);
         if (placesPage.isEmpty()) {
             return new PageImpl<>(List.of(), pageable, 0);
         }
 
-        // Place 에 대한 Video 조회
-        var placeIds = placesPage.getContent().stream()
-            .map(PlaceQueryResult.DetailedPlace::placeId)
-            .toList();
-        var placeVideos = videoReadRepository.findSimpleVideosByPlaceIds(placeIds);
-
-        List<PlaceQueryInfo.Simple> placeInfos = placesPage.getContent().stream()
-            .map(place -> PlaceQueryInfo.Simple.from(place, placeVideos.get(place.placeId())))
-            .toList();
-        return new PageImpl<>(placeInfos, pageable, placesPage.getTotalElements());
+        return placesPage;
     }
 
     private Page<PlaceQueryResult.DetailedPlace> getPlacesByDistance(
@@ -124,18 +107,6 @@ public class PlaceService {
         );
     }
 
-    @Transactional(readOnly = true)
-    public PlaceQueryInfo.Detail getPlaceDetailInfo(Long placeId) {
-        var userId = AuthorizationUtil.getUserId();
-
-        var detailedPlace = placeReadRepository.findDetailedPlaceById(placeId, userId)
-            .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
-        var placeVideos = videoReadRepository.findSimpleVideosByPlaceId(placeId);
-        var placeReviewRate = reviewReadRepository.countRateByPlaceId(placeId);
-
-        return PlaceQueryInfo.Detail.from(detailedPlace, placeVideos, placeReviewRate);
-    }
-
     //TODO: 한 장소에 비디오가 여러개일 수 있으니 수정 필요
     @Transactional(readOnly = true)
     public PlaceMessageCommand getPlaceMessageCommand(Long placeId) {
@@ -147,14 +118,9 @@ public class PlaceService {
     }
 
     @Transactional(readOnly = true)
-    public Page<LikedPlaceInfo> getLikedPlaceInfo(Long userId, Pageable pageable) {
-        var likedPlaceQueryResult = placeReadRepository.findLikedPlacesByUserIdWithPaging(userId,
-            pageable);
+    public Page<PlaceQueryResult.DetailedPlace> getLikedPlaceInfo(Long userId, Pageable pageable) {
 
-        var likedPlaceInfos = likedPlaceQueryResult.getContent().stream()
-            .map(LikedPlaceInfo::of)
-            .toList();
-        return new PageImpl<>(likedPlaceInfos, pageable, likedPlaceQueryResult.getTotalElements());
+        return placeReadRepository.findLikedPlacesByUserIdWithPaging(userId, pageable);
     }
 
     @Transactional(readOnly = true)
@@ -181,18 +147,13 @@ public class PlaceService {
     }
 
     @Transactional(readOnly = true)
-    public PlaceInfo.Detail getGooglePlaceInfo(Long placeId) {
-        var userId = AuthorizationUtil.getUserId();
-
-        var place = placeJpaRepository.findById(placeId)
+    public PlaceQueryResult.DetailedPlace getPlaceInfo(Long userId, Long placeId) {
+        return placeReadRepository.findDetailedPlaceById(userId, placeId)
             .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
-        if (place.getGooglePlaceId() == null) {
-            throw InplaceException.of(PlaceErrorCode.PLACE_GOOGLE_ID_NOT_SUPPORTED);
-        }
-        var googlePlace = googlePlaceClient.requestForPlaceDetail(place.getGooglePlaceId());
-        var videos = videoReadRepository.findSimpleVideosByPlaceId(placeId);
-        var reviewLikeRate = reviewReadRepository.countRateByPlaceId(placeId);
+    }
 
-        return PlaceInfo.Detail.of(place, googlePlace, videos, reviewLikeRate);
+    @Transactional(readOnly = true)
+    public GooglePlaceClientResponse.Place getGooglePlaceInfo(String googlePlaceId) {
+        return googlePlaceClient.requestForPlaceDetail(googlePlaceId);
     }
 }

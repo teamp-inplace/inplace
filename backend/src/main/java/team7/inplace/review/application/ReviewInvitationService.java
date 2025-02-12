@@ -71,6 +71,6 @@ public class ReviewInvitationService {
             .orElseThrow(() -> InplaceException.of(ReviewErrorCode.INVALID_USER_ID));
         var videos = videoReadRepository.findSimpleVideosByPlaceId(invitation.getPlaceId());
 
-        return ReviewInfo.Invitation.from(place.detailedPlace(), videos, user);
+        return ReviewInfo.Invitation.from(place, videos, user);
     }
 }

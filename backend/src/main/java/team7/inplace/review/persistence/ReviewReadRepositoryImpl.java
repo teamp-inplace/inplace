@@ -49,7 +49,6 @@ public class ReviewReadRepositoryImpl implements ReviewReadRepository {
                 QReview.review.createdDate,
                 QPlace.place.id,
                 QPlace.place.name,
-                QPlace.place.menuImgUrl,
                 QPlace.place.address.address1,
                 QPlace.place.address.address2,
                 QPlace.place.address.address3

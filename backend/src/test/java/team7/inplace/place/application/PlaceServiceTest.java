@@ -19,7 +19,6 @@ import team7.inplace.place.application.command.PlacesCommand;
 import team7.inplace.place.domain.Place;
 import team7.inplace.place.persistence.PlaceJpaRepository;
 import team7.inplace.place.persistence.PlaceReadRepository;
-import team7.inplace.place.persistence.PlaceSaveRepository;
 import team7.inplace.review.persistence.ReviewJPARepository;
 import team7.inplace.video.persistence.VideoReadRepository;
 

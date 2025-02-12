@@ -34,7 +34,6 @@ public class ReviewInfo {
     public record Invitation(
         String placeName,
         String placeAddress,
-        String placeImgUrl,
         String influencerName,
         String userNickname
     ) {
@@ -47,7 +46,6 @@ public class ReviewInfo {
             return new ReviewInfo.Invitation(
                 place.placeName(),
                 place.address1() + " " + place.address2() + " " + place.address3(),
-                place.menuImgUrl(),
                 video.stream().map(SimpleVideo::influencerName).distinct()
                     .collect(Collectors.joining(", ")),
                 user.getNickname()
