@@ -95,6 +95,7 @@ export type PlaceInfo = {
   ];
   openingHours: string[];
   googlePlaceUrl: string;
+  kakaoPlaceUrl: string;
   googleReviews: GoogleReview[];
   rating: number;
   longitude: string;
@@ -119,7 +120,6 @@ export type FacilityInfo = {
   freeParkingLot?: boolean;
   paidParkingLot?: boolean;
   acceptsCreditCards?: boolean;
-  acceptsCashOnly?: boolean;
 };
 
 export type ReviewData = {

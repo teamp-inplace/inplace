@@ -1,17 +1,20 @@
 import styled from 'styled-components';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
-import { FcGoogle } from 'react-icons/fc';
 import { IoMdStar } from 'react-icons/io';
+import { FaComment } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
 import { Paragraph } from '@/components/common/typography/Paragraph';
 import FacilitySign from './FacilitySign';
 import { FacilityInfo, GoogleReview } from '@/types';
 import OpenHour from './OpenHour';
 import { Text } from '@/components/common/typography/Text';
-import GoogleReviewList from './GoogleReviewList';
+import GoogleReviewList from '../GoogleReviewList';
+import Button from '@/components/common/Button';
 
 type Props = {
   facility: FacilityInfo;
   openingHours: string[];
+  kakaoPlaceUrl: string;
   googlePlaceUrl: string;
   googleReviews: GoogleReview[];
   longitude: string;
@@ -21,6 +24,7 @@ type Props = {
 export default function InfoTap({
   facility,
   openingHours,
+  kakaoPlaceUrl,
   googlePlaceUrl,
   googleReviews,
   longitude,
@@ -32,6 +36,28 @@ export default function InfoTap({
 
   return (
     <Wrapper>
+      <ButtonWrapper>
+        <StyledButton
+          aria-label="kakao_btn"
+          variant="outline"
+          onClick={() => {
+            window.location.href = kakaoPlaceUrl;
+          }}
+        >
+          <FaComment size={16} color="fee500" />
+          카카오맵
+        </StyledButton>
+        <StyledButton
+          aria-label="google_btn"
+          variant="outline"
+          onClick={() => {
+            window.location.href = googlePlaceUrl;
+          }}
+        >
+          <FcGoogle size={18} />
+          구글맵
+        </StyledButton>
+      </ButtonWrapper>
       <Paragraph size="s" weight="bold" variant="white">
         시설 정보
       </Paragraph>
@@ -59,10 +85,6 @@ export default function InfoTap({
       </GoogleReviewTitle>
       <GoogleReviewContainer>
         <GoogleReviewList lists={googleReviews} />
-        <MoreReviewBtn href={googlePlaceUrl}>
-          <FcGoogle size={20} />
-          구글 리뷰 보러가기
-        </MoreReviewBtn>
       </GoogleReviewContainer>
       <Paragraph size="s" weight="bold" variant="white">
         지도 보기
@@ -92,6 +114,7 @@ export default function InfoTap({
   );
 }
 const Wrapper = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 50px;
@@ -110,24 +133,6 @@ const GoogleReviewContainer = styled.div`
   @media screen and (max-width: 768px) {
     width: 100%;
     padding: 0px;
-  }
-`;
-const MoreReviewBtn = styled.a`
-  cursor: pointer;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 16px;
-  padding-top: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  &:hover {
-    text-decoration: underline;
-  }
-  @media screen and (max-width: 768px) {
-    font-size: 14px;
   }
 `;
 
@@ -166,4 +171,32 @@ const GoogleDescription = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: end;
+`;
+
+const ButtonWrapper = styled.div`
+  position: absolute;
+  right: 0;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+
+  @media screen and (max-width: 768px) {
+    gap: 10px;
+  }
+`;
+const StyledButton = styled(Button)`
+  padding: 4px 16px;
+  height: 32px;
+  font-size: 14px;
+  gap: 4px;
+
+  @media screen and (max-width: 768px) {
+    svg {
+      width: 18px;
+    }
+    padding: 2px 10px;
+    height: 28px;
+    font-size: 12px;
+    gap: 4px;
+  }
 `;
