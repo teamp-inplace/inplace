@@ -1,5 +1,5 @@
 import { LuParkingCircle, LuParkingCircleOff, LuParkingSquare, LuParkingSquareOff } from 'react-icons/lu';
-import { TbDisabled, TbCurrencyDollar, TbCurrencyDollarOff } from 'react-icons/tb';
+import { TbDisabled } from 'react-icons/tb';
 import styled from 'styled-components';
 import { CiCreditCard1, CiCreditCardOff } from 'react-icons/ci';
 import { Paragraph } from '@/components/common/typography/Paragraph';
@@ -10,13 +10,6 @@ const facilities = {
   acceptsCreditCards: {
     icon: { true: <CiCreditCard1 size={34} color="white" />, false: <CiCreditCardOff size={36} color="white" /> },
     label: '카드결제',
-  },
-  acceptsCashOnly: {
-    icon: {
-      true: <TbCurrencyDollar size={34} color="white" strokeWidth={1} />,
-      false: <TbCurrencyDollarOff size={34} color="white" strokeWidth={1} />,
-    },
-    label: '현금결제',
   },
   freeParkingLot: {
     icon: {
