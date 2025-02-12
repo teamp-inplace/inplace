@@ -105,10 +105,10 @@ public class ReviewReadRepositoryImpl implements ReviewReadRepository {
 
     @Override
     public ReviewQueryResult.LikeRate countRateByPlaceId(Long placeId) {
-        return jpaQueryFactory
+        var result = jpaQueryFactory
             .select(new QReviewQueryResult_LikeRate(
-                count(QReview.review.isLiked.eq(true)),
-                count(QReview.review.isLiked.eq(false))
+                QReview.review.isLiked.when(true).then(1L).otherwise(0L).sum(),
+                QReview.review.isLiked.when(false).then(1L).otherwise(0L).sum()
             ))
             .from(QReview.review)
             .where(
@@ -116,5 +116,7 @@ public class ReviewReadRepositoryImpl implements ReviewReadRepository {
                 QReview.review.deleteAt.isNull()
             )
             .fetchOne();
+
+        return new ReviewQueryResult.LikeRate(result.likes(), result.dislikes());
     }
 }
