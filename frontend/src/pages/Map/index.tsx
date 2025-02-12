@@ -205,6 +205,7 @@ export default function MapPage() {
         />
       </Wrapper>
       <MapWindow
+        center={center}
         onBoundsChange={handleBoundsChange}
         onCenterChange={handleCenterChange}
         filters={filters}

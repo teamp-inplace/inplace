@@ -12,6 +12,7 @@ import SelectedMarker from '@/assets/images/InplaceMarker.png';
 import { Text } from '@/components/common/typography/Text';
 
 interface MapWindowProps {
+  center: { lat: number; lng: number };
   onBoundsChange: (bounds: LocationData) => void;
   onCenterChange: (center: { lat: number; lng: number }) => void;
   filters: {
@@ -27,6 +28,7 @@ interface MapWindowProps {
 }
 
 export default function MapWindow({
+  center,
   onBoundsChange,
   onCenterChange,
   filters,
@@ -113,6 +115,18 @@ export default function MapWindow({
       console.warn('Geolocation is not supported by this browser.');
     }
   }, [fetchMarkers]);
+
+  useEffect(() => {
+    if (mapRef.current && center) {
+      const position = new kakao.maps.LatLng(center.lat, center.lng);
+      setTimeout(
+        () => {
+          mapRef.current?.panTo(position);
+        },
+        selectedPlaceId !== null ? 200 : 0,
+      );
+    }
+  }, [center]);
 
   // 마커나 장소 선택시 지도 중심으로 이동
   const moveMapToMarker = useCallback(
