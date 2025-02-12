@@ -27,6 +27,7 @@ export default function InfluencerMapTap({
   const [placeData, setPlaceData] = useState<PlaceData[]>([]);
   const [selectedPlaceId, setSelectedPlaceId] = useState<number | null>(null);
   const [translateY, setTranslateY] = useState(window.innerHeight);
+  const lastMoveTimeRef = useRef(0);
   const dragStartRef = useRef<{
     isDragging: boolean;
     startY: number;
@@ -56,7 +57,6 @@ export default function InfluencerMapTap({
       startTranslate: translateY,
     };
   };
-  const lastMoveTimeRef = useRef(0);
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!dragStartRef.current.isDragging) return;
@@ -71,7 +71,7 @@ export default function InfluencerMapTap({
     const clampedTranslate = Math.max(0, Math.min(window.innerHeight, newTranslate));
     setTranslateY(clampedTranslate);
   };
-  const autoCloseThreshold = window.innerHeight * 0.65;
+  const autoCloseThreshold = window.innerHeight * 0.75;
 
   const handleTouchEnd = () => {
     dragStartRef.current.isDragging = false;
@@ -119,6 +119,7 @@ export default function InfluencerMapTap({
       return newExpandedState;
     });
   }, []);
+
   return (
     <Wrapper>
       <InfluencerMapWindow
@@ -173,6 +174,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: end;
+  touch-action: none;
 `;
 const PlaceSectionDesktop = styled.div`
   width: 100%;

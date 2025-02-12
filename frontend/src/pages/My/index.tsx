@@ -129,12 +129,12 @@ export default function MyPage() {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 60px;
+  gap: 80px;
   padding: 30px 0px 60px;
 
   @media screen and (max-width: 768px) {
     width: 100%;
-    gap: 30px;
+    gap: 40px;
     align-items: center;
   }
 `;

@@ -147,11 +147,8 @@ export default function SearchBar({ placeholder = '키워드를 입력해주세�
 
 const SearchBarContainer = styled.div`
   width: 100%;
-  height: 44px;
-
   @media screen and (max-width: 768px) {
     width: 90%;
-    height: 36px;
   }
 `;
 

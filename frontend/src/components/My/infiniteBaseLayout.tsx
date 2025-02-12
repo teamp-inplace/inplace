@@ -52,8 +52,9 @@ export default function InfiniteBaseLayout({
         placeId={place.placeId}
         placeName={place.placeName}
         imageUrl={place.imageUrl}
-        influencer={place.influencer}
+        influencerName={place.influencerName}
         likes={place.likes}
+        address={place.address}
         data-place-item
       />
     );
@@ -79,6 +80,7 @@ export default function InfiniteBaseLayout({
         renderItem={renderItem}
         noItemMessage={type === 'influencer' ? '인플루언서 정보가 없어요!' : '장소 정보가 없어요!'}
         dataAttr={type === 'influencer' ? 'data-influencer-item' : 'data-place-item'}
+        type={type}
       />
     </Container>
   );

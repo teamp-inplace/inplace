@@ -179,10 +179,6 @@ const PlacesGrid = styled.div`
     grid-template-columns: 1fr;
     gap: 10px;
   }
-
-  @media screen and (max-width: 430px) {
-    gap: 8px;
-  }
 `;
 
 const LoadMoreTrigger = styled.div`
