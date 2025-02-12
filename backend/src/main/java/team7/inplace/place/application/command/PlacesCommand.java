@@ -72,7 +72,7 @@ public class PlacesCommand {
         String x,
         String y,
         String googlePlaceId,
-        String kakaoPlaceId
+        Long kakaoPlaceId
     ) {
 
         public static Create from(
@@ -84,7 +84,7 @@ public class PlacesCommand {
                 locationNode.get("x").asText(),
                 locationNode.get("y").asText(),
                 googlePlaceId,
-                locationNode.get("id").asText()
+                locationNode.get("id").asLong()
             );
         }
 

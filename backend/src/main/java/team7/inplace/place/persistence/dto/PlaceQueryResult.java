@@ -14,7 +14,7 @@ public class PlaceQueryResult {
         Double latitude,
         String category,
         String googlePlaceId,
-        String kakaoPlaceId,
+        Long kakaoPlaceId,
         Boolean isLiked
     ) {
 
