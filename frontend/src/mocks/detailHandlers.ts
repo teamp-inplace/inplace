@@ -142,7 +142,7 @@ export const detailHandlers = [
             videoUrl: BasicImage,
           },
         ],
-        category: '맛집',
+        category: '한식',
         longitude: '126.570667',
         latitude: '33.450701',
         facility: {
