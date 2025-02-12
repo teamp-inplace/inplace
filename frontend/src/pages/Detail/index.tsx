@@ -72,7 +72,7 @@ export default function DetailPage() {
         <CarouselWrapper>
           <CarouselContainer $currentIndex={currentVideoIndex}>
             {infoData?.videos?.map((url) => {
-              const isYoutubeUrl = url.videoUrl?.includes('youtube.com') || url.videoUrl?.includes('youtu.be');
+              const isYoutubeUrl = url.videoUrl?.includes('youtu');
               const youtubeUrl = isYoutubeUrl ? extractYoutubeId(url.videoUrl) : BasicThumb;
               return (
                 <ImageWrapper key={`${id}-${url.videoUrl}`}>
