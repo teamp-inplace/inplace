@@ -106,8 +106,8 @@ public class ReviewReadRepositoryImpl implements ReviewReadRepository {
     public ReviewQueryResult.LikeRate countRateByPlaceId(Long placeId) {
         var result = jpaQueryFactory
             .select(new QReviewQueryResult_LikeRate(
-                QReview.review.isLiked.when(true).then(1L).otherwise(0L).sum(),
-                QReview.review.isLiked.when(false).then(1L).otherwise(0L).sum()
+                QReview.review.isLiked.when(true).then(1L).otherwise(0L).sum().coalesce(0L),
+                QReview.review.isLiked.when(false).then(1L).otherwise(0L).sum().coalesce(0L)
             ))
             .from(QReview.review)
             .where(
