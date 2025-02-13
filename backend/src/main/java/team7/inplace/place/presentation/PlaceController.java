@@ -25,7 +25,8 @@ import team7.inplace.place.application.dto.CategoryInfo;
 import team7.inplace.place.application.dto.PlaceInfo;
 import team7.inplace.place.persistence.dto.PlaceQueryResult;
 import team7.inplace.place.presentation.dto.CategoriesResponse;
-import team7.inplace.place.presentation.dto.PlaceLikeRequest;
+import team7.inplace.place.presentation.dto.PlaceRequest;
+import team7.inplace.place.presentation.dto.PlaceRequest.Create;
 import team7.inplace.place.presentation.dto.PlacesResponse;
 import team7.inplace.place.presentation.dto.ReviewResponse;
 import team7.inplace.review.application.ReviewService;
@@ -40,6 +41,16 @@ public class PlaceController implements PlaceControllerApiSpec {
     private final CategoryService categoryService;
     private final ReviewService reviewService;
 
+    @Override
+    @PostMapping()
+    public ResponseEntity<Void> savePlace(@RequestBody Create request) {
+        var command = request.toCommand();
+        placeFacade.createPlace(request.videoId(), command);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
     @GetMapping
     public ResponseEntity<Page<PlacesResponse.Simple>> getPlaces(
         @RequestParam Double longitude,
@@ -69,6 +80,7 @@ public class PlaceController implements PlaceControllerApiSpec {
         );
     }
 
+    @Override
     @GetMapping("/all")
     public ResponseEntity<List<PlacesResponse.Location>> getPlaceLocations(
         @RequestParam Double longitude,
@@ -95,6 +107,7 @@ public class PlaceController implements PlaceControllerApiSpec {
         );
     }
 
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<PlacesResponse.Detail> getPlaceDetail(
         @PathVariable("id") Long placeId
@@ -114,6 +127,7 @@ public class PlaceController implements PlaceControllerApiSpec {
         return new ResponseEntity<>(markerResponse, HttpStatus.OK);
     }
 
+    @Override
     @GetMapping("/categories")
     public ResponseEntity<CategoriesResponse> getCategories() {
         List<CategoryInfo> categories = categoryService.getCategories();
@@ -122,13 +136,15 @@ public class PlaceController implements PlaceControllerApiSpec {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Override
     @PostMapping("/likes")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> likeToPlace(@RequestBody PlaceLikeRequest param) {
+    public ResponseEntity<Void> likeToPlace(@RequestBody PlaceRequest.Like param) {
         placeFacade.updateLikedPlace(new PlaceLikeCommand(param.placeId(), param.likes()));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Override
     @GetMapping("/{id}/reviews")
     public ResponseEntity<Page<ReviewResponse.Simple>> getReviews(
         @PathVariable("id") Long placeId,
