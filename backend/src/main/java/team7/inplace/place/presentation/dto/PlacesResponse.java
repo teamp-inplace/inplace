@@ -71,6 +71,7 @@ public class PlacesResponse {
         PlacesResponse.Facility facility,
         List<PlacesResponse.Video> videos,
         List<PlacesResponse.GoogleReview> googleReviews,
+        Double rating,
         String kakaoPlaceUrl,
         String googlePlaceUrl,
         List<String> openingHours,
@@ -101,6 +102,7 @@ public class PlacesResponse {
                     .stream()
                     .map(PlacesResponse.GoogleReview::from)
                     .toList(),
+                place.googlePlace().rating(),
                 "http://place.map.kakao.com/" + place.place().kakaoPlaceId(),
                 place.googlePlace().googleMapsUri(),
                 place.googlePlace().regularOpeningHours()
