@@ -8,10 +8,10 @@ export default function BarGraph({ like, dislike }: PlaceLikes) {
 
   return (
     <GraphContainer $isCount={!!total}>
-      <Bar color="#FE7373" percentage={likePercentage}>
+      <Bar $color="#FE7373" $percentage={likePercentage}>
         <Label $isLike>{like}</Label>
       </Bar>
-      <Bar color="#6f6cff" percentage={dislikePercentage}>
+      <Bar $color="#6f6cff" $percentage={dislikePercentage}>
         <Label $isLike={false}>{dislike}</Label>
       </Bar>
     </GraphContainer>
@@ -34,10 +34,10 @@ const GraphContainer = styled.div<{ $isCount: boolean }>`
   }
 `;
 
-const Bar = styled.div<{ color: string; percentage: number }>`
+const Bar = styled.div<{ $color: string; $percentage: number }>`
   height: 100%;
-  background-color: ${(props) => props.color};
-  width: ${(props) => props.percentage}%;
+  background-color: ${(props) => props.$color};
+  width: ${(props) => props.$percentage}%;
 `;
 
 const Label = styled.div<{ $isLike: boolean }>`

@@ -106,7 +106,7 @@ export default function DetailPage() {
               aria-label="visit_btn"
               variant="visit"
               style={{
-                width: '120px',
+                padding: '0px 16px',
                 height: '30px',
                 fontSize: '14px',
                 fontWeight: 'bold',
@@ -134,8 +134,10 @@ export default function DetailPage() {
       <InfoContainer>
         {activeTab === 'info' ? (
           <InfoTap
+            category={infoData?.category}
             facility={infoData?.facility}
             openingHours={infoData?.openingHours}
+            kakaoPlaceUrl={infoData?.kakaoPlaceUrl}
             googlePlaceUrl={infoData?.googlePlaceUrl}
             googleReviews={infoData?.googleReviews}
             longitude={infoData?.longitude}
@@ -256,7 +258,6 @@ const ButtonWrapper = styled.div`
   display: flex;
   gap: 20px;
   align-items: center;
-
   @media screen and (max-width: 768px) {
     a > svg {
       width: 30px;
