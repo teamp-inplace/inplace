@@ -12,13 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.AuthorizationErrorCode;
 import team7.inplace.global.exception.code.PlaceErrorCode;
-import team7.inplace.kakao.application.command.PlaceMessageCommand;
 import team7.inplace.liked.likedPlace.domain.LikedPlace;
 import team7.inplace.liked.likedPlace.persistence.LikedPlaceRepository;
 import team7.inplace.place.application.command.PlaceLikeCommand;
 import team7.inplace.place.application.command.PlacesCommand.Coordinate;
 import team7.inplace.place.application.command.PlacesCommand.Create;
 import team7.inplace.place.application.command.PlacesCommand.FilterParams;
+import team7.inplace.place.application.dto.PlaceInfo;
 import team7.inplace.place.client.GooglePlaceClient;
 import team7.inplace.place.client.GooglePlaceClientResponse;
 import team7.inplace.place.domain.Category;
@@ -106,12 +106,12 @@ public class PlaceService {
 
     //TODO: 한 장소에 비디오가 여러개일 수 있으니 수정 필요
     @Transactional(readOnly = true)
-    public PlaceMessageCommand getPlaceMessageCommand(Long placeId) {
-        var place = placeReadRepository.findSimplePlaceById(placeId)
+    public PlaceInfo.Simple getPlaceMessageCommand(Long placeId, Long userId) {
+        var place = placeReadRepository.findDetailedPlaceById(placeId, userId)
             .orElseThrow(() -> InplaceException.of(PlaceErrorCode.NOT_FOUND));
-        var video = videoReadRepository.findSimpleVideosByPlaceId(placeId);
+        var videos = videoReadRepository.findSimpleVideosByPlaceId(placeId);
 
-        return PlaceMessageCommand.from(place, video.get(0));
+        return PlaceInfo.Simple.of(place, videos);
     }
 
     @Transactional(readOnly = true)
