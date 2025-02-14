@@ -25,13 +25,17 @@ public class PlaceMessageFacade {
 
 
     public void sendPlaceMessage(Long placeId) throws InplaceException {
-        if (AuthorizationUtil.isNotLoginUser()) {
+        var userId = AuthorizationUtil.getUserId();
+        if (userId == null) {
             throw InplaceException.of(UserErrorCode.NOT_FOUND);
         }
 
-        String oauthToken = oauthTokenService.findOAuthTokenByUserId(AuthorizationUtil.getUserId());
-        PlaceMessageCommand placeMessageCommand = placeService.getPlaceMessageCommand(placeId);
-        kakaoMessageService.sendLocationMessageToMe(oauthToken, placeMessageCommand);
+        String oauthToken = oauthTokenService.findOAuthTokenByUserId(userId);
+
+        var placeInfo = placeService.getPlaceMessageCommand(placeId, userId);
+
+        var placeMessageCommand = PlaceMessageCommand.from(placeInfo);
+        kakaoMessageService.sendLocationMessageToMe(userId, oauthToken, placeMessageCommand);
 
         String uuid = userReviewLinkService.generateReviewUuid(AuthorizationUtil.getUserId(),
             placeId);
