@@ -1,29 +1,34 @@
 package team7.inplace.kakao.application.command;
 
-import team7.inplace.place.persistence.dto.PlaceQueryResult;
+import java.util.stream.Collectors;
+import team7.inplace.place.application.dto.PlaceInfo;
 import team7.inplace.video.application.AliasUtil;
-import team7.inplace.video.persistence.dto.VideoQueryResult;
+import team7.inplace.video.persistence.dto.VideoQueryResult.SimpleVideo;
 
 public record PlaceMessageCommand(
-        Long placeId,
-        String title,
-        String address,
-        String imageUrl,
-        String description
+    Long placeId,
+    String title,
+    String address,
+    String imageUrl,
+    String description
 ) {
 
-    public static PlaceMessageCommand from(PlaceQueryResult.SimplePlace place, VideoQueryResult.SimpleVideo video) {
-        String influencerName = video.influencerName();
-        String videoUUID = video.videoUUID();
+    public static PlaceMessageCommand from(PlaceInfo.Simple place) {
+
+        String influencerName = place.video().stream()
+            .map(SimpleVideo::influencerName).distinct()
+            .collect(Collectors.joining(", "));
+        String videoUUID = place.video().get(0).videoUUID();
         return new PlaceMessageCommand(
-                place.placeId(),
-                place.placeName(),
-                place.address1() + " " + place.address2() + " " + place.address3(),
-                String.format("https://img.youtube.com/vi/%s/maxresdefault.jpg", videoUUID),
-                AliasUtil.makeAlias(
-                        influencerName,
-                        video.placeCategory()
-                )
+            place.place().placeId(),
+            place.place().placeName(),
+            place.place().address1() + " " + place.place().address2() + " " + place.place()
+                .address3(),
+            String.format("https://img.youtube.com/vi/%s/maxresdefault.jpg", videoUUID),
+            AliasUtil.makeAlias(
+                influencerName,
+                place.place().category()
+            )
         );
     }
 }
