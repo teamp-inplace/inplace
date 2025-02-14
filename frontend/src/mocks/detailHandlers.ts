@@ -132,6 +132,7 @@ export const detailHandlers = [
           address2: '북구',
           address3: '대학로',
         },
+        likes: true,
         videos: [
           {
             influencerName: '성시경',

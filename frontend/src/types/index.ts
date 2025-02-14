@@ -102,6 +102,7 @@ export type PlaceInfo = {
   latitude: string;
   facility: FacilityInfo;
   placeLikes: PlaceLikes;
+  likes: boolean;
 };
 export type GoogleReview = {
   like: boolean;
