@@ -16,12 +16,12 @@ export default function GoogleReviewComment({ text }: { text: string }) {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
   const slice = isMobile ? 65 : 150;
-  const truncatedText = text.length > 150 ? `${text.slice(0, slice)}...` : text;
+  const truncatedText = text.length > slice ? `${text.slice(0, slice)}...` : text;
 
   return (
     <Paragraph size="xs" weight="normal" variant="white">
       {isExpanded ? text : truncatedText}
-      {text.length > 150 && !isExpanded && <MoreLink onClick={() => setIsExpanded(true)}>더보기</MoreLink>}
+      {text.length > slice && !isExpanded && <MoreLink onClick={() => setIsExpanded(true)}>더보기</MoreLink>}
       {isExpanded && <MoreLink onClick={() => setIsExpanded(false)}>간략히</MoreLink>}
     </Paragraph>
   );
