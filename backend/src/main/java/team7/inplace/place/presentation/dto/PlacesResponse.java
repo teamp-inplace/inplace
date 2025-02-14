@@ -75,7 +75,8 @@ public class PlacesResponse {
         String kakaoPlaceUrl,
         String googlePlaceUrl,
         List<String> openingHours,
-        PlacesResponse.PlaceLike placeLikes
+        PlacesResponse.PlaceLike placeLikes,
+        Boolean likes
     ) {
 
         public static PlacesResponse.Detail from(PlaceInfo.Detail place) {
@@ -108,7 +109,8 @@ public class PlacesResponse {
                 place.googlePlace().regularOpeningHours()
                     .map(RegularOpeningHours::weekdayDescriptions)
                     .orElse(List.of()),
-                PlacesResponse.PlaceLike.from(place.reviewLikeRate())
+                PlacesResponse.PlaceLike.from(place.reviewLikeRate()),
+                place.place().isLiked()
             );
         }
     }
