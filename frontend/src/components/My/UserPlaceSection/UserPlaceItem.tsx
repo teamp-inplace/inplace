@@ -73,36 +73,26 @@ export default function UserPlaceItem({ placeId, placeName, influencerName, like
   );
 }
 const Wrapper = styled(Link)`
-  position: relative;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: start;
   text-decoration: none;
-  gap: 10px;
-  height: 100px;
+  gap: 4px;
+  width: 180px;
   border-radius: 4px;
   padding: 10px;
 
   &:hover {
     background-color: #1b1a1a;
   }
-  @media screen and (max-width: 768px) {
-    height: 80px;
-  }
 `;
 
 const LikeIcon = styled.div`
-  position: absolute;
   width: 26px;
   height: 24px;
-  right: 10px;
-  top: 12px;
   z-index: 100;
   cursor: pointer;
 
   @media screen and (max-width: 768px) {
-    top: 14px;
-    right: 6px;
     svg {
       width: 22px;
       height: 22px;
@@ -113,13 +103,17 @@ const TextWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 100%;
-  height: 100%;
-  padding: 8px 10px;
+  line-height: 130%;
+  padding: 8px 0px;
+  flex-wrap: wrap;
   gap: 4px;
   > *:nth-child(3) {
     margin-top: 12px;
-    @media screen and (max-width: 768px) {
+  }
+  @media screen and (max-width: 768px) {
+    padding: 0px;
+    gap: 0px;
+    > *:nth-child(3) {
       margin-top: 4px;
     }
   }

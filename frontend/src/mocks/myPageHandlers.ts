@@ -269,7 +269,7 @@ const mockReviews = [
 const mockPlaces = [
   {
     placeId: 1,
-    placeName: '료코',
+    placeName: '료코존나길면어떻게될까용가리',
     imageUrl: null,
     likes: true,
     influencerName: '성시경',
@@ -288,7 +288,7 @@ const mockPlaces = [
     address: {
       address1: '대구광역시',
       address2: '북구',
-      address3: '대현로',
+      address3: '대현로주소가길면어떻게되나요',
     },
   },
   {

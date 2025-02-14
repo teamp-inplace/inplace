@@ -92,6 +92,9 @@ export default function InfoTap({
           </GoogleReviewTitle>
           <GoogleReviewContainer>
             <GoogleReviewList lists={googleReviews} />
+            <Text size="xs" weight="normal" variant="grey">
+              구글 리뷰는 최대 5개까지 표시됩니다.
+            </Text>
           </GoogleReviewContainer>
         </>
       ) : (
@@ -144,6 +147,7 @@ const GoogleReviewContainer = styled.div`
   margin-bottom: 10px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
 
   @media screen and (max-width: 768px) {
