@@ -75,7 +75,7 @@ public class PlacesResponse {
         String kakaoPlaceUrl,
         String googlePlaceUrl,
         List<String> openingHours,
-        PlacesResponse.PlaceLike placeLike
+        PlacesResponse.PlaceLike placeLikes
     ) {
 
         public static PlacesResponse.Detail from(PlaceInfo.Detail place) {
