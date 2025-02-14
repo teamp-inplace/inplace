@@ -43,7 +43,7 @@ export default function FacilitySign({ category, facilityInfo }: { facilityInfo:
   }
   return (
     <Wrapper>
-      {Object.keys(facilityInfo).includes('message') ? (
+      {Object.keys(facilityInfo).length === 0 ? (
         <NoItem message="시설 정보가 없습니다." height={0} logo={false} alignItems="start" />
       ) : (
         <>
