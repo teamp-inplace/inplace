@@ -1,11 +1,12 @@
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { FaYoutube } from 'react-icons/fa';
 import { RiKakaoTalkFill } from 'react-icons/ri';
 import { GrPrevious, GrNext } from 'react-icons/gr';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
-import { QueryErrorResetBoundary } from '@tanstack/react-query';
+import { useLocation, useParams } from 'react-router-dom';
+import { QueryErrorResetBoundary, useQueryClient } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
+import { PiHeartFill, PiHeartLight } from 'react-icons/pi';
 import Button from '@/components/common/Button';
 import { Text } from '@/components/common/typography/Text';
 import InfoTap from '@/components/Detail/InfoTap';
@@ -16,14 +17,23 @@ import Loading from '@/components/common/layouts/Loading';
 import Error from '@/components/common/layouts/Error';
 import FallbackImage from '@/components/common/Items/FallbackImage';
 import BasicThumb from '@/assets/images/basic-thumb.png';
+import { usePostPlaceLike } from '@/api/hooks/usePostPlaceLike';
+import useAuth from '@/hooks/useAuth';
+import LoginModal from '@/components/common/modals/LoginModal';
 
 export default function DetailPage() {
+  const { isAuthenticated } = useAuth();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState<'info' | 'review'>('info');
   const [visitModal, setVisitModal] = useState(false);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const { id } = useParams() as { id: string };
   const { data: infoData } = useGetPlaceInfo(id);
   const [isMobile, setIsMobile] = useState(false);
+  const [isLike, setIsLike] = useState(infoData.likes);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const { mutate: postLike } = usePostPlaceLike();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -66,6 +76,31 @@ export default function DetailPage() {
     return () => clearInterval(interval);
   }, [infoData?.videos?.length]);
 
+  const handleClickLike = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      event.stopPropagation();
+      event.preventDefault();
+      if (!isAuthenticated) {
+        setShowLoginModal(true);
+        return;
+      }
+      const newLikeStatus = !isLike;
+      postLike(
+        { placeId: Number(id), likes: newLikeStatus },
+        {
+          onSuccess: () => {
+            setIsLike(newLikeStatus);
+            queryClient.invalidateQueries({ queryKey: ['UserPlace'] });
+          },
+          onError: () => {
+            alert('좋아요 등록에 실패했어요. 다시 시도해주세요!');
+          },
+        },
+      );
+    },
+    [isLike, id, postLike],
+  );
+
   return (
     <Wrapper>
       <ImageContainer>
@@ -98,25 +133,27 @@ export default function DetailPage() {
           </>
         )}
         <TitleContainer>
-          <Text size="ll" weight="bold" variant="white">
-            {infoData.placeName}
-          </Text>
-          <ButtonWrapper>
-            <Button
-              aria-label="visit_btn"
-              variant="visit"
-              style={{
-                padding: '0px 16px',
-                height: '30px',
-                fontSize: '14px',
-                fontWeight: 'bold',
-                gap: '4px',
-              }}
-              onClick={() => setVisitModal(!visitModal)}
+          <TitleWrapper>
+            <Text size="ll" weight="bold" variant="white">
+              {infoData.placeName}
+            </Text>
+            <LikeIcon
+              role="button"
+              aria-label="like_btn"
+              onClick={(e: React.MouseEvent<HTMLDivElement>) => handleClickLike(e)}
             >
+              {isLike ? (
+                <PiHeartFill color="#fe7373" size={30} data-testid="PiHeartFill" />
+              ) : (
+                <PiHeartLight color="white" size={30} data-testid="PiHeartLight" />
+              )}
+            </LikeIcon>
+          </TitleWrapper>
+          <ButtonWrapper>
+            <StyledButton aria-label="visit_btn" variant="visit" onClick={() => setVisitModal(!visitModal)}>
               <RiKakaoTalkFill size={20} color="yellow" />
               방문할래요
-            </Button>
+            </StyledButton>
             <a href={currentVideoUrl}>
               <FaYoutube size={46} color="red" style={{ marginTop: '4px' }} />
             </a>
@@ -158,6 +195,9 @@ export default function DetailPage() {
       </InfoContainer>
       {visitModal && (
         <VisitModal id={infoData?.placeId} placeName={infoData?.placeName} onClose={() => setVisitModal(false)} />
+      )}
+      {showLoginModal && (
+        <LoginModal immediateOpen currentPath={location.pathname} onClose={() => setShowLoginModal(false)} />
       )}
     </Wrapper>
   );
@@ -209,6 +249,15 @@ const ImageWrapper = styled.div`
   }
 `;
 
+const TitleWrapper = styled.div`
+  display: flex;
+  width: 50%;
+  gap: 10px;
+  align-items: end;
+  @media screen and (max-width: 768px) {
+    gap: 4px;
+  }
+`;
 const TitleContainer = styled.div`
   position: absolute;
   width: 90%;
@@ -218,7 +267,6 @@ const TitleContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* z-index: 1; */
   @media screen and (max-width: 768px) {
     bottom: 4px;
   }
@@ -312,5 +360,38 @@ const NextBtn = styled.button`
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+`;
+const LikeIcon = styled.div`
+  width: 30px;
+  height: 32px;
+  z-index: 100;
+  cursor: pointer;
+
+  @media screen and (max-width: 768px) {
+    width: 24px;
+    height: 24px;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+`;
+const StyledButton = styled(Button)`
+  padding: 0px 16px;
+  height: 30px;
+  font-size: 14px;
+  gap: 4px;
+  font-weight: bold;
+
+  @media screen and (max-width: 768px) {
+    svg {
+      width: 18px;
+    }
+    padding: 2px 10px;
+    height: 28px;
+    font-size: 12px;
+    gap: 4px;
   }
 `;

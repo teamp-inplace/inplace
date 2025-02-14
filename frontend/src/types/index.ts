@@ -102,6 +102,7 @@ export type PlaceInfo = {
   latitude: string;
   facility: FacilityInfo;
   placeLikes: PlaceLikes;
+  likes: boolean;
 };
 export type GoogleReview = {
   like: boolean;
@@ -207,7 +208,7 @@ export type MarkerInfo = {
 export interface ReviewInfo {
   placeName: string;
   placeAddress: string;
-  placeImgUrl: string;
+  placeImgUrl: string | null;
   influencerName: string;
   userNickname: string;
 }

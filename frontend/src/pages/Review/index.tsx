@@ -56,7 +56,7 @@ export default function ReviewPage() {
             <p>리뷰가 성공적으로 등록되었습니다.</p>
           </CompletionMessage>
           <Link to="/">
-            <StyledButton variant="outline" size="large">
+            <StyledButton variant="outline" size="small">
               홈으로 이동하기
             </StyledButton>
           </Link>
@@ -100,7 +100,8 @@ const MainContent = styled.main`
 `;
 
 const CompletionMessage = styled.div`
-  margin-top: 12rem;
+  margin-top: 10rem;
+  margin-bottom: 3rem;
   display: flex;
   flex-direction: column;
   align-items: center;

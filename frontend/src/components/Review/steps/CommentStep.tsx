@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { AiFillDislike, AiFillLike } from 'react-icons/ai';
 import { ReviewInfo } from '@/types';
 import { Text } from '@/components/common/typography/Text';
-import FallbackImage from '@/components/common/Items/FallbackImage';
+import Logo from '@/assets/images/Logo.svg';
 
 interface CommentStepProps {
   isLiked: boolean | null;
@@ -40,9 +40,7 @@ export default function CommentStep({ isLiked, onBack, onSubmit, placeInfo }: Co
       </TextWrapper>
 
       <PlaceSection>
-        <ImageWrapper>
-          <FallbackImage src={placeInfo.placeImgUrl} alt="Place Image" />
-        </ImageWrapper>
+        <LogoImage src={Logo} alt="인플레이스 로고" />
         <PlaceInfo>
           <TextWrapper className="name">
             <Text size="m" weight="bold" style={{ color: '#c6c6c6' }}>
@@ -117,19 +115,10 @@ const TextWrapper = styled.div`
 const PlaceSection = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
-  gap: 2rem;
-  width: 100%;
+  align-items: center;
+  gap: 1rem;
   margin-top: 3rem;
   margin-bottom: 5rem;
-  position: relative;
-`;
-
-const ImageWrapper = styled.div`
-  width: 10rem;
-  height: 10rem;
-  object-fit: cover;
-  border-radius: 0.5rem;
 `;
 
 const PlaceInfo = styled.div`
@@ -164,7 +153,7 @@ const ReviewTextArea = styled.textarea`
   border-radius: 0.5rem;
   padding: 1rem;
   color: white;
-  font-size: 0.875rem;
+  font-size: 16px;
   resize: none;
 
   &::placeholder {
@@ -213,4 +202,13 @@ const SubmitButton = styled(Button)`
   background-color: #5fe2ff;
   border: none;
   color: white;
+`;
+const LogoImage = styled.img`
+  height: 80px;
+  width: 70px;
+
+  @media screen and (max-width: 768px) {
+    height: 60px;
+    width: 50px;
+  }
 `;

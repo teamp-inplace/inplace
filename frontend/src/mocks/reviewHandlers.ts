@@ -7,7 +7,7 @@ import { postPlaceReviewPath } from '@/api/hooks/usePostPlaceReview';
 const mockReviewInfo = {
   placeName: '료코',
   placeAddress: '대구 북구 대학로',
-  placeImgUrl: 'https://via.placeholder.com/500',
+  placeImgUrl: '',
   influencerName: '성시경',
   userNickname: '테스트유저',
 };

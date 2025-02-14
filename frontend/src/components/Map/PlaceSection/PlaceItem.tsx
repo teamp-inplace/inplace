@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { PiHeartFill, PiHeartLight } from 'react-icons/pi';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { Text } from '@/components/common/typography/Text';
 import { PlaceData } from '@/types';
 import { usePostPlaceLike } from '@/api/hooks/usePostPlaceLike';
@@ -32,6 +33,7 @@ export default function PlaceItem({
   const [isLike, setIsLike] = useState(likes);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const { mutate: postLike } = usePostPlaceLike();
+  const queryClient = useQueryClient();
 
   const handleClickLike = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
@@ -47,6 +49,7 @@ export default function PlaceItem({
         {
           onSuccess: () => {
             setIsLike(newLikeStatus);
+            queryClient.invalidateQueries({ queryKey: ['UserPlace'] });
           },
           onError: () => {
             alert('좋아요 등록에 실패했어요. 다시 시도해주세요!');
@@ -56,9 +59,6 @@ export default function PlaceItem({
     },
     [isLike, placeId, postLike],
   );
-  useEffect(() => {
-    setIsLike(likes);
-  }, [likes]);
 
   return (
     <>
