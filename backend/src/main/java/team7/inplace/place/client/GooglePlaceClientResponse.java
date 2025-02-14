@@ -27,7 +27,7 @@ public class GooglePlaceClientResponse {
 
     public record Review(
         Integer rating,
-        TextContent text,
+        Optional<TextContent> text,
         AuthorAttribution authorAttribution,
         LocalDateTime publishTime
     ) {
@@ -35,7 +35,7 @@ public class GooglePlaceClientResponse {
     }
 
     public record TextContent(
-        String text
+        Optional<String> text
     ) {
 
     }

@@ -71,6 +71,7 @@ public class PlacesResponse {
         PlacesResponse.Facility facility,
         List<PlacesResponse.Video> videos,
         List<PlacesResponse.GoogleReview> googleReviews,
+        String kakaoPlaceUrl,
         String googlePlaceUrl,
         List<String> openingHours,
         PlacesResponse.PlaceLike placeLike
@@ -100,6 +101,7 @@ public class PlacesResponse {
                     .stream()
                     .map(PlacesResponse.GoogleReview::from)
                     .toList(),
+                "http://place.map.kakao.com/" + place.place().kakaoPlaceId(),
                 place.googlePlace().googleMapsUri(),
                 place.googlePlace().regularOpeningHours()
                     .map(RegularOpeningHours::weekdayDescriptions)
@@ -161,7 +163,7 @@ public class PlacesResponse {
         public static PlacesResponse.GoogleReview from(GooglePlaceClientResponse.Review review) {
             return new PlacesResponse.GoogleReview(
                 review.rating() >= 3,
-                review.text().text(),
+                review.text().isEmpty() ? "" : review.text().get().text().orElse(""),
                 review.authorAttribution().displayName(),
                 review.publishTime().toString()
             );

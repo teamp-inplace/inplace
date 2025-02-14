@@ -25,7 +25,6 @@ import team7.inplace.place.domain.Category;
 import team7.inplace.place.persistence.PlaceJpaRepository;
 import team7.inplace.place.persistence.PlaceReadRepository;
 import team7.inplace.place.persistence.dto.PlaceQueryResult;
-import team7.inplace.review.persistence.ReviewJPARepository;
 import team7.inplace.video.persistence.VideoReadRepository;
 
 @Slf4j
@@ -37,12 +36,10 @@ public class PlaceService {
     private final PlaceReadRepository placeReadRepository;
     private final PlaceJpaRepository placeJpaRepository;
     private final GooglePlaceClient googlePlaceClient;
-
-    private final ReviewJPARepository reviewJPARepository;
     private final VideoReadRepository videoReadRepository;
 
     public Long createPlace(Create placeCommand) {
-        var existPlace = placeJpaRepository.findPlaceByName(placeCommand.placeName());
+        var existPlace = placeJpaRepository.findPlaceByKakaoPlaceId(placeCommand.kakaoPlaceId());
         if (existPlace.isPresent()) {
             return existPlace.get().getId();
         }
