@@ -73,9 +73,7 @@ public class UserResponse {
         String placeName,
         String imageUrl,
         String influencerName,
-        String address1,
-        String address2,
-        String address3,
+        ReviewPlaceAddress address,
         boolean likes
     ) {
 
@@ -89,9 +87,11 @@ public class UserResponse {
                     .map(VideoQueryResult.SimpleVideo::influencerName)
                     .distinct()
                     .collect(Collectors.joining(", ")),
-                likedPlaceInfo.place().address1(),
-                likedPlaceInfo.place().address2(),
-                likedPlaceInfo.place().address3(),
+                new ReviewPlaceAddress(
+                    likedPlaceInfo.place().address1(),
+                    likedPlaceInfo.place().address2(),
+                    likedPlaceInfo.place().address3()
+                ),
                 likedPlaceInfo.place().isLiked()
             );
         }
