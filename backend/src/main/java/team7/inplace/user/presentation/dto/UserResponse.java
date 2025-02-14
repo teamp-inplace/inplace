@@ -53,7 +53,7 @@ public class UserResponse {
 
     public record ReviewPlace(
         Long placeId,
-        String name,
+        String placeName,
         String imgUrl,
         ReviewPlaceAddress address
     ) {
