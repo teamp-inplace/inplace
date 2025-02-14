@@ -1,6 +1,7 @@
 package team7.inplace.place.persistence.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import team7.inplace.place.domain.Category;
 
 public class PlaceQueryResult {
 
@@ -12,7 +13,7 @@ public class PlaceQueryResult {
         String address3,
         Double longitude,
         Double latitude,
-        String category,
+        Category category,
         String googlePlaceId,
         Long kakaoPlaceId,
         Boolean isLiked
