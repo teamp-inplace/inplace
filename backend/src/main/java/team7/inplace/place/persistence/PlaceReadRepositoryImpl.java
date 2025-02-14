@@ -45,7 +45,7 @@ public class PlaceReadRepositoryImpl implements PlaceReadRepository {
                 QPlace.place.address.address3,
                 QPlace.place.coordinate.longitude,
                 QPlace.place.coordinate.latitude,
-                QPlace.place.category.stringValue(),
+                QPlace.place.category,
                 QPlace.place.googlePlaceId,
                 QPlace.place.kakaoPlaceId,
                 QLikedPlace.likedPlace.isLiked.isNotNull()
@@ -104,7 +104,7 @@ public class PlaceReadRepositoryImpl implements PlaceReadRepository {
                 QPlace.place.address.address3,
                 QPlace.place.coordinate.longitude,
                 QPlace.place.coordinate.latitude,
-                QPlace.place.category.stringValue(),
+                QPlace.place.category,
                 QPlace.place.googlePlaceId,
                 QPlace.place.kakaoPlaceId,
                 QLikedPlace.likedPlace.isLiked.isNotNull()
@@ -243,7 +243,7 @@ public class PlaceReadRepositoryImpl implements PlaceReadRepository {
                 QPlace.place.address.address3,
                 QPlace.place.coordinate.longitude,
                 QPlace.place.coordinate.latitude,
-                QPlace.place.category.stringValue(),
+                QPlace.place.category,
                 QPlace.place.googlePlaceId,
                 QPlace.place.kakaoPlaceId,
                 QLikedPlace.likedPlace.isLiked.isTrue()

@@ -48,7 +48,7 @@ public class PlacesResponse {
                     placeInfo.place().address2(),
                     placeInfo.place().address3()
                 ),
-                Category.valueOf(placeInfo.place().category()).getName(),
+                placeInfo.place().category().getName(),
                 placeInfo.video().stream().map(SimpleVideo::influencerName)
                     .filter(Objects::nonNull)
                     .distinct()
@@ -86,7 +86,7 @@ public class PlacesResponse {
                     place.place().address2(),
                     place.place().address3()
                 ),
-                place.place().category(),
+                place.place().category().getName(),
                 place.place().longitude(),
                 place.place().latitude(),
                 PlacesResponse.Facility.of(
