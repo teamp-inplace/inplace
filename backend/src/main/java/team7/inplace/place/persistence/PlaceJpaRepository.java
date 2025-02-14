@@ -6,5 +6,5 @@ import team7.inplace.place.domain.Place;
 
 public interface PlaceJpaRepository extends JpaRepository<Place, Long> {
 
-    Optional<Place> findPlaceByName(String name);
+    Optional<Place> findPlaceByKakaoPlaceId(Long placeId);
 }

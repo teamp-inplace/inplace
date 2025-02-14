@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import team7.inplace.global.annotation.Facade;
 import team7.inplace.influencer.application.InfluencerService;
 import team7.inplace.place.application.command.PlaceLikeCommand;
+import team7.inplace.place.application.command.PlacesCommand;
 import team7.inplace.place.application.command.PlacesCommand.Coordinate;
 import team7.inplace.place.application.command.PlacesCommand.FilterParams;
 import team7.inplace.place.application.dto.PlaceInfo;
@@ -24,6 +25,12 @@ public class PlaceFacade {
     private final InfluencerService influencerService;
     private final ReviewService reviewService;
     private final VideoService videoService;
+
+    public void createPlace(Long videoId, PlacesCommand.Create command) {
+        var placeId = placeService.createPlace(command);
+
+        videoService.addPlaceInfo(videoId, placeId);
+    }
 
     public Marker getMarkerInfo(Long placeId) {
         PlaceQueryResult.Marker marker = placeService.getMarkerInfo(placeId);
