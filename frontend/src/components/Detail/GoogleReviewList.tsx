@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 import { AiFillLike, AiFillDislike } from 'react-icons/ai';
-import { Paragraph } from '@/components/common/typography/Paragraph';
-
 import { GoogleReview } from '@/types';
 import { Text } from '@/components/common/typography/Text';
 import NoItem from '@/components/common/layouts/NoItem';
+import GoogleReviewComment from './InfoTap/ReviewComment';
 
 export default function GoogleReviewList({ lists }: { lists: GoogleReview[] }) {
   return (
@@ -26,9 +25,7 @@ export default function GoogleReviewList({ lists }: { lists: GoogleReview[] }) {
                   {new Date(list.publishTime).toLocaleDateString()}
                 </Text>
               </Title>
-              <Paragraph size="xs" weight="normal" variant="white">
-                {list.text}
-              </Paragraph>
+              <GoogleReviewComment text={list.text} />
             </GoogleReviewItem>
           ))}
         </>
@@ -44,14 +41,10 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: 30px;
   align-items: end;
-  svg {
-    margin-left: 20px;
-  }
 
   @media screen and (max-width: 768px) {
     align-items: center;
     svg {
-      margin-left: 10px;
       width: 20px;
       height: 16px;
     }
@@ -62,11 +55,14 @@ const GoogleReviewItem = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
+  padding-bottom: 14px;
+  border-bottom: 0.5px solid #6e6e6e;
 
   @media screen and (max-width: 768px) {
     width: 90%;
     gap: 2px;
+    padding-bottom: 8px;
   }
 `;
 
@@ -77,4 +73,8 @@ const Title = styled.div`
 const Name = styled.div`
   display: flex;
   gap: 10px;
+  @media screen and (max-width: 768px) {
+    gap: 4px;
+    align-items: center;
+  }
 `;

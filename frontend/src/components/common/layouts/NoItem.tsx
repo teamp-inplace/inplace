@@ -35,6 +35,9 @@ const TextWrapper = styled.div<{ alignItems?: string }>`
   gap: 20px;
   white-space: pre-line;
   line-height: 26px;
+  p {
+    text-align: center;
+  }
 
   @media screen and (max-width: 768px) {
     gap: 10px;
