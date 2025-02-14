@@ -208,7 +208,7 @@ export type MarkerInfo = {
 export interface ReviewInfo {
   placeName: string;
   placeAddress: string;
-  placeImgUrl: string;
+  placeImgUrl: string | null;
   influencerName: string;
   userNickname: string;
 }
