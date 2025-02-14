@@ -6,8 +6,14 @@ import team7.inplace.place.domain.Category;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AliasUtil {
+
     public static String makeAlias(String influencerName, Category category) {
         String alias = mapTemplateToCategory(category);
+        return influencerName + " " + alias;
+    }
+
+    public static String makeAlias(String influencerName, String category) {
+        String alias = mapTemplateToCategory(Category.valueOf(category));
         return influencerName + " " + alias;
     }
 
