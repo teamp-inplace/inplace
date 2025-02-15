@@ -252,6 +252,7 @@ public class PlaceReadRepositoryImpl implements PlaceReadRepository {
             .leftJoin(QPlace.place).on(QLikedPlace.likedPlace.placeId.eq(QPlace.place.id))
             .where(
                 QLikedPlace.likedPlace.userId.eq(userId),
+                QLikedPlace.likedPlace.isLiked.isTrue(),
                 QLikedPlace.likedPlace.deleteAt.isNull(),
                 QPlace.place.deleteAt.isNull()
             )
