@@ -10,7 +10,7 @@ public class GooglePlaceClientResponse {
         String id,
         double rating,
         Optional<RegularOpeningHours> regularOpeningHours,
-        List<Review> reviews,
+        Optional<List<Review>> reviews,
         Optional<AccessibilityOptions> accessibilityOptions,
         Optional<ParkingOptions> parkingOptions,
         Optional<PaymentOptions> paymentOptions,

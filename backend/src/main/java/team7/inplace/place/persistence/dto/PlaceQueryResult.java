@@ -22,6 +22,10 @@ public class PlaceQueryResult {
         @QueryProjection
         public DetailedPlace {
         }
+
+        public boolean haveNoGooglePlaceId() {
+            return googlePlaceId == null;
+        }
     }
 
     public record SimplePlace(

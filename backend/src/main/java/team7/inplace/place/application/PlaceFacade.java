@@ -42,9 +42,13 @@ public class PlaceFacade {
         var userId = AuthorizationUtil.getUserId();
 
         var placeInfo = placeService.getPlaceInfo(placeId, userId);
-        var googlePlace = placeService.getGooglePlaceInfo(placeInfo.googlePlaceId());
         var videoInfos = videoService.getVideosByPlaceId(placeInfo.placeId());
         var reviewRates = reviewService.getReviewLikeRate(placeInfo.placeId());
+
+        if (placeInfo.haveNoGooglePlaceId()) {
+            return PlaceInfo.Detail.of(placeInfo, null, videoInfos, reviewRates);
+        }
+        var googlePlace = placeService.getGooglePlaceInfo(placeInfo.googlePlaceId());
 
         return PlaceInfo.Detail.of(placeInfo, googlePlace, videoInfos, reviewRates);
     }
