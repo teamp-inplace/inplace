@@ -134,7 +134,7 @@ public class PlacesResponse {
                 place.videos().stream()
                     .map(PlacesResponse.Video::from)
                     .toList(),
-                place.googlePlace().reviews()
+                place.googlePlace().reviews().orElse(List.of())
                     .stream()
                     .map(PlacesResponse.GoogleReview::from)
                     .toList(),
