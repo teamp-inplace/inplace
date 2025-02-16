@@ -80,6 +80,41 @@ public class PlacesResponse {
     ) {
 
         public static PlacesResponse.Detail from(PlaceInfo.Detail place) {
+            if (place.googlePlace() == null) {
+                return createDetailWithoutGooglePlace(place);
+            }
+            return createDetailWithGooglePlace(place);
+        }
+
+        private static PlacesResponse.Detail createDetailWithoutGooglePlace(
+            PlaceInfo.Detail place
+        ) {
+            return new PlacesResponse.Detail(
+                place.place().placeId(),
+                place.place().placeName(),
+                new PlacesResponse.Address(
+                    place.place().address1(),
+                    place.place().address2(),
+                    place.place().address3()
+                ),
+                place.place().category().getName(),
+                place.place().longitude(),
+                place.place().latitude(),
+                null,
+                place.videos().stream()
+                    .map(PlacesResponse.Video::from)
+                    .toList(),
+                List.of(),
+                null,
+                "http://place.map.kakao.com/" + place.place().kakaoPlaceId(),
+                null,
+                List.of(),
+                PlacesResponse.PlaceLike.from(place.reviewLikeRate()),
+                place.place().isLiked()
+            );
+        }
+
+        private static PlacesResponse.Detail createDetailWithGooglePlace(PlaceInfo.Detail place) {
             return new PlacesResponse.Detail(
                 place.place().placeId(),
                 place.place().placeName(),
