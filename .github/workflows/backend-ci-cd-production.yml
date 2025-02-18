@@ -149,13 +149,18 @@ jobs:
 
         - name: Cleanup Old Container
           run: |
-            ssh ubuntu@${{ env.INACTIVE_INSTANCE }} "
+            INACTIVE_HOST=$(aws ec2 describe-instances \
+              --instance-ids "${{ env.INACTIVE_INSTANCE }}" \
+              --query "Reservations[0].Instances[0].PublicIpAddress" \
+              --output text)
+            
+            if [[ -n "$INACTIVE_HOST" ]]; then
+              ssh ubuntu@${INACTIVE_HOST} "
                 sudo docker stop inplace || true 
                 sudo docker rm inplace || true
-            "
-
-        - name: Cleanup Docker System
-          run: ssh ubuntu@${{ env.INACTIVE_INSTANCE }} "sudo docker system prune -f"
+                sudo docker system prune -f
+              "
+            fi
 
         # 인스턴스 태그 업데이트
         - name: Update Instance Tags
