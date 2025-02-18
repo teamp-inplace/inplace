@@ -10,6 +10,7 @@ import { useGetMarkerInfo } from '@/api/hooks/useGetMarkerInfo';
 import OriginMarker from '@/assets/images/OriginMarker.png';
 import SelectedMarker from '@/assets/images/InplaceMarker.png';
 import { Text } from '@/components/common/typography/Text';
+import nowLocation from '@/assets/images/now_location.webp';
 
 interface MapWindowProps {
   center: { lat: number; lng: number };
@@ -270,7 +271,7 @@ export default function MapWindow({
           <MapMarker
             position={userLocation}
             image={{
-              src: 'https://i.ibb.co/4gGFjRx/circle.webp',
+              src: nowLocation,
               size: { width: userLocationSize, height: userLocationSize },
             }}
           />
