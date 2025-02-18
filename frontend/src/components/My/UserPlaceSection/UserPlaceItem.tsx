@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { useCallback, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { Text } from '@/components/common/typography/Text';
 import { Paragraph } from '@/components/common/typography/Paragraph';
 
 import { UserPlaceData } from '@/types';
@@ -52,12 +53,12 @@ export default function UserPlaceItem({ placeId, placeName, influencerName, like
     <>
       <Wrapper to={`/detail/${placeId}`}>
         <TextWrapper>
-          <Paragraph size="m" weight="bold" variant="white">
+          <Text className="overflow" size="m" weight="bold" variant="white">
             {placeName}
-          </Paragraph>
-          <Paragraph size="xs" weight="normal" variant="white">
+          </Text>
+          <Text className="overflow" size="xs" weight="normal" variant="white">
             {getFullAddress(address)}
-          </Paragraph>
+          </Text>
           <Paragraph size="xs" weight="normal" variant="white">
             {influencerName}
           </Paragraph>
@@ -80,6 +81,7 @@ const Wrapper = styled(Link)`
   width: 180px;
   border-radius: 4px;
   padding: 10px;
+  justify-content: space-between;
 
   &:hover {
     background-color: #1b1a1a;
@@ -87,8 +89,6 @@ const Wrapper = styled(Link)`
 `;
 
 const LikeIcon = styled.div`
-  width: 26px;
-  height: 24px;
   z-index: 100;
   cursor: pointer;
 
@@ -105,7 +105,12 @@ const TextWrapper = styled.div`
   justify-content: space-between;
   line-height: 130%;
   padding: 8px 0px;
-  flex-wrap: wrap;
+  width: 85%;
+  .overflow {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   gap: 4px;
   > *:nth-child(3) {
     margin-top: 12px;
