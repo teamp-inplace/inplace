@@ -84,7 +84,7 @@ jobs:
             if [[ "$ACTIVE_INSTANCE" == "${{ secrets.EC2_BLUE_INSTANCE_ID }}" ]]; then
               TARGET_INSTANCE="${{ secrets.EC2_GREEN_INSTANCE_ID }}"
               echo "TARGET_INSTANCE=$TARGET_INSTANCE" >> $GITHUB_ENV
-              echo "INACTIVE_INSTANCE=${{ secrets.BLUE_INSTANCE_ID }}" >> $GITHUB_ENV
+              echo "INACTIVE_INSTANCE=${{ secrets.EC2_BLUE_INSTANCE_ID }}" >> $GITHUB_ENV
               echo "TARGET_GROUP_ARN=${{ secrets.EC2_TARGET_GROUP_ARN_GREEN }}" >> $GITHUB_ENV
             else
               TARGET_INSTANCE="${{ secrets.EC2_BLUE_INSTANCE_ID }}"
@@ -105,7 +105,7 @@ jobs:
         - name: Configure SSH
           run: |
             mkdir -p ~/.ssh/
-            echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+            echo "${{ secrets.SSH_PRODUCTION_SERVER_KEY }}" > ~/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
             ssh-keyscan -H ${{ env.EC2_HOST }} >> ~/.ssh/known_hosts
 
@@ -120,12 +120,12 @@ jobs:
 
         - name: Run New Container
           run: |
-            ssh ubuntu@${{ env.EC2_HOST }} "sudo docker run --name inplace --rm -d -p 8080:8080 -p ${{ secrets.MONITORING_PORT }}:${{ secrets.MONITORING_PORT }} --env-file /home/ubuntu/.env ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
+            ssh ubuntu@${{ env.EC2_HOST }} "sudo docker run --name inplace --rm -d -p 8080:8080 -p ${{ secrets.EC2_MONITORING_PORT }}:${{ secrets.EC2_MONITORING_PORT }} --env-file /home/ubuntu/.env ${{ secrets.DOCKERHUB_USERNAME }}/inplace"
 
         - name: Health Check
           run: |
             for i in {1..40}; do
-              if ssh ubuntu@${{ env.EC2_HOST }} "curl -s http://localhost:${{ secrets.HEALTH_CECK_PATH }} | grep '\"status\":\"UP\"' > /dev/null"; then
+              if ssh ubuntu@${{ env.EC2_HOST }} "curl -s http://localhost:${{ secrets.EC2_HEALTH_CHECK_PATH }} | grep '\"status\":\"UP\"' > /dev/null"; then
                 echo "Application is healthy"
                 break
               fi
@@ -141,7 +141,7 @@ jobs:
           if: success()
           run: |
             ssh ubuntu@${{ env.EC2_HOST }} "
-              aws elbv2 modify-listener --listener-arn ${{ secrets.LISTENER_ARN_443 }} --default-actions Type=forward,TargetGroupArn=${{ env.TARGET_GROUP_ARN }}
+              aws elbv2 modify-listener --listener-arn ${{ secrets.EC2_LISTENER_ARN_443 }} --default-actions Type=forward,TargetGroupArn=${{ env.TARGET_GROUP_ARN }}
             "
 
         - name: Wait for Draining
