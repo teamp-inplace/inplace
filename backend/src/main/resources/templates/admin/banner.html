@@ -53,6 +53,21 @@
                 </div>
             </div>
 
+            <div class="form-row">
+                <div class="form-check">
+                    <input id="isMain" name="isMain" type="checkbox">
+                    <label for="isMain">메인 이미지</label>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-check">
+                    <input id="isMobile" name="isMobile" type="checkbox">
+                    <label for="isMobile">모바일 이미지</label>
+                </div>
+            </div>
+
+
             <button class="btn-submit" type="submit">업로드하기</button>
         </form>
     </div>
@@ -65,6 +80,8 @@
                 <th style="width: 15%;">미리보기</th>
                 <th style="width: 20%;">이름</th>
                 <th style="width: 10%;">고정 표시</th>
+                <th style="width: 10%;">메인이미지</th>
+                <th style="width: 10%;">모바일이미지</th>
                 <th style="width: 20%;">시작 날짜</th>
                 <th style="width: 20%;">종료 날짜</th>
                 <th style="width: 15%;">작업</th>
@@ -81,6 +98,13 @@
                 <td>
                     <input disabled="disabled" th:checked="${banner.isFixed}" type="checkbox">
                 </td>
+                <td>
+                    <input disabled="disabled" th:checked="${banner.isMain}" type="checkbox">
+                </td>
+                <td>
+                    <input disabled="disabled" th:checked="${banner.isMobile}" type="checkbox">
+                </td>
+
                 <td th:text="${#temporals.format(banner.startDate, 'yyyy-MM-dd')}"></td>
                 <td th:text="${#temporals.format(banner.endDate, 'yyyy-MM-dd')}"></td>
                 <td>

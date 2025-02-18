@@ -1,6 +1,7 @@
 package team7.inplace.influencer.persistence;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +22,7 @@ public interface InfluencerRepository extends JpaRepository<Influencer, Long> {
 
     @Query("SELECT i.name FROM Influencer i WHERE i.deleteAt IS NULL")
     List<String> findAllInfluencerNames();
+
+    @Query("SELECT i.id FROM Influencer i WHERE i.name = :name")
+    Optional<Long> findIdByName(String name);
 }

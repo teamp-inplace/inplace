@@ -22,17 +22,23 @@ public class Banner {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Boolean isFixed;
+    private Boolean isMain;
+    private Boolean isMobile;
+    private Long influencerId;
 
-    private Banner(String imgName, String imgPath, LocalDateTime startDate, LocalDateTime endDate, Boolean isFixed) {
+    private Banner(String imgName, String imgPath, LocalDateTime startDate, LocalDateTime endDate, Boolean isFixed, Boolean isMain, Boolean isMobile, Long influencerId) {
         this.imgName = imgName;
         this.imgPath = imgPath;
         this.startDate = startDate;
         this.endDate = endDate;
         this.isFixed = isFixed;
+        this.isMain = isMain;
+        this.isMobile = isMobile;
+        this.influencerId = influencerId;
     }
 
     public static Banner of(String imgName, String imgPath, LocalDateTime startDate, LocalDateTime endDate,
-                            Boolean isFixed) {
-        return new Banner(imgName, imgPath, startDate, endDate, isFixed);
+                            Boolean isFixed, Boolean isMain, Boolean isMobile, Long influencerId) {
+        return new Banner(imgName, imgPath, startDate, endDate, isFixed, isMain, isMobile, influencerId);
     }
 }
