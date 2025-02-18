@@ -149,13 +149,13 @@ jobs:
 
         - name: Cleanup Old Container
           run: |
-            ssh ubuntu@${{ env.EC2_HOST }} "
+            ssh ubuntu@${{ env.INACTIVE_INSTANCE }} "
                 sudo docker stop inplace || true 
                 sudo docker rm inplace || true
             "
 
         - name: Cleanup Docker System
-          run: ssh ubuntu@${{ env.EC2_HOST }} "sudo docker system prune -f"
+          run: ssh ubuntu@${{ env.INACTIVE_INSTANCE }} "sudo docker system prune -f"
 
         # 인스턴스 태그 업데이트
         - name: Update Instance Tags
