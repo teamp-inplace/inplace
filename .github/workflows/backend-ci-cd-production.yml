@@ -115,7 +115,7 @@ jobs:
 
         - name: Create and Copy .env file
           run: |
-            echo "${{ secrets.ENV }}" > .env
+            echo "${{ secrets.ENV_PRODUCTION_SERVER }}" > .env
             scp .env ubuntu@${{ env.EC2_HOST }}:/home/ubuntu/.env
 
         - name: Run New Container
