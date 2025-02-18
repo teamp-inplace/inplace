@@ -81,11 +81,11 @@ jobs:
             if [[ "$ACTIVE_INSTANCE" == "${{ secrets.BLUE_INSTANCE_ID }}" ]]; then
               echo "TARGET_INSTANCE=${{ secrets.GREEN_INSTANCE_ID }}" >> $GITHUB_ENV
               echo "INACTIVE_INSTANCE=${{ secrets.BLUE_INSTANCE_ID }}" >> $GITHUB_ENV
-              echo "TARGET_GROUP_ARN=${{ secrets.TARGET_GROUP_ARN_GREEN }}" >> $GITHUB_ENV
+              echo "TARGET_GROUP_ARN=${{ secrets.EC2_TARGET_GROUP_ARN_GREEN }}" >> $GITHUB_ENV
             else
               echo "TARGET_INSTANCE=${{ secrets.BLUE_INSTANCE_ID }}" >> $GITHUB_ENV
               echo "INACTIVE_INSTANCE=${{ secrets.GREEN_INSTANCE_ID }}" >> $GITHUB_ENV
-              echo "TARGET_GROUP_ARN=${{ secrets.TARGET_GROUP_ARN_8080 }}" >> $GITHUB_ENV
+              echo "TARGET_GROUP_ARN=${{ secrets.EC2_TARGET_GROUP_ARN_BLUE }}" >> $GITHUB_ENV
             fi
 
             EC2_HOST=$(aws ec2 describe-instances \
