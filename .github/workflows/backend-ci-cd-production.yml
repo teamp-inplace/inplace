@@ -155,6 +155,7 @@ jobs:
               --output text)
             
             if [[ -n "$INACTIVE_HOST" ]]; then
+              ssh-keyscan -H ${INACTIVE_HOST} >> ~/.ssh/known_hosts
               ssh ubuntu@${INACTIVE_HOST} "
                 sudo docker stop inplace || true 
                 sudo docker rm inplace || true
