@@ -26,14 +26,14 @@ export default function MainBanner({ items = [] }: { items: BannerData[] }) {
 
   const filteredItems = items.filter((item) => {
     if (isMobile) {
-      return item.mobile === true || !item.main;
+      return item.isMobile === true || !item.isMain;
     }
-    return item.mobile === false;
+    return item.isMobile === false;
   });
 
   const sortedItems = [...filteredItems].sort((a, b) => {
-    if (a.main && !b.main) return -1;
-    if (!a.main && b.main) return 1;
+    if (a.isMain && !b.isMain) return -1;
+    if (!a.isMain && b.isMain) return 1;
     return 0;
   });
 
@@ -99,8 +99,8 @@ export default function MainBanner({ items = [] }: { items: BannerData[] }) {
                   id={item.id}
                   imageUrl={item.imageUrl}
                   influencerId={item.influencerId}
-                  main={item.main}
-                  mobile={item.main}
+                  isMain={item.isMain}
+                  isMobile={item.isMobile}
                   isFirst={currentIndex === 0 && !isMobile}
                 />
               ))}

@@ -2,8 +2,8 @@ export type BannerData = {
   id: number;
   imageUrl: string;
   influencerId: number;
-  main: boolean;
-  mobile: boolean;
+  isMain: boolean;
+  isMobile: boolean;
 };
 export type InfluencerData = {
   influencerId: number;
