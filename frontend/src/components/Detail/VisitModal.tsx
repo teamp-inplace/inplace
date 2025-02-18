@@ -42,7 +42,7 @@ export default function VisitModal({ id, placeName, onClose }: { id: number; pla
       setIsSend(true);
       const { status } = await refetch();
       if (status === 'success') {
-        setMessage('카카오톡을 확인해주세요!');
+        setMessage('카카오톡 나와의 채팅을\n 확인해주세요!');
       } else {
         setMessage('에러가 발생했습니다. 다시 시도해주세요.');
       }
