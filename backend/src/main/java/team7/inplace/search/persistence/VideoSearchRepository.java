@@ -36,7 +36,9 @@ public class VideoSearchRepository implements SearchRepository<VideoQueryResult.
                 .leftJoin(QPlace.place).on(QVideo.video.placeId.eq(QPlace.place.id))
                 .leftJoin(QInfluencer.influencer).on(QVideo.video.influencerId.eq(QInfluencer.influencer.id))
                 .where(getPlaceMatchScore(keyword).gt(0)
-                        .or(getInfluencerMatchScore(keyword).gt(0)))
+                        .or(getInfluencerMatchScore(keyword).gt(0))
+                        .and(QPlace.place.id.isNotNull())
+                        .and(QInfluencer.influencer.id.isNotNull()))
                 .orderBy(getPlaceMatchScore(keyword).desc(), getInfluencerMatchScore(keyword).desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
@@ -48,7 +50,9 @@ public class VideoSearchRepository implements SearchRepository<VideoQueryResult.
                 .leftJoin(QPlace.place).on(QVideo.video.placeId.eq(QPlace.place.id))
                 .leftJoin(QInfluencer.influencer).on(QVideo.video.influencerId.eq(QInfluencer.influencer.id))
                 .where(getPlaceMatchScore(keyword).gt(0)
-                        .or(getInfluencerMatchScore(keyword).gt(0))
+                        .or(getInfluencerMatchScore(keyword).gt(0)
+                        .and(QPlace.place.id.isNotNull())
+                        .and(QInfluencer.influencer.id.isNotNull()))
                 ).fetchOne();
 
         return new PageImpl<>(contents, pageable, count);
