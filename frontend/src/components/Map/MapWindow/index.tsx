@@ -110,6 +110,7 @@ export default function MapWindow({
         (err) => {
           console.error('Geolocation error:', err);
         },
+        { enableHighAccuracy: true },
       );
     } else {
       console.warn('Geolocation is not supported by this browser.');
