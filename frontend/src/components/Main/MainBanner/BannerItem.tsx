@@ -19,10 +19,16 @@ const Wrapper = styled.div<{ $isFirst: boolean }>`
   text-align: center;
   position: relative;
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 768px) and (min-width: 500px) {
     width: 100%;
     flex: 0 0 100%;
+    height: 500px;
+  }
+
+  @media screen and (max-width: 500px) {
+    width: 100%;
     height: auto;
+    flex: 0 0 100%;
     aspect-ratio: 1;
   }
 `;

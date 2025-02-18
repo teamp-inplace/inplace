@@ -7,6 +7,7 @@ import { getCoolVideoPath, getNewVideoPath } from '@/api/hooks/useGetLogoutVideo
 import BannerImg from '@/assets/images/bannerImg.webp';
 import Back from '@/assets/images/back-card.webp';
 import Basic from '@/assets/images/basic-image.webp';
+import BannerMob from '@/assets/images/mobile_banner.webp';
 
 export const mainHandlers = [
   rest.get(`${BASE_URL}${getBannerPath()}`, (_, res, ctx) => {
@@ -16,18 +17,37 @@ export const mainHandlers = [
         {
           id: 1,
           imageUrl: BannerImg,
+          influencerId: 1,
+          main: true,
+          mobile: false,
         },
         {
           id: 2,
-          imageUrl: Basic,
+          imageUrl: BannerMob,
+          influencerId: 2,
+          main: true,
+          mobile: true,
         },
         {
           id: 3,
-          imageUrl: Back,
+          imageUrl: Basic,
+          influencerId: 3,
+          main: false,
+          mobile: false,
         },
         {
           id: 4,
+          imageUrl: Back,
+          influencerId: 4,
+          main: false,
+          mobile: false,
+        },
+        {
+          id: 5,
           imageUrl: Basic,
+          influencerId: 5,
+          main: false,
+          mobile: false,
         },
       ]),
     );

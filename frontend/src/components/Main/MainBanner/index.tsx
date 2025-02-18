@@ -24,6 +24,19 @@ export default function MainBanner({ items = [] }: { items: BannerData[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
+  const filteredItems = items.filter((item) => {
+    if (isMobile) {
+      return item.mobile === true || !item.main;
+    }
+    return item.mobile === false;
+  });
+
+  const sortedItems = [...filteredItems].sort((a, b) => {
+    if (a.main && !b.main) return -1;
+    if (!a.main && b.main) return 1;
+    return 0;
+  });
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -36,31 +49,35 @@ export default function MainBanner({ items = [] }: { items: BannerData[] }) {
   }, []);
 
   useEffect(() => {
+    setCurrentIndex(0);
+  }, [isMobile]);
+
+  useEffect(() => {
     const interval = setInterval(() => {
-      if (items.length > 1) {
+      if (sortedItems.length > 1) {
         setCurrentIndex((prevIndex) => {
-          const maxIndex = isMobile ? items.length - 1 : items.length - 2;
+          const maxIndex = isMobile ? sortedItems.length - 1 : sortedItems.length - 2;
           return prevIndex === maxIndex ? 0 : prevIndex + 1;
         });
       }
     }, 5000);
     return () => clearInterval(interval);
-  }, [items.length, isMobile]);
+  }, [sortedItems.length, isMobile]);
 
   const handleBtnPrevClick = () => {
     setCurrentIndex((prevIndex) => Math.max(prevIndex - 1, 0));
   };
 
   const handleBtnNextClick = () => {
-    if (items.length > 1) {
-      const maxIndex = isMobile ? items.length - 1 : items.length - 2;
+    if (sortedItems.length > 1) {
+      const maxIndex = isMobile ? sortedItems.length - 1 : sortedItems.length - 2;
       setCurrentIndex((prevIndex) => Math.min(prevIndex + 1, maxIndex));
     }
   };
 
   return (
     <Container>
-      {items.length === 0 ? (
+      {sortedItems.length === 0 ? (
         <NoItem message="배너 정보가 없어요!" height={400} />
       ) : (
         <>
@@ -70,17 +87,20 @@ export default function MainBanner({ items = [] }: { items: BannerData[] }) {
           <NextBtn
             aria-label="next_btn"
             onClick={handleBtnNextClick}
-            disabled={currentIndex === (isMobile ? items.length - 1 : items.length - 2)}
+            disabled={currentIndex === (isMobile ? sortedItems.length - 1 : sortedItems.length - 2)}
           >
             <GrNext size={40} />
           </NextBtn>
           <CarouselWrapper>
             <CarouselContainer $currentIndex={currentIndex} $isMobile={isMobile}>
-              {items.map((item) => (
+              {sortedItems.map((item) => (
                 <BannerItem
                   key={item.id}
                   id={item.id}
                   imageUrl={item.imageUrl}
+                  influencerId={item.influencerId}
+                  main={item.main}
+                  mobile={item.main}
                   isFirst={currentIndex === 0 && !isMobile}
                 />
               ))}
