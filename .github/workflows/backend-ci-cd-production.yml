@@ -79,24 +79,28 @@ jobs:
               --output text)
             
             echo "Active Instance ID: $ACTIVE_INSTANCE"
-            
+                    
+            TARGET_INSTANCE=""
             if [[ "$ACTIVE_INSTANCE" == "${{ secrets.BLUE_INSTANCE_ID }}" ]]; then
-              echo "TARGET_INSTANCE=${{ secrets.GREEN_INSTANCE_ID }}" >> $GITHUB_ENV
+              TARGET_INSTANCE="${{ secrets.GREEN_INSTANCE_ID }}"
+              echo "TARGET_INSTANCE=$TARGET_INSTANCE" >> $GITHUB_ENV
               echo "INACTIVE_INSTANCE=${{ secrets.BLUE_INSTANCE_ID }}" >> $GITHUB_ENV
               echo "TARGET_GROUP_ARN=${{ secrets.EC2_TARGET_GROUP_ARN_GREEN }}" >> $GITHUB_ENV
             else
-              echo "TARGET_INSTANCE=${{ secrets.BLUE_INSTANCE_ID }}" >> $GITHUB_ENV
+              TARGET_INSTANCE="${{ secrets.BLUE_INSTANCE_ID }}"
+              echo "TARGET_INSTANCE=$TARGET_INSTANCE" >> $GITHUB_ENV
               echo "INACTIVE_INSTANCE=${{ secrets.GREEN_INSTANCE_ID }}" >> $GITHUB_ENV
               echo "TARGET_GROUP_ARN=${{ secrets.EC2_TARGET_GROUP_ARN_BLUE }}" >> $GITHUB_ENV
             fi
             
-            echo "Selected Target Instance: ${{ env.TARGET_INSTANCE }}"
+            echo "Selected Target Instance: $TARGET_INSTANCE"
             
             EC2_HOST=$(aws ec2 describe-instances \
-              --instance-ids ${{ env.TARGET_INSTANCE }} \
+              --instance-ids "$TARGET_INSTANCE" \
               --query "Reservations[0].Instances[0].PublicIpAddress" \
               --output text)
             echo "EC2_HOST=${EC2_HOST}" >> $GITHUB_ENV
+
 
         - name: Configure SSH
           run: |
