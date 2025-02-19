@@ -10,7 +10,9 @@ public class BannerRequest {
             MultipartFile imageFile,
             LocalDate startDate,
             LocalDate endDate,
-            Boolean isFixed
+            Boolean isFixed,
+            Boolean isMain,
+            Boolean isMobile
     ) {
         public BannerCommand.Create toCommand() {
             return new BannerCommand.Create(
@@ -18,7 +20,9 @@ public class BannerRequest {
                     imageFile,
                     startDate.atStartOfDay(),
                     endDate.atStartOfDay(),
-                    isFixed
+                    isFixed,
+                    isMain,
+                    isMobile
             );
         }
     }

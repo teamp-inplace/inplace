@@ -67,6 +67,8 @@ document.getElementById('imageUploadForm').addEventListener('submit', function (
 
     // 체크박스 값을 명시적으로 설정
     formData.set('isFixed', document.getElementById('isFixed').checked);
+    formData.set('isMain', document.getElementById('isMain').checked);
+    formData.set('isMobile', document.getElementById('isMobile').checked);
 
     fetch('/banners', {
         method: 'POST',

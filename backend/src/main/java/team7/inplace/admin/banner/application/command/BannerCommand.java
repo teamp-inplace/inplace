@@ -10,10 +10,12 @@ public class BannerCommand {
             MultipartFile imageFile,
             LocalDateTime startDate,
             LocalDateTime endDate,
-            Boolean isFixed
+            Boolean isFixed,
+            Boolean isMain,
+            Boolean isMobile
     ) {
-        public Banner toEntity(String imgPath) {
-            return Banner.of(imgName, imgPath, startDate, endDate, isFixed);
+        public Banner toEntity(String imgPath, Long influencerId) {
+            return Banner.of(imgName, imgPath, startDate, endDate, isFixed, isMain, isMobile, influencerId);
         }
     }
 }
