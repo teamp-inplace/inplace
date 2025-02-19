@@ -19,6 +19,7 @@ import team7.inplace.review.presentation.dto.ReviewResponse.Invitation;
 
 @RestController
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/reviews")
 public class ReviewController implements ReviewControllerApiSpec {
 
@@ -47,7 +48,7 @@ public class ReviewController implements ReviewControllerApiSpec {
 
     @Override
     @DeleteMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
+    // @PreAuthorize("isAuthenticated()") 기능 보류
     public ResponseEntity<Void> deleteReview(@PathVariable Long id) {
         reviewService.deleteReview(id);
 

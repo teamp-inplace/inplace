@@ -12,7 +12,8 @@ import team7.inplace.global.exception.code.KakaoMessageErrorCode;
 import team7.inplace.kakao.application.PlaceMessageFacade;
 
 @RestController
-@PreAuthorize("isAuthenticated()")
+//@PreAuthorize("isAuthenticated()") 기능 보류
+@PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
 @Slf4j
 public class KakaoController implements KakaoControllerApiSpec {
