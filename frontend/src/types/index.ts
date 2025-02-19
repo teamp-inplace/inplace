@@ -1,7 +1,7 @@
 export type BannerData = {
   id: number;
   imageUrl: string;
-  influencerId: number;
+  influencerId: number | null;
   isMain: boolean;
   isMobile: boolean;
 };
