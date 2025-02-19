@@ -270,14 +270,14 @@ const TitleContainer = styled.div`
   }
 `;
 
-const Tap = styled.button/* <{ $active: boolean }> */ `
+const Tap = styled.button`
   width: 100%;
   height: 60px;
   font-size: 18px;
   font-weight: bold;
-  color: '#55ebff';
+  color: #55ebff;
   border: none;
-  border-bottom: 3px solid '#55ebff';
+  border-bottom: 3px solid #55ebff;
   background: none;
   cursor: pointer;
   transition:
@@ -287,7 +287,7 @@ const Tap = styled.button/* <{ $active: boolean }> */ `
   @media screen and (max-width: 768px) {
     height: 50px;
     font-size: 16px;
-    border-bottom: 2px solid '#55ebff';
+    border-bottom: 2px solid #55ebff;
   }
 `;
 
