@@ -2,10 +2,14 @@ package team7.inplace.kakao.application;
 
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import team7.inplace.global.exception.InplaceException;
+import team7.inplace.global.exception.code.KakaoMessageErrorCode;
 import team7.inplace.global.properties.KakaoApiProperties;
 import team7.inplace.kakao.application.command.PlaceMessageCommand;
 import team7.inplace.kakao.domain.MessageSendHistory;
@@ -21,25 +25,31 @@ public class KakaoMessageService {
     private final KakaoMessageMaker kakaoMessageMaker;
     private final WebClient webClient;
 
-    public void sendLocationMessageToMe(
+    public Mono<Void> sendLocationMessageToMe(
         Long userId,
         String oauthToken,
         PlaceMessageCommand placeMessageCommand
     ) {
-        var messageSendHistory = messageSendHistoryRepository.get(userId.toString())
-            .orElse(MessageSendHistory.of(userId));
-        messageSendHistory.sendMessage();
-        messageSendHistoryRepository.save(userId.toString(), messageSendHistory);
-
-        webClient.post()
+        return webClient.post()
             .uri(URI.create(kakaoApiProperties.sendMessageToMeUrl()))
             .header("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .header("Authorization", "Bearer " + oauthToken)
             .body(BodyInserters.fromFormData(
                 kakaoMessageMaker.createLocationTemplate(placeMessageCommand)))
             .retrieve()
-            .bodyToMono(String.class)
-            .subscribe();
+            .onStatus(HttpStatusCode::is4xxClientError, response ->
+                Mono.error(InplaceException.of(KakaoMessageErrorCode.MESSAGE_AUTHORIZATION_FALSE)))
+            .bodyToMono(Void.class)
+            .doOnSuccess(response -> {
+                increaseSendCount(userId);
+            });
+    }
+
+    private void increaseSendCount(Long userId) {
+        var messageSendHistory = messageSendHistoryRepository.get(userId.toString())
+            .orElse(MessageSendHistory.of(userId));
+        messageSendHistory.sendMessage();
+        messageSendHistoryRepository.save(userId.toString(), messageSendHistory);
     }
 
     public void sendFeedMessageToMe(

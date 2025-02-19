@@ -3,6 +3,8 @@ package team7.inplace.kakao.application;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import reactor.core.publisher.Mono;
 import team7.inplace.global.annotation.Facade;
 import team7.inplace.global.exception.InplaceException;
 import team7.inplace.global.exception.code.UserErrorCode;
@@ -23,27 +25,26 @@ public class PlaceMessageFacade {
     private final ReviewInvitationService userReviewLinkService;
     private final KakaoMessageService kakaoMessageService;
 
-
-    public void sendPlaceMessage(Long placeId) throws InplaceException {
+    public Mono<Void> sendPlaceMessage(Long placeId) {
         var userId = AuthorizationUtil.getUserId();
-        if (userId == null) {
-            throw InplaceException.of(UserErrorCode.NOT_FOUND);
-        }
 
         String oauthToken = oauthTokenService.findOAuthTokenByUserId(userId);
 
         var placeInfo = placeService.getPlaceMessageCommand(placeId, userId);
 
         var placeMessageCommand = PlaceMessageCommand.from(placeInfo);
-        kakaoMessageService.sendLocationMessageToMe(userId, oauthToken, placeMessageCommand);
+        Mono<Void> placeMessageMono = kakaoMessageService.sendLocationMessageToMe(userId, oauthToken, placeMessageCommand);
 
-        String uuid = userReviewLinkService.generateReviewUuid(AuthorizationUtil.getUserId(),
+        String uuid = userReviewLinkService.generateReviewUuid(userId,
             placeId);
         if (uuid == null) {
-            return;
+            return placeMessageMono;
         }
-        scheduledExecutorService.schedule(
-            () -> kakaoMessageService.sendFeedMessageToMe(oauthToken, placeMessageCommand, uuid), 1,
-            TimeUnit.MINUTES);
+
+        return placeMessageMono.doOnSuccess(response -> {
+            scheduledExecutorService.schedule(
+                () -> kakaoMessageService.sendFeedMessageToMe(oauthToken, placeMessageCommand, uuid), 1,
+                TimeUnit.MINUTES);
+        });
     }
 }
