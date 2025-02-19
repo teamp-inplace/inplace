@@ -1,20 +1,20 @@
-import { Suspense, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FaYoutube } from 'react-icons/fa';
 // import { RiKakaoTalkFill } from 'react-icons/ri';
 import { GrPrevious, GrNext } from 'react-icons/gr';
 import styled from 'styled-components';
 import { useLocation, useParams } from 'react-router-dom';
-import { QueryErrorResetBoundary, useQueryClient } from '@tanstack/react-query';
-import { ErrorBoundary } from 'react-error-boundary';
+import { useQueryClient } from '@tanstack/react-query';
+// import { ErrorBoundary } from 'react-error-boundary';
 import { PiHeartFill, PiHeartLight } from 'react-icons/pi';
 // import Button from '@/components/common/Button';
 import { Text } from '@/components/common/typography/Text';
 import InfoTap from '@/components/Detail/InfoTap';
-import ReviewTap from '@/components/Detail/ReviewTap';
+// import ReviewTap from '@/components/Detail/ReviewTap';
 import VisitModal from '@/components/Detail/VisitModal';
 import { useGetPlaceInfo } from '@/api/hooks/useGetPlaceInfo';
-import Loading from '@/components/common/layouts/Loading';
-import Error from '@/components/common/layouts/Error';
+// import Loading from '@/components/common/layouts/Loading';
+// import Error from '@/components/common/layouts/Error';
 import FallbackImage from '@/components/common/Items/FallbackImage';
 import BasicThumb from '@/assets/images/basic-thumb.png';
 import { usePostPlaceLike } from '@/api/hooks/usePostPlaceLike';
@@ -24,7 +24,7 @@ import LoginModal from '@/components/common/modals/LoginModal';
 export default function DetailPage() {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState<'info' | 'review'>('info');
+  // const [activeTab, setActiveTab] = useState<'info' | 'review'>('info');
   const [visitModal, setVisitModal] = useState(false);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const { id } = useParams() as { id: string };
@@ -161,27 +161,25 @@ export default function DetailPage() {
         </TitleContainer>
       </ImageContainer>
       <TapContainer>
-        <Tap aria-label="info_tap" $active={activeTab === 'info'} onClick={() => setActiveTab('info')}>
-          정보
-        </Tap>
+        <Tap aria-label="info_tap" /* $active={activeTab === 'info'} onClick={() => setActiveTab('info')} */>정보</Tap>
         {/* <Tap aria-label="review_tap" $active={activeTab === 'review'} onClick={() => setActiveTab('review')}>
           리뷰
         </Tap> */}
       </TapContainer>
       <InfoContainer>
-        {activeTab === 'info' ? (
-          <InfoTap
-            category={infoData?.category}
-            facility={infoData?.facility}
-            openingHours={infoData?.openingHours}
-            kakaoPlaceUrl={infoData?.kakaoPlaceUrl}
-            googlePlaceUrl={infoData?.googlePlaceUrl}
-            googleReviews={infoData?.googleReviews}
-            longitude={infoData?.longitude}
-            latitude={infoData?.latitude}
-            rating={infoData?.rating}
-          />
-        ) : (
+        {/* {activeTab === 'info' ? ( */}
+        <InfoTap
+          category={infoData?.category}
+          facility={infoData?.facility}
+          openingHours={infoData?.openingHours}
+          kakaoPlaceUrl={infoData?.kakaoPlaceUrl}
+          googlePlaceUrl={infoData?.googlePlaceUrl}
+          googleReviews={infoData?.googleReviews}
+          longitude={infoData?.longitude}
+          latitude={infoData?.latitude}
+          rating={infoData?.rating}
+        />
+        {/* ) : (
           <QueryErrorResetBoundary>
             {({ reset }) => (
               <ErrorBoundary FallbackComponent={Error} onReset={reset}>
@@ -191,7 +189,7 @@ export default function DetailPage() {
               </ErrorBoundary>
             )}
           </QueryErrorResetBoundary>
-        )}
+        )} */}
       </InfoContainer>
       {visitModal && (
         <VisitModal id={infoData?.placeId} placeName={infoData?.placeName} onClose={() => setVisitModal(false)} />
@@ -272,14 +270,14 @@ const TitleContainer = styled.div`
   }
 `;
 
-const Tap = styled.button<{ $active: boolean }>`
+const Tap = styled.button/* <{ $active: boolean }> */ `
   width: 100%;
   height: 60px;
   font-size: 18px;
   font-weight: bold;
-  color: ${({ $active }) => ($active ? '#55ebff' : 'white')};
+  color: '#55ebff';
   border: none;
-  border-bottom: 3px solid ${({ $active }) => ($active ? '#55ebff' : 'white')};
+  border-bottom: 3px solid '#55ebff';
   background: none;
   cursor: pointer;
   transition:
@@ -289,7 +287,7 @@ const Tap = styled.button<{ $active: boolean }>`
   @media screen and (max-width: 768px) {
     height: 50px;
     font-size: 16px;
-    border-bottom: 2px solid ${({ $active }) => ($active ? '#55ebff' : 'white')};
+    border-bottom: 2px solid '#55ebff';
   }
 `;
 

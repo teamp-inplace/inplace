@@ -14,7 +14,7 @@ const MapPage = lazy(() => import('@/pages/Map'));
 const MyPage = lazy(() => import('@/pages/My'));
 const ChoicePage = lazy(() => import('@/pages/Choice'));
 const SearchPage = lazy(() => import('@/pages/Search'));
-const ReviewPage = lazy(() => import('@/pages/Review'));
+// const ReviewPage = lazy(() => import('@/pages/Review'));
 const InfluencerInfoPage = lazy(() => import('@/pages/InfluencerInfo'));
 const NotFoundPage = lazy(() => import('@/pages/NotFound'));
 
@@ -57,7 +57,7 @@ function App() {
               </PrivatedRoute>
             }
           />
-          <Route path="/reviews/:uuid" element={<ReviewPage />} />
+          {/* <Route path="/reviews/:uuid" element={<ReviewPage />} /> */}
         </Routes>
       </AuthProvider>
     </>
