@@ -1,10 +1,15 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { BannerData } from '@/types';
 
-export default function BannerItem({ id, imageUrl, isFirst }: BannerData & { isFirst: boolean }) {
+export default function BannerItem({ id, imageUrl, isFirst, influencerId }: BannerData & { isFirst: boolean }) {
   return (
-    <Wrapper $isFirst={isFirst}>
+    <Wrapper
+      as={influencerId ? Link : 'div'}
+      to={influencerId ? `/influencer/${influencerId}` : undefined}
+      $isFirst={isFirst}
+    >
       <Image src={imageUrl} alt={`배너-${id}번`} loading="eager" />
     </Wrapper>
   );
@@ -18,6 +23,8 @@ const Wrapper = styled.div<{ $isFirst: boolean }>`
   align-items: center;
   text-align: center;
   position: relative;
+  text-decoration: none;
+  cursor: ${(props) => (props.as === 'div' ? 'default' : 'pointer')};
 
   @media screen and (max-width: 768px) and (min-width: 500px) {
     width: 100%;
