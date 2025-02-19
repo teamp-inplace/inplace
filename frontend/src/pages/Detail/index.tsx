@@ -1,13 +1,13 @@
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { FaYoutube } from 'react-icons/fa';
-import { RiKakaoTalkFill } from 'react-icons/ri';
+// import { RiKakaoTalkFill } from 'react-icons/ri';
 import { GrPrevious, GrNext } from 'react-icons/gr';
 import styled from 'styled-components';
 import { useLocation, useParams } from 'react-router-dom';
 import { QueryErrorResetBoundary, useQueryClient } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
 import { PiHeartFill, PiHeartLight } from 'react-icons/pi';
-import Button from '@/components/common/Button';
+// import Button from '@/components/common/Button';
 import { Text } from '@/components/common/typography/Text';
 import InfoTap from '@/components/Detail/InfoTap';
 import ReviewTap from '@/components/Detail/ReviewTap';
@@ -150,10 +150,10 @@ export default function DetailPage() {
             </LikeIcon>
           </TitleWrapper>
           <ButtonWrapper>
-            <StyledButton aria-label="visit_btn" variant="visit" onClick={() => setVisitModal(!visitModal)}>
+            {/* <StyledButton aria-label="visit_btn" variant="visit" onClick={() => setVisitModal(!visitModal)}>
               <RiKakaoTalkFill size={20} color="yellow" />
               방문할래요
-            </StyledButton>
+            </StyledButton> */}
             <a href={currentVideoUrl}>
               <FaYoutube size={46} color="red" style={{ marginTop: '4px' }} />
             </a>
@@ -164,9 +164,9 @@ export default function DetailPage() {
         <Tap aria-label="info_tap" $active={activeTab === 'info'} onClick={() => setActiveTab('info')}>
           정보
         </Tap>
-        <Tap aria-label="review_tap" $active={activeTab === 'review'} onClick={() => setActiveTab('review')}>
+        {/* <Tap aria-label="review_tap" $active={activeTab === 'review'} onClick={() => setActiveTab('review')}>
           리뷰
-        </Tap>
+        </Tap> */}
       </TapContainer>
       <InfoContainer>
         {activeTab === 'info' ? (
@@ -378,20 +378,20 @@ const LikeIcon = styled.div`
     }
   }
 `;
-const StyledButton = styled(Button)`
-  padding: 0px 16px;
-  height: 30px;
-  font-size: 14px;
-  gap: 4px;
-  font-weight: bold;
+// const StyledButton = styled(Button)`
+//   padding: 0px 16px;
+//   height: 30px;
+//   font-size: 14px;
+//   gap: 4px;
+//   font-weight: bold;
 
-  @media screen and (max-width: 768px) {
-    svg {
-      width: 18px;
-    }
-    padding: 2px 10px;
-    height: 28px;
-    font-size: 12px;
-    gap: 4px;
-  }
-`;
+//   @media screen and (max-width: 768px) {
+//     svg {
+//       width: 18px;
+//     }
+//     padding: 2px 10px;
+//     height: 28px;
+//     font-size: 12px;
+//     gap: 4px;
+//   }
+// `;
