@@ -54,7 +54,7 @@ export const fetchInstance = initInstance({
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: false,
+      retry: 1,
       refetchOnMount: true,
       refetchOnReconnect: true,
       refetchOnWindowFocus: true,

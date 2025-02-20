@@ -11,7 +11,7 @@ export function renderWithQueryClient(children: React.ReactNode) {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        retry: false,
+        retry: 1,
         staleTime: 0,
       },
     },
