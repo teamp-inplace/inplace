@@ -22,6 +22,9 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.springframework.web: DEBUG
     org.springframework.security: DEBUG
+springdoc:
+  swagger-ui:
+    enabled: true
 ---
 spring:
   config:
@@ -35,6 +38,9 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.springframework.web: DEBUG
     org.springframework.security: DEBUG
+springdoc:
+  swagger-ui:
+    enabled: true
 ---
 spring:
   config:
@@ -46,3 +52,6 @@ logging:
     team7.inplace: INFO
     org.springframework.web: ERROR
     org.springframework.security: ERROR
+springdoc:
+  swagger-ui:
+    enabled: false
