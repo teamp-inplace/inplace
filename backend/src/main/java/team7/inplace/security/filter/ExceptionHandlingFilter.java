@@ -43,7 +43,8 @@ public class ExceptionHandlingFilter extends OncePerRequestFilter {
         response.setStatus(inplaceException.getHttpStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                inplaceException.getHttpStatus(), inplaceException.getMessage());
+            // inplaceException.getHttpStatus(),
+            inplaceException.getMessage());
         response.getWriter().write(objectMapper.writeValueAsString(problemDetail));
     }
 }

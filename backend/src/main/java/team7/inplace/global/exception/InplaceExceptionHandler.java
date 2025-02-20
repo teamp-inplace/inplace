@@ -16,14 +16,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RequiredArgsConstructor
 public class InplaceExceptionHandler {
 
+    private final static HttpStatus SERVER_ERROR = HttpStatus.INTERNAL_SERVER_ERROR;
+    private final static String SERVER_ERROR_MESSAGE = "서버 내부에서 오류가 발생하였습니다."
+
     @ExceptionHandler(InplaceException.class)
     public ResponseEntity<ProblemDetail> handleInplaceException(
         HttpServletRequest request,
         InplaceException exception
     ) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-            exception.getHttpStatus(),
-            exception.getMessage()
+            SERVER_ERROR, // exception.getHttpStatus(),
+            SERVER_ERROR_MESSAGE // exception.getMessage()
         );
         problemDetail.setTitle(exception.getErrorCode());
         problemDetail.setInstance(URI.create(request.getRequestURI()));
@@ -37,8 +40,8 @@ public class InplaceExceptionHandler {
         AuthorizationDeniedException exception
     ) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-            HttpStatus.FORBIDDEN,
-            exception.getMessage()
+            SERVER_ERROR, // HttpStatus.FORBIDDEN,
+            SERVER_ERROR_MESSAGE // exception.getMessage()
         );
         problemDetail.setTitle("E403");
         problemDetail.setInstance(URI.create(request.getRequestURI()));
@@ -52,8 +55,8 @@ public class InplaceExceptionHandler {
         Exception exception
     ) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-            HttpStatus.INTERNAL_SERVER_ERROR,
-            exception.getMessage()
+            SERVER_ERROR, // HttpStatus.INTERNAL_SERVER_ERROR,
+            SERVER_ERROR_MESSAGE // exception.getMessage()
         );
         problemDetail.setTitle("E999");
         problemDetail.setInstance(URI.create(request.getRequestURI()));
