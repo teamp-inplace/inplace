@@ -13,13 +13,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
-@Profile("prod")
+@Profile("!prod")
 @RestControllerAdvice
 @RequiredArgsConstructor
-public class InplaceExceptionHandler {
-
-    private final static HttpStatus SERVER_ERROR = HttpStatus.INTERNAL_SERVER_ERROR;
-    private final static String SERVER_ERROR_MESSAGE = "서버 내부에서 오류가 발생하였습니다.";
+public class DevExceptionHandler {
 
     @ExceptionHandler(InplaceException.class)
     public ResponseEntity<ProblemDetail> handleInplaceException(
@@ -27,8 +24,8 @@ public class InplaceExceptionHandler {
         InplaceException exception
     ) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-            SERVER_ERROR, // exception.getHttpStatus(),
-            SERVER_ERROR_MESSAGE // exception.getMessage()
+            exception.getHttpStatus(),
+            exception.getMessage()
         );
         problemDetail.setTitle(exception.getErrorCode());
         problemDetail.setInstance(URI.create(request.getRequestURI()));
@@ -42,8 +39,8 @@ public class InplaceExceptionHandler {
         AuthorizationDeniedException exception
     ) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-            SERVER_ERROR, // HttpStatus.FORBIDDEN,
-            SERVER_ERROR_MESSAGE // exception.getMessage()
+            HttpStatus.FORBIDDEN,
+            exception.getMessage()
         );
         problemDetail.setTitle("E403");
         problemDetail.setInstance(URI.create(request.getRequestURI()));
@@ -57,8 +54,8 @@ public class InplaceExceptionHandler {
         Exception exception
     ) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-            SERVER_ERROR, // HttpStatus.INTERNAL_SERVER_ERROR,
-            SERVER_ERROR_MESSAGE // exception.getMessage()
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            exception.getMessage()
         );
         problemDetail.setTitle("E999");
         problemDetail.setInstance(URI.create(request.getRequestURI()));
