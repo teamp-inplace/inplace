@@ -159,11 +159,8 @@ const PageContainer = styled.div`
 `;
 
 const LayoutWrapper = styled.div`
-  margin-bottom: 60px;
-
   @media screen and (max-width: 768px) {
     width: 100%;
-    margin-bottom: 30px;
     display: flex;
     justify-content: center;
   }
