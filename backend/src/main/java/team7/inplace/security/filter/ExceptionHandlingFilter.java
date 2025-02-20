@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -43,8 +44,9 @@ public class ExceptionHandlingFilter extends OncePerRequestFilter {
         response.setStatus(inplaceException.getHttpStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-            // inplaceException.getHttpStatus(),
-            inplaceException.getMessage());
+            HttpStatus.INTERNAL_SERVER_ERROR, // inplaceException.getHttpStatus(),
+            "서버 내부에서 오류가 발생하였습니다."// inplaceException.getMessage()
+        );
         response.getWriter().write(objectMapper.writeValueAsString(problemDetail));
     }
 }
