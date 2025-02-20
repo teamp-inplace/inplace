@@ -42,6 +42,7 @@ public class PlaceController implements PlaceControllerApiSpec {
     private final ReviewService reviewService;
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public ResponseEntity<Void> savePlace(@RequestBody Create request) {
         var command = request.toCommand();
