@@ -40,6 +40,7 @@ export default function UserPlaceItem({ placeId, placeName, influencerName, like
           onSuccess: () => {
             setIsLike(newLikeStatus);
             queryClient.invalidateQueries({ queryKey: ['UserPlace'] }); // 내가 좋아요 한 장소
+            queryClient.invalidateQueries({ queryKey: ['placeInfo', placeId] });
           },
           onError: (error) => {
             console.error('Error:', error);

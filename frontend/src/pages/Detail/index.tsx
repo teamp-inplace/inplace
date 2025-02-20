@@ -91,6 +91,7 @@ export default function DetailPage() {
           onSuccess: () => {
             setIsLike(newLikeStatus);
             queryClient.invalidateQueries({ queryKey: ['UserPlace'] });
+            queryClient.invalidateQueries({ queryKey: ['placeInfo', id] });
           },
           onError: () => {
             alert('좋아요 등록에 실패했어요. 다시 시도해주세요!');
