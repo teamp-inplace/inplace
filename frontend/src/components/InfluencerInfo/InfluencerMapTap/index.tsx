@@ -165,6 +165,8 @@ export default function InfluencerMapTap({
           onGetPlaceData={handleGetPlaceData}
           onPlaceSelect={handlePlaceSelect}
           selectedPlaceId={selectedPlaceId}
+          isListExpanded={isListExpanded}
+          onListExpand={handleListExpand}
         />
       </MobilePlaceSection>
     </Wrapper>

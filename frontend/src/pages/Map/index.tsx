@@ -241,6 +241,8 @@ export default function MapPage() {
           onGetPlaceData={handleGetPlaceData}
           onPlaceSelect={handlePlaceSelect}
           selectedPlaceId={selectedPlaceId}
+          isListExpanded={isListExpanded}
+          onListExpand={handleListExpand}
         />
       </MobilePlaceSection>
     </PageContainer>

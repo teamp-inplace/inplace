@@ -19,6 +19,8 @@ interface PlaceSectionProps {
   onGetPlaceData: (data: PlaceData[]) => void;
   onPlaceSelect: (placeId: number) => void;
   selectedPlaceId: number | null;
+  isListExpanded?: boolean;
+  onListExpand?: () => void;
 }
 
 export default function InfluencerPlaceSection({
@@ -30,6 +32,8 @@ export default function InfluencerPlaceSection({
   onGetPlaceData,
   onPlaceSelect,
   selectedPlaceId,
+  isListExpanded,
+  onListExpand,
 }: PlaceSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const previousPlacesRef = useRef<PlaceData[]>([]);
@@ -78,8 +82,11 @@ export default function InfluencerPlaceSection({
   const handlePlaceClick = useCallback(
     (placeId: number) => {
       onPlaceSelect(placeId);
+      if (isListExpanded && onListExpand) {
+        onListExpand();
+      }
     },
-    [onPlaceSelect],
+    [onPlaceSelect, isListExpanded, onListExpand],
   );
 
   if (isLoading && !isFetchingNextPage && previousPlacesRef.current.length === 0) {

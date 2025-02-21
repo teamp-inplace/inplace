@@ -18,6 +18,8 @@ interface PlaceSectionProps {
   onGetPlaceData: (data: PlaceData[]) => void;
   onPlaceSelect: (placeId: number) => void;
   selectedPlaceId: number | null;
+  isListExpanded?: boolean;
+  onListExpand?: () => void;
 }
 
 export default function PlaceSection({
@@ -27,6 +29,8 @@ export default function PlaceSection({
   onGetPlaceData,
   onPlaceSelect,
   selectedPlaceId,
+  isListExpanded,
+  onListExpand,
 }: PlaceSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null); // 무한 스크롤을 위한 ref와 observer 설정
   const previousPlacesRef = useRef<PlaceData[]>([]);
@@ -79,8 +83,11 @@ export default function PlaceSection({
   const handlePlaceClick = useCallback(
     (placeId: number) => {
       onPlaceSelect(placeId);
+      if (isListExpanded && onListExpand) {
+        onListExpand();
+      }
     },
-    [onPlaceSelect],
+    [onPlaceSelect, isListExpanded, onListExpand],
   );
 
   if (isLoading && !isFetchingNextPage && previousPlacesRef.current.length === 0) {
