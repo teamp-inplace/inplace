@@ -59,7 +59,9 @@ export default function ResearchModal() {
           </IconBackground>
         </IconWrapper>
         <ButtonWrapper>
-          <SubmitButton onClick={handleSurvey}>의견 남기러 가기</SubmitButton>
+          <SubmitButton aria-label="submit_btn" onClick={handleSurvey}>
+            의견 남기러 가기
+          </SubmitButton>
         </ButtonWrapper>
       </ContentWrapper>
       <CheckboxWrapper>
