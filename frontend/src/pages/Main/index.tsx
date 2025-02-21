@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { useEffect } from 'react';
 import BaseLayout from '@/components/common/BaseLayout';
 import MainBanner from '@/components/Main/MainBanner';
 import ResearchModal from '@/components/common/modals/ResearchModal';
@@ -11,7 +10,6 @@ import { useGetLogoutVideo } from '@/api/hooks/useGetLogoutVideo';
 import { useGetMyInfluencerVideo } from '@/api/hooks/useGetMyInfluencerVideo';
 import useGetLocation from '@/hooks/useGetLocation';
 import { useGetAroundVideo } from '@/api/hooks/useGetAroundVideo';
-import { fetchInstance } from '@/api/instance';
 
 export default function MainPage() {
   const { isAuthenticated } = useAuth();
@@ -25,27 +23,6 @@ export default function MainPage() {
     location?.lng ?? 126.978,
     !!isAuthenticated && !!location?.lat && !!location?.lng,
   );
-
-  useEffect(() => {
-    const testSentryError = async () => {
-      try {
-        // 존재하지 않는 엔드포인트로 요청
-        await fetchInstance.get('/non-existent-endpoint');
-      } catch (error) {
-        console.log('API 요청은 실패했지만 계속 실행됨');
-      }
-
-      // 실제 동작하는 API 엔드포인트로 요청
-      try {
-        const response = await fetchInstance.get('/banners');
-        console.log('이 요청은 성공해야 함:', response.data);
-      } catch (error) {
-        console.log('이 에러는 Sentry와 무관해야 함:', error);
-      }
-    };
-
-    testSentryError();
-  }, []);
 
   return (
     <>
