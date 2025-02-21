@@ -19,6 +19,7 @@ interface DropdownMenuProps {
   placeholder?: string;
   type: 'location' | 'influencer' | 'category';
   defaultValue?: { main: string; sub?: string };
+  selectedOptions?: string[] | { main: string; sub?: string }[];
 }
 
 export default function DropdownMenu({
@@ -28,6 +29,7 @@ export default function DropdownMenu({
   placeholder = '',
   type,
   defaultValue,
+  selectedOptions,
 }: DropdownMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useDetectClose({ onDetected: () => setIsOpen(false) });
@@ -107,15 +109,23 @@ export default function DropdownMenu({
   };
 
   const renderMainOptions = () => {
-    return filteredOptions.map((option) => (
-      <DropdownItem
-        key={option.label}
-        label={option.label}
-        onClick={() => handleMainOptionClick(option)}
-        type={type}
-        isSelected={selectedMainOption === option}
-      />
-    ));
+    return filteredOptions.map((option) => {
+      const isFiltered =
+        type === 'location'
+          ? (selectedOptions as { main: string; sub?: string }[])?.some((item) => item.main === option.label)
+          : (selectedOptions as string[])?.includes(option.label);
+
+      return (
+        <DropdownItem
+          key={option.label}
+          label={option.label}
+          onClick={() => handleMainOptionClick(option)}
+          type={type}
+          isSelected={selectedMainOption === option}
+          isFiltered={isFiltered}
+        />
+      );
+    });
   };
 
   const renderSubOptions = () => {
@@ -127,15 +137,24 @@ export default function DropdownMenu({
       lng: selectedMainOption.lng,
     };
 
-    return [allOption, ...selectedMainOption.subOptions].map((subOption) => (
-      <DropdownItem
-        key={subOption.label}
-        label={subOption.label}
-        onClick={() => handleSubOptionClick(subOption)}
-        type={type}
-        isSelected={selectedSubOption === subOption}
-      />
-    ));
+    return [allOption, ...selectedMainOption.subOptions].map((subOption) => {
+      const isFiltered = (selectedOptions as { main: string; sub?: string }[])?.some(
+        (item) =>
+          item.main === selectedMainOption.label &&
+          (subOption.label === '전체' ? !item.sub : item.sub === subOption.label),
+      );
+
+      return (
+        <DropdownItem
+          key={subOption.label}
+          label={subOption.label}
+          onClick={() => handleSubOptionClick(subOption)}
+          type={type}
+          isSelected={selectedSubOption === subOption}
+          isFiltered={isFiltered}
+        />
+      );
+    });
   };
 
   const displayValue = placeholder;
