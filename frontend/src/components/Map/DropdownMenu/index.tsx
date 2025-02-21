@@ -230,7 +230,7 @@ const DropdownMenuContainer = styled.div<{ $multiLevel: boolean; $hasSubOptions:
   border-radius: 8px;
   margin-top: 4px;
   max-height: 300px;
-  z-index: 100;
+  z-index: 101;
 
   @media screen and (max-width: 768px) {
     max-height: 200px;
