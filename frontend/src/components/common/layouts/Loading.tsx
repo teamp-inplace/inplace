@@ -7,7 +7,7 @@ type Props = {
 export default function Loading({ size = 24 }: Props) {
   return (
     <SpinnerWrapper>
-      <Wrapper size={size} />
+      <Wrapper size={size} className="loader" />
     </SpinnerWrapper>
   );
 }

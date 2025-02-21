@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { CustomOverlayMap, Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk';
 import styled from 'styled-components';
 import { TbCurrentLocation } from 'react-icons/tb';
@@ -12,6 +12,7 @@ import OriginMarker from '@/assets/images/OriginMarker.png';
 import SelectedMarker from '@/assets/images/InplaceMarker.png';
 import { Text } from '@/components/common/typography/Text';
 import nowLocation from '@/assets/images/now_location.webp';
+import Loading from '@/components/common/layouts/Loading';
 
 interface MapWindowProps {
   center: { lat: number; lng: number };
@@ -40,7 +41,8 @@ export default function MapWindow({
   isListExpanded,
   onListExpand,
 }: MapWindowProps) {
-  const mapRef = useRef<kakao.maps.Map | null>(null);
+  const [map, setMap] = useState<kakao.maps.Map | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [mapCenter, setMapCenter] = useState({ lat: 37.5665, lng: 126.978 });
   const [mapBound, setMapBound] = useState<LocationData>({
     topLeftLatitude: 0,
@@ -76,10 +78,10 @@ export default function MapWindow({
   const MarkerInfoData = useGetMarkerInfo(selectedPlaceId?.toString() || '', shouldFetchData);
 
   const fetchMarkers = useCallback(() => {
-    if (!mapRef.current) return;
+    if (!map) return;
 
-    const bounds = mapRef.current.getBounds();
-    const currentCenter = mapRef.current.getCenter();
+    const bounds = map.getBounds();
+    const currentCenter = map.getCenter();
 
     const newBounds: LocationData = {
       topLeftLatitude: bounds.getNorthEast().getLat(),
@@ -92,7 +94,7 @@ export default function MapWindow({
 
     onCenterChange({ lat: currentCenter.getLat(), lng: currentCenter.getLng() });
     onBoundsChange(newBounds);
-  }, [onBoundsChange, onCenterChange]);
+  }, [map, onBoundsChange, onCenterChange]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -103,11 +105,9 @@ export default function MapWindow({
             lng: position.coords.longitude,
           };
           setUserLocation(userLoc);
-          setMapCenter(userLoc);
-          if (mapRef.current) {
-            mapRef.current.setCenter(new kakao.maps.LatLng(userLoc.lat, userLoc.lng));
-            fetchMarkers();
-          }
+          setIsLoading(false);
+          map?.setCenter(new kakao.maps.LatLng(userLoc.lat, userLoc.lng));
+          fetchMarkers();
         },
         (err) => {
           console.error('Geolocation error:', err);
@@ -115,27 +115,28 @@ export default function MapWindow({
         { enableHighAccuracy: true },
       );
     } else {
+      setIsLoading(true);
       console.warn('Geolocation is not supported by this browser.');
     }
-  }, [fetchMarkers]);
+  }, [map]);
 
   useEffect(() => {
-    if (mapRef.current && center) {
+    if (map && center) {
       const position = new kakao.maps.LatLng(center.lat, center.lng);
       setTimeout(
         () => {
-          mapRef.current?.panTo(position);
+          map.panTo(position);
         },
         selectedPlaceId !== null ? 200 : 0,
       );
     }
-  }, [center]);
+  }, [center, map]);
 
   // 마커나 장소 선택시 지도 중심으로 이동
   const moveMapToMarker = useCallback(
     (latitude: number, longitude: number) => {
-      if (mapRef.current) {
-        const currentLevel = mapRef.current.getLevel();
+      if (map) {
+        const currentLevel = map.getLevel();
         const baseOffset = -0.007;
 
         let levelMultiplier;
@@ -150,20 +151,20 @@ export default function MapWindow({
         const offsetY = isMobile ? (baseOffset * levelMultiplier) / 5 : 0;
         const position = new kakao.maps.LatLng(latitude - offsetY, longitude);
 
-        if (mapRef.current.getLevel() > 10) {
-          mapRef.current.setLevel(9, {
+        if (map.getLevel() > 10) {
+          map.setLevel(9, {
             anchor: position,
             animate: true,
           });
         }
         setTimeout(() => {
-          if (mapRef.current) {
-            mapRef.current.panTo(position);
+          if (map) {
+            map.panTo(position);
           }
         }, 100);
       }
     },
-    [isMobile],
+    [isMobile, map],
   );
 
   // 초기 선택 시에만 이동하도록
@@ -213,9 +214,9 @@ export default function MapWindow({
   }, [fetchMarkers]);
 
   const handleResetCenter = useCallback(() => {
-    if (mapRef.current && userLocation) {
-      mapRef.current.setCenter(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
-      mapRef.current.setLevel(4);
+    if (map && userLocation) {
+      map.setCenter(new kakao.maps.LatLng(userLocation.lat, userLocation.lng));
+      map.setLevel(4);
       setShowSearchButton(false);
     }
   }, [userLocation]);
@@ -223,7 +224,7 @@ export default function MapWindow({
   // 마커 클릭 시, 장소와 마커를 선택 상태로
   const handleMarkerClick = useCallback(
     (placeId: number, marker: kakao.maps.Marker) => {
-      if (mapRef.current && marker) {
+      if (map && marker) {
         onPlaceSelect(selectedPlaceId === placeId ? null : placeId);
         if (selectedPlaceId !== placeId) {
           const pos = marker.getPosition();
@@ -236,6 +237,14 @@ export default function MapWindow({
 
   return (
     <MapContainer>
+      {isLoading ? (
+        <LoadingWrapper>
+          <Loading />
+          <Text size="s" weight="normal" variant="white">
+            내 위치 찾는 중...
+          </Text>
+        </LoadingWrapper>
+      ) : null}
       {showSearchButton && (
         <ButtonContainer>
           <Button
@@ -260,8 +269,8 @@ export default function MapWindow({
         center={mapCenter}
         style={{ width: '100%', height: isMobile ? 'auto' : '570px', aspectRatio: isMobile ? '1' : 'auto' }}
         level={4}
-        onCreate={(map) => {
-          mapRef.current = map;
+        onCreate={(mapInstance) => {
+          setMap(mapInstance);
         }}
         onCenterChanged={() => {
           setShowSearchButton(true);
@@ -338,6 +347,28 @@ const MapContainer = styled.div`
   position: relative;
   width: 100%;
   padding-bottom: 20px;
+`;
+const LoadingWrapper = styled.div`
+  position: absolute;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #29292963;
+
+  > div {
+    padding: 4px 16px;
+    height: auto;
+    transform: translateY(-50%);
+  }
+
+  .loader {
+    border-left-color: #e6e6e6;
+    padding: 0px;
+  }
 `;
 
 const ButtonContainer = styled.div`
