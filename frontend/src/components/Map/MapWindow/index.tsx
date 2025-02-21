@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { CustomOverlayMap, Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk';
 import styled from 'styled-components';
 import { TbCurrentLocation } from 'react-icons/tb';
+import { GrPowerCycle } from 'react-icons/gr';
 import Button from '@/components/common/Button';
 import { LocationData, MarkerInfo, PlaceData } from '@/types';
 import { useGetAllMarkers } from '@/api/hooks/useGetAllMarkers';
@@ -246,10 +247,12 @@ export default function MapWindow({
               fontSize: isMobile ? '12px' : '14px',
               borderRadius: '20px',
               padding: isMobile ? '16px' : '18px',
-              boxShadow: '1px 1px 1px #707070',
+              backgroundColor: 'rgba(0, 0, 0, 0.7)',
+              color: 'white',
+              gap: '8px',
             }}
           >
-            주변 찾기
+            <GrPowerCycle />이 위치에서 장소 보기
           </Button>
         </ButtonContainer>
       )}

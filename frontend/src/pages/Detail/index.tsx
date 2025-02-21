@@ -20,6 +20,7 @@ import BasicThumb from '@/assets/images/basic-thumb.png';
 import { usePostPlaceLike } from '@/api/hooks/usePostPlaceLike';
 import useAuth from '@/hooks/useAuth';
 import LoginModal from '@/components/common/modals/LoginModal';
+import Button from '@/components/common/Button';
 
 export default function DetailPage() {
   const { isAuthenticated } = useAuth();
@@ -155,9 +156,16 @@ export default function DetailPage() {
               <RiKakaoTalkFill size={20} color="yellow" />
               방문할래요
             </StyledButton> */}
-            <a href={currentVideoUrl}>
-              <FaYoutube size={46} color="red" style={{ marginTop: '4px' }} />
-            </a>
+            <StyledButton
+              aria-label="youtube_btn"
+              variant="outline"
+              onClick={() => {
+                window.location.href = currentVideoUrl;
+              }}
+            >
+              <FaYoutube size={30} color="red" />
+              영상 보기
+            </StyledButton>
           </ButtonWrapper>
         </TitleContainer>
       </ImageContainer>
@@ -394,3 +402,20 @@ const LikeIcon = styled.div`
 //     gap: 4px;
 //   }
 // `;
+
+const StyledButton = styled(Button)`
+  padding: 4px 16px;
+  height: 32px;
+  font-size: 14px;
+  gap: 4px;
+
+  @media screen and (max-width: 768px) {
+    svg {
+      width: 18px;
+    }
+    padding: 2px 10px;
+    height: 28px;
+    font-size: 12px;
+    gap: 4px;
+  }
+`;
