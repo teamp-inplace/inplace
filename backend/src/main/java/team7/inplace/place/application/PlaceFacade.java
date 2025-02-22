@@ -84,4 +84,8 @@ public class PlaceFacade {
         var userId = AuthorizationUtil.getUserId();
         placeService.updateLikedPlace(userId, placeLikeCommand);
     }
+
+    public List<PlaceInfo.Category> getCategories() {
+        return placeService.getCategories();
+    }
 }

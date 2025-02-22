@@ -17,14 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import team7.inplace.place.application.CategoryService;
 import team7.inplace.place.application.PlaceFacade;
 import team7.inplace.place.application.command.PlaceLikeCommand;
 import team7.inplace.place.application.command.PlacesCommand;
-import team7.inplace.place.application.dto.CategoryInfo;
 import team7.inplace.place.application.dto.PlaceInfo;
 import team7.inplace.place.persistence.dto.PlaceQueryResult;
-import team7.inplace.place.presentation.dto.CategoriesResponse;
 import team7.inplace.place.presentation.dto.PlaceRequest;
 import team7.inplace.place.presentation.dto.PlaceRequest.Create;
 import team7.inplace.place.presentation.dto.PlacesResponse;
@@ -38,7 +35,6 @@ import team7.inplace.review.application.ReviewService;
 public class PlaceController implements PlaceControllerApiSpec {
 
     private final PlaceFacade placeFacade;
-    private final CategoryService categoryService;
     private final ReviewService reviewService;
 
     @Override
@@ -130,9 +126,9 @@ public class PlaceController implements PlaceControllerApiSpec {
 
     @Override
     @GetMapping("/categories")
-    public ResponseEntity<CategoriesResponse> getCategories() {
-        List<CategoryInfo> categories = categoryService.getCategories();
-        CategoriesResponse response = new CategoriesResponse(categories);
+    public ResponseEntity<PlacesResponse.Category> getCategories() {
+        List<PlaceInfo.Category> categories = placeFacade.getCategories();
+        var response = PlacesResponse.Category.from(categories);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

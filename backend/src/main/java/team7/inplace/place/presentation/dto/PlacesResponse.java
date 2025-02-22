@@ -13,7 +13,6 @@ import team7.inplace.place.client.GooglePlaceClientResponse.AccessibilityOptions
 import team7.inplace.place.client.GooglePlaceClientResponse.ParkingOptions;
 import team7.inplace.place.client.GooglePlaceClientResponse.PaymentOptions;
 import team7.inplace.place.client.GooglePlaceClientResponse.RegularOpeningHours;
-import team7.inplace.place.domain.Category;
 import team7.inplace.place.persistence.dto.PlaceQueryResult;
 import team7.inplace.review.persistence.dto.ReviewQueryResult;
 import team7.inplace.video.persistence.dto.VideoQueryResult;
@@ -274,7 +273,7 @@ public class PlacesResponse {
             return new Marker(
                 marker.place().placeId(),
                 marker.place().placeName(),
-                Category.valueOf(marker.place().category()).getName(),
+                team7.inplace.place.domain.Category.valueOf(marker.place().category()).getName(),
                 marker.influencerNames(),
                 new Address(
                     marker.place().address1(),
@@ -283,6 +282,17 @@ public class PlacesResponse {
                 ),
                 ""
             );
+        }
+    }
+
+    public record Category(
+        List<String> categories
+    ) {
+
+        public static Category from(List<PlaceInfo.Category> categories) {
+            return new Category(categories.stream()
+                .map(PlaceInfo.Category::name)
+                .toList());
         }
     }
 }

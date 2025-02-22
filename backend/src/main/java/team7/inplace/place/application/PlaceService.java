@@ -1,5 +1,6 @@
 package team7.inplace.place.application;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -152,5 +153,11 @@ public class PlaceService {
     @Transactional(readOnly = true)
     public GooglePlaceClientResponse.Place getGooglePlaceInfo(String googlePlaceId) {
         return googlePlaceClient.requestForPlaceDetail(googlePlaceId);
+    }
+
+    public List<PlaceInfo.Category> getCategories() {
+        return Arrays.stream(Category.values())
+            .map(category -> new PlaceInfo.Category(category.name()))
+            .toList();
     }
 }
