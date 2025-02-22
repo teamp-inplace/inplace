@@ -3,6 +3,8 @@ package team7.inplace.qrcode.presentation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +22,7 @@ public interface QRCodeControllerApiSpec {
     )
     ResponseEntity<byte[]> getQRCode(
         @RequestParam Long placeId,
-        @RequestParam Integer width,
-        @RequestParam Integer height
+        @RequestParam @Min(50) @Max(500) Integer width,
+        @RequestParam @Min(50) @Max(500) Integer height
     );
 }
