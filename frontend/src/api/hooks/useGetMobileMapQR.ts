@@ -11,10 +11,8 @@ export const getMobileMapQR = async (placeId: number, width: number, height: num
   const response = await fetchInstance.get(`${getMobileMapQRPath()}?${params}`, {
     responseType: 'arraybuffer',
   });
-  const blob = new Blob([response.data], { type: 'image/png' });
-  const imageUrl = URL.createObjectURL(blob);
 
-  return imageUrl;
+  return new Blob([response.data], { type: 'image/png' });
 };
 export const useGetMobileMapQR = (placeId: number, width: number, height: number) => {
   return useSuspenseQuery({
