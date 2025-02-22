@@ -123,12 +123,7 @@ export default function MapWindow({
   useEffect(() => {
     if (map && center) {
       const position = new kakao.maps.LatLng(center.lat, center.lng);
-      setTimeout(
-        () => {
-          map.panTo(position);
-        },
-        selectedPlaceId !== null ? 200 : 0,
-      );
+      map.setCenter(position);
     }
   }, [center, map]);
 
