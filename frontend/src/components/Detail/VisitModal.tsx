@@ -3,86 +3,63 @@ import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Button from '@/components/common/Button';
-import InfoTalkIcon from '@/assets/images/infotalk.webp';
 import { Paragraph } from '@/components/common/typography/Paragraph';
-import { useGetSendInfo } from '@/api/hooks/useGetSendInfo';
-import useAuth from '@/hooks/useAuth';
 import LoginModal from '../common/modals/LoginModal';
+import { useGetMobileMapQR } from '@/api/hooks/useGetMobileMapQR';
 
-export default function VisitModal({ id, placeName, onClose }: { id: number; placeName: string; onClose: () => void }) {
-  const { isAuthenticated } = useAuth();
+export default function VisitModal({ id, onClose }: { id: number; onClose: () => void }) {
   const location = useLocation();
-  const [isSend, setIsSend] = useState(false);
-  const { refetch } = useGetSendInfo(String(id), isSend);
-  const [message, setMessage] = useState<string>('');
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const { data: qrSrc } = useGetMobileMapQR(id, 200, 200);
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+      if (window.innerWidth <= 768) onClose();
     };
-
     checkMobile();
     window.addEventListener('resize', checkMobile);
 
     return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  }, [window.innerWidth]);
 
   const handleModalClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
   };
-  const handleSendInfo = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    if (!isAuthenticated) {
-      setMessage('로그인이 필요합니다.');
-      return;
-    }
-    try {
-      setIsSend(true);
-      const { status } = await refetch();
-      if (status === 'success') {
-        setMessage('카카오톡 나와의 채팅을\n 확인해주세요!');
-      } else {
-        setMessage('에러가 발생했습니다. 다시 시도해주세요.');
+
+  useEffect(() => {
+    return () => {
+      if (qrSrc) {
+        URL.revokeObjectURL(qrSrc);
       }
-    } catch (error) {
-      setMessage('에러가 발생했습니다. 관리자에게 문의하세요.');
-    } finally {
-      setIsSend(false);
-    }
-  };
-  const buttonStyle = {
-    fontWeight: 'bold',
-    width: isMobile ? '46%' : '170px',
-    height: isMobile ? '40px' : '46px',
-    fontSize: isMobile ? '16px' : '18px',
-  };
+    };
+  }, [qrSrc]);
+
+  // const buttonStyle = {
+  //   fontWeight: 'bold',
+  //   width: isMobile ? '46%' : '170px',
+  //   height: isMobile ? '40px' : '46px',
+  //   fontSize: isMobile ? '16px' : '18px',
+  // };
   return (
     <>
       <Overlay onClick={() => onClose()}>
         <Wrapper onClick={handleModalClick}>
           <DescriptionSection>
-            <img src={InfoTalkIcon} alt="정보 카카오톡 아이콘" />
-            <Paragraph size="l" weight="normal">
-              {message || `${placeName}에 대한 정보를\n 카카오톡으로 보내드릴까요?`}
+            <Paragraph size="l" weight="bold">
+              Scan QR Code
+            </Paragraph>
+            <Paragraph size="xs" weight="normal">
+              QR코드를 스캔하면 카카오맵으로 이동해요!
             </Paragraph>
           </DescriptionSection>
-          <BtnContainer $hasMessage={!!message}>
-            {message ? (
-              <Button aria-label="complete_btn" variant="kakao" style={buttonStyle} onClick={() => onClose()}>
-                완료
-              </Button>
-            ) : (
-              <>
-                <Button aria-label="cancel_btn" variant="blackOutline" style={buttonStyle} onClick={() => onClose()}>
-                  취소
-                </Button>
-                <Button aria-label="check_btn" variant="kakao" style={buttonStyle} onClick={handleSendInfo}>
-                  확인
-                </Button>
-              </>
-            )}
+          <ImageFrame>
+            <span />
+            <Image src={qrSrc} alt="QR CODE" />
+          </ImageFrame>
+          <BtnContainer>
+            <Button aria-label="complete_btn" variant="mint" size="small" onClick={() => onClose()}>
+              닫기
+            </Button>
           </BtnContainer>
         </Wrapper>
       </Overlay>
@@ -106,56 +83,71 @@ const Wrapper = styled.div`
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  width: 440px;
-  height: 540px;
+  width: 400px;
   border-radius: 8px;
   background-color: white;
+  padding: 60px 0px;
   border: 30px solid #e8f9ff;
 
   display: flex;
   flex-direction: column;
   text-align: center;
   align-items: center;
-  gap: 60px;
+  gap: 80px;
+`;
+const Image = styled.img`
+  width: 200px;
+  height: 200px;
+`;
+const ImageFrame = styled.div`
+  position: relative;
+  &::before,
+  &::after,
+  & > span::before,
+  & > span::after {
+    content: '';
+    position: absolute;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 
-  @media screen and (max-width: 768px) {
-    width: calc(90% - 48px);
-    height: 402px;
-    border: 24px solid #e8f9ff;
+  &::before {
+    top: -10%;
+    left: -10%;
+    border-left: 4px solid #55ebff;
+    border-top: 4px solid #55ebff;
+  }
+
+  &::after {
+    top: -10%;
+    right: -10%;
+    border-right: 4px solid #55ebff;
+    border-top: 4px solid #55ebff;
+  }
+
+  & > span::before {
+    bottom: -10%;
+    left: -10%;
+    border-left: 4px solid #55ebff;
+    border-bottom: 4px solid #55ebff;
+  }
+
+  & > span::after {
+    bottom: -10%;
+    right: -10%;
+    border-right: 4px solid #55ebff;
+    border-bottom: 4px solid #55ebff;
   }
 `;
+
 const DescriptionSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  margin-top: 16%;
-
-  img {
-    width: 180px;
-    height: 180px;
-  }
-
-  p {
-    line-height: 180%;
-    white-space: pre-line;
-  }
-
-  @media screen and (max-width: 768px) {
-    img {
-      width: 130px;
-      height: 130px;
-    }
-    p {
-      font-size: 14px;
-    }
-  }
+  gap: 10px;
 `;
-const BtnContainer = styled.div<{ $hasMessage: boolean }>`
+const BtnContainer = styled.div`
   display: flex;
-  justify-content: ${({ $hasMessage }) => ($hasMessage ? 'center' : 'space-between')};
-  width: 382px;
-  @media screen and (max-width: 768px) {
-    width: 80%;
-  }
+  justify-content: center;
+  width: 40%;
 `;
