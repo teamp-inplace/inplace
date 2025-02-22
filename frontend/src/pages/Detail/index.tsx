@@ -163,7 +163,7 @@ export default function DetailPage() {
                 window.location.href = currentVideoUrl;
               }}
             >
-              <FaYoutube size={30} color="red" />
+              <FaYoutube size={24} color="red" />
               영상 보기
             </StyledButton>
           </ButtonWrapper>
