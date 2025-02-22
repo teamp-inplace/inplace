@@ -10,7 +10,6 @@ import { useGetMobileMapQR } from '@/api/hooks/useGetMobileMapQR';
 
 export default function VisitModal({ id, onClose }: { id: number; onClose: () => void }) {
   const location = useLocation();
-  // const queryClient = useQueryClient();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const { data: blobData } = useGetMobileMapQR(id, 200, 200);
   const [qrSrc, setQrSrc] = useState<string | null>(null);
@@ -39,7 +38,6 @@ export default function VisitModal({ id, onClose }: { id: number; onClose: () =>
   const handleModalClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
   };
-
   // const buttonStyle = {
   //   fontWeight: 'bold',
   //   width: isMobile ? '46%' : '170px',
