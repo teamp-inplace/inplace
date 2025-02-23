@@ -81,11 +81,8 @@ export default function InfluencerPlaceSection({
   const handlePlaceClick = useCallback(
     (placeId: number) => {
       onPlaceSelect(placeId);
-      if (isListExpanded && onListExpand) {
-        onListExpand();
-      }
     },
-    [onPlaceSelect, isListExpanded, onListExpand],
+    [onPlaceSelect],
   );
 
   if (isLoading && !isFetchingNextPage && previousPlacesRef.current.length === 0) {
