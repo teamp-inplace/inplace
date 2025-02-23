@@ -12,6 +12,7 @@ export default function InfluencerMapTap({
   influencerImg: string;
   influencerName: string;
 }) {
+  const fetchLocationRef = useRef<() => void>();
   const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
   const [mapBounds, setMapBounds] = useState<LocationData>({
     topLeftLatitude: 40.22639734631998,
@@ -107,17 +108,22 @@ export default function InfluencerMapTap({
     });
   }, []);
 
-  // 현재 선택된 장소 id 저장, 같은장소 재선택시 취소
+  // handlePlaceSelect 함수 수정 - 장소 선택 시에만 상태 변경
   const handlePlaceSelect = useCallback((placeId: number | null) => {
-    setSelectedPlaceId((prevId) => (prevId === placeId ? null : placeId));
+    setSelectedPlaceId(placeId);
+    if (window.innerWidth <= 768) {
+      setIsListExpanded(false);
+      setTranslateY(window.innerHeight);
+    }
   }, []);
 
   const handleListExpand = useCallback(() => {
-    setIsListExpanded((prev) => {
-      const newExpandedState = !prev;
-      setTranslateY(newExpandedState ? 0 : window.innerHeight);
-      return newExpandedState;
-    });
+    setIsListExpanded(true);
+    setTranslateY(0);
+  }, []);
+
+  const handleSetSearchNearby = useCallback((fn: () => void) => {
+    fetchLocationRef.current = fn;
   }, []);
 
   return (
@@ -134,6 +140,7 @@ export default function InfluencerMapTap({
         onPlaceSelect={handlePlaceSelect}
         isListExpanded={isListExpanded}
         onListExpand={handleListExpand}
+        onSearchNearby={handleSetSearchNearby}
       />
       <PlaceSectionDesktop>
         <InfluencerPlaceSection
@@ -165,8 +172,7 @@ export default function InfluencerMapTap({
           onGetPlaceData={handleGetPlaceData}
           onPlaceSelect={handlePlaceSelect}
           selectedPlaceId={selectedPlaceId}
-          isListExpanded={isListExpanded}
-          onListExpand={handleListExpand}
+          onSearchNearby={() => fetchLocationRef.current?.()}
         />
       </MobilePlaceSection>
     </Wrapper>

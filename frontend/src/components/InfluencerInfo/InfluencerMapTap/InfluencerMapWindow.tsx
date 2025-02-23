@@ -22,6 +22,7 @@ interface MapWindowProps {
   onPlaceSelect: (placeId: number | null) => void;
   isListExpanded?: boolean;
   onListExpand?: () => void;
+  onSearchNearby?: (handleSearcNearby: () => void) => void;
 }
 
 export default function InfluencerMapWindow({
@@ -36,6 +37,7 @@ export default function InfluencerMapWindow({
   onPlaceSelect,
   isListExpanded,
   onListExpand,
+  onSearchNearby,
 }: MapWindowProps) {
   const mapRef = useRef<kakao.maps.Map | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
@@ -177,6 +179,10 @@ export default function InfluencerMapWindow({
   const handleSearchNearby = useCallback(() => {
     fetchLocation();
   }, [fetchLocation]);
+
+  useEffect(() => {
+    onSearchNearby?.(handleSearchNearby);
+  }, [handleSearchNearby, onSearchNearby]);
 
   const handleResetCenter = useCallback(() => {
     if (mapRef.current && userLocation) {
@@ -327,7 +333,7 @@ const Btn = styled.div`
   cursor: pointer;
 
   @media screen and (max-width: 768px) {
-    font-size: 14px;
+    display: none;
   }
 `;
 const ListViewButton = styled.button`

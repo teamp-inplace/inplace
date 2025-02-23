@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import { useInView } from 'react-intersection-observer';
+import { GrPowerCycle } from 'react-icons/gr';
 import PlaceItem from '@/components/Map/PlaceSection/PlaceItem';
 import { PlaceData, LocationData, PageableData } from '@/types';
 import Loading from '@/components/common/layouts/Loading';
 import NoItem from '@/components/common/layouts/NoItem';
 import { useGetInfinitePlaceList } from '@/api/hooks/useGetInfinitePlaceList';
 
-interface PlaceSectionProps {
+export interface PlaceSectionProps {
   mapBounds: LocationData;
   filters: {
     categories: string[];
@@ -19,8 +20,7 @@ interface PlaceSectionProps {
   onGetPlaceData: (data: PlaceData[]) => void;
   onPlaceSelect: (placeId: number) => void;
   selectedPlaceId: number | null;
-  isListExpanded?: boolean;
-  onListExpand?: () => void;
+  onSearchNearby?: () => void;
 }
 
 export default function InfluencerPlaceSection({
@@ -32,8 +32,7 @@ export default function InfluencerPlaceSection({
   onGetPlaceData,
   onPlaceSelect,
   selectedPlaceId,
-  isListExpanded,
-  onListExpand,
+  onSearchNearby,
 }: PlaceSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const previousPlacesRef = useRef<PlaceData[]>([]);
@@ -82,11 +81,8 @@ export default function InfluencerPlaceSection({
   const handlePlaceClick = useCallback(
     (placeId: number) => {
       onPlaceSelect(placeId);
-      if (isListExpanded && onListExpand) {
-        onListExpand();
-      }
     },
-    [onPlaceSelect, isListExpanded, onListExpand],
+    [onPlaceSelect],
   );
 
   if (isLoading && !isFetchingNextPage && previousPlacesRef.current.length === 0) {
@@ -110,9 +106,21 @@ export default function InfluencerPlaceSection({
   return (
     <SectionContainer ref={sectionRef}>
       {filteredPlaces.length === 0 ? (
-        <NoItem message="장소 정보가 없어요!" height={400} />
+        <>
+          <ContentContainer>
+            <Btn onClick={onSearchNearby}>
+              <GrPowerCycle />
+              현재 위치에서 장소정보 보기
+            </Btn>
+          </ContentContainer>
+          <NoItem message="장소 정보가 없어요!" height={400} />
+        </>
       ) : (
         <ContentContainer>
+          <Btn onClick={onSearchNearby}>
+            <GrPowerCycle />
+            현재 위치에서 장소정보 보기
+          </Btn>
           <PlacesGrid>
             {filteredPlaces.map((place) => (
               <PlaceItem
@@ -209,4 +217,22 @@ const ErrorContainer = styled.div`
   align-items: center;
   height: 100%;
   color: red;
+`;
+
+const Btn = styled.div`
+  display: none;
+
+  @media screen and (max-width: 768px) {
+    display: flex;
+    font-size: 14px;
+  }
+
+  color: #c3c3c3;
+  border-radius: 0px;
+  font-size: 16px;
+  border-bottom: 0.5px solid #c3c3c3;
+  width: fit-content;
+  padding: 0px 4px;
+  gap: 6px;
+  cursor: pointer;
 `;
