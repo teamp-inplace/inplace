@@ -52,4 +52,10 @@ public class PlaceInfo {
             return new PlaceInfo.Marker(marker, String.join(",", influencerNames));
         }
     }
+
+    public record Category(
+        String name
+    ) {
+
+    }
 }

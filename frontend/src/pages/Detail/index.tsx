@@ -11,7 +11,6 @@ import { PiHeartFill, PiHeartLight } from 'react-icons/pi';
 import { Text } from '@/components/common/typography/Text';
 import InfoTap from '@/components/Detail/InfoTap';
 // import ReviewTap from '@/components/Detail/ReviewTap';
-import VisitModal from '@/components/Detail/VisitModal';
 import { useGetPlaceInfo } from '@/api/hooks/useGetPlaceInfo';
 // import Loading from '@/components/common/layouts/Loading';
 // import Error from '@/components/common/layouts/Error';
@@ -26,7 +25,6 @@ export default function DetailPage() {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
   // const [activeTab, setActiveTab] = useState<'info' | 'review'>('info');
-  const [visitModal, setVisitModal] = useState(false);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const { id } = useParams() as { id: string };
   const { data: infoData } = useGetPlaceInfo(id);
@@ -187,6 +185,7 @@ export default function DetailPage() {
           longitude={infoData?.longitude}
           latitude={infoData?.latitude}
           rating={infoData?.rating}
+          placeId={Number(id)}
         />
         {/* ) : (
           <QueryErrorResetBoundary>
@@ -200,9 +199,6 @@ export default function DetailPage() {
           </QueryErrorResetBoundary>
         )} */}
       </InfoContainer>
-      {visitModal && (
-        <VisitModal id={infoData?.placeId} placeName={infoData?.placeName} onClose={() => setVisitModal(false)} />
-      )}
       {showLoginModal && (
         <LoginModal immediateOpen currentPath={location.pathname} onClose={() => setShowLoginModal(false)} />
       )}

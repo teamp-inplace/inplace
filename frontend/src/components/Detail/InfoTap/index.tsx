@@ -1,8 +1,12 @@
 import styled from 'styled-components';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { IoMdStar } from 'react-icons/io';
+import { IoQrCode } from 'react-icons/io5';
 import { FaComment } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
+import { Suspense, useEffect, useState } from 'react';
+import { QueryErrorResetBoundary } from '@tanstack/react-query';
+import { ErrorBoundary } from 'react-error-boundary';
 import { Paragraph } from '@/components/common/typography/Paragraph';
 import FacilitySign from './FacilitySign';
 import { FacilityInfo, GoogleReview } from '@/types';
@@ -11,6 +15,9 @@ import { Text } from '@/components/common/typography/Text';
 import GoogleReviewList from '../GoogleReviewList';
 import Button from '@/components/common/Button';
 import NoItem from '@/components/common/layouts/NoItem';
+import VisitModal from '../VisitModal';
+import Loading from '@/components/common/layouts/Loading';
+import ErrorComponent from '@/components/common/layouts/Error';
 
 type Props = {
   category: string;
@@ -22,6 +29,7 @@ type Props = {
   longitude: string;
   latitude: string;
   rating: number;
+  placeId: number;
 };
 export default function InfoTap({
   category,
@@ -33,35 +41,56 @@ export default function InfoTap({
   longitude,
   latitude,
   rating,
+  placeId,
 }: Props) {
   const lat = Number(latitude);
   const lng = Number(longitude);
+  const [visitModal, setVisitModal] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <Wrapper>
       <ButtonWrapper>
-        <StyledButton
-          aria-label="kakao_btn"
-          variant="outline"
-          onClick={() => {
-            window.location.href = kakaoPlaceUrl;
-          }}
-        >
-          <FaComment size={16} color="fee500" />
-          카카오맵
-        </StyledButton>
-        {googlePlaceUrl ? (
-          <StyledButton
-            aria-label="google_btn"
-            variant="outline"
-            onClick={() => {
-              window.location.href = googlePlaceUrl;
-            }}
-          >
-            <FcGoogle size={18} />
-            구글맵
+        {!isMobile ? (
+          <StyledButton aria-label="mobile_qr_btn" variant="outline" onClick={() => setVisitModal(!visitModal)}>
+            <IoQrCode size={16} color="fee500" />
+            모바일로 연결
           </StyledButton>
         ) : null}
+        <WebMap>
+          <StyledButton
+            aria-label="kakao_btn"
+            variant="outline"
+            onClick={() => {
+              window.location.href = kakaoPlaceUrl;
+            }}
+          >
+            <FaComment size={16} color="fee500" />
+            카카오맵
+          </StyledButton>
+          {googlePlaceUrl ? (
+            <StyledButton
+              aria-label="google_btn"
+              variant="outline"
+              onClick={() => {
+                window.location.href = googlePlaceUrl;
+              }}
+            >
+              <FcGoogle size={18} />
+              구글맵
+            </StyledButton>
+          ) : null}
+        </WebMap>
       </ButtonWrapper>
       {googlePlaceUrl ? (
         <>
@@ -129,6 +158,17 @@ export default function InfoTap({
           />
         </Map>
       </MapContainer>
+      {visitModal && (
+        <QueryErrorResetBoundary>
+          {({ reset }) => (
+            <ErrorBoundary FallbackComponent={ErrorComponent} onReset={reset}>
+              <Suspense fallback={<Loading size={50} />}>
+                <VisitModal id={placeId} onClose={() => setVisitModal(false)} />{' '}
+              </Suspense>
+            </ErrorBoundary>
+          )}
+        </QueryErrorResetBoundary>
+      )}
     </Wrapper>
   );
 }
@@ -187,6 +227,16 @@ const StyledText = styled(Text)`
   }
 `;
 
+const WebMap = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  @media screen and (max-width: 768px) {
+    flex-direction: row;
+  }
+`;
+
 const GoogleDescription = styled.div`
   display: flex;
   justify-content: space-between;
@@ -197,8 +247,8 @@ const ButtonWrapper = styled.div`
   position: absolute;
   right: 0;
   display: flex;
-  gap: 20px;
-  align-items: center;
+  gap: 16px;
+  align-items: start;
 
   @media screen and (max-width: 768px) {
     gap: 10px;
