@@ -232,7 +232,7 @@ const Btn = styled.div`
   font-size: 16px;
   border-bottom: 0.5px solid #c3c3c3;
   width: fit-content;
-  padding: 0px 4px;
   gap: 6px;
+  margin-bottom: 18px;
   cursor: pointer;
 `;
