@@ -76,7 +76,7 @@ export default function FacilitySign({ category, facilityInfo }: { facilityInfo:
             return (
               <SignWrapper key={key} $isParking={key.includes('Parking')}>
                 {key.includes('Parking') ? iconElement : <Sign>{iconElement}</Sign>}
-                <Paragraph size="xs" weight="normal" variant="white">
+                <Paragraph size="xs" weight="normal">
                   {label}
                 </Paragraph>
               </SignWrapper>

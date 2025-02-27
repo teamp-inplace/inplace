@@ -23,10 +23,10 @@ export default function SpotItem({ videoId, videoAlias, videoUrl, place, isInflu
       <ImageWrapper $isInfluencer={isInfluencer}>
         <FallbackImage src={thumbnailUrl} alt={String(videoId)} />
       </ImageWrapper>
-      <Paragraph size="m" weight="bold" variant="white">
+      <Paragraph size="m" weight="bold">
         {videoAlias}
       </Paragraph>
-      <Paragraph size="xs" weight="normal" variant="white">
+      <Paragraph size="xs" weight="normal">
         <FaMapMarkerAlt size={20} color="#55EBFF" />
         {place.placeName}
       </Paragraph>
@@ -40,6 +40,7 @@ const Wrapper = styled(Link)<{ $isInfluencer: boolean }>`
   align-content: end;
   line-height: 30px;
   gap: 4px;
+  color: inherit;
 
   svg {
     margin-right: 2px;

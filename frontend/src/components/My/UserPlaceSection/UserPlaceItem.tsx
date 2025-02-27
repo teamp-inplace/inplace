@@ -54,18 +54,18 @@ export default function UserPlaceItem({ placeId, placeName, influencerName, like
     <>
       <Wrapper to={`/detail/${placeId}`}>
         <TextWrapper>
-          <Text className="overflow" size="m" weight="bold" variant="white">
+          <Text className="overflow" size="m" weight="bold">
             {placeName}
           </Text>
-          <Text className="overflow" size="xs" weight="normal" variant="white">
+          <Text className="overflow" size="xs" weight="normal">
             {getFullAddress(address)}
           </Text>
-          <Paragraph size="xs" weight="normal" variant="white">
+          <Paragraph size="xs" weight="normal">
             {influencerName}
           </Paragraph>
         </TextWrapper>
         <LikeIcon onClick={(e: React.MouseEvent<HTMLDivElement>) => handleClickLike(e)}>
-          {isLike ? <PiHeartFill color="#fe7373" size={26} /> : <PiHeartLight color="white" size={30} />}
+          {isLike ? <PiHeartFill color="#fe7373" size={26} /> : <PiHeartLight size={30} />}
         </LikeIcon>
       </Wrapper>
       {showLoginModal && (
@@ -83,6 +83,7 @@ const Wrapper = styled(Link)`
   border-radius: 4px;
   padding: 10px;
   justify-content: space-between;
+  color: inherit;
 
   &:hover {
     background-color: #1b1a1a;

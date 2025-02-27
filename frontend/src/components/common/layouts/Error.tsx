@@ -86,7 +86,7 @@ export default function ErrorComponent({ error, resetErrorBoundary }: FallbackPr
     <Wrapper>
       <TextWrapper>
         <LogoImage src={Logo} alt="인플레이스 로고" />
-        <Paragraph size="xl" weight="bold" variant="white">
+        <Paragraph size="xl" weight="bold">
           {message.title}
         </Paragraph>
         <Paragraph size="m" weight="normal" variant="#bdbdbd">

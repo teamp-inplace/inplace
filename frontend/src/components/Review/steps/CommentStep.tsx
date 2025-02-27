@@ -22,16 +22,16 @@ export default function CommentStep({ isLiked, onBack, onSubmit, placeInfo }: Co
   return (
     <StepContainer>
       <TitleSection>
-        <Text size="l" weight="normal" variant="white">
+        <Text size="l" weight="normal">
           어떤 점이 {isLiked ? '좋으셨나요?' : '아쉬우셨나요?'}
         </Text>
       </TitleSection>
 
       <TextWrapper>
-        <Text size="l" weight="bold" variant="white">
+        <Text size="l" weight="bold">
           한 줄 리뷰
         </Text>
-        <Text size="l" weight="normal" variant="white">
+        <Text size="l" weight="normal">
           를 작성해주세요.&nbsp;
         </Text>
         <Text size="l" weight="normal" style={{ color: '#c6c6c6' }}>
@@ -53,7 +53,7 @@ export default function CommentStep({ isLiked, onBack, onSubmit, placeInfo }: Co
             </Text>
           </TextWrapper>
           <TextWrapper className="influencer">
-            <Text size="xs" weight="normal" variant="white">
+            <Text size="xs" weight="normal">
               {placeInfo.influencerName}
             </Text>
           </TextWrapper>

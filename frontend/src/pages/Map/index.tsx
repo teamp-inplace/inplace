@@ -170,7 +170,7 @@ export default function MapPage() {
   return (
     <PageContainer>
       <Wrapper>
-        <Text size="l" weight="bold" variant="white">
+        <Text size="l" weight="bold">
           지도
         </Text>
         <DropdownContainer>

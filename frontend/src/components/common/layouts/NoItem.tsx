@@ -14,7 +14,7 @@ function NoItem({ message = '데이터가 없습니다!', height, logo = true, a
     <MessageContainer height={height}>
       <TextWrapper alignItems={alignItems}>
         {logo && <LogoImage src={Logo} alt="인플레이스 로고" />}
-        <Paragraph size="xs" weight="normal" variant="white">
+        <Paragraph size="xs" weight="normal">
           {message}
         </Paragraph>
       </TextWrapper>

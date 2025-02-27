@@ -49,7 +49,7 @@ export default function InfluencerPage() {
   return (
     <PageContainer>
       <Title>
-        <Text size="l" weight="bold" variant="white">
+        <Text size="l" weight="bold">
           인플루언서
         </Text>
       </Title>

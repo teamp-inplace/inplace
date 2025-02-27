@@ -94,19 +94,19 @@ export default function InfoTap({
       </ButtonWrapper>
       {googlePlaceUrl ? (
         <>
-          <Paragraph size="s" weight="bold" variant="white">
+          <Paragraph size="s" weight="bold">
             시설 정보
           </Paragraph>
           <FacilitySign category={category} facilityInfo={facility} />
-          <Paragraph size="s" weight="bold" variant="white">
+          <Paragraph size="s" weight="bold">
             운영 시간
           </Paragraph>
           <OpenHour openHour={openingHours} />
           <GoogleReviewTitle>
-            <StyledText size="s" weight="bold" variant="white">
+            <StyledText size="s" weight="bold">
               Google 리뷰
               <IoMdStar size={20} color="#FBBC04" />
-              <Text size="xs" weight="normal" variant="white">
+              <Text size="xs" weight="normal">
                 {rating}
               </Text>
             </StyledText>
@@ -134,7 +134,7 @@ export default function InfoTap({
           alignItems="center"
         />
       )}
-      <Paragraph size="s" weight="bold" variant="white">
+      <Paragraph size="s" weight="bold">
         지도 보기
       </Paragraph>
       <MapContainer>
@@ -220,7 +220,6 @@ const GoogleReviewTitle = styled.div`
 const StyledText = styled(Text)`
   display: flex;
   gap: 3px;
-  color: white;
   align-items: end;
   svg {
     margin-left: 10px;

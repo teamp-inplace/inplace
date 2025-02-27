@@ -75,13 +75,13 @@ export default function InfluencerInfoPage() {
           <FallbackImage src={influencerInfoData.influencerImgUrl} alt={influencerInfoData.influencerName} />
         </Image>
         <TextInfo>
-          <Text size="xl" weight="bold" variant="white">
+          <Text size="xl" weight="bold">
             {influencerInfoData.influencerName}
           </Text>
-          <Text size="s" weight="normal" variant="white">
+          <Text size="s" weight="normal">
             좋아요 수 {influencerInfoData.follower}명 • 쿨 플레이스 {influencerInfoData.placeCount}곳
           </Text>
-          <Text size="xs" weight="normal" variant="white">
+          <Text size="xs" weight="normal">
             {influencerInfoData.influencerJob}
           </Text>
         </TextInfo>
@@ -93,7 +93,7 @@ export default function InfluencerInfoPage() {
           {isLike ? (
             <PiHeartFill color="#fe7373" size={32} data-testid="PiHeartFill" />
           ) : (
-            <PiHeartLight color="white" size={32} data-testid="PiHeartLight" />
+            <PiHeartLight size={32} data-testid="PiHeartLight" />
           )}
         </LikeIcon>
       </InfluencerInfoSection>

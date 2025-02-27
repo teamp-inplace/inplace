@@ -68,14 +68,14 @@ export default function PlaceItem({
           {/* <ImageContainer>
           <FallbackImage src={menuImgUrl} alt={placeName} />
         </ImageContainer> */}
-          <Text size="m" weight="bold" variant="white">
+          <Text size="m" weight="bold">
             {placeName}
           </Text>
-          <Text size="xs" weight="normal" variant="white">
+          <Text size="xs" weight="normal">
             {getFullAddress(address)}
           </Text>
           <InfluencerName>
-            <Text size="xs" weight="normal" variant="white">
+            <Text size="xs" weight="normal">
               {influencerName}
             </Text>
           </InfluencerName>
@@ -88,7 +88,7 @@ export default function PlaceItem({
           {isLike ? (
             <PiHeartFill color="#fe7373" size={30} data-testid="PiHeartFill" />
           ) : (
-            <PiHeartLight color="white" size={30} data-testid="PiHeartLight" />
+            <PiHeartLight size={30} data-testid="PiHeartLight" />
           )}
         </LikeIcon>
       </PlaceCard>

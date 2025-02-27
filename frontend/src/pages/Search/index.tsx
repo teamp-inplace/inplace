@@ -16,7 +16,7 @@ export default function SearchPage() {
     <Wrapper>
       <SearchBar placeholder="인플루언서, 장소를 검색해주세요!" />
       <Title>
-        <Paragraph weight="normal" size="m" variant="white">
+        <Paragraph weight="normal" size="m">
           <Text weight="bold" size="m" variant="mint">
             {`${query} `}
           </Text>

@@ -105,7 +105,7 @@ export default function ChoicePage() {
   return (
     <PageContainer>
       <Title>
-        <Text size="l" weight="bold" variant="white">
+        <Text size="l" weight="bold">
           관심 있는{' '}
           <Text size="ll" weight="bold" variant="mint">
             인플루언서

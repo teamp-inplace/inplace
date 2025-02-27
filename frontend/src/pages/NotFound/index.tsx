@@ -13,10 +13,10 @@ export default function NotFound() {
     <Wrapper>
       <TextWrapper>
         <LogoImage src={Logo} alt="인플레이스 로고" />
-        <Paragraph size="xl" weight="bold" variant="white">
+        <Paragraph size="xl" weight="bold">
           페이지를 찾을 수 없어요 🥲
         </Paragraph>
-        <Paragraph size="m" weight="normal" variant="#bdbdbd">
+        <Paragraph size="m" weight="normal">
           요청한 페이지가 존재하지 않거나 삭제되었어요.
         </Paragraph>
       </TextWrapper>

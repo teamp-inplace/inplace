@@ -329,7 +329,7 @@ export default function MapWindow({
       </ResetButtonContainer>
       {!isListExpanded && (
         <ListViewButton onClick={onListExpand}>
-          <Text size="xs" variant="white" weight="normal">
+          <Text size="xs" weight="normal">
             목록 보기
           </Text>
         </ListViewButton>

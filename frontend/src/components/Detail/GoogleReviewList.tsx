@@ -16,12 +16,12 @@ export default function GoogleReviewList({ lists }: { lists: GoogleReview[] }) {
             <GoogleReviewItem key={list.name}>
               <Title>
                 <Name>
-                  <Text size="xs" weight="bold" variant="white">
+                  <Text size="xs" weight="bold">
                     {list.name}
                   </Text>
                   {list.like ? <AiFillLike size={22} color="#fe7373" /> : <AiFillDislike size={22} color="#6F6CFF" />}
                 </Name>
-                <Text size="xs" weight="normal" variant="white">
+                <Text size="xs" weight="normal">
                   {new Date(list.publishTime).toLocaleDateString()}
                 </Text>
               </Title>
