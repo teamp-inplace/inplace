@@ -155,7 +155,7 @@ const SearchBarContainer = styled.div`
 const SearchInputWrapper = styled.div<{ $isOpen: boolean }>`
   display: flex;
   align-items: center;
-  background: #414141;
+  background: ${({ theme }) => (theme.backgroundColor === '#292929' ? '#414141' : '#ffffff')};
   padding: 12px 16px;
   border: 1.5px solid #a5a5a5;
   border-bottom: ${({ $isOpen }) => ($isOpen ? 'none' : null)};
@@ -166,7 +166,7 @@ const SearchInputWrapper = styled.div<{ $isOpen: boolean }>`
 const SearchInput = styled.input`
   font-size: 16px;
   flex: 1;
-  color: #ffffff;
+  color: ${({ theme }) => (theme.textColor === '#ffffff' ? '#ffffff' : '#333333')};
   background: transparent;
   border: none;
   margin-right: 8px;
@@ -195,13 +195,13 @@ const SearchDropDownBox = styled.ul`
   position: absolute;
   width: 960px;
   padding: 8px 0px;
-  background-color: #414141;
+  background-color: ${({ theme }) => (theme.backgroundColor === '#292929' ? '#414141' : '#ffffff')};
   border: 1.5px solid #a5a5a5;
   border-top: none;
   border-radius: 0 0 16px 16px;
   box-shadow: 0 10px 10px rgb(0, 0, 0, 0.3);
   list-style-type: none;
-  color: #ffffff;
+  color: ${({ theme }) => (theme.textColor === '#ffffff' ? '#ffffff' : '#333333')};
   box-sizing: border-box;
   z-index: 10;
 

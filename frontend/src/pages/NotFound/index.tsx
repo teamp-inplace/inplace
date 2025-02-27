@@ -1,11 +1,15 @@
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Button from '@/components/common/Button';
 import Logo from '@/assets/images/Logo.svg';
 import { Paragraph } from '@/components/common/typography/Paragraph';
+import { ThemeContext } from '@/provider/Themes';
 
 export default function NotFound() {
   const navigate = useNavigate();
+  const { theme } = useContext(ThemeContext);
+  const buttonVariant = theme === 'dark' ? 'outline' : 'blackOutline';
   const handleHome = () => {
     navigate('/');
   };
@@ -20,7 +24,7 @@ export default function NotFound() {
           요청한 페이지가 존재하지 않거나 삭제되었어요.
         </Paragraph>
       </TextWrapper>
-      <StyledButton aria-label="home-btn" variant="outline" onClick={handleHome}>
+      <StyledButton aria-label="home-btn" variant={buttonVariant} onClick={handleHome}>
         홈으로 이동하기
       </StyledButton>
     </Wrapper>

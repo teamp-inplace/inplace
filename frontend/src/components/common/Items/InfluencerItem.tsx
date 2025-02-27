@@ -84,7 +84,7 @@ export default function InfluencerItem({
           {useBackCard && useNav && (
             <BackImageWrapper>
               <MdLocationOn size={50} color="#55EBFF" />
-              <Paragraph size="m" weight="bold">
+              <Paragraph size="m" weight="bold" variant="white">
                 지도 보기
               </Paragraph>
             </BackImageWrapper>

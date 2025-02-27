@@ -89,7 +89,7 @@ const ArrowButton = styled.button`
   border-radius: 4px;
   cursor: pointer;
   background: transparent;
-  color: white;
+  color: ${({ theme }) => (theme.textColor === '#ffffff' ? '#ffffff' : '#333333')};
   box-shadow: none;
   border: none;
 
@@ -117,17 +117,24 @@ const PageNumber = styled.button<PageNumberProps>`
   border: none;
   border-radius: 4px;
   background: transparent;
-  color: ${(props) => (props.$active ? 'black' : 'white')};
+  color: ${(props) => {
+    if (!props.$active) return props.theme.textColor === '#ffffff' ? 'white' : '#333333';
+    return 'black';
+  }};
   cursor: pointer;
 
   ${(props) =>
     props.$active &&
     `
     background: #c8c8c8;
-    border: 1px solid #000;
+    border: 1px solid #a8a8a8;
   `}
 
   &:hover {
     background: ${(props) => (props.$active ? '#c8c8c8' : 'grey')};
+    color: ${(props) => {
+      if (!props.$active) return props.theme.textColor === '#ffffff' ? 'inherit' : '#ffffff';
+      return 'black';
+    }};
   }
 `;
