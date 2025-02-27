@@ -18,7 +18,7 @@ const GlobalStyle = createGlobalStyle`
 	}
 
 	html {
-		background-color: #292929;
+		background-color: ${(props) => props.theme.backgroundColor};
 	}
     html, body, div, span, applet, object, iframe,
     h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -47,6 +47,7 @@ footer, header, hgroup, menu, nav, section {
 body {
 	line-height: 1;
 	font-family: 'Noto Sans', sans-serif;
+	color: ${(props) => props.theme.textColor} !important;
 }
 ol, ul {
 	list-style: none;

@@ -7,6 +7,7 @@ import AuthPage from '@/pages/Auth';
 
 import GlobalStyle from './global';
 import MainPage from './pages/Main';
+import ThemeProvider from './provider/Themes';
 
 const DetailPage = lazy(() => import('@/pages/Detail'));
 const InfluencerPage = lazy(() => import('@/pages/Influencer'));
@@ -20,7 +21,7 @@ const NotFoundPage = lazy(() => import('@/pages/NotFound'));
 
 function App() {
   return (
-    <>
+    <ThemeProvider>
       <GlobalStyle />
       <AuthProvider>
         <Routes>
@@ -60,7 +61,7 @@ function App() {
           {/* <Route path="/reviews/:uuid" element={<ReviewPage />} /> */}
         </Routes>
       </AuthProvider>
-    </>
+    </ThemeProvider>
   );
 }
 
