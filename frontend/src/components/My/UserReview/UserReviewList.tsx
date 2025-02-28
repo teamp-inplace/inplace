@@ -39,18 +39,12 @@ const ListContainer = styled.div`
   box-sizing: content-box;
   &::-webkit-scrollbar {
     width: 6px;
-    color: #1f1f1f;
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #1f1f1f;
+    background-color: ${({ theme }) => (theme.backgroundColor === '#292929' ? '#1f1f1f' : '#8e8e8e')};
     border-radius: 4px;
     border: none;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: #1f1f1f;
-    width: 6px;
   }
 
   &::-webkit-scrollbar-track {

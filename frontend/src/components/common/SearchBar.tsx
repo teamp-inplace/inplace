@@ -212,8 +212,9 @@ const SearchDropDownBox = styled.ul`
 
 const SearchDropDownItem = styled.li`
   padding: 12px 16px;
-
+  border-radius: 0 0 6px 6px;
   &.selected {
     background-color: #686868;
+    background: ${({ theme }) => (theme.backgroundColor === '#292929' ? '#686868' : '#d5ecec')};
   }
 `;

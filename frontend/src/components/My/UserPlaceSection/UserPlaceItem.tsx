@@ -86,7 +86,7 @@ const Wrapper = styled(Link)`
   color: inherit;
 
   &:hover {
-    background-color: #1b1a1a;
+    background-color: ${({ theme }) => (theme.backgroundColor === '#292929' ? '1b1a1a' : '#d5ecec')};
   }
 `;
 
