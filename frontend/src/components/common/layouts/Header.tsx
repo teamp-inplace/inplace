@@ -65,9 +65,6 @@ export default function Header() {
           </Text>
         </LogoContainer>
       </LogoLink>
-      <ThemeToggle onClick={toggleTheme} aria-label={isDarkMode ? '라이트 모드로 전환' : '다크 모드로 전환'}>
-        {isDarkMode ? <FiSun size={20} color="white" /> : <FiMoon size={20} color="white" />}
-      </ThemeToggle>
       <DesktopNav>
         {isAuthenticated ? (
           <>
@@ -102,6 +99,9 @@ export default function Header() {
                 로그아웃
               </Text>
             </LoginButton>
+            <ThemeButton aria-label="테마 변경 버튼" onClick={toggleTheme}>
+              {isDarkMode ? <FiSun size={20} color="white" /> : <FiMoon size={20} color="black" />}
+            </ThemeButton>
           </>
         ) : (
           <>
@@ -135,6 +135,9 @@ export default function Header() {
                 </LoginButton>
               )}
             </LoginModal>
+            <ThemeButton aria-label="테마 변경 버튼" onClick={toggleTheme}>
+              {isDarkMode ? <FiSun size={20} color="white" /> : <FiMoon size={20} color="black" />}
+            </ThemeButton>
           </>
         )}
       </DesktopNav>
@@ -148,6 +151,11 @@ export default function Header() {
         <MenuContainer variants={itemVariants}>
           {isAuthenticated ? (
             <>
+              <MobileNavItem to="" onClick={toggleTheme}>
+                <Text size="xs" weight="normal">
+                  {isDarkMode ? '라이트 모드' : '다크 모드'}
+                </Text>
+              </MobileNavItem>
               {location.pathname === '/' && (
                 <MobileNavItem
                   to="https://docs.google.com/forms/d/e/1FAIpQLSeBJcQg0gcVv2au5oFZ1aCLF9O_qbEiJCvnLEd0d1SSLLpDUA/viewform?pli=1"
@@ -188,6 +196,11 @@ export default function Header() {
             </>
           ) : (
             <>
+              <MobileNavItem to="" onClick={toggleTheme}>
+                <Text size="xs" weight="normal">
+                  {isDarkMode ? '라이트 모드' : '다크 모드'}
+                </Text>
+              </MobileNavItem>
               {location.pathname === '/' && (
                 <MobileNavItem
                   to="https://docs.google.com/forms/d/e/1FAIpQLSeBJcQg0gcVv2au5oFZ1aCLF9O_qbEiJCvnLEd0d1SSLLpDUA/viewform?pli=1"
@@ -340,7 +353,7 @@ const MenuContainer = styled(motion.div)`
   }
 `;
 
-const ThemeToggle = styled.button`
+const ThemeButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
