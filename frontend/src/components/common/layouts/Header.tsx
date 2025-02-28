@@ -55,7 +55,7 @@ export default function Header() {
   return (
     <HeaderContainer ref={headerRef}>
       <MobileMenuButton aria-label="side_bar" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-        <RiMenuLine size={24} color="white" />
+        <RiMenuLine size={24} color={isDarkMode ? 'white' : 'grey'} />
       </MobileMenuButton>
       <LogoLink to="/">
         <LogoContainer>
@@ -284,7 +284,8 @@ const MobileNav = styled(motion.nav)<{ $isOpen: boolean }>`
     left: 0;
     width: 100%;
     flex-direction: column;
-    background-color: rgba(41, 41, 41, 0.9);
+    background-color: ${({ theme }) =>
+      theme.backgroundColor === '#292929' ? 'rgba(41, 41, 41, 0.9)' : 'rgba(236, 251, 251, 0.9)'};
     padding: 20px 0;
     gap: 20px;
     z-index: 10;
@@ -302,6 +303,7 @@ const NavItem = styled(Link)`
 const MobileNavItem = styled(Link)`
   text-decoration: none;
   cursor: pointer;
+  color: inherit;
 `;
 
 const LoginButton = styled.div`
