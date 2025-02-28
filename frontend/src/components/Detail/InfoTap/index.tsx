@@ -62,7 +62,7 @@ export default function InfoTap({
     <Wrapper>
       <ButtonWrapper>
         {!isMobile ? (
-          <StyledButton aria-label="mobile_qr_btn" variant="outline" onClick={() => setVisitModal(!visitModal)}>
+          <StyledButton aria-label="mobile_qr_btn" variant="blackOutline" onClick={() => setVisitModal(!visitModal)}>
             <IoQrCode size={16} color="fee500" />
             모바일로 연결
           </StyledButton>
@@ -70,7 +70,7 @@ export default function InfoTap({
         <WebMap>
           <StyledButton
             aria-label="kakao_btn"
-            variant="outline"
+            variant="blackOutline"
             onClick={() => {
               window.location.href = kakaoPlaceUrl;
             }}
@@ -81,7 +81,7 @@ export default function InfoTap({
           {googlePlaceUrl ? (
             <StyledButton
               aria-label="google_btn"
-              variant="outline"
+              variant="blackOutline"
               onClick={() => {
                 window.location.href = googlePlaceUrl;
               }}
