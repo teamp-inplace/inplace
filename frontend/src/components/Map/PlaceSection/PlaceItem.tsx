@@ -109,12 +109,15 @@ const PlaceCard = styled.div<{ $isSelected: boolean }>`
   border-radius: 6px;
   padding: 16px;
   cursor: pointer;
-  background-color: ${({ $isSelected }) => ($isSelected ? '#1b1a1a' : 'none')};
+  background-color: ${({ $isSelected, theme }) => {
+    if ($isSelected) return theme.backgroundColor === '#292929' ? '#1b1a1a' : '#d5ecec';
+    return 'none';
+  }};
   transition: background-color 0.1s ease;
   box-sizing: border-box;
 
   &:hover {
-    background-color: #1b1a1a;
+    background-color: ${({ theme }) => (theme.backgroundColor === '#292929' ? '#1b1a1a' : '#d5ecec')};
   }
 
   @media screen and (max-width: 768px) {
