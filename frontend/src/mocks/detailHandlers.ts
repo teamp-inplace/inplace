@@ -136,10 +136,22 @@ export const detailHandlers = [
         videos: [
           {
             influencerName: '성시경',
-            videoUrl: 'https://www.youtube.com/watch?v=nCEtQ7dP8zY',
+            videoUrl: 'https://www.youtube.com/watch?v=ZC5klhd08ME',
           },
           {
-            influencerName: '',
+            influencerName: '광마니',
+            videoUrl: 'https://www.youtube.com/watch?v=cgAPp2SRDiE',
+          },
+          {
+            influencerName: '쯔양',
+            videoUrl: 'https://www.youtube.com/watch?v=B_gGpdUVe8o',
+          },
+          {
+            influencerName: '떡볶퀸',
+            videoUrl: 'https://www.youtube.com/watch?v=YdrW34lver4',
+          },
+          {
+            influencerName: '기본',
             videoUrl: BasicImage,
           },
         ],

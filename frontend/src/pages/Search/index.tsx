@@ -60,6 +60,7 @@ const Wrapper = styled.div`
 const SplitLine = styled.div`
   width: 100%;
   border-bottom: 1px solid #595959;
+  border-bottom: 1px solid ${({ theme }) => (theme.backgroundColor === '#292929' ? '#595959' : '#bababa')};
   @media screen and (max-width: 768px) {
     border: none;
   }

@@ -331,7 +331,10 @@ const GradientOverlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0.9) 100%);
+  background: ${({ theme }) =>
+    theme.backgroundColor === '#292929'
+      ? 'linear-gradient(to bottom, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0.9) 100%)'
+      : 'linear-gradient(to bottom, rgba(0, 0, 0, 0) 25%, rgba(30, 30, 30, 0.8) 100%)'};
   z-index: 0;
   pointer-events: none;
 `;

@@ -220,10 +220,10 @@ const Btn = styled.div`
     display: flex;
     font-size: 14px;
   }
-  color: ${({ theme }) => (theme.textColor === '#ffffff' ? '#c3c3c3' : '#979797')};
+  color: ${({ theme }) => (theme.textColor === '#ffffff' ? '#c3c3c3' : '#6f6f6f')};
   border-radius: 0px;
   font-size: 16px;
-  border-bottom: 0.5px solid ${({ theme }) => (theme.textColor === '#ffffff' ? '#c3c3c3' : '#979797')};
+  border-bottom: 0.5px solid ${({ theme }) => (theme.textColor === '#ffffff' ? '#c3c3c3' : '#6f6f6f')};
   width: fit-content;
   gap: 6px;
   margin-bottom: 18px;
