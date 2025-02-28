@@ -275,7 +275,7 @@ export default function InfluencerMapWindow({
         </ResetButtonContainer>
         {!isListExpanded && (
           <ListViewButton onClick={onListExpand}>
-            <Text size="xs" weight="normal">
+            <Text size="xs" weight="normal" variant="white">
               목록 보기
             </Text>
           </ListViewButton>
@@ -293,6 +293,7 @@ const MapContainer = styled.div`
   position: relative;
   width: 100%;
   padding-bottom: 20px;
+  color: black;
 `;
 
 const ResetButtonContainer = styled.div`
