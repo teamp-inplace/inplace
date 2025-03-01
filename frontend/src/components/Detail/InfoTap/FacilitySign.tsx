@@ -12,7 +12,7 @@ import { ThemeContext } from '@/provider/Themes';
 
 export default function FacilitySign({ category, facilityInfo }: { facilityInfo: FacilityInfo; category: string }) {
   const { theme } = useContext(ThemeContext);
-  const iconVariant = theme === 'dark' ? 'white' : 'black';
+  const iconVariant = theme === 'dark' ? 'white' : '#333333';
 
   const facilities = {
     acceptsCreditCards: {
@@ -107,7 +107,7 @@ const Wrapper = styled.div`
 `;
 
 const Sign = styled.div`
-  border: 3px solid ${({ theme }) => (theme.textColor === '#ffffff' ? 'white' : 'black')};
+  border: 3px solid ${({ theme }) => (theme.textColor === '#ffffff' ? 'white' : '#333333')};
   width: 46px;
   height: 46px;
   border-radius: 50%;
@@ -119,7 +119,7 @@ const Sign = styled.div`
   @media screen and (max-width: 768px) {
     width: 40px;
     height: 40px;
-    border: 2px solid ${({ theme }) => (theme.textColor === '#ffffff' ? 'white' : 'black')};
+    border: 2px solid ${({ theme }) => (theme.textColor === '#ffffff' ? 'white' : '#333333')};
 
     svg {
       width: 30px;

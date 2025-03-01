@@ -281,8 +281,9 @@ const Tap = styled.button`
   font-size: 18px;
   font-weight: bold;
   color: #55ebff;
+  color: ${({ theme }) => (theme.textColor === '#ffffff' ? '#55ebff' : '#333333')};
   border: none;
-  border-bottom: 3px solid #55ebff;
+  border-bottom: 3px solid ${({ theme }) => (theme.textColor === '#ffffff' ? '#55ebff' : '#333333')};
   background: none;
   cursor: pointer;
   transition:
@@ -292,7 +293,7 @@ const Tap = styled.button`
   @media screen and (max-width: 768px) {
     height: 50px;
     font-size: 16px;
-    border-bottom: 2px solid #55ebff;
+    border-bottom: 2px solid ${({ theme }) => (theme.textColor === '#ffffff' ? '#55ebff' : '#333333')};
   }
 `;
 
