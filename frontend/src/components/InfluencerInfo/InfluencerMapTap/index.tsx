@@ -202,7 +202,7 @@ const MobilePlaceSection = styled.div<{ $translateY: number; $isExpanded: boolea
     width: 100%;
     transform: translateY(${(props) => props.$translateY}px);
     height: 80vh;
-    background-color: #3c3c3c;
+    background-color: ${({ theme }) => (theme.backgroundColor === '#292929' ? '#3c3c3c' : '#fafafa')};
     z-index: 90;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;

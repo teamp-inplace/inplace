@@ -46,14 +46,14 @@ export default function ChoiceItem({
       <Wrapper>
         <ImageContainer>
           <LikeIcon onClick={handleClickLike}>
-            {isSelected ? <PiHeartFill color="#fe7373" size={32} /> : <PiHeartLight color="white" size={32} />}
+            {isSelected ? <PiHeartFill color="#fe7373" size={32} /> : <PiHeartLight size={32} color="white" />}
           </LikeIcon>
           <FallbackImage src={influencerImgUrl} alt={influencerName} />
         </ImageContainer>
-        <Paragraph size="m" weight="bold" variant="white">
+        <Paragraph size="m" weight="bold">
           {influencerName}
         </Paragraph>
-        <Paragraph size="xs" weight="normal" variant="white">
+        <Paragraph size="xs" weight="normal">
           {influencerJob}
         </Paragraph>
       </Wrapper>

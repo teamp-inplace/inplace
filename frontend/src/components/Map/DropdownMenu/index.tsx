@@ -204,7 +204,7 @@ const DropdownButton = styled.button<{ $isOpen: boolean }>`
   cursor: pointer;
   font-weight: 700;
   font-size: 16px;
-  color: #004cff;
+  color: ${({ theme }) => (theme.textColor === '#ffffff' ? '#004cff' : '#3b63c3')};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -225,6 +225,7 @@ const DropdownMenuContainer = styled.div<{ $multiLevel: boolean; $hasSubOptions:
   left: 0;
   width: ${(props) => (props.$multiLevel && props.$hasSubOptions ? '200%' : '100%')};
   background: #ffffff;
+  color: black;
   border: 2px solid rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   border-radius: 8px;
@@ -271,7 +272,7 @@ const SearchIcon = styled(FaSearch)`
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  color: #004cff;
+  color: ${({ theme }) => (theme.textColor === '#ffffff' ? '#004cff' : '#3b63c3')};
   cursor: pointer;
 
   @media screen and (max-width: 768px) {

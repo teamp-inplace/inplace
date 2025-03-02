@@ -104,7 +104,6 @@ const TitleContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: end;
-  color: white;
   width: 100%;
 `;
 

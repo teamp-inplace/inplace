@@ -75,13 +75,13 @@ export default function InfluencerInfoPage() {
           <FallbackImage src={influencerInfoData.influencerImgUrl} alt={influencerInfoData.influencerName} />
         </Image>
         <TextInfo>
-          <Text size="xl" weight="bold" variant="white">
+          <Text size="xl" weight="bold">
             {influencerInfoData.influencerName}
           </Text>
-          <Text size="s" weight="normal" variant="white">
+          <Text size="s" weight="normal">
             좋아요 수 {influencerInfoData.follower}명 • 쿨 플레이스 {influencerInfoData.placeCount}곳
           </Text>
-          <Text size="xs" weight="normal" variant="white">
+          <Text size="xs" weight="normal">
             {influencerInfoData.influencerJob}
           </Text>
         </TextInfo>
@@ -93,7 +93,7 @@ export default function InfluencerInfoPage() {
           {isLike ? (
             <PiHeartFill color="#fe7373" size={32} data-testid="PiHeartFill" />
           ) : (
-            <PiHeartLight color="white" size={32} data-testid="PiHeartLight" />
+            <PiHeartLight size={32} data-testid="PiHeartLight" />
           )}
         </LikeIcon>
       </InfluencerInfoSection>
@@ -202,9 +202,16 @@ const Tap = styled.button<{ $active: boolean }>`
   height: 60px;
   font-size: 18px;
   font-weight: bold;
-  color: ${({ $active }) => ($active ? '#55ebff' : 'white')};
+  color: ${(props) => {
+    if (!props.$active) return props.theme.textColor === '#ffffff' ? 'white' : '#8c8c8c';
+    return '#55ebff';
+  }};
   border: none;
-  border-bottom: 3px solid ${({ $active }) => ($active ? '#55ebff' : 'white')};
+  border-bottom: 3px solid
+    ${(props) => {
+      if (!props.$active) return props.theme.textColor === '#ffffff' ? 'white' : '#8c8c8c';
+      return '#55ebff';
+    }};
   background: none;
   cursor: pointer;
   transition:
@@ -214,7 +221,7 @@ const Tap = styled.button<{ $active: boolean }>`
   @media screen and (max-width: 768px) {
     height: 50px;
     font-size: 16px;
-    border-bottom: 2px solid ${({ $active }) => ($active ? '#55ebff' : 'white')};
+    border-bottom: 2px solid;
   }
 `;
 const TapContainer = styled.div`

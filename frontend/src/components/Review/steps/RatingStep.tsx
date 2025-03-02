@@ -44,7 +44,7 @@ export default function RatingStep({ onSubmit, placeInfo }: RatingStepProps) {
               </Text>
             </TextWrapper>
             <TextWrapper className="influencer">
-              <Text size="s" weight="normal" variant="white">
+              <Text size="s" weight="normal">
                 {placeInfo.influencerName}
               </Text>
             </TextWrapper>

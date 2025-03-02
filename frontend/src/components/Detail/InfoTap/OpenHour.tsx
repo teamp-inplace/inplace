@@ -13,7 +13,7 @@ export default function OpenHour({ openHour }: { openHour: string[] }) {
         <HourItem>
           {openHour.map((period) => (
             <TimeItem key={period}>
-              <Text size="xs" weight="normal" variant="white">
+              <Text size="xs" weight="normal">
                 {period}
               </Text>
             </TimeItem>

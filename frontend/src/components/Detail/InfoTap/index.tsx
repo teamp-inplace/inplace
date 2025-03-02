@@ -4,7 +4,7 @@ import { IoMdStar } from 'react-icons/io';
 import { IoQrCode } from 'react-icons/io5';
 import { FaComment } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useContext, useEffect, useState } from 'react';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Paragraph } from '@/components/common/typography/Paragraph';
@@ -18,6 +18,7 @@ import NoItem from '@/components/common/layouts/NoItem';
 import VisitModal from '../VisitModal';
 import Loading from '@/components/common/layouts/Loading';
 import ErrorComponent from '@/components/common/layouts/Error';
+import { ThemeContext } from '@/provider/Themes';
 
 type Props = {
   category: string;
@@ -47,6 +48,8 @@ export default function InfoTap({
   const lng = Number(longitude);
   const [visitModal, setVisitModal] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const { theme } = useContext(ThemeContext);
+  const buttonVariant = theme === 'dark' ? 'outline' : 'blackOutline';
 
   useEffect(() => {
     const checkMobile = () => {
@@ -62,7 +65,7 @@ export default function InfoTap({
     <Wrapper>
       <ButtonWrapper>
         {!isMobile ? (
-          <StyledButton aria-label="mobile_qr_btn" variant="outline" onClick={() => setVisitModal(!visitModal)}>
+          <StyledButton aria-label="mobile_qr_btn" variant={buttonVariant} onClick={() => setVisitModal(!visitModal)}>
             <IoQrCode size={16} color="fee500" />
             모바일로 연결
           </StyledButton>
@@ -70,7 +73,7 @@ export default function InfoTap({
         <WebMap>
           <StyledButton
             aria-label="kakao_btn"
-            variant="outline"
+            variant={buttonVariant}
             onClick={() => {
               window.location.href = kakaoPlaceUrl;
             }}
@@ -81,7 +84,7 @@ export default function InfoTap({
           {googlePlaceUrl ? (
             <StyledButton
               aria-label="google_btn"
-              variant="outline"
+              variant={buttonVariant}
               onClick={() => {
                 window.location.href = googlePlaceUrl;
               }}
@@ -94,19 +97,19 @@ export default function InfoTap({
       </ButtonWrapper>
       {googlePlaceUrl ? (
         <>
-          <Paragraph size="s" weight="bold" variant="white">
+          <Paragraph size="s" weight="bold">
             시설 정보
           </Paragraph>
           <FacilitySign category={category} facilityInfo={facility} />
-          <Paragraph size="s" weight="bold" variant="white">
+          <Paragraph size="s" weight="bold">
             운영 시간
           </Paragraph>
           <OpenHour openHour={openingHours} />
           <GoogleReviewTitle>
-            <StyledText size="s" weight="bold" variant="white">
+            <StyledText size="s" weight="bold">
               Google 리뷰
               <IoMdStar size={20} color="#FBBC04" />
-              <Text size="xs" weight="normal" variant="white">
+              <Text size="xs" weight="normal">
                 {rating}
               </Text>
             </StyledText>
@@ -134,7 +137,7 @@ export default function InfoTap({
           alignItems="center"
         />
       )}
-      <Paragraph size="s" weight="bold" variant="white">
+      <Paragraph size="s" weight="bold">
         지도 보기
       </Paragraph>
       <MapContainer>
@@ -220,7 +223,6 @@ const GoogleReviewTitle = styled.div`
 const StyledText = styled(Text)`
   display: flex;
   gap: 3px;
-  color: white;
   align-items: end;
   svg {
     margin-left: 10px;

@@ -68,14 +68,14 @@ export default function PlaceItem({
           {/* <ImageContainer>
           <FallbackImage src={menuImgUrl} alt={placeName} />
         </ImageContainer> */}
-          <Text size="m" weight="bold" variant="white">
+          <Text size="m" weight="bold">
             {placeName}
           </Text>
-          <Text size="xs" weight="normal" variant="white">
+          <Text size="xs" weight="normal">
             {getFullAddress(address)}
           </Text>
           <InfluencerName>
-            <Text size="xs" weight="normal" variant="white">
+            <Text size="xs" weight="normal">
               {influencerName}
             </Text>
           </InfluencerName>
@@ -88,7 +88,7 @@ export default function PlaceItem({
           {isLike ? (
             <PiHeartFill color="#fe7373" size={30} data-testid="PiHeartFill" />
           ) : (
-            <PiHeartLight color="white" size={30} data-testid="PiHeartLight" />
+            <PiHeartLight size={30} data-testid="PiHeartLight" />
           )}
         </LikeIcon>
       </PlaceCard>
@@ -109,12 +109,15 @@ const PlaceCard = styled.div<{ $isSelected: boolean }>`
   border-radius: 6px;
   padding: 16px;
   cursor: pointer;
-  background-color: ${({ $isSelected }) => ($isSelected ? '#1b1a1a' : 'none')};
+  background-color: ${({ $isSelected, theme }) => {
+    if ($isSelected) return theme.backgroundColor === '#292929' ? '#1b1a1a' : '#d5ecec';
+    return 'none';
+  }};
   transition: background-color 0.1s ease;
   box-sizing: border-box;
 
   &:hover {
-    background-color: #1b1a1a;
+    background-color: ${({ theme }) => (theme.backgroundColor === '#292929' ? '#1b1a1a' : '#d5ecec')};
   }
 
   @media screen and (max-width: 768px) {

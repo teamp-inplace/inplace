@@ -16,7 +16,7 @@ export default function UserReviewItem({ likes, comment, place, createdDate }: U
       </ImageContainer> */}
       <TextContainer>
         <Title>
-          <Text size="s" weight="bold" variant="white">
+          <Text size="s" weight="bold">
             {place.placeName}
           </Text>
           {likes ? <AiFillLike size={26} color="#fe7373" /> : <AiFillDislike size={26} color="#6F6CFF" />}
@@ -25,10 +25,10 @@ export default function UserReviewItem({ likes, comment, place, createdDate }: U
           {address}
         </Paragraph>
         <Title>
-          <Paragraph size="xs" weight="normal" variant="white">
+          <Paragraph size="xs" weight="normal">
             {comment}
           </Paragraph>
-          <Text size="xs" weight="normal" variant="white">
+          <Text size="xs" weight="normal">
             {new Date(createdDate).toLocaleDateString()}
           </Text>
         </Title>
@@ -41,6 +41,7 @@ const Wrapper = styled(Link)`
   display: flex;
   gap: 24px;
   align-items: center;
+  color: inherit;
 
   @media screen and (max-width: 768px) {
     gap: 14px;

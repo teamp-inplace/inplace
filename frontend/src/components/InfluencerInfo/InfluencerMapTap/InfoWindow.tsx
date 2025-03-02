@@ -19,7 +19,7 @@ export default function InfoWindow({ data, onClose }: Props) {
   return (
     <Wrapper>
       <Title>
-        <Text size="xs" weight="bold" className="title">
+        <Text size="xs" weight="bold" variant="black" className="title">
           {data.placeName}
         </Text>
         {!isLongName && (

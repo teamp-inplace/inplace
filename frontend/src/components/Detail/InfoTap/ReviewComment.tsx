@@ -19,7 +19,7 @@ export default function GoogleReviewComment({ text }: { text: string }) {
   const truncatedText = text.length > slice ? `${text.slice(0, slice)}...` : text;
 
   return (
-    <Paragraph size="xs" weight="normal" variant="white">
+    <Paragraph size="xs" weight="normal">
       {isExpanded ? text : truncatedText}
       {text.length > slice && !isExpanded && <MoreLink onClick={() => setIsExpanded(true)}>더보기</MoreLink>}
       {isExpanded && <MoreLink onClick={() => setIsExpanded(false)}>간략히</MoreLink>}

@@ -16,7 +16,7 @@ export default function SearchPage() {
     <Wrapper>
       <SearchBar placeholder="인플루언서, 장소를 검색해주세요!" />
       <Title>
-        <Paragraph weight="normal" size="m" variant="white">
+        <Paragraph weight="normal" size="m">
           <Text weight="bold" size="m" variant="mint">
             {`${query} `}
           </Text>
@@ -60,6 +60,7 @@ const Wrapper = styled.div`
 const SplitLine = styled.div`
   width: 100%;
   border-bottom: 1px solid #595959;
+  border-bottom: 1px solid ${({ theme }) => (theme.backgroundColor === '#292929' ? '#595959' : '#bababa')};
   @media screen and (max-width: 768px) {
     border: none;
   }

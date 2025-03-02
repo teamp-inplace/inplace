@@ -71,7 +71,7 @@ export default function MyPage() {
       <TitleWrapper>
         {isVisible ? (
           <NickNameWrapper>
-            <Text size="l" weight="bold" variant="white">
+            <Text size="l" weight="bold">
               <Text size="xl" weight="bold" variant="mint">
                 {userNickname?.nickname}
               </Text>
@@ -89,7 +89,7 @@ export default function MyPage() {
             </CustomButton>
           </Form>
         )}
-        <Paragraph size="m" weight="bold" variant="white">
+        <Paragraph size="m" weight="bold">
           인플레이스를 이용해주셔서 감사합니다.
         </Paragraph>
       </TitleWrapper>

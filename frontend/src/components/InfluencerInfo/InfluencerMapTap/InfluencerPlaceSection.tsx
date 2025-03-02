@@ -150,18 +150,12 @@ const SectionContainer = styled.div`
   box-sizing: content-box;
   &::-webkit-scrollbar {
     width: 8px;
-    color: #1f1f1f;
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #1f1f1f;
+    background-color: ${({ theme }) => (theme.backgroundColor === '#292929' ? '#1f1f1f' : '#8e8e8e')};
     border-radius: 4px;
     border: none;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: #1f1f1f;
-    width: 8px;
   }
 
   &::-webkit-scrollbar-track {
@@ -226,11 +220,10 @@ const Btn = styled.div`
     display: flex;
     font-size: 14px;
   }
-
-  color: #c3c3c3;
+  color: ${({ theme }) => (theme.textColor === '#ffffff' ? '#c3c3c3' : '#6f6f6f')};
   border-radius: 0px;
   font-size: 16px;
-  border-bottom: 0.5px solid #c3c3c3;
+  border-bottom: 0.5px solid ${({ theme }) => (theme.textColor === '#ffffff' ? '#c3c3c3' : '#6f6f6f')};
   width: fit-content;
   gap: 6px;
   margin-bottom: 18px;

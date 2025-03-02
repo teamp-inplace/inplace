@@ -63,7 +63,7 @@ export default function LoginModal({
               <TitleWrapper>
                 <IconBackground>
                   <LogoImage src={Logo} alt="인플레이스 로고" />
-                  <Paragraph size="xl" weight="bold">
+                  <Paragraph size="xl" weight="bold" variant="black">
                     인플레이스
                   </Paragraph>
                 </IconBackground>

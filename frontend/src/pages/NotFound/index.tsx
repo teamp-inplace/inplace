@@ -1,11 +1,15 @@
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Button from '@/components/common/Button';
 import Logo from '@/assets/images/Logo.svg';
 import { Paragraph } from '@/components/common/typography/Paragraph';
+import { ThemeContext } from '@/provider/Themes';
 
 export default function NotFound() {
   const navigate = useNavigate();
+  const { theme } = useContext(ThemeContext);
+  const buttonVariant = theme === 'dark' ? 'outline' : 'blackOutline';
   const handleHome = () => {
     navigate('/');
   };
@@ -13,14 +17,14 @@ export default function NotFound() {
     <Wrapper>
       <TextWrapper>
         <LogoImage src={Logo} alt="인플레이스 로고" />
-        <Paragraph size="xl" weight="bold" variant="white">
+        <Paragraph size="xl" weight="bold">
           페이지를 찾을 수 없어요 🥲
         </Paragraph>
-        <Paragraph size="m" weight="normal" variant="#bdbdbd">
+        <Paragraph size="m" weight="normal">
           요청한 페이지가 존재하지 않거나 삭제되었어요.
         </Paragraph>
       </TextWrapper>
-      <StyledButton aria-label="home-btn" variant="outline" onClick={handleHome}>
+      <StyledButton aria-label="home-btn" variant={buttonVariant} onClick={handleHome}>
         홈으로 이동하기
       </StyledButton>
     </Wrapper>

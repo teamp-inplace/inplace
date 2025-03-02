@@ -1,10 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AxiosError } from 'axios';
 import Logo from '@/assets/images/Logo.svg';
 import Button from '../Button';
 import { Paragraph } from '../typography/Paragraph';
+import { ThemeContext } from '@/provider/Themes';
 
 type FallbackProps = {
   error?: unknown | AxiosError | Error;
@@ -14,6 +15,8 @@ export default function ErrorComponent({ error, resetErrorBoundary }: FallbackPr
   const location = useLocation();
   const navigate = useNavigate();
   const errorLocation = useRef(location.pathname);
+  const { theme } = useContext(ThemeContext);
+  const buttonVariant = theme === 'dark' ? 'outline' : 'blackOutline';
 
   const handleRetry = () => {
     const isRetriableError =
@@ -86,14 +89,14 @@ export default function ErrorComponent({ error, resetErrorBoundary }: FallbackPr
     <Wrapper>
       <TextWrapper>
         <LogoImage src={Logo} alt="인플레이스 로고" />
-        <Paragraph size="xl" weight="bold" variant="white">
+        <Paragraph size="xl" weight="bold">
           {message.title}
         </Paragraph>
         <Paragraph size="m" weight="normal" variant="#bdbdbd">
           {message.description}
         </Paragraph>
       </TextWrapper>
-      <StyledButton aria-label="retry-btn" variant="outline" size="large" onClick={handleRetry}>
+      <StyledButton aria-label="retry-btn" variant={buttonVariant} size="large" onClick={handleRetry}>
         {error instanceof AxiosError && error.response?.status !== 401 && error.response?.status !== 403
           ? '다시 시도하기'
           : '홈으로 가기'}

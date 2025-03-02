@@ -47,7 +47,6 @@ const TitleContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: end;
-  color: white;
 `;
 const LoadMoreTrigger = styled.div`
   display: flex;

@@ -99,8 +99,8 @@ const FilterChip = styled.div`
   padding: 4px 10px 4px 18px;
   height: 24px;
   border-radius: 18px;
-  background-color: #e8f9ff;
-
+  background-color: ${({ theme }) => (theme.backgroundColor === '#292929' ? '#e8f9ff' : '#c9ebf1')};
+  color: black;
   @media screen and (max-width: 768px) {
     padding: 4px 10px 4px 14px;
     font-size: 14px;

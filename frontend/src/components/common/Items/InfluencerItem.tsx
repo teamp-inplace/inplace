@@ -84,17 +84,17 @@ export default function InfluencerItem({
           {useBackCard && useNav && (
             <BackImageWrapper>
               <MdLocationOn size={50} color="#55EBFF" />
-              <Paragraph size="m" variant="white" weight="bold">
+              <Paragraph size="m" weight="bold" variant="white">
                 지도 보기
               </Paragraph>
             </BackImageWrapper>
           )}
         </ImageContainer>
         <TextWrapper>
-          <Paragraph size="m" weight="bold" variant="white">
+          <Paragraph size="m" weight="bold">
             {influencerName}
           </Paragraph>
-          <Paragraph size="xs" weight="normal" variant="white">
+          <Paragraph size="xs" weight="normal">
             {influencerJob}
           </Paragraph>
         </TextWrapper>
@@ -114,6 +114,7 @@ const Wrapper = styled(Link)`
   text-align: center;
   text-decoration: none;
   gap: 10px;
+  color: inherit;
 
   @media screen and (max-width: 768px) {
     height: 100%;

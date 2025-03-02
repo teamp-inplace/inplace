@@ -39,7 +39,7 @@ const SearchBarContainer = styled.div`
 const SearchInputWrapper = styled.div`
   display: flex;
   align-items: center;
-  background: #414141;
+  background: ${({ theme }) => (theme.backgroundColor === '#292929' ? '#414141' : '#ffffff')};
   padding: 12px 16px;
   border: 1.5px solid #a5a5a5;
   border-radius: 16px;
@@ -49,7 +49,7 @@ const SearchInputWrapper = styled.div`
 const SearchInput = styled.input`
   font-size: 16px;
   flex: 1;
-  color: #ffffff;
+  color: ${({ theme }) => (theme.textColor === '#ffffff' ? '#ffffff' : '#333333')};
   background: transparent;
   border: none;
   margin-right: 8px;

@@ -275,7 +275,7 @@ export default function InfluencerMapWindow({
         </ResetButtonContainer>
         {!isListExpanded && (
           <ListViewButton onClick={onListExpand}>
-            <Text size="xs" variant="white" weight="normal">
+            <Text size="xs" weight="normal" variant="white">
               목록 보기
             </Text>
           </ListViewButton>
@@ -293,6 +293,7 @@ const MapContainer = styled.div`
   position: relative;
   width: 100%;
   padding-bottom: 20px;
+  color: black;
 `;
 
 const ResetButtonContainer = styled.div`
@@ -323,10 +324,10 @@ const StyledBtn = styled(Button)`
 `;
 const Btn = styled.div`
   display: flex;
-  color: #c3c3c3;
+  color: ${({ theme }) => (theme.textColor === '#ffffff' ? '#c3c3c3' : '#6f6f6f')};
   border-radius: 0px;
   font-size: 16px;
-  border-bottom: 0.5px solid #c3c3c3;
+  border-bottom: 0.5px solid ${({ theme }) => (theme.textColor === '#ffffff' ? '#c3c3c3' : '#6f6f6f')};
   width: fit-content;
   padding-bottom: 4px;
   gap: 6px;

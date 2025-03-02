@@ -2,11 +2,13 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { RiMenuLine } from 'react-icons/ri';
+import { FiSun, FiMoon } from 'react-icons/fi';
 import { motion, Variants } from 'framer-motion';
 import LoginModal from '@/components/common/modals/LoginModal';
 import { Text } from '@/components/common/typography/Text';
 import Logo from '@/assets/images/Logo.svg';
 import useAuth from '@/hooks/useAuth';
+import useTheme from '@/hooks/useTheme';
 
 const navVariants: Variants = {
   open: {
@@ -36,6 +38,8 @@ export default function Header() {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
+  const { theme, toggleTheme } = useTheme();
+  const isDarkMode = theme === 'dark';
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -51,7 +55,7 @@ export default function Header() {
   return (
     <HeaderContainer ref={headerRef}>
       <MobileMenuButton aria-label="side_bar" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-        <RiMenuLine size={24} color="white" />
+        <RiMenuLine size={24} color={isDarkMode ? 'white' : 'grey'} />
       </MobileMenuButton>
       <LogoLink to="/">
         <LogoContainer>
@@ -70,31 +74,34 @@ export default function Header() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Text size="xs" variant="white" weight="normal">
+                <Text size="xs" weight="normal">
                   설문조사
                 </Text>
               </NavItem>
             )}
             <NavItem to="/map">
-              <Text size="xs" variant="white" weight="normal">
+              <Text size="xs" weight="normal">
                 지도
               </Text>
             </NavItem>
             <NavItem to="/influencer">
-              <Text size="xs" variant="white" weight="normal">
+              <Text size="xs" weight="normal">
                 인플루언서
               </Text>
             </NavItem>
             <NavItem to="/my">
-              <Text size="xs" variant="white" weight="normal">
+              <Text size="xs" weight="normal">
                 마이페이지
               </Text>
             </NavItem>
             <LoginButton onClick={handleLogout}>
-              <Text size="xs" variant="white" weight="normal">
+              <Text size="xs" weight="normal">
                 로그아웃
               </Text>
             </LoginButton>
+            <ThemeButton aria-label="테마 변경 버튼" onClick={toggleTheme}>
+              {isDarkMode ? <FiSun size={20} color="white" /> : <FiMoon size={20} color="black" />}
+            </ThemeButton>
           </>
         ) : (
           <>
@@ -104,30 +111,33 @@ export default function Header() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Text size="xs" variant="white" weight="normal">
+                <Text size="xs" weight="normal">
                   설문조사
                 </Text>
               </NavItem>
             )}
             <NavItem to="/map">
-              <Text size="xs" variant="white" weight="normal">
+              <Text size="xs" weight="normal">
                 지도
               </Text>
             </NavItem>
             <NavItem to="/influencer">
-              <Text size="xs" variant="white" weight="normal">
+              <Text size="xs" weight="normal">
                 인플루언서
               </Text>
             </NavItem>
             <LoginModal currentPath={location.pathname}>
               {(openModal: () => void) => (
                 <LoginButton onClick={openModal}>
-                  <Text size="xs" variant="white" weight="normal">
+                  <Text size="xs" weight="normal">
                     로그인
                   </Text>
                 </LoginButton>
               )}
             </LoginModal>
+            <ThemeButton aria-label="테마 변경 버튼" onClick={toggleTheme}>
+              {isDarkMode ? <FiSun size={20} color="white" /> : <FiMoon size={20} color="black" />}
+            </ThemeButton>
           </>
         )}
       </DesktopNav>
@@ -141,6 +151,11 @@ export default function Header() {
         <MenuContainer variants={itemVariants}>
           {isAuthenticated ? (
             <>
+              <MobileNavItem to="" onClick={toggleTheme}>
+                <Text size="xs" weight="normal">
+                  {isDarkMode ? '라이트 모드' : '다크 모드'}
+                </Text>
+              </MobileNavItem>
               {location.pathname === '/' && (
                 <MobileNavItem
                   to="https://docs.google.com/forms/d/e/1FAIpQLSeBJcQg0gcVv2au5oFZ1aCLF9O_qbEiJCvnLEd0d1SSLLpDUA/viewform?pli=1"
@@ -148,23 +163,23 @@ export default function Header() {
                   rel="noopener noreferrer"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <Text size="xs" variant="white" weight="normal">
+                  <Text size="xs" weight="normal">
                     설문조사
                   </Text>
                 </MobileNavItem>
               )}
               <MobileNavItem to="/map" onClick={() => setIsMenuOpen(false)}>
-                <Text size="xs" variant="white" weight="normal">
+                <Text size="xs" weight="normal">
                   지도
                 </Text>
               </MobileNavItem>
               <MobileNavItem to="/influencer" onClick={() => setIsMenuOpen(false)}>
-                <Text size="xs" variant="white" weight="normal">
+                <Text size="xs" weight="normal">
                   인플루언서
                 </Text>
               </MobileNavItem>
               <MobileNavItem to="/my" onClick={() => setIsMenuOpen(false)}>
-                <Text size="xs" variant="white" weight="normal">
+                <Text size="xs" weight="normal">
                   마이페이지
                 </Text>
               </MobileNavItem>
@@ -174,13 +189,18 @@ export default function Header() {
                   setIsMenuOpen(false);
                 }}
               >
-                <Text size="xs" variant="white" weight="normal">
+                <Text size="xs" weight="normal">
                   로그아웃
                 </Text>
               </MobileLoginButton>
             </>
           ) : (
             <>
+              <MobileNavItem to="" onClick={toggleTheme}>
+                <Text size="xs" weight="normal">
+                  {isDarkMode ? '라이트 모드' : '다크 모드'}
+                </Text>
+              </MobileNavItem>
               {location.pathname === '/' && (
                 <MobileNavItem
                   to="https://docs.google.com/forms/d/e/1FAIpQLSeBJcQg0gcVv2au5oFZ1aCLF9O_qbEiJCvnLEd0d1SSLLpDUA/viewform?pli=1"
@@ -188,18 +208,18 @@ export default function Header() {
                   rel="noopener noreferrer"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <Text size="xs" variant="white" weight="normal">
+                  <Text size="xs" weight="normal">
                     설문조사
                   </Text>
                 </MobileNavItem>
               )}
               <MobileNavItem to="/map" onClick={() => setIsMenuOpen(false)}>
-                <Text size="xs" variant="white" weight="normal">
+                <Text size="xs" weight="normal">
                   지도
                 </Text>
               </MobileNavItem>
               <MobileNavItem to="/influencer" onClick={() => setIsMenuOpen(false)}>
-                <Text size="xs" variant="white" weight="normal">
+                <Text size="xs" weight="normal">
                   인플루언서
                 </Text>
               </MobileNavItem>
@@ -211,7 +231,7 @@ export default function Header() {
                       setIsMenuOpen(false);
                     }}
                   >
-                    <Text size="xs" variant="white" weight="normal">
+                    <Text size="xs" weight="normal">
                       로그인
                     </Text>
                   </MobileLoginButton>
@@ -277,7 +297,8 @@ const MobileNav = styled(motion.nav)<{ $isOpen: boolean }>`
     left: 0;
     width: 100%;
     flex-direction: column;
-    background-color: rgba(41, 41, 41, 0.9);
+    background-color: ${({ theme }) =>
+      theme.backgroundColor === '#292929' ? 'rgba(41, 41, 41, 0.9)' : 'rgba(236, 251, 251, 0.9)'};
     padding: 20px 0;
     gap: 20px;
     z-index: 10;
@@ -289,21 +310,21 @@ const NavItem = styled(Link)`
   margin-left: 20px;
   text-decoration: none;
   cursor: pointer;
+  color: inherit;
 `;
 
 const MobileNavItem = styled(Link)`
   text-decoration: none;
   cursor: pointer;
+  color: inherit;
 `;
 
 const LoginButton = styled.div`
   margin-left: 20px;
-  color: white;
   cursor: pointer;
 `;
 
 const MobileLoginButton = styled.div`
-  color: white;
   cursor: pointer;
 `;
 
@@ -329,5 +350,21 @@ const MenuContainer = styled(motion.div)`
     gap: 20px;
     align-items: center;
     width: 100%;
+  }
+`;
+
+const ThemeButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 20px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: rotate(30deg);
   }
 `;

@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { LuParkingCircle, LuParkingCircleOff, LuParkingSquare, LuParkingSquareOff } from 'react-icons/lu';
 import { TbDisabled } from 'react-icons/tb';
 import styled from 'styled-components';
@@ -7,33 +8,40 @@ import { CiCreditCard1, CiCreditCardOff } from 'react-icons/ci';
 import { Paragraph } from '@/components/common/typography/Paragraph';
 import { FacilityInfo } from '@/types';
 import NoItem from '@/components/common/layouts/NoItem';
-
-const facilities = {
-  acceptsCreditCards: {
-    icon: { true: <CiCreditCard1 size={34} color="white" />, false: <CiCreditCardOff size={36} color="white" /> },
-    label: '카드결제',
-  },
-  freeParkingLot: {
-    icon: {
-      true: <LuParkingCircle size={60} color="white" strokeWidth={1} />,
-      false: <LuParkingCircleOff size={60} color="white" strokeWidth={1} />,
-    },
-    label: '무료주차',
-  },
-  paidParkingLot: {
-    icon: {
-      true: <LuParkingSquare size={60} color="white" strokeWidth={1} />,
-      false: <LuParkingSquareOff size={60} color="white" strokeWidth={1} />,
-    },
-    label: '유료주차',
-  },
-  wheelchairAccessibleSeating: {
-    icon: { true: <TbDisabled size={34} color="white" strokeWidth={1} />, false: null },
-    label: '휠체어좌석',
-  },
-};
+import { ThemeContext } from '@/provider/Themes';
 
 export default function FacilitySign({ category, facilityInfo }: { facilityInfo: FacilityInfo; category: string }) {
+  const { theme } = useContext(ThemeContext);
+  const iconVariant = theme === 'dark' ? 'white' : '#333333';
+
+  const facilities = {
+    acceptsCreditCards: {
+      icon: {
+        true: <CiCreditCard1 size={34} color={iconVariant} />,
+        false: <CiCreditCardOff size={36} color={iconVariant} />,
+      },
+      label: '카드결제',
+    },
+    freeParkingLot: {
+      icon: {
+        true: <LuParkingCircle size={60} color={iconVariant} strokeWidth={1} />,
+        false: <LuParkingCircleOff size={60} color={iconVariant} strokeWidth={1} />,
+      },
+      label: '무료주차',
+    },
+    paidParkingLot: {
+      icon: {
+        true: <LuParkingSquare size={60} color={iconVariant} strokeWidth={1} />,
+        false: <LuParkingSquareOff size={60} color={iconVariant} strokeWidth={1} />,
+      },
+      label: '유료주차',
+    },
+    wheelchairAccessibleSeating: {
+      icon: { true: <TbDisabled size={34} color={iconVariant} strokeWidth={1} />, false: null },
+      label: '휠체어좌석',
+    },
+  };
+
   if (!facilityInfo) {
     return (
       <Wrapper>
@@ -41,6 +49,7 @@ export default function FacilitySign({ category, facilityInfo }: { facilityInfo:
       </Wrapper>
     );
   }
+
   return (
     <Wrapper>
       {Object.keys(facilityInfo).length === 0 ? (
@@ -50,11 +59,7 @@ export default function FacilitySign({ category, facilityInfo }: { facilityInfo:
           {category && (
             <SignWrapper>
               <Sign>
-                {category === '카페' ? (
-                  <IoCafeOutline size={34} color="white" />
-                ) : (
-                  <ImSpoonKnife size={30} color="white" />
-                )}
+                {category === '카페' ? <IoCafeOutline size={34} /> : <ImSpoonKnife size={30} color={iconVariant} />}
               </Sign>
               <Paragraph size="xs" weight="bold" variant="mint">
                 {category}
@@ -76,7 +81,7 @@ export default function FacilitySign({ category, facilityInfo }: { facilityInfo:
             return (
               <SignWrapper key={key} $isParking={key.includes('Parking')}>
                 {key.includes('Parking') ? iconElement : <Sign>{iconElement}</Sign>}
-                <Paragraph size="xs" weight="normal" variant="white">
+                <Paragraph size="xs" weight="normal">
                   {label}
                 </Paragraph>
               </SignWrapper>
@@ -102,7 +107,7 @@ const Wrapper = styled.div`
 `;
 
 const Sign = styled.div`
-  border: 3px solid white;
+  border: 3px solid ${({ theme }) => (theme.textColor === '#ffffff' ? 'white' : '#333333')};
   width: 46px;
   height: 46px;
   border-radius: 50%;
@@ -114,7 +119,7 @@ const Sign = styled.div`
   @media screen and (max-width: 768px) {
     width: 40px;
     height: 40px;
-    border: 2px solid white;
+    border: 2px solid ${({ theme }) => (theme.textColor === '#ffffff' ? 'white' : '#333333')};
 
     svg {
       width: 30px;

@@ -27,7 +27,7 @@ export default function Footer() {
 }
 
 const FooterContainer = styled.footer`
-  background: #2f2f2f;
+  background: ${({ theme }) => (theme.backgroundColor === '#292929' ? '#2f2f2f' : '#e0f6f6')};
   width: 100%;
   height: 160px;
   padding: 30px;

@@ -28,7 +28,7 @@ export default function ReviewTap({ placeLikes, id: placeId }: { placeLikes: Pla
         <BarGraph like={placeLikes.like} dislike={placeLikes.dislike} />
         <AiFillDislike size={50} color="#6F6CFF" />
       </CountLike>
-      <Paragraph size="m" weight="bold" variant="white">
+      <Paragraph size="m" weight="bold">
         <Text size="m" variant="mint" weight="bold">
           리뷰{' '}
         </Text>

@@ -30,17 +30,17 @@ export default function ReviewItem({ reviewId, likes, comment, userNickname, cre
     <Wrapper>
       <Title>
         <Name>
-          <Text size="xs" weight="bold" variant="white">
+          <Text size="xs" weight="bold">
             {userNickname}
           </Text>
           {likes ? <AiFillLike size={22} color="#fe7373" /> : <AiFillDislike size={22} color="#6F6CFF" />}
         </Name>
-        <Text size="xs" weight="normal" variant="white">
+        <Text size="xs" weight="normal">
           {new Date(createdDate).toLocaleDateString()}
         </Text>
       </Title>
       <Comment>
-        <Paragraph size="xs" weight="normal" variant="white">
+        <Paragraph size="xs" weight="normal">
           {comment}
         </Paragraph>
         {mine ? (
