@@ -1,6 +1,10 @@
 package team7.inplace.video.persistence;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,14 +14,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import team7.inplace.video.persistence.dto.VideoQueryResult;
-
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -168,14 +168,14 @@ public class VideoReadRepositoryTest {
     }
 
     @Test
-    @DisplayName("비디오 조회 테스트 - 인플루언서 id를 통해 비디오 조회")
+    @DisplayName("비디오 조회 테스트 - 인플루언서 id를 통해 비디오 조회 - 기본(날짜 순) 정렬")
     void findVideo_InfluencerId() {
         // given
         Pageable pageable = PageRequest.of(0, 5);
 
         final int expectedTotalContent = 4;
         final int expectedContentSize = 4;
-        final List<Long> expectedVideoIds = List.of(1L, 2L, 3L ,4L);
+        final List<Long> expectedVideoIds = List.of(4L, 3L, 2L, 1L);
 
         // when
         Page<VideoQueryResult.SimpleVideo> videos = videoReadRepository.findSimpleVideosWithOneInfluencerId(
@@ -186,5 +186,47 @@ public class VideoReadRepositoryTest {
         assertThat(videos.getContent().size()).isEqualTo(expectedContentSize);
         assertThat(videos.getContent().stream().map(VideoQueryResult.SimpleVideo::videoId).toList())
                 .isEqualTo(expectedVideoIds);
+    }
+
+    @Test
+    @DisplayName("비디오 조회 테스트 - 인플루언서 id를 통해 비디오 조회 - 인기순(조회수 증가량) 정렬")
+    void findVideo_InfluencerId_popularity() {
+        // given
+        Pageable pageable = PageRequest.of(0, 5, Sort.by("popularity"));
+
+        final int expectedTotalContent = 4;
+        final int expectedContentSize = 4;
+        final List<Long> expectedVideoIds = List.of(4L, 3L, 2L, 1L);
+
+        // when
+        Page<VideoQueryResult.SimpleVideo> videos = videoReadRepository.findSimpleVideosWithOneInfluencerId(
+            1L, pageable);
+
+        // then
+        assertThat(videos.getTotalElements()).isEqualTo(expectedTotalContent);
+        assertThat(videos.getContent().size()).isEqualTo(expectedContentSize);
+        assertThat(videos.getContent().stream().map(VideoQueryResult.SimpleVideo::videoId).toList())
+            .isEqualTo(expectedVideoIds);
+    }
+
+    @Test
+    @DisplayName("비디오 조회 테스트 - 인플루언서 id를 통해 비디오 조회 - 장소 좋아요순 정렬")
+    void findVideo_InfluencerId_likes() {
+        // given
+        Pageable pageable = PageRequest.of(0, 5, Sort.by("likes"));
+
+        final int expectedTotalContent = 4;
+        final int expectedContentSize = 4;
+        final List<Long> expectedVideoIds = List.of(3L, 2L, 1L, 4L);
+
+        // when
+        Page<VideoQueryResult.SimpleVideo> videos = videoReadRepository.findSimpleVideosWithOneInfluencerId(
+            1L, pageable);
+
+        // then
+        assertThat(videos.getTotalElements()).isEqualTo(expectedTotalContent);
+        assertThat(videos.getContent().size()).isEqualTo(expectedContentSize);
+        assertThat(videos.getContent().stream().map(VideoQueryResult.SimpleVideo::videoId).toList())
+            .isEqualTo(expectedVideoIds);
     }
 }
