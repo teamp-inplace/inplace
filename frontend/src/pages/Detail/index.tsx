@@ -176,6 +176,7 @@ export default function DetailPage() {
       <InfoContainer>
         {/* {activeTab === 'info' ? ( */}
         <InfoTap
+          address={infoData.address}
           category={infoData?.category}
           facility={infoData?.facility}
           openingHours={infoData?.openingHours}

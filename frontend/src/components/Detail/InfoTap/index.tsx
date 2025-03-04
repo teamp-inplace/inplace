@@ -7,7 +7,7 @@ import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Paragraph } from '@/components/common/typography/Paragraph';
 import FacilitySign from './FacilitySign';
-import { FacilityInfo, GoogleReview } from '@/types';
+import { AddressInfo, FacilityInfo, GoogleReview } from '@/types';
 import OpenHour from './OpenHour';
 import { Text } from '@/components/common/typography/Text';
 import GoogleReviewList from '../GoogleReviewList';
@@ -20,6 +20,7 @@ import { ThemeContext } from '@/provider/Themes';
 import SpeedDialMap from './SpeedDialMap';
 
 type Props = {
+  address: AddressInfo;
   category: string;
   facility: FacilityInfo;
   openingHours: string[];
@@ -33,6 +34,7 @@ type Props = {
   placeId: number;
 };
 export default function InfoTap({
+  address,
   category,
   facility,
   openingHours,
@@ -71,9 +73,14 @@ export default function InfoTap({
             모바일로 연결
           </StyledButton>
         ) : null}
-
         <SpeedDialMap kakaoPlaceUrl={kakaoPlaceUrl} naverPlaceUrl={naverPlaceUrl} googlePlaceUrl={googlePlaceUrl} />
       </ButtonWrapper>
+      <Paragraph size="s" weight="bold">
+        주소
+      </Paragraph>
+      <Text size="xs" weight="normal" variant="white">
+        {[address.address1, address.address2, address.address3].join(' ')}
+      </Text>
       {googlePlaceUrl ? (
         <>
           <Paragraph size="s" weight="bold">
