@@ -1,10 +1,12 @@
 import { useContext, useState } from 'react';
 import styled from 'styled-components';
-import { FaComment, FaMapMarkedAlt, FaTimes } from 'react-icons/fa';
-import { SiNaver } from 'react-icons/si';
+import { FaMapMarkedAlt } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
+import { IoClose } from 'react-icons/io5';
 import Button from '@/components/common/Button';
 import { ThemeContext } from '@/provider/Themes';
+import KakaoIcon from '@/assets/images/kakaomap-icon.webp';
+import NaverIcon from '@/assets/images/navermap-icon.webp';
 
 interface SpeedDialMapProps {
   kakaoPlaceUrl: string;
@@ -32,10 +34,10 @@ export default function SpeedDialMap({ kakaoPlaceUrl, googlePlaceUrl, naverPlace
           }}
           data-tooltip="카카오맵"
         >
-          <FaComment size={18} color="fee500" />
+          <img src={KakaoIcon} alt="카카오맵" width="20" height="20" />
         </KakaoButton>
 
-        <NaverButton
+        <SpeedDialItem
           aria-label="naver_btn"
           variant="white"
           onClick={() => {
@@ -43,8 +45,8 @@ export default function SpeedDialMap({ kakaoPlaceUrl, googlePlaceUrl, naverPlace
           }}
           data-tooltip="네이버맵"
         >
-          <SiNaver size={14} color="green" />
-        </NaverButton>
+          <img src={NaverIcon} alt="네이버맵" width="20" height="20" />
+        </SpeedDialItem>
 
         {googlePlaceUrl && (
           <GoogleButton
@@ -61,7 +63,7 @@ export default function SpeedDialMap({ kakaoPlaceUrl, googlePlaceUrl, naverPlace
       </SpeedDialItems>
 
       <MainButton aria-label="toggle_map_options" variant={buttonVariant} onClick={toggleSpeedDial}>
-        {isOpen ? <FaTimes size={24} /> : <FaMapMarkedAlt size={24} />}
+        {isOpen ? <IoClose size={30} /> : <FaMapMarkedAlt size={24} />}
       </MainButton>
     </SpeedDialContainer>
   );
@@ -189,17 +191,8 @@ const SpeedDialItem = styled(Button)`
 const KakaoButton = styled(SpeedDialItem)`
   @media screen and (max-width: 768px) {
     svg {
-      width: 16px;
-      height: 16px;
-    }
-  }
-`;
-
-const NaverButton = styled(SpeedDialItem)`
-  @media screen and (max-width: 768px) {
-    svg {
-      width: 12px;
-      height: 12px;
+      width: 18px;
+      height: 18px;
     }
   }
 `;
