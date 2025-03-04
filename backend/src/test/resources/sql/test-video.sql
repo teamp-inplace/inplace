@@ -55,7 +55,11 @@ VALUES (1, 1, 1, 'Video1', 1, '2025-02-06 12:00:01.000000'),
        (25, 5, null, 'Video25', 20, '2025-02-06 12:24:01.000000');
 
 INSERT INTO users (id, nickname, password, username, role)
-VALUES ( 1, 'Test', 'password@', 'TestUser', 'USER' );
+VALUES ( 1, 'Test', 'password@', 'TestUser1', 'USER' ),
+       ( 2, 'Test', 'password@', 'TestUser2', 'USER' ),
+       ( 3, 'Test', 'password@', 'TestUser3', 'USER' ),
+       ( 4, 'Test', 'password@', 'TestUser4', 'USER' ),
+       ( 5, 'Test', 'password@', 'TestUser5', 'USER' );
 
 INSERT INTO liked_influencers (id, influencer_id, user_id, is_liked)
 VALUES (1, 1, 1, true),
@@ -63,3 +67,15 @@ VALUES (1, 1, 1, true),
        (3, 3, 1, false),
        (4, 4, 1, false),
        (5, 5, 1, true);
+
+INSERT INTO liked_places (id, place_id, user_id, is_liked)
+VALUES (1, 1, 1, true),
+       (2, 1, 2, false),
+       (3, 1, 3, false),
+       (4, 2, 1, true),
+       (5, 2, 2, true),
+       (6, 3, 1, true),
+       (7, 3, 2, true),
+       (8, 3, 3, true),
+       (9, 3, 4, true),
+       (10, 3, 5, true);

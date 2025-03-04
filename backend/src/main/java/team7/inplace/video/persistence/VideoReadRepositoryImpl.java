@@ -1,5 +1,6 @@
 package team7.inplace.video.persistence;
 
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Collections;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import team7.inplace.influencer.domain.QInfluencer;
 import team7.inplace.liked.likedInfluencer.domain.QLikedInfluencer;
+import team7.inplace.liked.likedPlace.domain.QLikedPlace;
 import team7.inplace.place.domain.QPlace;
 import team7.inplace.video.domain.QVideo;
 import team7.inplace.video.persistence.dto.QVideoQueryResult_SimpleVideo;
@@ -254,7 +256,7 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
     @Override
     public Page<VideoQueryResult.SimpleVideo> findSimpleVideosWithOneInfluencerId(
         Long influencerId, Pageable pageable) {
-        var videos = queryFactory
+        var query = queryFactory
             .select(new QVideoQueryResult_SimpleVideo(
                 QVideo.video.id,
                 QVideo.video.uuid,
@@ -267,7 +269,33 @@ public class VideoReadRepositoryImpl implements VideoReadRepository {
             .innerJoin(QPlace.place).on(QVideo.video.placeId.eq(QPlace.place.id))
             .leftJoin(QInfluencer.influencer)
             .on(QVideo.video.influencerId.eq(QInfluencer.influencer.id))
-            .where(QVideo.video.influencerId.eq(influencerId))
+            .where(QVideo.video.influencerId.eq(influencerId));
+
+        pageable.getSort().stream().findFirst().ifPresentOrElse(order -> {
+            String property = order.getProperty();
+            switch (property) {
+                case "popularity":
+                    query.orderBy(QVideo.video.view.viewCountIncrease.desc());
+                    break;
+                case "likes":
+                    var likesCount = JPAExpressions
+                        .select(QLikedPlace.likedPlace.count())
+                        .from(QLikedPlace.likedPlace)
+                        .where(QLikedPlace.likedPlace.placeId.eq(QPlace.place.id)
+                            .and(QLikedPlace.likedPlace.isLiked.isTrue()));
+                    // 서브쿼리 결과를 NumberExpression으로 변환
+                    var likesCountExpression = Expressions.numberTemplate(Long.class, "COALESCE({0}, 0)", likesCount);
+
+                    query.orderBy(likesCountExpression.desc());
+                    break;
+                case "publishTime":
+                default:
+                    query.orderBy(QVideo.video.publishTime.desc());
+                    break;
+            }
+        }, () -> query.orderBy(QVideo.video.publishTime.desc()));  // 정렬 옵션이 없을 때 기본 정렬
+
+        var videos = query
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
