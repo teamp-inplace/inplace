@@ -2,9 +2,6 @@ import styled from 'styled-components';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { IoMdStar } from 'react-icons/io';
 import { IoQrCode } from 'react-icons/io5';
-import { FaComment } from 'react-icons/fa';
-import { FcGoogle } from 'react-icons/fc';
-import { SiNaver } from 'react-icons/si';
 import { Suspense, useContext, useEffect, useState } from 'react';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -20,6 +17,7 @@ import VisitModal from '../VisitModal';
 import Loading from '@/components/common/layouts/Loading';
 import ErrorComponent from '@/components/common/layouts/Error';
 import { ThemeContext } from '@/provider/Themes';
+import SpeedDialMap from './SpeedDialMap';
 
 type Props = {
   category: string;
@@ -73,40 +71,8 @@ export default function InfoTap({
             모바일로 연결
           </StyledButton>
         ) : null}
-        <WebMap>
-          <StyledButton
-            aria-label="kakao_btn"
-            variant={buttonVariant}
-            onClick={() => {
-              window.location.href = kakaoPlaceUrl;
-            }}
-          >
-            <FaComment size={16} color="fee500" />
-            카카오맵
-          </StyledButton>
-          {googlePlaceUrl ? (
-            <StyledButton
-              aria-label="google_btn"
-              variant={buttonVariant}
-              onClick={() => {
-                window.location.href = googlePlaceUrl;
-              }}
-            >
-              <FcGoogle size={18} />
-              구글맵
-            </StyledButton>
-          ) : null}
-          <StyledButton
-            aria-label="naver_btn"
-            variant={buttonVariant}
-            onClick={() => {
-              window.location.href = naverPlaceUrl;
-            }}
-          >
-            <SiNaver size={12} color="green" />
-            네이버맵
-          </StyledButton>
-        </WebMap>
+
+        <SpeedDialMap kakaoPlaceUrl={kakaoPlaceUrl} naverPlaceUrl={naverPlaceUrl} googlePlaceUrl={googlePlaceUrl} />
       </ButtonWrapper>
       {googlePlaceUrl ? (
         <>
@@ -239,16 +205,6 @@ const StyledText = styled(Text)`
   align-items: end;
   svg {
     margin-left: 10px;
-  }
-`;
-
-const WebMap = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-
-  @media screen and (max-width: 768px) {
-    flex-direction: row;
   }
 `;
 
