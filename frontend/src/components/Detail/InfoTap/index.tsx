@@ -78,7 +78,7 @@ export default function InfoTap({
       <Paragraph size="s" weight="bold">
         주소
       </Paragraph>
-      <Text size="xs" weight="normal" variant="white">
+      <Text size="xs" weight="normal">
         {[address.address1, address.address2, address.address3].join(' ')}
       </Text>
       {googlePlaceUrl ? (
