@@ -4,6 +4,7 @@ import { IoMdStar } from 'react-icons/io';
 import { IoQrCode } from 'react-icons/io5';
 import { FaComment } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
+import { SiNaver } from 'react-icons/si';
 import { Suspense, useContext, useEffect, useState } from 'react';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -25,6 +26,7 @@ type Props = {
   facility: FacilityInfo;
   openingHours: string[];
   kakaoPlaceUrl: string;
+  naverPlaceUrl: string;
   googlePlaceUrl: string;
   googleReviews: GoogleReview[];
   longitude: string;
@@ -37,6 +39,7 @@ export default function InfoTap({
   facility,
   openingHours,
   kakaoPlaceUrl,
+  naverPlaceUrl,
   googlePlaceUrl,
   googleReviews,
   longitude,
@@ -93,6 +96,16 @@ export default function InfoTap({
               구글맵
             </StyledButton>
           ) : null}
+          <StyledButton
+            aria-label="naver_btn"
+            variant={buttonVariant}
+            onClick={() => {
+              window.location.href = naverPlaceUrl;
+            }}
+          >
+            <SiNaver size={12} color="green" />
+            네이버맵
+          </StyledButton>
         </WebMap>
       </ButtonWrapper>
       {googlePlaceUrl ? (

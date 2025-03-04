@@ -99,6 +99,7 @@ export type PlaceInfo = {
   openingHours: string[];
   googlePlaceUrl: string;
   kakaoPlaceUrl: string;
+  naverPlaceUrl: string;
   googleReviews: GoogleReview[];
   rating: number;
   longitude: string;

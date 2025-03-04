@@ -180,6 +180,7 @@ export default function DetailPage() {
           facility={infoData?.facility}
           openingHours={infoData?.openingHours}
           kakaoPlaceUrl={infoData?.kakaoPlaceUrl}
+          naverPlaceUrl={infoData?.naverPlaceUrl}
           googlePlaceUrl={infoData?.googlePlaceUrl}
           googleReviews={infoData?.googleReviews}
           longitude={infoData?.longitude}

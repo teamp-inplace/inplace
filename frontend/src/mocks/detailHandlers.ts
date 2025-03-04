@@ -167,6 +167,7 @@ export const detailHandlers = [
         rating: 2.5,
         googlePlaceUrl: 'https://google.com',
         kakaoPlaceUrl: 'https://kakao.com',
+        naverPlaceUrl: 'https://naver.com',
         googleReviews: [
           {
             like: true,
