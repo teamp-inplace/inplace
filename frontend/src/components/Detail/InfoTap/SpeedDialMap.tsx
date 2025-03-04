@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { FaComment, FaMapMarkedAlt, FaTimes } from 'react-icons/fa';
 import { SiNaver } from 'react-icons/si';
 import { FcGoogle } from 'react-icons/fc';
 import Button from '@/components/common/Button';
+import { ThemeContext } from '@/provider/Themes';
 
 interface SpeedDialMapProps {
   kakaoPlaceUrl: string;
@@ -13,6 +14,8 @@ interface SpeedDialMapProps {
 
 export default function SpeedDialMap({ kakaoPlaceUrl, googlePlaceUrl, naverPlaceUrl }: SpeedDialMapProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { theme } = useContext(ThemeContext);
+  const buttonVariant = theme === 'dark' ? 'outline' : 'blackOutline';
 
   const toggleSpeedDial = () => {
     setIsOpen(!isOpen);
@@ -57,7 +60,7 @@ export default function SpeedDialMap({ kakaoPlaceUrl, googlePlaceUrl, naverPlace
         )}
       </SpeedDialItems>
 
-      <MainButton aria-label="toggle_map_options" variant="mint" onClick={toggleSpeedDial}>
+      <MainButton aria-label="toggle_map_options" variant={buttonVariant} onClick={toggleSpeedDial}>
         {isOpen ? <FaTimes size={24} /> : <FaMapMarkedAlt size={24} />}
       </MainButton>
     </SpeedDialContainer>
@@ -67,13 +70,18 @@ export default function SpeedDialMap({ kakaoPlaceUrl, googlePlaceUrl, naverPlace
 const SpeedDialContainer = styled.div`
   position: fixed;
   bottom: 4%;
-  right: 2%;
+  right: 17%;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 56px;
   height: 56px;
   z-index: 2;
+
+  @media screen and (max-width: 768px) {
+    bottom: 4%;
+    right: 2%;
+  }
 `;
 
 const MainButton = styled(Button)`
@@ -86,6 +94,13 @@ const MainButton = styled(Button)`
   align-items: center;
   z-index: 10;
   padding: 0;
+
+  &[variant='blackOutline'] {
+    background-color: #ecfbfb;
+  }
+  &[variant='outline'] {
+    background-color: #292929;
+  }
 
   @media screen and (max-width: 768px) {
     width: 48px;
