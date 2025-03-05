@@ -36,6 +36,7 @@ public class AdminPageController {
         model.addAttribute("isFirst", videoPage.isFirst());
         model.addAttribute("isLast", videoPage.isLast());
         model.addAttribute("kakaoApiKey", kakaoApiProperties.jsKey());
+        model.addAttribute("googleApiKey", googleApiProperties.placeKey1());
 
         var categories = Category.values();
         model.addAttribute("categories", categories);

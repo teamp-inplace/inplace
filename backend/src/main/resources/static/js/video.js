@@ -3,13 +3,21 @@ function openModal(element) {
   const videoUrl = element.getAttribute("data-video-url");
   const videoId = element.getAttribute("data-video-id");
   window.selectedVideoId = videoId;
+  window.selectedVideoUrl = videoUrl;
   document.getElementById("placeSearchModal").style.display = "block";
   const videoIframe = document.getElementById("videoIframe");
   videoIframe.src = `https://www.youtube.com/embed/${videoUrl}`;
 }
 
+function openGoogleModal() {
+  document.getElementById("placeGoogleSearchModal").style.display = "block";
+  const videoIframe = document.getElementById("videoIframe2");
+  videoIframe.src = `https://www.youtube.com/embed/${window.selectedVideoUrl}`;
+}
+
 // 모달 닫기 함수
 function closeModal() {
+  document.getElementById("placeGoogleSearchModal").style.display = "none";
   document.getElementById("placeSearchModal").style.display = "none";
   document.getElementById("videoIframe").src = ""; // 비디오 정지
 }
@@ -22,7 +30,9 @@ window.onclick = function (event) {
   }
 };
 
-function searchPlaces() {
+let placeInfo = null;
+
+function searchKakaoPlaces() {
 
   const keyword = document.getElementById('keyword').value;
   if (!keyword.trim()) {
@@ -42,7 +52,7 @@ function searchPlaces() {
                     <tr>
                         <td>${place.place_name}</td>
                         <td>${place.address_name}</td>
-                        <td><button onclick='registerPlace(${JSON.stringify(
+                        <td><button onclick='setPlaceInfo(${JSON.stringify(
             place).replace(/'/g, "&#39;")})'>등록</button></td>
                     </tr>`;
         tbody.append(row);
@@ -53,30 +63,82 @@ function searchPlaces() {
   });
 }
 
-// 장소 등록 및 API 호출
-function registerPlace(place) {
-
+function setPlaceInfo(place) {
   const videoId = window.selectedVideoId;
   const category = document.getElementById('category').value;
-  const googlePlaceId = document.getElementById('google-place-id-input').value;
   if (!category) {
     alert("카테고리를 선택해주세요.")
     return;
   }
+
+  // 카카오 map 기준 검색 결과 ( googlePlaceId x )
+  placeInfo = {
+    videoId: videoId,
+    placeName: place.place_name,
+    category: category,
+    address: place.address_name,
+    x: place.x,
+    y: place.y,
+    googlePlaceId: null,
+    kakaoPlaceId: place.id
+  };
+
+  closeModal();
+  openGoogleModal();
+}
+
+function searchGooglePlaces() {
+  const keyword = document.getElementById('keyword2').value;
+  if (!keyword.trim()) {
+    alert("검색어를 입력하세요.");
+    return;
+  }
+
+  $.ajax({
+    url: 'https://places.googleapis.com/v1/places:searchText',
+    method: 'POST',
+    contentType: 'application/json',
+    headers: {
+      "X-Goog-Api-Key": document.getElementById("google-api-key").getAttribute("data-api-key"),
+      "X-Goog-FieldMask": "*"
+    },
+    data: JSON.stringify({
+      textQuery: keyword
+    }),
+    success: function (res) {
+      const tbody = $('#search-tbody2');
+      tbody.empty();
+
+      res.places.forEach(place => {
+        const row = `
+                <tr>
+                    <td>${place.displayName.text}</td>
+                    <td>${place.formattedAddress}</td>
+                    <td><button class="register-btn" data-place-id="${place.id}">등록</button></td>
+                </tr>`;
+        tbody.append(row);
+      });
+
+      // 이벤트 리스너 등록
+      $(".register-btn").off("click").on("click", function () {
+        const placeId = $(this).data("place-id");  // 버튼의 data-place-id 값 가져오기
+        registerPlace(placeId);
+      });
+    },
+    error: function () {
+      alert("검색 실패");
+    }
+  });
+}
+
+function registerPlace(googlePlaceId) {
+  placeInfo.googlePlaceId = googlePlaceId;
+
   $.ajax({
     url: `/places`,
     method: 'POST',
     contentType: 'application/json',
-    data: JSON.stringify({
-      videoId: videoId,
-      placeName: place.place_name,
-      category: category,
-      address: place.address_name,
-      x: place.x,
-      y: place.y,
-      googlePlaceId: googlePlaceId,
-      kakaoPlaceId: place.id
-    }),
+    data: JSON.stringify(placeInfo),
     success: function () {
       alert("장소가 등록되었습니다.");
       closeModal();

@@ -16,6 +16,8 @@
   <a class="header-link" href="/admin/main">홈</a>
 </div>
 
+<div id="google-api-key" th:data-api-key="${googleApiKey}"></div>
+
 <h1>Video List</h1>
 <table>
   <thead>
@@ -69,43 +71,30 @@
 <div class="modal" id="placeSearchModal">
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
-    <h2>장소 검색</h2>
+    <h2>장소 검색 (카카오)</h2>
 
     <iframe allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen
             frameborder="0" height="315"
             id="videoIframe" src=""
-            width="560"></iframe>
+            width="560">
+    </iframe>
 
     <!-- Place search form -->
 
     <div class="category-container">
-      <form onsubmit="searchPlaces(); return false;">
-        키워드: <input id="keyword" placeholder="장소를 입력하세요" type="text"/>
+      <form onsubmit="searchKakaoPlaces(); return false;">
+        <label for="keyword">키워드:</label>
+        <input  id="keyword" placeholder="장소를 입력하세요" type="text"/>
+        <select id="category" required>
+          <option disabled selected value="">카테고리</option>
+          <th:block th:each="category : ${categories}">
+            <option th:text="${category.name}" th:value="${category}"></option>
+          </th:block>
+        </select>
         <button type="submit">검색하기</button>
       </form>
-
-      <select id="category" required>
-        <option disabled selected value="">카테고리</option>
-        <th:block th:each="category : ${categories}">
-          <option th:text="${category.name}" th:value="${category}"></option>
-        </th:block>
-      </select>
-
-      <div class="google-place-input">
-        <input id="google-place-id-input"
-               placeholder="Google Place ID를 입력하세요"
-               required
-               type="text"/>
-        <a class="google-search-button"
-           href="https://developers.google.com/maps/documentation/places/web-service/place-id"
-           target="_blank">
-          구글 ID 찾기
-        </a>
-      </div>
-
     </div>
-
 
     <table id="search-results">
       <thead>
@@ -116,6 +105,42 @@
       </tr>
       </thead>
       <tbody id="search-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal for Video and Place Search -->
+<div class="modal" id="placeGoogleSearchModal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2>장소 검색 (구글)</h2>
+
+    <iframe allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            frameborder="0" height="315"
+            id="videoIframe2" src=""
+            width="560">
+    </iframe>
+
+    <!-- Place search form -->
+
+    <div class="category-container">
+      <form onsubmit="searchGooglePlaces(); return false;">
+        <label for="keyword2">키워드:</label>
+        <input  id="keyword2" placeholder="장소를 입력하세요" type="text"/>
+        <button type="submit">검색하기</button>
+      </form>
+    </div>
+
+    <table id="search-results2">
+      <thead>
+      <tr>
+        <th>장소명</th>
+        <th>주소</th>
+        <th>등록</th>
+      </tr>
+      </thead>
+      <tbody id="search-tbody2"></tbody>
     </table>
   </div>
 </div>
