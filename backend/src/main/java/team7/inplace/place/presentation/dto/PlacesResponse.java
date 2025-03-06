@@ -3,6 +3,7 @@ package team7.inplace.place.presentation.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -73,6 +74,7 @@ public class PlacesResponse {
         Double rating,
         String kakaoPlaceUrl,
         String googlePlaceUrl,
+        String naverPlaceUrl,
         List<String> openingHours,
         PlacesResponse.PlaceLike placeLikes,
         Boolean likes
@@ -107,6 +109,13 @@ public class PlacesResponse {
                 null,
                 "http://place.map.kakao.com/" + place.place().kakaoPlaceId(),
                 null,
+                "https://map.naver.com/p/search/"
+                    + convertParamsForNaverSearch(
+                    place.place().address1(),
+                    place.place().address2(),
+                    place.place().address3(),
+                    place.place().placeName()
+                ),
                 List.of(),
                 PlacesResponse.PlaceLike.from(place.reviewLikeRate()),
                 place.place().isLiked()
@@ -140,12 +149,23 @@ public class PlacesResponse {
                 place.googlePlace().rating(),
                 "http://place.map.kakao.com/" + place.place().kakaoPlaceId(),
                 place.googlePlace().googleMapsUri(),
+                "https://map.naver.com/p/search/"
+                    + convertParamsForNaverSearch(
+                        place.place().address1(),
+                        place.place().address2(),
+                        place.place().address3(),
+                        place.place().placeName()
+                    ),
                 place.googlePlace().regularOpeningHours()
                     .map(RegularOpeningHours::weekdayDescriptions)
                     .orElse(List.of()),
                 PlacesResponse.PlaceLike.from(place.reviewLikeRate()),
                 place.place().isLiked()
             );
+        }
+
+        private static String convertParamsForNaverSearch(String... params) {
+            return String.join("%20", params);
         }
     }
 
