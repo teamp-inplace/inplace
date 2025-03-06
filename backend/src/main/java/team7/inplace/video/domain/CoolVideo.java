@@ -42,4 +42,18 @@ public class CoolVideo {
     @Enumerated(value = EnumType.STRING)
     private Category placeCategory;
 
+    private CoolVideo(Long videoId, String videoUUID, String influencerName, Long placeId, String placeName,
+        Category placeCategory) {
+        this.videoId = videoId;
+        this.videoUUID = videoUUID;
+        this.influencerName = influencerName;
+        this.placeId = placeId;
+        this.placeName = placeName;
+        this.placeCategory = placeCategory;
+    }
+
+    public static CoolVideo from(Long videoId, String videoUUID, String influencerName, Long placeId, String placeName, Category placeCategory) {
+        return new CoolVideo(videoId, videoUUID, influencerName, placeId, placeName, placeCategory);
+    }
+
 }

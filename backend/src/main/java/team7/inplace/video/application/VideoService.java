@@ -14,6 +14,7 @@ import team7.inplace.security.util.AuthorizationUtil;
 import team7.inplace.video.application.command.VideoCommand;
 import team7.inplace.video.application.command.VideoCommand.Create;
 import team7.inplace.video.domain.Video;
+import team7.inplace.video.persistence.CoolVideoRepository;
 import team7.inplace.video.persistence.VideoReadRepository;
 import team7.inplace.video.persistence.VideoRepository;
 import team7.inplace.video.persistence.dto.VideoQueryResult;
@@ -26,6 +27,7 @@ public class VideoService {
 
     private final VideoReadRepository videoReadRepository;
     private final VideoRepository videoRepository;
+    private final CoolVideoRepository coolVideoRepository;
 
     //TODO: Facade에서 호출로 변경해야함.
     @Transactional(readOnly = true)
@@ -125,5 +127,18 @@ public class VideoService {
     @Transactional
     public void deleteVideo(Long videoId) {
         videoRepository.deleteById(videoId);
+    }
+
+    @Transactional
+    public void updateCoolVideo() {
+        // 인기순 top 10 video 가져오기
+        List<SimpleVideo> coolVideos = videoReadRepository.findTop10ByViewCountIncrement();
+
+        // coolVideo table 업데이트하기
+        coolVideoRepository.deleteAll();
+        coolVideoRepository.saveAll(
+            coolVideos.stream()
+                .map(SimpleVideo::toCoolVideo).toList()
+        );
     }
 }
