@@ -3,6 +3,7 @@ package team7.inplace.video.persistence.dto;
 import com.querydsl.core.annotations.QueryProjection;
 import team7.inplace.place.domain.Category;
 import team7.inplace.video.domain.CoolVideo;
+import team7.inplace.video.domain.RecentVideo;
 
 public class VideoQueryResult {
     public record SimpleVideo(
@@ -34,6 +35,10 @@ public class VideoQueryResult {
                 coolVideo.getPlaceName(),
                 coolVideo.getPlaceCategory()
             );
+        }
+
+        public RecentVideo toRecentVideo() {
+            return RecentVideo.from(videoId, videoUUID, influencerName, placeId, placeName, placeCategory);
         }
     }
 }
