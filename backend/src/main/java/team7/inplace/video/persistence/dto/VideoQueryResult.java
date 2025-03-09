@@ -24,5 +24,16 @@ public class VideoQueryResult {
         public CoolVideo toCoolVideo() {
             return CoolVideo.from(videoId, videoUUID, influencerName, placeId, placeName, placeCategory);
         }
+
+        public static SimpleVideo from(CoolVideo coolVideo) {
+            return new SimpleVideo(
+                coolVideo.getVideoId(),
+                coolVideo.getVideoUUID(),
+                coolVideo.getInfluencerName(),
+                coolVideo.getPlaceId(),
+                coolVideo.getPlaceName(),
+                coolVideo.getPlaceCategory()
+            );
+        }
     }
 }

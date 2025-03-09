@@ -62,9 +62,9 @@ public class VideoService {
 
     @Transactional(readOnly = true)
     public List<VideoQueryResult.SimpleVideo> getCoolVideo() {
-        var top10Videos = videoReadRepository.findTop10ByViewCountIncrement();
+        var top10Videos = coolVideoRepository.findAll();
 
-        return top10Videos.stream().toList();
+        return top10Videos.stream().map(SimpleVideo::from).toList();
     }
 
     @Transactional(readOnly = true)
