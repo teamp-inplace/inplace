@@ -16,20 +16,12 @@ import { useGetInfluencerInfo } from '@/api/hooks/useGetInfluencerInfo';
 import Loading from '@/components/common/layouts/Loading';
 import InfluencerVideoTap from '@/components/InfluencerInfo/InfluencerVideoTap';
 import InfluencerMapTap from '@/components/InfluencerInfo/InfluencerMapTap';
-import { useGetInfluencerVideo } from '@/api/hooks/useGetInfluencerVideo';
 import Button from '@/components/common/Button';
 
 export default function InfluencerInfoPage() {
   const { id } = useParams() as { id: string };
   const { data: influencerInfoData } = useGetInfluencerInfo(id);
   const [sortOption, setSortOption] = useState('publishTime');
-
-  const {
-    data: videos,
-    fetchNextPage: videoFetchNextPage,
-    hasNextPage: videoHasNextPage,
-    isFetchingNextPage: videoIsFetchingNextPage,
-  } = useGetInfluencerVideo(id, 6, sortOption);
 
   const sortLabel: Record<string, string> = {
     publishTime: '최신순',
@@ -147,12 +139,7 @@ export default function InfluencerInfoPage() {
           </SortSection>
         )}
         {activeTab === 'video' ? (
-          <InfluencerVideoTap
-            items={videos.pages.flatMap((page) => page.content)}
-            hasNextPage={videoHasNextPage}
-            fetchNextPage={videoFetchNextPage}
-            isFetchingNextPage={videoIsFetchingNextPage}
-          />
+          <InfluencerVideoTap influencerId={id} sortOption={sortOption} />
         ) : (
           <QueryErrorResetBoundary>
             {({ reset }) => (

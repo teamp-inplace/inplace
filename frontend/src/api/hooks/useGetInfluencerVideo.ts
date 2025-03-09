@@ -1,4 +1,4 @@
-import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { fetchInstance } from '../instance';
 import { PageableData, SpotData } from '@/types';
 
@@ -12,14 +12,9 @@ export const getInfluencerVideo = async (id: string, page: number, size: number,
   const response = await fetchInstance.get<PageableData<SpotData>>(`${getInfluencerVideoPath(id)}?${params}`);
   return response.data;
 };
-export const useGetInfluencerVideo = (id: string, size: number, sort: string) => {
-  return useSuspenseInfiniteQuery({
-    queryKey: ['influencerVideo', id, size, sort],
-    queryFn: ({ pageParam = 0 }) => getInfluencerVideo(id, pageParam, size, sort),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage) => {
-      return lastPage.last ? undefined : lastPage.number + 1;
-    },
-    staleTime: 0,
+export const useGetInfluencerVideo = (id: string, page: number, size: number, sort: string) => {
+  return useQuery({
+    queryKey: ['influencerVideo', id, page, size, sort],
+    queryFn: () => getInfluencerVideo(id, page, size, sort),
   });
 };
