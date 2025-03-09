@@ -1,4 +1,5 @@
 import { PiHeartFill, PiHeartLight } from 'react-icons/pi';
+import { IoIosArrowDown } from 'react-icons/io';
 
 import styled from 'styled-components';
 import { useLocation, useParams } from 'react-router-dom';
@@ -16,16 +17,25 @@ import Loading from '@/components/common/layouts/Loading';
 import InfluencerVideoTap from '@/components/InfluencerInfo/InfluencerVideoTap';
 import InfluencerMapTap from '@/components/InfluencerInfo/InfluencerMapTap';
 import { useGetInfluencerVideo } from '@/api/hooks/useGetInfluencerVideo';
+import Button from '@/components/common/Button';
 
 export default function InfluencerInfoPage() {
   const { id } = useParams() as { id: string };
   const { data: influencerInfoData } = useGetInfluencerInfo(id);
+  const [sortOption, setSortOption] = useState('publishTime');
+
   const {
     data: videos,
     fetchNextPage: videoFetchNextPage,
     hasNextPage: videoHasNextPage,
     isFetchingNextPage: videoIsFetchingNextPage,
-  } = useGetInfluencerVideo(id, 6);
+  } = useGetInfluencerVideo(id, 6, sortOption);
+
+  const sortLabel: Record<string, string> = {
+    publishTime: '최신순',
+    popularity: '조회수 증가량 순',
+    likes: '장소 좋아요 순',
+  };
 
   const influencerId = Number(id);
 
@@ -35,6 +45,7 @@ export default function InfluencerInfoPage() {
   const [activeTab, setActiveTab] = useState<'video' | 'map'>('video');
   const [isLike, setIsLike] = useState(influencerInfoData.likes);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSortOptions, setShowSortOptions] = useState(false);
   const queryClient = useQueryClient();
 
   const { mutate: postLike } = usePostInfluencerLike();
@@ -63,6 +74,11 @@ export default function InfluencerInfoPage() {
     },
     [isLike, influencerId, postLike],
   );
+
+  const handleSortChange = (option: string) => {
+    setSortOption(option);
+    setShowSortOptions(false);
+  };
 
   useEffect(() => {
     setIsLike(influencerInfoData.likes);
@@ -106,6 +122,30 @@ export default function InfluencerInfoPage() {
         </Tap>
       </TapContainer>
       <InfoContainer>
+        {activeTab === 'video' && (
+          <SortSection>
+            <StyledButton
+              aria-label="sort_btn"
+              variant="white"
+              size="small"
+              onClick={() => setShowSortOptions(!showSortOptions)}
+            >
+              <span>{sortLabel[sortOption]}</span>
+              <IoIosArrowDown size={16} />
+            </StyledButton>
+            {showSortOptions && (
+              <SortDropdown>
+                <SortItem onClick={() => handleSortChange('publishTime')}>
+                  최신순 {sortOption === 'publishTime'}
+                </SortItem>
+                <SortItem onClick={() => handleSortChange('popularity')}>
+                  조회수 증가량 순 {sortOption === 'popularity'}
+                </SortItem>
+                <SortItem onClick={() => handleSortChange('likes')}>장소 좋아요 순 {sortOption === 'likes'}</SortItem>
+              </SortDropdown>
+            )}
+          </SortSection>
+        )}
         {activeTab === 'video' ? (
           <InfluencerVideoTap
             items={videos.pages.flatMap((page) => page.content)}
@@ -235,5 +275,71 @@ const TapContainer = styled.div`
 const InfoContainer = styled.div`
   @media screen and (max-width: 768px) {
     width: 90%;
+  }
+`;
+
+const SortSection = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+  margin-top: -30px;
+
+  @media screen and (max-width: 768px) {
+    margin-bottom: 10px;
+    margin-top: -10px;
+  }
+`;
+
+const StyledButton = styled(Button)`
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  width: 130px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: auto;
+
+  &:hover {
+    background-color: #f8f8f8;
+  }
+
+  @media screen and (max-width: 768px) {
+    width: 120px;
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+`;
+
+const SortDropdown = styled.div`
+  position: absolute;
+  top: 100%;
+  z-index: 2;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 130px;
+  margin-top: 4px;
+  color: black;
+
+  @media screen and (max-width: 768px) {
+    width: 120px;
+  }
+`;
+
+const SortItem = styled.div`
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f8f8f8;
+  }
+
+  @media screen and (max-width: 768px) {
+    font-size: 12px;
+    padding: 8px 10px;
   }
 `;
