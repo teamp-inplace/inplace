@@ -66,3 +66,16 @@ VALUES (1, 1, 1, 'Video1', 1, '2025-02-06 12:00:01.000000'),
        (23, 5, null, 'Video23', 18, '2025-02-06 12:22:01.000000'),
        (24, 5, null, 'Video24', 19, '2025-02-06 12:23:01.000000'),
        (25, 5, null, 'Video25', 20, '2025-02-06 12:24:01.000000');
+
+INSERT INTO recent_videos (id, video_id, uuid, influencer_name, place_id, place_name, place_category)
+VALUES
+    (1, 1, 'RecentVideo1', 'RecentInfluencer1', 101, 'RecentPlace1', 'RESTAURANT'),
+    (2, 2, 'RecentVideo2', 'RecentInfluencer2', 102, 'RecentPlace2', 'CAFE'),
+    (3, 3, 'RecentVideo3', 'RecentInfluencer3', 103, 'RecentPlace3', 'JAPANESE'),
+    (4, 4, 'RecentVideo4', 'RecentInfluencer4', 104, 'RecentPlace4', 'KOREAN'),
+    (5, 5, 'RecentVideo5', 'RecentInfluencer5', 105, 'RecentPlace5', 'NONE'),
+    (6, 6, 'RecentVideo6', 'RecentInfluencer6', 106, 'RecentPlace6', 'WESTERN'),
+    (7, 7, 'RecentVideo7', 'RecentInfluencer7', 107, 'RecentPlace7', 'RESTAURANT'),
+    (8, 8, 'RecentVideo8', 'RecentInfluencer8', 108, 'RecentPlace8', 'CAFE'),
+    (9, 9, 'RecentVideo9', 'RecentInfluencer9', 109, 'RecentPlace9', 'JAPANESE'),
+    (10, 10, 'RecentVideo10', 'RecentInfluencer10', 110, 'RecentPlace10', 'KOREAN');

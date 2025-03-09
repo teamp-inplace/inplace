@@ -132,7 +132,7 @@ public class VideoService {
     }
 
     @Transactional
-    public void updateCoolVideo() {
+    public void updateCoolVideos() {
         // 인기순 top 10 video 가져오기
         List<SimpleVideo> coolVideos = videoReadRepository.findTop10ByViewCountIncrement();
 
@@ -146,7 +146,7 @@ public class VideoService {
     }
 
     @Transactional
-    public void updateNewVideo() {
+    public void updateRecentVideos() {
         //최신순 top 10 video 가져오기
         List<SimpleVideo> recentVideos = videoReadRepository.findTop10ByLatestUploadDate();
 
