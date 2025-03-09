@@ -136,6 +136,7 @@ public class VideoService {
 
         // coolVideo table 업데이트하기
         coolVideoRepository.deleteAll();
+        coolVideoRepository.flush(); // delete 후 save 하려면 flush를 해야함.
         coolVideoRepository.saveAll(
             coolVideos.stream()
                 .map(SimpleVideo::toCoolVideo).toList()
