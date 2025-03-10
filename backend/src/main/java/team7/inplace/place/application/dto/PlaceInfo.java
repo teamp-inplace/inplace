@@ -44,12 +44,12 @@ public class PlaceInfo {
 
     public record Marker(
         PlaceQueryResult.Marker place,
-        String influencerNames
+        List<VideoQueryResult.SimpleVideo> videos
     ) {
 
-        public static PlaceInfo.Marker from(
-            PlaceQueryResult.Marker marker, List<String> influencerNames) {
-            return new PlaceInfo.Marker(marker, String.join(",", influencerNames));
+        public static PlaceInfo.Marker of(
+            PlaceQueryResult.Marker marker, List<VideoQueryResult.SimpleVideo> videos) {
+            return new PlaceInfo.Marker(marker, videos);
         }
     }
 

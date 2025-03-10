@@ -34,8 +34,8 @@ public class PlaceFacade {
 
     public Marker getMarkerInfo(Long placeId) {
         PlaceQueryResult.Marker marker = placeService.getMarkerInfo(placeId);
-        List<String> influencerNames = influencerService.getInfluencerNamesByPlaceId(placeId);
-        return PlaceInfo.Marker.from(marker, influencerNames);
+        var videos = videoService.getVideosByPlaceId(placeId);
+        return PlaceInfo.Marker.of(marker, videos);
     }
 
     public PlaceInfo.Detail getDetailedPlaces(Long placeId) {
