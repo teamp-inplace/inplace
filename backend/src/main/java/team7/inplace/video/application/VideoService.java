@@ -57,9 +57,9 @@ public class VideoService {
 
     @Transactional(readOnly = true)
     public List<VideoQueryResult.SimpleVideo> getAllVideosDesc() {
-        var top10Videos = videoReadRepository.findTop10ByLatestUploadDate();
+        var top10Videos = recentVideoRepository.findAll();
 
-        return top10Videos.stream().toList();
+        return top10Videos.stream().map(SimpleVideo::from).toList();
     }
 
     @Transactional(readOnly = true)

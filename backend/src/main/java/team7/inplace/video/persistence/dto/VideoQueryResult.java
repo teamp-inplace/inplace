@@ -40,5 +40,16 @@ public class VideoQueryResult {
         public RecentVideo toRecentVideo() {
             return RecentVideo.from(videoId, videoUUID, influencerName, placeId, placeName, placeCategory);
         }
+
+        public static SimpleVideo from(RecentVideo recentVideo) {
+            return new SimpleVideo(
+                recentVideo.getVideoId(),
+                recentVideo.getVideoUUID(),
+                recentVideo.getInfluencerName(),
+                recentVideo.getPlaceId(),
+                recentVideo.getPlaceName(),
+                recentVideo.getPlaceCategory()
+            );
+        }
     }
 }
