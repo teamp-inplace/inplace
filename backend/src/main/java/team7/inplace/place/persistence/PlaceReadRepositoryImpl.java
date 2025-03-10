@@ -269,7 +269,7 @@ public class PlaceReadRepositoryImpl implements PlaceReadRepository {
             .select(new QPlaceQueryResult_Marker(
                 QPlace.place.id,
                 QPlace.place.name,
-                QPlace.place.category.stringValue(),
+                QPlace.place.category,
                 QPlace.place.address.address1,
                 QPlace.place.address.address2,
                 QPlace.place.address.address3

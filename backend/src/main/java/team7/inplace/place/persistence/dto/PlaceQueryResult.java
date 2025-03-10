@@ -55,7 +55,7 @@ public class PlaceQueryResult {
     public record Marker(
         Long placeId,
         String placeName,
-        String category,
+        Category category,
         String address1,
         String address2,
         String address3
