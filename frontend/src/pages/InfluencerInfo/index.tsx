@@ -25,8 +25,8 @@ export default function InfluencerInfoPage() {
 
   const sortLabel: Record<string, string> = {
     publishTime: '최신순',
-    popularity: '조회수 증가량 순',
-    likes: '장소 좋아요 순',
+    popularity: '인기순',
+    likes: '좋아요순',
   };
 
   const influencerId = Number(id);
@@ -130,10 +130,8 @@ export default function InfluencerInfoPage() {
                 <SortItem onClick={() => handleSortChange('publishTime')}>
                   최신순 {sortOption === 'publishTime'}
                 </SortItem>
-                <SortItem onClick={() => handleSortChange('popularity')}>
-                  조회수 증가량 순 {sortOption === 'popularity'}
-                </SortItem>
-                <SortItem onClick={() => handleSortChange('likes')}>장소 좋아요 순 {sortOption === 'likes'}</SortItem>
+                <SortItem onClick={() => handleSortChange('popularity')}>인기순 {sortOption === 'popularity'}</SortItem>
+                <SortItem onClick={() => handleSortChange('likes')}>좋아요순 {sortOption === 'likes'}</SortItem>
               </SortDropdown>
             )}
           </SortSection>
@@ -269,12 +267,12 @@ const SortSection = styled.div`
   position: relative;
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 20px;
-  margin-top: -30px;
+  margin-bottom: 10px;
+  margin-top: -40px;
 
   @media screen and (max-width: 768px) {
-    margin-bottom: 10px;
-    margin-top: -10px;
+    margin-bottom: 6px;
+    margin-top: -14px;
   }
 `;
 
@@ -282,17 +280,20 @@ const StyledButton = styled(Button)`
   justify-content: space-between;
   gap: 8px;
   padding: 6px 10px;
-  width: 130px;
+  width: 90px;
   cursor: pointer;
   font-size: 14px;
   margin-left: auto;
+  color: ${({ theme }) => (theme.textColor === '#ffffff' ? '#ffffff' : '#333333')};
+
+  background-color: ${({ theme }) => (theme.backgroundColor === '#292929' ? '#292929' : '#ecfbfb')};
 
   &:hover {
-    background-color: #f8f8f8;
+    background-color: ${({ theme }) => (theme.backgroundColor === '#292929' ? '#222222' : '#daeeee')};
   }
 
   @media screen and (max-width: 768px) {
-    width: 120px;
+    width: 80px;
     font-size: 12px;
     padding: 4px 8px;
   }
@@ -302,15 +303,15 @@ const SortDropdown = styled.div`
   position: absolute;
   top: 100%;
   z-index: 2;
-  background-color: white;
+  background-color: ${({ theme }) => (theme.backgroundColor === '#292929' ? '#292929' : '#ecfbfb')};
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  width: 130px;
+  width: 90px;
   margin-top: 4px;
-  color: black;
+  color: ${({ theme }) => (theme.textColor === '#ffffff' ? '#ffffff' : '#333333')};
 
   @media screen and (max-width: 768px) {
-    width: 120px;
+    width: 80px;
   }
 `;
 
@@ -322,7 +323,7 @@ const SortItem = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: #f8f8f8;
+    background-color: ${({ theme }) => (theme.backgroundColor === '#292929' ? '#222222' : '#daeeee')};
   }
 
   @media screen and (max-width: 768px) {
