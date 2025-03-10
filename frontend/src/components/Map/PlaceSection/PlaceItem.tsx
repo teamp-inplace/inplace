@@ -3,12 +3,13 @@ import { PiHeartFill, PiHeartLight } from 'react-icons/pi';
 import { useCallback, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import { FaMapMarkerAlt } from 'react-icons/fa';
 import { Text } from '@/components/common/typography/Text';
 import { PlaceData } from '@/types';
 import { usePostPlaceLike } from '@/api/hooks/usePostPlaceLike';
 import useAuth from '@/hooks/useAuth';
 import LoginModal from '@/components/common/modals/LoginModal';
-// import FallbackImage from '@/components/common/Items/FallbackImage';
+import FallbackImage from '@/components/common/Items/FallbackImage';
 
 interface PlaceItemProps extends PlaceData {
   onClick: () => void;
@@ -18,13 +19,18 @@ const getFullAddress = (addr: PlaceData['address']) => {
   return [addr.address1, addr.address2, addr.address3].filter(Boolean).join(' ');
 };
 
+const extractYoutubeId = (url: string) => {
+  const match = url?.match(/(?:https?:\/\/)?(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w-]*)(&(amp;)?[\w?=]*)?/);
+  const youtubeId = match && match[1] ? match[1] : null;
+  return `https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`;
+};
+
 export default function PlaceItem({
   placeId,
   placeName,
   address,
-  influencerName,
+  videos,
   likes,
-  // menuImgUrl,
   onClick,
   isSelected = false,
 }: PlaceItemProps) {
@@ -34,6 +40,7 @@ export default function PlaceItem({
   const [showLoginModal, setShowLoginModal] = useState(false);
   const { mutate: postLike } = usePostPlaceLike();
   const queryClient = useQueryClient();
+  const isYoutubeUrl = videos[0].videoUrl?.includes('youtu');
 
   const handleClickLike = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
@@ -65,20 +72,23 @@ export default function PlaceItem({
     <>
       <PlaceCard key={placeId} onClick={onClick} $isSelected={isSelected}>
         <CardContent>
-          {/* <ImageContainer>
-          <FallbackImage src={menuImgUrl} alt={placeName} />
-        </ImageContainer> */}
-          <Text size="m" weight="bold">
-            {placeName}
-          </Text>
-          <Text size="xs" weight="normal">
-            {getFullAddress(address)}
-          </Text>
-          <InfluencerName>
-            <Text size="xs" weight="normal">
-              {influencerName}
+          <ImageContainer>
+            <FallbackImage src={isYoutubeUrl ? extractYoutubeId(videos[0].videoUrl) : ''} alt={placeName} />
+          </ImageContainer>
+          <TextContainer>
+            <Text size="s" weight="bold" variant="white">
+              {placeName}
             </Text>
-          </InfluencerName>
+            <Text size="xxs" weight="normal" variant="#bdbdbd">
+              <FaMapMarkerAlt size={12} />
+              {getFullAddress(address)}
+            </Text>
+            <InfluencerName>
+              <Text size="xxs" weight="normal" variant="white">
+                {videos[0].influencerName}
+              </Text>
+            </InfluencerName>
+          </TextContainer>
         </CardContent>
         <LikeIcon
           role="button"
@@ -105,9 +115,8 @@ const PlaceCard = styled.div<{ $isSelected: boolean }>`
   flex-direction: column;
   gap: 8px;
   width: 100%;
-  height: 120px;
+  height: 102px;
   border-radius: 6px;
-  padding: 16px;
   cursor: pointer;
   background-color: ${({ $isSelected, theme }) => {
     if ($isSelected) return theme.backgroundColor === '#292929' ? '#1b1a1a' : '#d5ecec';
@@ -123,37 +132,45 @@ const PlaceCard = styled.div<{ $isSelected: boolean }>`
   @media screen and (max-width: 768px) {
     height: 100%;
     gap: 12px;
-    padding: 10px 8px;
   }
 `;
 
-// const ImageContainer = styled.div`
-//   width: 20%;
-//   aspect-ratio: 1;
-//   object-fit: cover;
-//   border-radius: 30px;
+const ImageContainer = styled.div`
+  width: 40%;
+  aspect-ratio: 16 / 9;
+  border-radius: 6px 0px 0px 6px;
+  object-fit: cover;
 
-//   @media screen and (max-width: 768px) {
-//     width: 10%;
-//     border-radius: 12px;
-//   }
+  @media screen and (max-width: 768px) {
+    width: 30%;
+    height: auto;
+  }
 
-//   @media screen and (max-width: 430px) {
-//     width: 20%;
-//     border-radius: 12px;
-//   }
-// `;
+  @media screen and (max-width: 430px) {
+    width: 50%;
+  }
+`;
 
 const CardContent = styled.div`
   position: relative;
   width: 90%;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  height: 100%;
+  gap: 16px;
 
   @media screen and (max-width: 768px) {
-    width: 90%;
     gap: 8px;
+  }
+`;
+
+const TextContainer = styled.div`
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: center;
+  svg {
+    margin-right: 2px;
   }
 `;
 
@@ -170,7 +187,7 @@ const LikeIcon = styled.div`
   width: 30px;
   height: 30px;
   right: 10px;
-  top: 20px;
+  top: 10px;
   z-index: 100;
   cursor: pointer;
 
@@ -178,7 +195,7 @@ const LikeIcon = styled.div`
     width: 24px;
     height: 24px;
     right: 10px;
-    top: 16px;
+    top: 8px;
 
     svg {
       width: 24px;
